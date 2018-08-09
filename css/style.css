@@ -1,3 +1,20 @@
+body {
+    height: 100vh;
+    padding-top: 4.5rem;
+}
+
 #map {
-    height: 80vh;
+    height: 90vh;
+}
+
+#countries {
+    fill: #aaa;
+    fill-opacity: 0.5;
+}
+
+#country-borders {
+    fill: #fff;
+    fill-opacity: 0;
+    stroke: #fff;
+    stroke-width: 1px;
 }

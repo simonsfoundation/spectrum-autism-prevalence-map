@@ -1,7 +1,10 @@
-// const width = $("#map").width();
-// const height = $("#map").height();
+const width = $("#map").width();
+const height = $("#map").height();
 
-const projection = d3.geoBertin1953();
+const projection = d3.geoBertin1953()
+    .scale(270)
+    .translate([width / 2, height / 2]);
+
 const path = d3.geoPath().projection(projection);
 
 const svg = d3.select("#map").append("svg")
