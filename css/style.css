@@ -18,3 +18,9 @@ body {
     stroke: #fff;
     stroke-width: 1px;
 }
+
+.zoom-buttons {
+    position: absolute;
+    top: 70px;
+    right: 15px;
+}
