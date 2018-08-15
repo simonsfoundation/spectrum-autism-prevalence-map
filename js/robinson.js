@@ -4,8 +4,8 @@ const width = $("#map").width();
 const height = $("#map").height();
 
 // map projection
-const projection = d3.geoBromley()
-    .scale(250)
+const projection = d3.geoRobinson()
+    .scale(230)
     .translate([width / 2, height / 2]);
 
 // function to create paths from map projection

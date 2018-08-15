@@ -4,7 +4,7 @@ const width = $("#map").width();
 const height = $("#map").height();
 
 // map projection
-const projection = d3.geoBromley()
+const projection = d3.geoNaturalEarth1()
     .scale(250)
     .translate([width / 2, height / 2]);
 
