@@ -68,9 +68,7 @@ $(document).ready(function (){
     });
 
     // add overlay dataset
-    function addOverlay() {
-
-        
+    function addOverlay() {      
         d3.json("https://spreadsheets.google.com/feeds/list/1_cvjG5FD9ZsErdguV5se3IMqi3AxcSKl_JBB1JRyOMo/1/public/values?alt=json").then(function(data) {
             autismData = data.feed.entry;
             let query = null,
