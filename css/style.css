@@ -24,3 +24,9 @@ body {
     top: 70px;
     right: 15px;
 }
+
+.graticule {
+    fill: none;
+    stroke: black;
+    stroke-width: 1px;
+}
