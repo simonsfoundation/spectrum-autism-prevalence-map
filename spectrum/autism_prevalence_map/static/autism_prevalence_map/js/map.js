@@ -4,16 +4,17 @@ $(document).ready(function (){
     // constants
     const width = $("#map").width();
     const height = $("#map").height();
-    const gmaps_api_key = 'AIzaSyDf-cF98Txqwy7t1Bks58-iFBFS6xkNgf0';
-    const GEOCODE_URL = _("https://maps.googleapis.com/maps/api/geocode/json?address=<%=query%>&key=<%=token%>").template()
     
     // data holder
-    let autismData = null;
+    let studies = null;
+
+    // pin holder 
+    let pins = null;
 
     // map projection
     const projection = d3.geoKavrayskiy7()
-        .scale(250)
-        .translate([width / 2, height / 2]);
+        .scale(270)
+        .translate([width / 2, height / 1.8]);
 
     // function to create paths from map projection
     const path = d3.geoPath().projection(projection);
@@ -44,7 +45,6 @@ $(document).ready(function (){
 
     // add map data to the world map g container
     d3.json("https://unpkg.com/world-atlas@1/world/110m.json").then(function(world) {
-        console.log(world);
         g.append("g")
             .attr("id", "countries")
             .selectAll("path")
@@ -69,32 +69,21 @@ $(document).ready(function (){
 
     // add overlay dataset
     function addOverlay() {      
-        d3.json("https://spreadsheets.google.com/feeds/list/1_cvjG5FD9ZsErdguV5se3IMqi3AxcSKl_JBB1JRyOMo/1/public/values?alt=json").then(function(data) {
-            autismData = data.feed.entry;
-            let query = null,
-                url = null;
-
-            for (let i = 0; i < autismData.length; i++) {
-                console.log(autismData[i].gsx$area.$t);
-                console.log(autismData[i].gsx$country.$t);
-                query = autismData[i].gsx$area.$t + ', ' + autismData[i].gsx$country.$t;
-                url = GEOCODE_URL({query: encodeURIComponent(query), token: gmaps_api_key});
-                d3.json(url).then(function(response) {
-                    if (response.status == 'OK') {
-                        autismData[i].lat = response.results[0].geometry.location.lat;
-                        autismData[i].lng = response.results[0].geometry.location.lng;
-                    } else {
-                        autismData[i].lat = null;
-                        autismData[i].lng = null;
-                    }
-                });
-            }
+        d3.json("/studies-api/").then(function(data) {
+            studies = data;
+            g.append("g")
+                .attr("id", "studies")
+                .selectAll("circle")
+                .data(studies.features)
+                .enter()
+                .append("circle")
+                .attr("cx", function (d) { return projection(d.geometry.coordinates)[0]; })
+		        .attr("cy", function (d) { return projection(d.geometry.coordinates)[1]; })
+                .attr("r", 5)
+                .style("fill", "#1fcbec")
+                .classed("pin", true);
         });
-
     }
-
-
-
 
     // set up map for zooming
     const g_zoom = d3.select("#g");

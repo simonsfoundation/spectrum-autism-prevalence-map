@@ -1,0 +1,42 @@
+{% extends 'autism_prevalence_map/base.html' %} 
+
+{% load staticfiles %} 
+
+{% block title %}Spectrum | Global Autism Prevalence Map{% endblock %} 
+
+{% block css_block %}
+<!-- Custom map CSS
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/map.css' %}">
+{% endblock %} 
+
+
+{% block body_block %}
+<!-- Main Container
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<div class="container-fluid">    
+    <div class="row">
+        <div class="col">
+            <!-- Map div
+            –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+            <div id="map"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Zoom buttons
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<div id="zoom-buttons" class="zoom-buttons btn-group-vertical">
+    <button type="button" id="zoom-in" class="btn btn-dark"><i class="fas fa-plus"></i></button>
+    <button type="button" id="zoom-out" class="btn btn-dark"><i class="fas fa-minus"></i></button>
+</div>
+{% endblock %}
+
+{% block modal_block %} 
+{% endblock %} 
+
+{% block js_block %}
+<!-- Custom JS
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->    
+<script src="{% static 'autism_prevalence_map/js/map.js' %}"></script>
+{% endblock %}
