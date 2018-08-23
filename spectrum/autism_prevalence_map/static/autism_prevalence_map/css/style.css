@@ -2,31 +2,3 @@ body {
     height: 100vh;
     padding-top: 4.5rem;
 }
-
-#map {
-    height: 90vh;
-}
-
-#countries {
-    fill: #aaa;
-    fill-opacity: 0.5;
-}
-
-#country-borders {
-    fill: #fff;
-    fill-opacity: 0;
-    stroke: #fff;
-    stroke-width: 1px;
-}
-
-.zoom-buttons {
-    position: absolute;
-    top: 70px;
-    right: 15px;
-}
-
-.graticule {
-    fill: none;
-    stroke: black;
-    stroke-width: 1px;
-}

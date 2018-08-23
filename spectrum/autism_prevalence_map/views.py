@@ -15,6 +15,20 @@ def index(request):
 	context_dict = {}
 	return render(request, 'autism_prevalence_map/map.html', context_dict)
 
+def list_view(request):
+	"""
+	  List of studies page
+	"""
+	kwargs = {}
+	#pull data with lat/lngs only
+	kwargs['latitude__isnull'] = False
+	kwargs['longitude__isnull'] = False
+
+	pulled_studies = studies.objects.filter(**kwargs).order_by('year')
+
+	context_dict = {'pulled_studies':pulled_studies}
+	return render(request, 'autism_prevalence_map/list.html', context_dict)
+
 
 def studiesApi(request):
 	#add in the items geojson requires 
