@@ -30,6 +30,41 @@
     <button type="button" id="zoom-in" class="btn btn-dark"><i class="fas fa-plus"></i></button>
     <button type="button" id="zoom-out" class="btn btn-dark"><i class="fas fa-minus"></i></button>
 </div>
+
+<!-- More Information Card
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<div id="more-information-card" class="more-information-card col-sm-3">
+    <button type="button" class="close card-close" id="card-close" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <div class="card">
+        <div class="card-header" id="card-title">
+        </div>
+        <div class="card-body">
+            <h6 class="card-subtitle font-weight-bold">Country</h6>
+            <p class="card-text" id="card-country"></p>
+            <h6 class="card-subtitle font-weight-bold">Area</h6>
+            <p class="card-text" id="card-area"></p>
+            <h6 class="card-subtitle font-weight-bold">Population</h6>
+            <p class="card-text" id="card-population"></p>
+            <h6 class="card-subtitle font-weight-bold">Age</h6>
+            <p class="card-text" id="card-age"></p>
+            <h6 class="card-subtitle font-weight-bold">Diagnostic Criteria</h6>
+            <p class="card-text" id="card-diagnostic_criteria"></p>
+            <h6 class="card-subtitle font-weight-bold">% with Normal IQ</h6>
+            <p class="card-text" id="card-pct_with_normal_iq"></p>
+            <h6 class="card-subtitle font-weight-bold">Gender Ratio</h6>
+            <p class="card-text" id="card-gender_ratio"></p>
+            <h6 class="card-subtitle font-weight-bold">Prevalence Rate</h6>
+            <p class="card-text" id="card-prevalence_rate"></p>
+            <h6 class="card-subtitle font-weight-bold">Confidence Interval</h6>
+            <p class="card-text" id="card-confidence_interval"></p>
+        </div>
+
+    </div>
+</div>
+
+
 {% endblock %}
 
 {% block modal_block %} 

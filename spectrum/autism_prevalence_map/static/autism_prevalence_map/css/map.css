@@ -25,3 +25,34 @@
     stroke: black;
     stroke-width: 1px;
 }
+
+.more-information-card {
+    display: none;
+    position: absolute;
+    top: 70px;
+    left: 15px;
+}
+
+.card-header {
+    color: #fff;
+    background-color: #009BCC;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.card-close {
+    position: absolute;
+    top: 11px;
+    right: 25px;
+    z-index: 1;
+    text-shadow: none;
+    opacity: 1;
+    color: #fff;
+}
+
+.close:not(:disabled):not(.disabled):focus, .close:not(:disabled):not(.disabled):hover {
+    color: #eee;
+    text-decoration: none;
+    opacity: 1;
+
+}
+
