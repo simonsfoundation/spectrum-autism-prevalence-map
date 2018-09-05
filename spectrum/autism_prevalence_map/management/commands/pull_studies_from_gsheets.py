@@ -1,8 +1,6 @@
-import sys,os
+import sys, os, urllib, json, time, datetime, re
 from django.core.management.base import BaseCommand, CommandError
 from autism_prevalence_map.models import *
-import urllib, json
-import time
 
 
 """
@@ -78,6 +76,55 @@ class Command(BaseCommand):
 
             time.sleep(1)
             
+    def parse_data(self):
+        # for year, population, and prevalence rate, convert from strings to dates and numbers and store in DB
+
+        pulled_studies = studies.objects.all()
+
+        for study in pulled_studies:
+            # ensure year string has no non-number characters, convert to date
+            year = re.sub("[^0-9]", "", study.year)
+            if year:
+                try:
+                    year_number = datetime.datetime.strptime(year, '%Y')
+                except ValueError:
+                    year_number = None
+            else:
+                year_number = None
+
+            # ensure population string has no non-number characters, convert to integer
+            population = re.sub("[^0-9]", "", study.population)
+
+            if population:
+                try:
+                    population_number = int(population)
+                except ValueError:
+                    population_number = None
+            else:
+                population_number = None 
+
+            # ensure prevalence rate string has no non-number characters, convert to float
+            print study.prevalence_rate
+            
+            try:
+                prevalence_rate = re.findall(r"[-+]?\d*\.\d+|\d+", study.prevalence_rate)[0]
+            except IndexError:
+                prevalence_rate = None
+
+            print prevalence_rate
+            if prevalence_rate:
+                try:
+                    prevalence_rate_number = float(prevalence_rate)
+                except ValueError:
+                    prevalence_rate_number = None
+            else:
+                prevalence_rate_number = None 
+
+
+
+            studies.objects.filter(gsheet_id=study.gsheet_id).update(year_number=year_number, population_number=population_number, prevalence_rate_number=prevalence_rate_number)
+
+
 
 
     def handle(self, *args, **options):
@@ -87,6 +134,10 @@ class Command(BaseCommand):
         print "Geocode research papers where lat/lon is null..."
         self.geocode()
         print "Done."
+        print "Parse strings to numbers..."
+        self.parse_data()
+        print "Done."
+
         
 
 
