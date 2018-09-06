@@ -31,6 +31,34 @@
     <button type="button" id="zoom-out" class="btn btn-dark"><i class="fas fa-minus"></i></button>
 </div>
 
+<!-- Keyword search and dropdown menu form
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<form class="form-inline dropdown-keyword-search">
+    <label class="sr-only" for="search">Keyword Search</label>
+    <input type="text" class="form-control my-1 mr-sm-2" id="search" placeholder="Search">
+    <label class="my-1 mr-2" for="reliability">Reliability</label>
+    <select class="custom-select my-1 mr-sm-2" id="reliability">
+        <option value="all">All</option>
+        <option value="yes">Reliable</option>
+        <option value="no">Not Reliable</option>
+    </select>
+    <label class="my-1 mr-2" for="prevalence">Prevalence</label>
+    <select class="custom-select my-1 mr-sm-2" id="prevalence">
+        <option value="all">All</option>
+        <option value="low">&lt;100</option>
+        <option value="med">100-250</option>
+        <option value="high">&gt;250</option>
+    </select>
+    <label class="my-1 mr-2" for="population">Study Size</label>
+    <select class="custom-select my-1 mr-sm-2" id="population">
+        <option value="all">All</option>
+        <option value="low">&lt;10,000</option>
+        <option value="med">10,000-100,000</option>
+        <option value="high">&gt;100,000</option>
+    </select>
+</form>
+
+
 <!-- More Information Card
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <div id="more-information-card" class="more-information-card col-sm-3">
@@ -65,6 +93,8 @@
 </div>
 
 
+
+
 {% endblock %}
 
 {% block modal_block %} 
@@ -72,6 +102,15 @@
 
 {% block js_block %}
 <!-- Custom JS
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->    
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<script>
+    let min_year = "{{ min_year }}";
+    let max_year = "{{ max_year }}";
+    let min_population = "{{ min_population }}";
+    let max_population = "{{ max_population }}";
+    let min_prevalence_rate = "{{ min_prevalence_rate }}";
+    let max_prevalence_rate = "{{ max_prevalence_rate }}";
+    let keyword = "{{ keyword }}";
+</script>
 <script src="{% static 'autism_prevalence_map/js/map.js' %}"></script>
 {% endblock %}

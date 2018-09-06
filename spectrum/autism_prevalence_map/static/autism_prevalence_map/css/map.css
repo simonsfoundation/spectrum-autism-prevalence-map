@@ -56,3 +56,8 @@
 
 }
 
+.dropdown-keyword-search {
+    position: absolute;
+    bottom: 30px;
+    right: 15px;
+}

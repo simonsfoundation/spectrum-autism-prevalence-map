@@ -65,8 +65,9 @@ $(document).ready(function (){
     });
 
     // add overlay dataset
-    function addOverlay() {      
-        d3.json("/studies-api/").then(function(data) {
+    function addOverlay() {
+        d3.select("#studies").remove();      
+        d3.json("/studies-api/?min_year="+min_year+"&max_year="+max_year+"&min_population="+min_population+"&max_population="+max_population+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&keyword="+keyword).then(function(data) {
             studies = data;
             g.append("g")
                 .attr("id", "studies")
@@ -183,6 +184,62 @@ $(document).ready(function (){
         $("#more-information-card").css("display", "none");
     });
     
+    // listeners for search term changes and filters
+    $("#prevalence").on("change", function(e) {
+        // update filters
+        const prevalence = $(this).val();
+        switch (prevalence) {
+            case "low":
+                min_prevalence_rate = "0";
+                max_prevalence_rate = "99.99"; 
+                break;                             
+            case "med":        
+                min_prevalence_rate = "100";
+                max_prevalence_rate = "250";
+                break;                          
+            case "high":        
+                min_prevalence_rate = "250.01";
+                max_prevalence_rate = "";   
+                break;                       
+            default:
+                min_prevalence_rate = "";
+                max_prevalence_rate = ""; 
+        }
+        // run update
+        addOverlay();
+    });   
 
+    $("#population").on("change", function(e) {
+        // update filters
+        const population = $(this).val();
+        switch (population) {
+            case "low":
+                min_population = "0";
+                max_population = "9999"; 
+                break;                             
+            case "med":        
+                min_population = "10000";
+                max_population = "100000";
+                break;                          
+            case "high":        
+                min_population = "100001";
+                max_population = "";   
+                break;                       
+            default:
+                min_population = "";
+                max_population = ""; 
+        }
+        // run update
+        addOverlay();
+    });  
+
+    $("#search").on('keydown', function (e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            keyword = $(this).val();
+            // run update
+            addOverlay();            
+        }
+    });
 
 });

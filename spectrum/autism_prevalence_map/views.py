@@ -15,7 +15,17 @@ def index(request):
 	"""
 	  Index page/Main Map
 	"""
-	context_dict = {}
+	if request.method == 'GET':
+		min_year = request.GET.get("min_year","")
+		max_year = request.GET.get("max_year","")
+		min_population = request.GET.get("min_population","")
+		max_population = request.GET.get("max_population","")
+		min_prevalence_rate = request.GET.get("min_prevalence_rate","")
+		max_prevalence_rate = request.GET.get("max_prevalence_rate","")
+		keyword = request.GET.get("keyword","")
+
+
+	context_dict = {"min_year":min_year, "max_year":max_year, "min_population":min_population, "max_population":max_population, "min_prevalence_rate":min_prevalence_rate, "max_prevalence_rate":max_prevalence_rate, "keyword":keyword}
 	return render(request, 'autism_prevalence_map/map.html', context_dict)
 
 def list_view(request):
