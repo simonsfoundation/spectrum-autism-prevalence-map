@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from datetime import date
 import re
+from django.contrib.postgres.search import SearchVector, SearchQuery
 
 #import all apartment models and forms
 from autism_prevalence_map.models import *
@@ -47,6 +48,8 @@ def studiesApi(request):
 		max_population = request.GET.get("max_population","")
 		min_prevalence_rate = request.GET.get("min_prevalence_rate","")
 		max_prevalence_rate = request.GET.get("max_prevalence_rate","")
+		keyword = request.GET.get("keyword","")
+
 
 		#apply filters
 		if min_year:
@@ -90,15 +93,34 @@ def studiesApi(request):
 				max_prevalence_rate_re = re.findall(r"[-+]?\d*\.\d+|\d+", max_prevalence_rate)[0]
 				kwargs['prevalence_rate_number__lte'] = float(max_prevalence_rate_re)
 			except ValueError:
-				response['status'] = "The maximum prevalence rate you entered was not a recognizable number. Please try again."
-
+				response['status'] = "The maximum prevalence rate you entered was not a recognizable number. Please try again."			
 		
 		#pull data with lat/lngs only
 		kwargs['latitude__isnull'] = False
 		kwargs['longitude__isnull'] = False
 
-		
-		pulled_studies = studies.objects.filter(**kwargs)
+		# add postgres keyword search
+		if keyword:
+			#search vectors
+			vector = (
+				SearchVector('year') + 
+				SearchVector('authors') +
+				SearchVector('country') +
+				SearchVector('area') +
+				SearchVector('age') +
+				SearchVector('number_affected') +
+				SearchVector('diagnostic_criteria') +
+				SearchVector('pct_with_normal_iq') +
+				SearchVector('gender_ratio') +
+				SearchVector('confidence_interval')
+			)
+
+
+			pulled_studies = studies.objects.annotate(search=vector).filter(search=keyword).filter(**kwargs)
+		else:
+			pulled_studies = studies.objects.filter(**kwargs)
+
+
 		for study in pulled_studies:
 			data = {}
 			data['type'] = 'Feature'
