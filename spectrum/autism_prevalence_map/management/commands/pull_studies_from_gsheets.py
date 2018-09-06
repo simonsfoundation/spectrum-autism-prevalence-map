@@ -103,15 +103,12 @@ class Command(BaseCommand):
             else:
                 population_number = None 
 
-            # ensure prevalence rate string has no non-number characters, convert to float
-            print study.prevalence_rate
-            
+            # ensure prevalence rate string has no non-number characters, convert to float            
             try:
                 prevalence_rate = re.findall(r"[-+]?\d*\.\d+|\d+", study.prevalence_rate)[0]
             except IndexError:
                 prevalence_rate = None
 
-            print prevalence_rate
             if prevalence_rate:
                 try:
                     prevalence_rate_number = float(prevalence_rate)
