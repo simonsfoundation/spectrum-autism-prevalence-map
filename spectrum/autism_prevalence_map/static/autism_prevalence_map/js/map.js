@@ -186,6 +186,7 @@ $(document).ready(function (){
     
     // listeners for search term changes and filters
     $("#prevalence").on("change", function(e) {
+        $("#more-information-card").css("display", "none");
         // update filters
         const prevalence = $(this).val();
         switch (prevalence) {
@@ -210,6 +211,7 @@ $(document).ready(function (){
     });   
 
     $("#population").on("change", function(e) {
+        $("#more-information-card").css("display", "none");
         // update filters
         const population = $(this).val();
         switch (population) {
@@ -236,6 +238,7 @@ $(document).ready(function (){
     $("#search").on('keydown', function (e) {
         if (e.keyCode == 13) {
             e.preventDefault();
+            $("#more-information-card").css("display", "none");
             keyword = $(this).val();
             // run update
             addOverlay();            
