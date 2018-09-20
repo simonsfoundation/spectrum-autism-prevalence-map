@@ -1,10 +1,10 @@
 #map {
-    height: 90vh;
+    height: 80vh;
 }
 
 #countries {
-    fill: #aaa;
-    fill-opacity: 0.5;
+    fill: #898989;
+    fill-opacity: 1;
 }
 
 #country-borders {
@@ -22,7 +22,7 @@
 
 .graticule {
     fill: none;
-    stroke: black;
+    stroke: #f8f8f8;
     stroke-width: 1px;
 }
 
@@ -58,6 +58,17 @@
 
 .dropdown-keyword-search {
     position: absolute;
-    bottom: 30px;
+    bottom: 12vh;
     right: 15px;
+}
+
+.ui-brush {
+    background: #f8f8f8;
+    height: 100px;
+}
+
+.brush .extent {
+    stroke:#fff;
+    fill-opacity: 0.125;
+    shape-rendering:crispEdges;
 }

@@ -9,40 +9,62 @@ from autism_prevalence_map.models import *
 class Command(BaseCommand):
 
     def load_research_data(self):
-        key = '1_cvjG5FD9ZsErdguV5se3IMqi3AxcSKl_JBB1JRyOMo'
+        # https://spreadsheets.google.com/feeds/list/1l8Ih7BGIo9AyPRwX7Vb2jPLZkRMo0d7QA7SboM9-JNk/4/public/values?alt=json
+        key = '1l8Ih7BGIo9AyPRwX7Vb2jPLZkRMo0d7QA7SboM9-JNk'
         base_url = 'https://spreadsheets.google.com/feeds/list/'
-        params = '/1/public/values?alt=json'
+        params = '/4/public/values?alt=json'
         url = base_url + key + params
         response = urllib.urlopen(url.encode('utf8'))
         data = json.loads(response.read())
 
         for data in data['feed']['entry']:
             try:
-                #skip if header
-                if data['gsx$year']['$t'] != 'Year':
+                #skip if year not a date
+                year_of_publication = re.sub("[^0-9]", "", data['gsx$yearofpublication']['$t'])
+
+                if year_of_publication:
+                    try:
+                        year_of_publication_number = datetime.datetime.strptime(year_of_publication, '%Y')
+                    except ValueError:
+                        year_of_publication_number = None
+                else:
+                    year_of_publication_number = None
+
+                if year_of_publication_number:
 
                     #use get or create to only create records for objects newly added to the spreadsheets
                     updated_values = {
-                        'year': data['gsx$year']['$t'], 
+                        'year_of_publication': data['gsx$yearofpublication']['$t'],
                         'authors': data['gsx$authors']['$t'], 
                         'country': data['gsx$country']['$t'], 
                         'area': data['gsx$area']['$t'], 
-                        'population': data['gsx$population']['$t'], 
+                        'study_size': data['gsx$studysize']['$t'], 
                         'age': data['gsx$age']['$t'], 
                         'number_affected': data['gsx$numberaffected']['$t'], 
                         'diagnostic_criteria': data['gsx$diagnosticcriteria']['$t'], 
                         'pct_with_normal_iq': data['gsx$withnormaliq']['$t'], 
                         'gender_ratio': data['gsx$genderratiomf']['$t'], 
-                        'prevalence_rate': data['gsx$prevalencerate10000']['$t'], 
-                        'confidence_interval': data['gsx$ci']['$t'] 
+                        'prevalence_rate': data['gsx$prevalenceper10000']['$t'], 
+                        'confidence_interval': data['gsx$ci']['$t'], 
+                        'category': data['gsx$categoryasdoradorpdd']['$t'],
+                        'time_period_studied': data['gsx$timeperiodstudied']['$t'],
+                        'reliability_quality': data['gsx$reliabilityquality']['$t'], 
+                        'methodology': data['gsx$methodologycdcsurveillancedataregistryclinicalsurveyorpopulationsurvey']['$t'],
+                        'mean_income_of_participants': data['gsx$meanincomeofparticipants']['$t'],
+                        'education_level_of_participants': data['gsx$educationlevelofparticipants']['$t'],
+                        'citation': data['gsx$citation']['$t'],
+                        'url': data['gsx$url']['$t'],
+                        'link_to_news_coverage_by_spectrum': data['gsx$linktonewscoveragebyspectrum']['$t'], 
+                        'erics_quality_assessment': data['gsx$ericsqualityassessment']['$t'], 
+                        'erics_reasons_for_lower_quality': data['gsx$ericsreasonsforlowerqualitybasedonmyrecallofthestudies']['$t']
                     }
                     
                     obj, created = studies.objects.update_or_create(gsheet_id=data['id']['$t'], defaults=updated_values)
 
-
-            except Exception: 
+            
+            except Exception as e: 
                 # if error
-                print data['feed']['entry']
+                print e
 
     def geocode(self):
         gmaps_api_key = '&key=' + 'AIzaSyDf-cF98Txqwy7t1Bks58-iFBFS6xkNgf0'
@@ -83,25 +105,25 @@ class Command(BaseCommand):
 
         for study in pulled_studies:
             # ensure year string has no non-number characters, convert to date
-            year = re.sub("[^0-9]", "", study.year)
-            if year:
+            year_of_publication = re.sub("[^0-9]", "", study.year_of_publication)
+            if year_of_publication:
                 try:
-                    year_number = datetime.datetime.strptime(year, '%Y')
+                    year_of_publication_number = datetime.datetime.strptime(year_of_publication, '%Y')
                 except ValueError:
-                    year_number = None
+                    year_of_publication_number = None
             else:
-                year_number = None
+                year_of_publication_number = None
 
             # ensure population string has no non-number characters, convert to integer
-            population = re.sub("[^0-9]", "", study.population)
+            study_size = re.sub("[^0-9]", "", study.study_size)
 
-            if population:
+            if study_size:
                 try:
-                    population_number = int(population)
+                    study_size_number = int(study_size)
                 except ValueError:
-                    population_number = None
+                    study_size_number = None
             else:
-                population_number = None 
+                study_size_number = None 
 
             # ensure prevalence rate string has no non-number characters, convert to float            
             try:
@@ -119,7 +141,7 @@ class Command(BaseCommand):
 
 
 
-            studies.objects.filter(gsheet_id=study.gsheet_id).update(year_number=year_number, population_number=population_number, prevalence_rate_number=prevalence_rate_number)
+            studies.objects.filter(gsheet_id=study.gsheet_id).update(year_of_publication_number=year_of_publication_number, study_size_number=study_size_number, prevalence_rate_number=prevalence_rate_number)
 
 
 
@@ -128,12 +150,13 @@ class Command(BaseCommand):
         print "Loading Academic Research Data...."
         self.load_research_data()
         print "Done."
-        print "Geocode research papers where lat/lon is null..."
-        self.geocode()
-        print "Done."
         print "Parse strings to numbers..."
         self.parse_data()
         print "Done."
+        print "Geocode research papers where lat/lon is null..."
+        self.geocode()
+        print "Done."
+
 
         
 

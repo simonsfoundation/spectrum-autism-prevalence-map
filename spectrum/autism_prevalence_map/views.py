@@ -16,31 +16,44 @@ def index(request):
 	  Index page/Main Map
 	"""
 	if request.method == 'GET':
-		min_year = request.GET.get("min_year","")
-		max_year = request.GET.get("max_year","")
-		min_population = request.GET.get("min_population","")
-		max_population = request.GET.get("max_population","")
+		min_year_of_publication = request.GET.get("min_year_of_publication","")
+		max_year_of_publication = request.GET.get("max_year_of_publication","")
+		min_study_size = request.GET.get("min_study_size","")
+		max_study_size = request.GET.get("max_study_size","")
 		min_prevalence_rate = request.GET.get("min_prevalence_rate","")
 		max_prevalence_rate = request.GET.get("max_prevalence_rate","")
+		category = request.GET.get("category","")
 		keyword = request.GET.get("keyword","")
 
 
-	context_dict = {"min_year":min_year, "max_year":max_year, "min_population":min_population, "max_population":max_population, "min_prevalence_rate":min_prevalence_rate, "max_prevalence_rate":max_prevalence_rate, "keyword":keyword}
+	context_dict = {"min_year_of_publication":min_year_of_publication, "max_year_of_publication":max_year_of_publication, "min_study_size":min_study_size, "max_study_size":max_study_size, "min_prevalence_rate":min_prevalence_rate, "max_prevalence_rate":max_prevalence_rate, "category":category , "keyword":keyword}
 	return render(request, 'autism_prevalence_map/map.html', context_dict)
 
 def list_view(request):
 	"""
 	  List of studies page
 	"""
-	kwargs = {}
-	#pull data with lat/lngs only
-	kwargs['latitude__isnull'] = False
-	kwargs['longitude__isnull'] = False
+	if request.method == 'GET':
+		min_year_of_publication = request.GET.get("min_year_of_publication","")
+		max_year_of_publication = request.GET.get("max_year_of_publication","")
+		min_study_size = request.GET.get("min_study_size","")
+		max_study_size = request.GET.get("max_study_size","")
+		min_prevalence_rate = request.GET.get("min_prevalence_rate","")
+		max_prevalence_rate = request.GET.get("max_prevalence_rate","")
+		category = request.GET.get("category","")
+		keyword = request.GET.get("keyword","")
 
-	pulled_studies = studies.objects.filter(**kwargs).order_by('year')
 
-	context_dict = {'pulled_studies':pulled_studies}
+	context_dict = {"min_year_of_publication":min_year_of_publication, "max_year_of_publication":max_year_of_publication, "min_study_size":min_study_size, "max_study_size":max_study_size, "min_prevalence_rate":min_prevalence_rate, "max_prevalence_rate":max_prevalence_rate, "category":category ,"keyword":keyword}
+
 	return render(request, 'autism_prevalence_map/list.html', context_dict)
+
+def about(request):
+	"""
+	  About page
+	"""
+	context_dict = {}
+	return render(request, 'autism_prevalence_map/about.html', context_dict)
 
 
 def studiesApi(request):
@@ -52,43 +65,44 @@ def studiesApi(request):
 	if request.method == 'GET':
 		kwargs = {}
 		# filters
-		min_year = request.GET.get("min_year","")
-		max_year = request.GET.get("max_year","")
-		min_population = request.GET.get("min_population","")
-		max_population = request.GET.get("max_population","")
+		min_year_of_publication = request.GET.get("min_year_of_publication","")
+		max_year_of_publication = request.GET.get("max_year_of_publication","")
+		min_study_size = request.GET.get("min_study_size","")
+		max_study_size = request.GET.get("max_study_size","")
 		min_prevalence_rate = request.GET.get("min_prevalence_rate","")
 		max_prevalence_rate = request.GET.get("max_prevalence_rate","")
+		category = request.GET.get("category","")
 		keyword = request.GET.get("keyword","")
 
 
 		#apply filters
-		if min_year:
+		if min_year_of_publication:
 			try:
-				min_year_re = re.sub("[^0-9]", "", min_year)
-				kwargs['year_number__gte'] = date(int(min_year_re), 1, 1)
+				min_year_of_publication_re = re.sub("[^0-9]", "", min_year_of_publication)
+				kwargs['year_of_publication_number__gte'] = date(int(min_year_of_publication_re), 1, 1)
 			except TypeError:
-				response['status'] = "The minimum year you entered was not a recognizable 4-digit year. Please try again."
+				response['status'] = "The minimum year of publication you entered was not a recognizable 4-digit year. Please try again."
 				
-		if max_year:
+		if max_year_of_publication:
 			try:
-				max_year_re = re.sub("[^0-9]", "", max_year)
-				kwargs['year_number__lte'] = date(int(max_year_re), 1, 1)
+				max_year_of_publication_re = re.sub("[^0-9]", "", max_year_of_publication)
+				kwargs['year_of_publication_number__lte'] = date(int(max_year_of_publication_re), 1, 1)
 			except TypeError:
-				response['status'] = "The maximum year you entered was not a recognizable 4-digit year. Please try again."
+				response['status'] = "The maximum year of publication you entered was not a recognizable 4-digit year. Please try again."
 
-		if min_population:
+		if min_study_size:
 			try:
-				min_population_re = re.sub("[^0-9]", "", min_population)
-				kwargs['population_number__gte'] = int(min_population_re)
+				min_study_size_re = re.sub("[^0-9]", "", min_study_size)
+				kwargs['study_size_number__gte'] = int(min_study_size_re)
 			except ValueError:
-				response['status'] = "The minimum population you entered was not a recognizable number. Please try again."
+				response['status'] = "The minimum study size you entered was not a recognizable number. Please try again."
 
-		if max_population:
+		if max_study_size:
 			try:
-				max_population_re = re.sub("[^0-9]", "", max_population)
-				kwargs['population_number__lte'] = int(max_population_re)
+				max_study_size_re = re.sub("[^0-9]", "", max_study_size)
+				kwargs['study_size_number__lte'] = int(max_study_size_re)
 			except ValueError:
-				response['status'] = "The maximum population you entered was not a recognizable number. Please try again."
+				response['status'] = "The maximum study size you entered was not a recognizable number. Please try again."
 			
 
 		if min_prevalence_rate:
@@ -105,15 +119,18 @@ def studiesApi(request):
 			except ValueError:
 				response['status'] = "The maximum prevalence rate you entered was not a recognizable number. Please try again."			
 		
+		if category:
+			kwargs['category__iexact'] = category
+
 		#pull data with lat/lngs only
-		kwargs['latitude__isnull'] = False
-		kwargs['longitude__isnull'] = False
+		#kwargs['latitude__isnull'] = False
+		#kwargs['longitude__isnull'] = False
 
 		# add postgres keyword search
 		if keyword:
 			#search vectors
 			vector = (
-				SearchVector('year') + 
+				SearchVector('year_of_publication') + 
 				SearchVector('authors') +
 				SearchVector('country') +
 				SearchVector('area') +
@@ -122,7 +139,17 @@ def studiesApi(request):
 				SearchVector('diagnostic_criteria') +
 				SearchVector('pct_with_normal_iq') +
 				SearchVector('gender_ratio') +
-				SearchVector('confidence_interval')
+				SearchVector('confidence_interval') +
+				SearchVector('category') +
+				SearchVector('reliability_quality') +
+				SearchVector('methodology') +
+				SearchVector('mean_income_of_participants') +
+				SearchVector('education_level_of_participants') +
+				SearchVector('citation') +
+				SearchVector('url') +
+				SearchVector('link_to_news_coverage_by_spectrum') +
+				SearchVector('erics_quality_assessment') +
+				SearchVector('erics_reasons_for_lower_quality')
 			)
 
 
@@ -135,11 +162,12 @@ def studiesApi(request):
 			data = {}
 			data['type'] = 'Feature'
 			data['properties'] = {}
-			data['properties']['year'] = study.year
+			data['properties']['pk'] = study.pk
+			data['properties']['year_of_publication'] = study.year_of_publication
 			data['properties']['authors'] = study.authors
 			data['properties']['country'] = study.country
 			data['properties']['area'] = study.area
-			data['properties']['population'] = study.population
+			data['properties']['study_size'] = study.study_size
 			data['properties']['age'] = study.age
 			data['properties']['number_affected'] = study.number_affected
 			data['properties']['diagnostic_criteria'] = study.diagnostic_criteria
@@ -147,6 +175,17 @@ def studiesApi(request):
 			data['properties']['gender_ratio'] = study.gender_ratio
 			data['properties']['prevalence_rate'] = study.prevalence_rate
 			data['properties']['confidence_interval'] = study.confidence_interval
+			data['properties']['category'] = study.category
+			data['properties']['time_period_studied'] = study.time_period_studied
+			data['properties']['reliability_quality'] = study.reliability_quality
+			data['properties']['methodology'] = study.methodology
+			data['properties']['mean_income_of_participants'] = study.mean_income_of_participants
+			data['properties']['education_level_of_participants'] = study.education_level_of_participants
+			data['properties']['citation'] = study.citation
+			data['properties']['url'] = study.url
+			data['properties']['link_to_news_coverage_by_spectrum'] = study.link_to_news_coverage_by_spectrum
+			data['properties']['erics_quality_assessment'] = study.erics_quality_assessment
+			data['properties']['erics_reasons_for_lower_quality'] = study.erics_reasons_for_lower_quality
 			data['geometry'] = {}
 			data['geometry']['type'] = 'Point'
 			data['geometry']['coordinates'] = [study.longitude, study.latitude]

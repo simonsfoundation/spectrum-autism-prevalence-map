@@ -1,0 +1,34 @@
+{% extends 'autism_prevalence_map/base.html' %} 
+
+{% load staticfiles %} 
+
+{% block title %}Spectrum | Global Autism Prevalence Map{% endblock %} 
+
+{% block css_block %}
+<!-- Custom map CSS
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/about.css' %}">
+{% endblock %} 
+
+
+{% block body_block %}
+<!-- Main Container
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<div class="container-fluid">    
+    <div class="row">
+        <div class="col">
+            <div id="wp-content"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block modal_block %} 
+{% endblock %} 
+
+{% block js_block %}
+<!-- Custom JS
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->   
+<script src="{% static 'autism_prevalence_map/js/about.js' %}"></script>
+{% endblock %}

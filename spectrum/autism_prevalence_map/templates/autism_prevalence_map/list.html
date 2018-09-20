@@ -17,10 +17,37 @@
 <div class="container-fluid">    
     <div class="row">
         <div class="col">
+            <!-- Keyword search and dropdown menu form
+            –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+            <form class="form-inline dropdown-keyword-search">
+                <label class="sr-only" for="search">Keyword Search</label>
+                <input type="text" class="form-control my-1 mr-sm-2" id="search" placeholder="Search">
+                <label class="my-1 mr-2" for="category">Type of Study</label>
+                <select class="custom-select my-1 mr-sm-2" id="category">
+                    <option value="">All</option>
+                    <option value="asd">ASD</option>
+                    <option value="ad">AD</option>
+                    <option value="pdd">PDD</option>
+                </select>
+                <label class="my-1 mr-2" for="prevalence">Prevalence</label>
+                <select class="custom-select my-1 mr-sm-2" id="prevalence">
+                    <option value="all">All</option>
+                    <option value="low">&lt;100</option>
+                    <option value="med">100-200</option>
+                    <option value="high">&gt;200</option>
+                </select>
+                <label class="my-1 mr-2" for="study_size">Study Size</label>
+                <select class="custom-select my-1 mr-sm-2" id="study_size">
+                    <option value="all">All</option>
+                    <option value="low">&lt;10,000</option>
+                    <option value="med">10,000-100,000</option>
+                    <option value="high">&gt;100,000</option>
+                </select>
+            </form>
             <!-- list 
             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
             <div id="list" class="table-responsive">
-                <table class="table table-hover">
+                <table id="studies" class="table table-hover">
                     <thead class="thead-dark">
                         <tr>
                             <th scope="col"></th>
@@ -28,41 +55,12 @@
                             <th scope="col">Author</th>
                             <th scope="col">Country</th>
                             <th scope="col">Area</th>
-                            <th scope="col">Population</th>
+                            <th scope="col">Study Size</th>
                             <th scope="col">Prevalence</th>
                             <th scope="col">CI</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for study in pulled_studies %}
-                        <tr data-toggle="collapse" href="#accordion_menu_{{ study.pk }}" role="button" aria-expanded="false" aria-controls="{{ study.pk }}" class="study_row">
-                            <th scope="row"><i class="fas fa-chevron-down"></i></th>
-                            <td>{{ study.year }}</td>
-                            <td>{{ study.authors }}</td>
-                            <td>{{ study.country }}</td>
-                            <td>{{ study.area }}</td>
-                            <td>{{ study.population }}</td>
-                            <td>{{ study.prevalence_rate }}</td>
-                            <td>{{ study.confidence_interval }}</td>
-                            <td><button type="button" class="btn btn-warning">Share</button></td>
-                        </tr>
-                        <tr class="collapse" id="accordion_menu_{{ study.pk }}">
-                            <td colspan="9">
-                                <div class="card card-body">
-                                    <h4>More data</h4>
-                                    <p>
-                                        <b>Age:</b> {{ study.age }} <br />
-                                        <b>Number Affected:</b> {{ study.number_affected }} <br />
-                                        <b>Diagnostic Criteria:</b> {{ study.diagnostic_criteria }} <br />
-                                        <b>% With Normal IQ:</b> {{ study.pct_with_normal_iq }} <br />
-                                        <b>Gender Ratio M:F:</b> {{ study.gender_ratio }} <br />
-                                    </p>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -76,6 +74,16 @@
 
 {% block js_block %}
 <!-- Custom JS
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->    
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->  
+<script>
+    let min_year_of_publication = "{{ min_year_of_publication }}";
+    let max_year_of_publication = "{{ max_year_of_publication }}";
+    let min_study_size = "{{ min_study_size }}";
+    let max_study_size = "{{ max_study_size }}";
+    let min_prevalence_rate = "{{ min_prevalence_rate }}";
+    let max_prevalence_rate = "{{ max_prevalence_rate }}";
+    let category = "{{ category }}";
+    let keyword = "{{ keyword }}";
+</script>  
 <script src="{% static 'autism_prevalence_map/js/list.js' %}"></script>
 {% endblock %}

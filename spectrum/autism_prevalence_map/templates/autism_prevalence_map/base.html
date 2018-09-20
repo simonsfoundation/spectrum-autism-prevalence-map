@@ -39,13 +39,13 @@
         </a>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link {% if request.path == '/' %}active{% endif %} " href="{% url 'index' %}">Map View</a>
+                <a id="map-link" class="nav-link {% if request.path == '/' %}active{% endif %} " href="{% url 'index' %}">Map View</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {% if request.path == '/list/' %}active{% endif %}" href="{% url 'list_view' %}">List View</a>
+                <a id="list-link" class="nav-link {% if request.path == '/list/' %}active{% endif %}" href="{% url 'list_view' %}">List View</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">About</a>
+                <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">About</a>
             </li>
         </ul>
     </nav>
