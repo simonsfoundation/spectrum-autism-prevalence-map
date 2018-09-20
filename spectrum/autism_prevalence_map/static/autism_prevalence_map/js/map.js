@@ -58,10 +58,10 @@ $(document).ready(function (){
                 return d.id;
             });
 
-        // g.append("path")
-        //     .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
-        //     .attr("id", "country-borders")
-        //     .attr("d", path);
+        g.append("path")
+            .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
+            .attr("id", "country-borders")
+            .attr("d", path);
 
         addOverlay();
         addTimeline();

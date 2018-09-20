@@ -3,7 +3,7 @@
 }
 
 #countries {
-    fill: #898989;
+    fill: #ccc;
     fill-opacity: 1;
 }
 
@@ -22,8 +22,8 @@
 
 .graticule {
     fill: none;
-    stroke: #f8f8f8;
-    stroke-width: 1px;
+    stroke:#ccc;
+    stroke-width: 0.5px;
 }
 
 .more-information-card {
