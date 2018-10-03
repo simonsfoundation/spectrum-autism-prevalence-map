@@ -20,7 +20,27 @@
             <!-- Map div
             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
             <div id="map"></div>
-            <div id="timeline" class='ui-brush'></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <!-- Timeline div
+            –––––––––––––––––––––––––––––––––––––––––––––––––– -->    
+            <div class="timeline-wrapper container-fluid">
+                <div class="row">
+                    <div id="timeline-toggle" class='timeline-toggle col-sm-4'>
+                        <h2>Timeline of Studies</h2>
+                        <span class="timeline-switch">
+                            <input type="checkbox" id="timeline-switch" name="timeline-switch">
+                            <label for="timeline-switch">Year Published</label>
+                            <span class="timeline-switch-knob"></span>
+                        </span>
+                        <span>Year Conducted</span>
+                    </div>
+                    <div id="timeline" class='ui-brush timeline col-sm-8'></div>
+                </div>
+            </div>
+            
         </div>
     </div>
 </div>

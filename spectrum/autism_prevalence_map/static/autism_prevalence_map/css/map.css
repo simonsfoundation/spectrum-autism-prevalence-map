@@ -1,5 +1,5 @@
 #map {
-    height: 80vh;
+    height: 70vh;
 }
 
 #countries {
@@ -58,13 +58,13 @@
 
 .dropdown-keyword-search {
     position: absolute;
-    bottom: 12vh;
+    bottom: 22vh;
     right: 15px;
 }
 
 .ui-brush {
     background: #f8f8f8;
-    height: 100px;
+    height: 20vh;
 }
 
 .brush .extent {
@@ -72,3 +72,88 @@
     fill-opacity: 0.125;
     shape-rendering:crispEdges;
 }
+
+/* Switch CSS */
+.timeline-switch {
+    position: relative; 
+}
+
+.timeline-switch > [type="checkbox"]:checked,
+.timeline-switch > [type="checkbox"]:not(:checked) {
+    width: 0;
+    height: 0;
+    display: none;
+    opacity: 0; 
+}
+
+.timeline-switch > [type="checkbox"]:checked + label,
+.timeline-switch > [type="checkbox"]:not(:checked) + label {
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 7px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    padding-right: 45px; 
+}
+    
+.timeline-switch > [type="checkbox"]:checked + label:after,
+.timeline-switch > [type="checkbox"]:not(:checked) + label:after {
+    content: "";
+    top: 4px;
+    right: 10px;
+    width: 30px;
+    height: 12px;
+    position: absolute;
+    border-radius: 30px; 
+}
+
+.timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob,
+.timeline-switch > [type="checkbox"]:not(:checked) + label + .timeline-switch-knob {
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 30px;
+    display: inline-block;
+    position: absolute;
+    cursor: pointer;
+    pointer-events: none;
+    box-shadow: 1px 1px 1px #dddddd;
+    -webkit-transition: right .1s ease-in, background-color .1s ease-in;
+    -moz-transition: right .1s ease-in, background-color .1s ease-in;
+    -o-transition: right .1s ease-in, background-color .1s ease-in;
+    -ms-transition: right .1s ease-in, background-color .1s ease-in; 
+}
+
+.timeline-switch > [type="checkbox"]:checked:focus + label:after, .timeline-switch > [type="checkbox"]:checked:focus + label + .timeline-switch-knob,
+.timeline-switch > [type="checkbox"]:not(:checked):focus + label:after,
+.timeline-switch > [type="checkbox"]:not(:checked):focus + label + .timeline-switch-knob {
+    box-shadow: 0 0 6px 0 #6fb5fb; 
+}
+
+.timeline-switch > [type="checkbox"]:checked[disabled] + label, .timeline-switch > [type="checkbox"]:checked[disabled] + label:after, .timeline-switch > [type="checkbox"]:checked[disabled] + label + .timeline-switch-knob,
+.timeline-switch > [type="checkbox"]:not(:checked)[disabled] + label,
+.timeline-switch > [type="checkbox"]:not(:checked)[disabled] + label:after,
+.timeline-switch > [type="checkbox"]:not(:checked)[disabled] + label + .timeline-switch-knob {
+    cursor: not-allowed;
+    opacity: 0.4; 
+}
+
+.timeline-switch > [type="checkbox"]:checked + label:after {
+    background-color: #9effc4; 
+}
+
+.timeline-switch > [type="checkbox"]:not(:checked) + label:after {
+    background-color: #dddddd; 
+}
+
+.timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob {
+    right: 5px;
+    background-color: #57cb85; 
+}
+
+.timeline-switch > [type="checkbox"]:not(:checked) + label + .timeline-switch-knob {
+    right: 25px;
+    background-color: #849fbb; 
+}
+
+

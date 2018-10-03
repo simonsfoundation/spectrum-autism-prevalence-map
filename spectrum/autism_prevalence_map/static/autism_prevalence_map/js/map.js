@@ -105,34 +105,48 @@ $(document).ready(function (){
         d3.selectAll(".studies-on-timeline").remove(); 
         d3.json("/studies-api/?min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&category="+category+"&keyword="+keyword).then(function(data) {
 
+            // check the state of the timeline button
+
             const container = d3.select('#timeline'),
                 width = container.node().offsetWidth,
-                margin = {top: 0, right: 0, bottom: 0, left: 0},
-                height = 100;
+                height = timeline_height;
 
-            const timeExtent = d3.extent(data.features, function(d) {
-                return new Date(d.properties.year_of_publication);
-            });
-        
+            // const timeExtent = d3.extent(data.features, function(d) {
+            //     return new Date(d.properties.year_of_publication);
+            // });
+
+            const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.year_of_publication); });
+            const timeMax = d3.max(data.features, function(d) { return new Date(d.properties.year_of_publication); });
+
+            timeMax.setFullYear(timeMax.getFullYear() + 1);
+
+            const studiesByYear = d3.nest()
+                .key(function(d) { return d.properties.year_of_publication; })
+                .rollup(function(v) { return v.length; })
+                .entries(data.features);
+            
+            for (let index = 0; index < studiesByYear.length; index++) {
+                studiesByYear[index].count = 0;
+            }
+                        
             const svg = container.append('svg')
-                .attr('width', width + margin.left + margin.right)
-                .attr('height', height + margin.top + margin.bottom);
+                .attr('width', width)
+                .attr('height', height);
         
             let context = svg.append('g')
-                .attr('class', 'context')
-                .attr('transform', 'translate(' +
-                    margin.left + ',' +
-                    margin.top + ')');
+                .attr('class', 'context');
 
             const x = d3.scaleTime()
-                .range([10, width-10])
-                .domain(timeExtent);
+                .range([20, width-20])
+                .domain([timeMin, timeMax])
+                .nice(d3.timeYear);
 
-            const x_inverted = d3.scaleTime()
-                .domain([10, width-10])
-                .range(timeExtent);
+            const y = d3.scaleLinear()
+                .range([height-25, 20])
+                .domain([1, d3.max(studiesByYear, function(d) { return d.value; })])
 
             const brush = d3.brushX()
+                .extent([[0, 0], [width, height-20]])
                 .on("brush", brushed);
         
             context.selectAll('circle.timeline')
@@ -140,7 +154,17 @@ $(document).ready(function (){
                 .enter()
                 .append('circle')
                 .attr('transform', function(d) {
-                    return 'translate(' + [x(new Date(d.properties.year_of_publication)), height / 2] + ')';
+                    let count = 0;
+                    for (let index = 0; index < studiesByYear.length; index++) {
+                        if (studiesByYear[index].key == d.properties.year_of_publication) {
+                            studiesByYear[index].count++;
+                            count = studiesByYear[index].count;
+                        }
+                    }
+                    let date = new Date(d.properties.year_of_publication)
+                    date.setMonth(date.getMonth() + 6);
+                    console.log(date);
+                    return 'translate(' + [x(date), y(count)] + ')';
                 })
                 .attr("r", 5)
                 .style("fill", "#1fcbec")
@@ -157,7 +181,14 @@ $(document).ready(function (){
                     d3.select(this).style("cursor", "default");
                     d3.select(this).style("stroke-width", "0");
                 });
+
+            // Add the x axis
+            const axisHeight = height - 20;
+            svg.append("g")
+                .attr("transform", "translate(0," + axisHeight + ")")
+                .call(d3.axisBottom(x));
         
+            // add the x brush
             context.append('g')
                 .attr('class', 'x brush')
                 .call(brush)
@@ -168,12 +199,28 @@ $(document).ready(function (){
             function brushed() {
                 // let's see what's in the brush
                 if (d3.event.sourceEvent.type === "brush") return;
-                const min_selection = d3.event.selection[0];
-                const max_selection = d3.event.selection[1];
-
-                min_year_of_publication = x_inverted(min_selection).getUTCFullYear();
-                max_year_of_publication = x_inverted(max_selection).getUTCFullYear();
                 
+                const d0 = d3.event.selection.map(x.invert),
+                    d1 = d0.map(d3.timeYear.round);
+
+                // If empty when rounded, use floor instead.
+                if (d1[0] >= d1[1]) {
+                    d1[0] = d3.timeYear.floor(d0[0]);
+                    d1[1] = d3.timeYear.offset(d1[0]);
+                }
+
+                d3.select(this).call(d3.event.target.move, d1.map(x));
+
+                min_year_of_publication = d1[0].getUTCFullYear();
+                max_year_of_publication = d1[1].getUTCFullYear() - 1;
+
+                console.log("min: ",min_year_of_publication);
+                console.log("max: ",max_year_of_publication);
+
+
+
+
+
                 addOverlay();
                 updateURL();
         
@@ -218,8 +265,6 @@ $(document).ready(function (){
     
     // define the radius change for points as we soom in annd out
     function scalePins(k) {
-        
-        console.log(k);
 
         // calculate new radius
         const new_radius = 5 - k;
