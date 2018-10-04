@@ -22,12 +22,15 @@
             <form class="form-inline dropdown-keyword-search">
                 <label class="sr-only" for="search">Keyword Search</label>
                 <input type="text" class="form-control my-1 mr-sm-2" id="search" placeholder="Search">
-                <label class="my-1 mr-2" for="category">Type of Study</label>
-                <select class="custom-select my-1 mr-sm-2" id="category">
+                <label class="my-1 mr-2" for="min_year_of_publication">Earliest Published</label>
+                <select class="custom-select my-1 mr-sm-2" id="min_year_of_publication">
+                </select>
+                <label class="my-1 mr-2" for="max_year_of_publication">Latest Published</label>
+                <select class="custom-select my-1 mr-sm-2" id="max_year_of_publication">
+                </select>
+                <label class="my-1 mr-2" for="methodology">Type of Study</label>
+                <select class="custom-select my-1 mr-sm-2" id="methodology">
                     <option value="">All</option>
-                    <option value="asd">ASD</option>
-                    <option value="ad">AD</option>
-                    <option value="pdd">PDD</option>
                 </select>
                 <label class="my-1 mr-2" for="prevalence">Prevalence</label>
                 <select class="custom-select my-1 mr-sm-2" id="prevalence">
@@ -43,6 +46,9 @@
                     <option value="med">10,000-100,000</option>
                     <option value="high">&gt;100,000</option>
                 </select>
+                <button type="button" id="clear-filters" class="btn btn-warning my-1 mr-sm-2">Clear</button>
+                <button type="button" id="copy-link" class="btn btn-warning my-1 mr-sm-2" data-container="body" data-toggle="popover" data-placement="top" data-content="Link copied to the clipboard."><i class="fas fa-link"></i></button>
+                <a role="button" id="download-link" class="btn btn-warning my-1 mr-sm-2" href="#"><i class="fas fa-download"></i></a>
             </form>
             <!-- list 
             –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -82,8 +88,9 @@
     let max_study_size = "{{ max_study_size }}";
     let min_prevalence_rate = "{{ min_prevalence_rate }}";
     let max_prevalence_rate = "{{ max_prevalence_rate }}";
-    let category = "{{ category }}";
+    let methodology = "{{ methodology }}";
     let keyword = "{{ keyword }}";
 </script>  
+<script src="{% static 'autism_prevalence_map/js/joint.js' %}"></script>
 <script src="{% static 'autism_prevalence_map/js/list.js' %}"></script>
 {% endblock %}

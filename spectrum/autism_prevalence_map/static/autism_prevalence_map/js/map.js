@@ -1,5 +1,8 @@
 $(document).ready(function (){
 
+    // app.map scope
+    app.map = {};
+
     // constants
     const width = $("#map").width();
     const height = $("#map").height();
@@ -63,16 +66,15 @@ $(document).ready(function (){
             .attr("id", "country-borders")
             .attr("d", path);
 
-        addOverlay();
-        addTimeline();
+        app.map.addOverlay();
+        app.map.addTimeline();
         addGraticule();
-        updateURL();
     });
 
     // add overlay dataset
-    function addOverlay() {
+    app.map.addOverlay = function() {
         d3.select("#studies").remove();      
-        d3.json("/studies-api/?min_year_of_publication="+min_year_of_publication+"&max_year_of_publication="+max_year_of_publication+"&min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&category="+category+"&keyword="+keyword).then(function(data) {
+        d3.json("/studies-api/?min_year_of_publication="+min_year_of_publication+"&max_year_of_publication="+max_year_of_publication+"&min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&methodology="+methodology+"&keyword="+keyword).then(function(data) {
             studies = data;
             g.append("g")
                 .attr("id", "studies")
@@ -101,19 +103,13 @@ $(document).ready(function (){
         });
     }
 
-    function addTimeline() {
+    app.map.addTimeline = function() {
         d3.selectAll(".studies-on-timeline").remove(); 
-        d3.json("/studies-api/?min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&category="+category+"&keyword="+keyword).then(function(data) {
-
-            // check the state of the timeline button
+        d3.json("/studies-api/?min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&methodology="+methodology+"&keyword="+keyword).then(function(data) {
 
             const container = d3.select('#timeline'),
                 width = container.node().offsetWidth,
                 height = timeline_height;
-
-            // const timeExtent = d3.extent(data.features, function(d) {
-            //     return new Date(d.properties.year_of_publication);
-            // });
 
             const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.year_of_publication); });
             const timeMax = d3.max(data.features, function(d) { return new Date(d.properties.year_of_publication); });
@@ -147,7 +143,7 @@ $(document).ready(function (){
 
             const brush = d3.brushX()
                 .extent([[0, 0], [width, height-20]])
-                .on("brush", brushed);
+                .on("start brush end", brushed);
         
             context.selectAll('circle.timeline')
                 .data(data.features)
@@ -163,7 +159,6 @@ $(document).ready(function (){
                     }
                     let date = new Date(d.properties.year_of_publication)
                     date.setMonth(date.getMonth() + 6);
-                    console.log(date);
                     return 'translate(' + [x(date), y(count)] + ')';
                 })
                 .attr("r", 5)
@@ -189,18 +184,49 @@ $(document).ready(function (){
                 .call(d3.axisBottom(x));
         
             // add the x brush
-            context.append('g')
+            const gBrush = context.append('g')
                 .attr('class', 'x brush')
-                .call(brush)
-                .selectAll('rect')
-                .attr('y', -6)
-                .attr('height', height);
+                .call(brush);
+
+            const handle = gBrush.selectAll(".handle--custom")
+                .data([{type: "w"}, {type: "e"}])
+                .enter().append("circle")
+                  .classed("handle--custom", true)
+                  .attr("r", 2)
+                  .attr("fill", "#666")
+                  .attr("fill-opacity", 0.8)
+                  .attr("stroke", "#000")
+                  .attr("stroke-width", 1.5)
+                  .attr("cursor", "ew-resize")
+
+            const handleText = gBrush.selectAll(".handle--text")
+                .data([{type: "w"}, {type: "e"}])
+                .enter().append("text")
+                  .classed("handle--text", true)
+                  .attr("y", height / 2)
+                  .attr("dy", ".35em")
+                  .attr("fill", "#212529")
+                  .attr("font-size", "10px")
+                  .attr("text-anchor", "start");
+                
+
+            // call the x brush to show it on page load
+            let startingYear = timeMin;
+            let endingYear = timeMax;
+            if (min_year_of_publication) {
+                startingYear = new Date(min_year_of_publication);
+            }
+            if (max_year_of_publication) {
+                endingYear = new Date(max_year_of_publication);
+            }
+
+            gBrush.call(brush.move, [startingYear, endingYear].map(x));
         
             function brushed() {
-                // let's see what's in the brush
-                if (d3.event.sourceEvent.type === "brush") return;
+                if (!d3.event.selection) return; // Ignore empty selections.
                 
-                const d0 = d3.event.selection.map(x.invert),
+                const s = d3.event.selection, 
+                    d0 = d3.event.selection.map(x.invert),
                     d1 = d0.map(d3.timeYear.round);
 
                 // If empty when rounded, use floor instead.
@@ -209,30 +235,50 @@ $(document).ready(function (){
                     d1[1] = d3.timeYear.offset(d1[0]);
                 }
 
-                d3.select(this).call(d3.event.target.move, d1.map(x));
+                // d3.select(this).call(d3.event.target.move, d1.map(x));
+                // handle.attr("transform", function(d, i) { 
+                //     return "translate(" + x(d1[i]) + "," + height / 2 + ")"; 
+                // });
+
+                if (s == null) {
+                    handle.attr("display", "none");
+                    //circle.classed("active", false);
+                } else {
+                    //var sx = s.map(x.invert);
+                    //circle.classed("active", function(d) { return sx[0] <= d && d <= sx[1]; });
+                    handle
+                        .attr("display", null)
+                        .attr("transform", function(d, i) { 
+                            return "translate(" + s[i] + "," + height / 2 + ")"; 
+                        });
+
+                    handleText
+                        .attr("x", function(d, i) {
+                            if (i === 0) {
+                                return s[i] - 30;
+                            } else {
+                                return s[i] + 3;
+                            }
+                        })
+                        .text(function(d, i) { 
+                            return d1[i].getUTCFullYear(); 
+                        });
+                }
 
                 min_year_of_publication = d1[0].getUTCFullYear();
-                max_year_of_publication = d1[1].getUTCFullYear() - 1;
+                max_year_of_publication = d1[1].getUTCFullYear();
 
-                console.log("min: ",min_year_of_publication);
-                console.log("max: ",max_year_of_publication);
-
-
-
-
-
-                addOverlay();
-                updateURL();
+                app.map.addOverlay();
+                app.updateURL();
         
             } 
-
-
+            
         });        
     }
 
     // point color function
     function pointOpacity(feature) {
-        if (feature.properties.reliability_quality == "") {
+        if (feature.properties.reliability_quality == "yes") {
             return 1.0;
         } else {
             return 0.5;
@@ -321,125 +367,9 @@ $(document).ready(function (){
         $("#more-information-card").css("display", "block");
     }
 
-    // function for updating url state
-    function updateURL() {
-        const obj = { foo: "bar" };
-        const param_string = "/?min_year_of_publication="+min_year_of_publication+"&max_year_of_publication="+max_year_of_publication+"&min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&category="+category+"&keyword="+keyword; 
-        window.history.pushState(obj, "Updated URL Parameters", param_string);
-        // set the links to the map and list to hold the url params
-        $('#list-link').attr('href', "list" + param_string);
-        $('#map-link').attr('href', param_string);
-    }
-
     // listener to close card
     $("#card-close").click(function(){
         $("#more-information-card").css("display", "none");
     });
     
-    // listeners for search term changes and filters
-    $("#category").on("change", function(e) {
-        $("#more-information-card").css("display", "none");
-        // update filters
-        category = $(this).val();
-        // run update
-        addOverlay();
-        updateURL();
-    });   
-
-    $("#prevalence").on("change", function(e) {
-        $("#more-information-card").css("display", "none");
-        // update filters
-        const prevalence = $(this).val();
-        switch (prevalence) {
-            case "low":
-                min_prevalence_rate = "0";
-                max_prevalence_rate = "99.99"; 
-                break;                             
-            case "med":        
-                min_prevalence_rate = "100";
-                max_prevalence_rate = "200";
-                break;                          
-            case "high":        
-                min_prevalence_rate = "200.01";
-                max_prevalence_rate = "";   
-                break;                       
-            default:
-                min_prevalence_rate = "";
-                max_prevalence_rate = ""; 
-        }
-        // run update
-        addOverlay();
-        updateURL();
-    });   
-
-    $("#study_size").on("change", function(e) {
-        $("#more-information-card").css("display", "none");
-        // update filters
-        const study_size = $(this).val();
-        switch (study_size) {
-            case "low":
-                min_study_size = "0";
-                max_study_size = "9999"; 
-                break;                             
-            case "med":        
-                min_study_size = "10000";
-                max_study_size = "100000";
-                break;                          
-            case "high":        
-                min_study_size = "100001";
-                max_study_size = "";   
-                break;                       
-            default:
-                min_study_size = "";
-                max_study_size = ""; 
-        }
-        // run update
-        addOverlay();
-        updateURL();
-    });  
-
-    $("#search").on('keydown', function (e) {
-        if (e.keyCode == 13) {
-            e.preventDefault();
-            $("#more-information-card").css("display", "none");
-            keyword = $(this).val();
-            // run update
-            addOverlay();            
-            updateURL();
-        }
-    });
-
-    // set dropdowns and inputs on page load
-    if (category) {
-        $("#category").val(category);
-    }
-
-    switch (min_prevalence_rate) {
-        case "0":
-            $("#prevalence").val("low");
-            break;                             
-        case "100":        
-            $("#prevalence").val("med");
-            break;                          
-        case "200.01":        
-            $("#prevalence").val("high"); 
-            break;                       
-        default:
-            $("#prevalence").val("all"); 
-    }
-
-    switch (min_study_size) {
-        case "0":
-            $("#study_size").val("low");
-            break;                             
-        case "10000":        
-            $("#study_size").val("med");
-            break;                          
-        case "100001":        
-            $("#study_size").val("high"); 
-            break;                       
-        default:
-            $("#study_size").val("all"); 
-    }
-
 });

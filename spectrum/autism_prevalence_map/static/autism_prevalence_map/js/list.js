@@ -1,19 +1,19 @@
 $(document).ready(function (){
+    // app.list scope
+    app.list = {};
 
     // create tbody 
     const table = d3.select("#studies");
 
-
-    function addRows() {
+    app.list.addRows = function() {
         d3.select("#studies_tbody").remove();      
-        d3.json("/studies-api/?min_year_of_publication="+min_year_of_publication+"&max_year_of_publication="+max_year_of_publication+"&min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&category="+category+"&keyword="+keyword).then(function(data) {
+        d3.json("/studies-api/?min_year_of_publication="+min_year_of_publication+"&max_year_of_publication="+max_year_of_publication+"&min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&methodology="+methodology+"&keyword="+keyword).then(function(data) {
             studies = data;
             let enter_selection = table.append("tbody")
                 .attr("id", "studies_tbody")
                 .selectAll("tr")
                 .data(studies.features)
                 .enter();
-
             
             let row1 = enter_selection.append("tr")
                 .attr("data-toggle", "collapse")
@@ -33,6 +33,7 @@ $(document).ready(function (){
                 .append("i")
                 .classed("fas", true)
                 .classed("fa-chevron-down", true)
+                .classed("fas-red", true)
             
             row1.append("td")
                 .text(function (d) { 
@@ -109,86 +110,7 @@ $(document).ready(function (){
 
               
         });
-    }
-
-    // function for updating url state
-    function updateURL() {
-        const obj = { foo: "bar" };
-        window.history.pushState(obj, "Updated URL Parameters", "/?min_year_of_publication="+min_year_of_publication+"&max_year_of_publication="+max_year_of_publication+"&min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&category="+category+"&keyword="+keyword);
-    }
-
-    // listeners for search term changes and filters
-    $("#category").on("change", function(e) {
-        $("#more-information-card").css("display", "none");
-        // update filters
-        category = $(this).val();
-        // run update
-        addRows();
-        updateURL();
-    });   
-
-    $("#prevalence").on("change", function(e) {
-        $("#more-information-card").css("display", "none");
-        // update filters
-        const prevalence = $(this).val();
-        switch (prevalence) {
-            case "low":
-                min_prevalence_rate = "0";
-                max_prevalence_rate = "99.99"; 
-                break;                             
-            case "med":        
-                min_prevalence_rate = "100";
-                max_prevalence_rate = "200";
-                break;                          
-            case "high":        
-                min_prevalence_rate = "200.01";
-                max_prevalence_rate = "";   
-                break;                       
-            default:
-                min_prevalence_rate = "";
-                max_prevalence_rate = ""; 
-        }
-        // run update
-        addRows();
-        updateURL();
-    });   
-
-    $("#study_size").on("change", function(e) {
-        $("#more-information-card").css("display", "none");
-        // update filters
-        const study_size = $(this).val();
-        switch (study_size) {
-            case "low":
-                min_study_size = "0";
-                max_study_size = "9999"; 
-                break;                             
-            case "med":        
-                min_study_size = "10000";
-                max_study_size = "100000";
-                break;                          
-            case "high":        
-                min_study_size = "100001";
-                max_study_size = "";   
-                break;                       
-            default:
-                min_study_size = "";
-                max_study_size = ""; 
-        }
-        // run update
-        addRows();
-        updateURL();
-    });  
-
-    $("#search").on('keydown', function (e) {
-        if (e.keyCode == 13) {
-            e.preventDefault();
-            $("#more-information-card").css("display", "none");
-            keyword = $(this).val();
-            // run update
-            addRows();
-            updateURL();      
-        }
-    });    
+    } 
 
     // listener to toggle arrows on click
     $(document).on('click', '.study_row', function(){
@@ -202,41 +124,36 @@ $(document).ready(function (){
         }
     });
 
+    // making the combo box options for earliest published and lateste published
+    d3.json("/studies-api/").then(function(data) {
+        const comboBox_min_year_of_publication = d3.select("#min_year_of_publication");
+        const comboBox_max_year_of_publication = d3.select("#max_year_of_publication");
+        const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.year_of_publication); }).getUTCFullYear();
+        const timeMax = d3.max(data.features, function(d) { return new Date(d.properties.year_of_publication); }).getUTCFullYear();
+
+        for (let index = timeMin; index <= timeMax; index++) {
+            comboBox_min_year_of_publication.append("option")
+                .attr("value", index)
+                .text(index);
+
+            comboBox_max_year_of_publication.append("option")
+                .attr("value", index)
+                .text(index);
+        }
+
+        if (min_year_of_publication) {
+            $("#min_year_of_publication").val(min_year_of_publication);
+        } else {
+            $("#min_year_of_publication").val($("#min_year_of_publication option:first").val());
+        }
+        if (max_year_of_publication) {
+            $("#max_year_of_publication").val(max_year_of_publication);
+        } else {
+            $("#max_year_of_publication").val($("#max_year_of_publication option:last").val());
+        }
+    });
 
     // initialize
-    addRows();
-
-    // set dropdowns and inputs on page load
-    if (category) {
-        $("#category").val(category);
-    }
-
-    switch (min_prevalence_rate) {
-        case "0":
-            $("#prevalence").val("low");
-            break;                             
-        case "100":        
-            $("#prevalence").val("med");
-            break;                          
-        case "200.01":        
-            $("#prevalence").val("high"); 
-            break;                       
-        default:
-            $("#prevalence").val("all"); 
-    }
-
-    switch (min_study_size) {
-        case "0":
-            $("#study_size").val("low");
-            break;                             
-        case "10000":        
-            $("#study_size").val("med");
-            break;                          
-        case "100001":        
-            $("#study_size").val("high"); 
-            break;                       
-        default:
-            $("#study_size").val("all"); 
-    }
+    app.list.addRows();
 
 });

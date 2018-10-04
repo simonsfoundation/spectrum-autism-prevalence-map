@@ -6,4 +6,6 @@ urlpatterns = [
     url(r'^list/$', views.list_view, name='list_view'),
     url(r'^about/$', views.about, name='about'),
     url(r'^studies-api/$', views.studiesApi, name='studiesApi'),
+    url(r'^studies-csv/$', views.studiesCsv, name='studiesCsv'),
+
 ]
