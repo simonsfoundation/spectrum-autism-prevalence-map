@@ -35,6 +35,10 @@ $(document).ready(function (){
     const g = svg.append("g")
         .attr('id', 'g');
 
+    // create container for countries
+    const countriesG = g.append("g")
+        .attr("id", "countries")
+
     // create container for studies
     const studiesG = g.append("g")
         .attr("id", "studies")
@@ -74,9 +78,7 @@ $(document).ready(function (){
 
     // add map data to the world map g container
     d3.json(world_atlas).then(function(world) {
-        g.append("g")
-            .attr("id", "countries")
-            .selectAll("path")
+        countriesG.selectAll("path")
             .data(topojson.feature(world, world.objects.countries).features.filter(function(d){
                 if (d.id !== "010") {
                     return d
