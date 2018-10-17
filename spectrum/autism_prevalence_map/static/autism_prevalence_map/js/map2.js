@@ -35,6 +35,10 @@ $(document).ready(function (){
     const g = svg.append("g")
         .attr('id', 'g');
 
+    // create container for graticule
+    const graticuleG = g.append("g")
+        .attr("id", "graticule")
+
     // create container for countries
     const countriesG = g.append("g")
         .attr("id", "countries")
@@ -47,9 +51,7 @@ $(document).ready(function (){
     const graticule = d3.geoGraticule10();
 
     function addGraticule() {
-        g.append("g")
-            .attr("id", "graticule")
-            .append("path")
+        graticuleG.append("path")
             .datum(graticule)
             .attr("class", "graticule")
             .attr("d", path);
