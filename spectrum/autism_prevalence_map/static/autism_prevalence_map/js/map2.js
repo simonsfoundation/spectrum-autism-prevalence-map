@@ -90,7 +90,7 @@ $(document).ready(function (){
                 return d.id;
             });
 
-        g.append("path")
+        countriesG.append("path")
             .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
             .attr("id", "country-borders")
             .attr("d", path);
