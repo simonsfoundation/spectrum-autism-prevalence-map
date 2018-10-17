@@ -1,0 +1,64 @@
+{% extends 'autism_prevalence_map/base2.html' %} 
+
+{% load staticfiles %} 
+
+{% block title %}Spectrum | Global Autism Prevalence Map{% endblock %} 
+
+{% block css_block %}
+<!-- Custom map CSS
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/list2.css' %}">
+{% endblock %} 
+
+
+{% block body_block %}
+<!-- Main Container
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<div class="container-fluid">    
+    <div class="row">
+        <div class="col-11">
+            <!-- list 
+            –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+            <div id="list" class="table-responsive spectrum-table">
+                <table id="studies" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">YEAR</th>
+                            <th scope="col">AUTHOR</th>
+                            <th scope="col">COUNTRY</th>
+                            <th scope="col">AREA</th>
+                            <th scope="col">STUDY SIZE</th>
+                            <th scope="col">PREVALENCE</th>
+                            <th scope="col">CI</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "autism_prevalence_map/action_buttons.html" %}
+
+{% endblock %}
+
+{% block modal_block %} 
+{% endblock %} 
+
+{% block js_block %}
+<!-- Custom JS
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->  
+<script>
+    let min_year_of_publication = "{{ min_year_of_publication }}";
+    let max_year_of_publication = "{{ max_year_of_publication }}";
+    let min_study_size = "{{ min_study_size }}";
+    let max_study_size = "{{ max_study_size }}";
+    let min_prevalence_rate = "{{ min_prevalence_rate }}";
+    let max_prevalence_rate = "{{ max_prevalence_rate }}";
+    let methodology = "{{ methodology }}";
+    let keyword = "{{ keyword }}";
+</script>  
+<script src="{% static 'autism_prevalence_map/js/joint2.js' %}"></script>
+<script src="{% static 'autism_prevalence_map/js/list.js' %}"></script>
+{% endblock %}

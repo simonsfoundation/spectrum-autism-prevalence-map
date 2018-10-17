@@ -16,8 +16,16 @@
 
 .zoom-buttons {
     position: absolute;
-    top: 70px;
+    bottom: 22vh;
     right: 15px;
+}
+
+.zoom-buttons .zoom-button {
+    border-radius: 30px !important;
+    background-color: #4d4d4d;
+    color: #fff;
+    margin: 10px 0;
+    padding: 3px 8px;
 }
 
 .graticule {
@@ -29,7 +37,7 @@
 .more-information-card {
     display: none;
     position: absolute;
-    top: 70px;
+    top: 100px;
     left: 15px;
 }
 
@@ -56,21 +64,44 @@
 
 }
 
-.dropdown-keyword-search {
-    position: absolute;
-    bottom: 22vh;
-    right: 15px;
-}
-
 .ui-brush {
-    background: #f8f8f8;
-    height: 20vh;
+    background: #4d4d4d;
+    height: 19vh;
 }
 
 .brush .extent {
-    stroke:#fff;
+    stroke: #4d4d4d;
     fill-opacity: 0.125;
     shape-rendering:crispEdges;
+}
+
+.brush .selection {
+    stroke: #fff;
+    fill: #A7A7A7;
+    stroke-dasharray: 5;
+}
+
+.timeline-wrapper:first-child:before {
+    content:'';
+    position:absolute;
+    width:100%;
+    height:5px;
+    top:-5px;
+    left:0;
+    background-color: #FFC10D;
+    background-image: -webkit-linear-gradient(left, #FFC10D, #F89C2C);
+    background-image: linear-gradient(to right, #FFC10D, #F89C2C);
+}
+
+.timeline-wrapper {
+    background-color: #4d4d4d;
+    height: 21vh;
+}
+
+.timeline-toggle {
+    padding-top: 30px;
+    padding-left: 30px;
+    color: #fff;
 }
 
 /* Switch CSS */
@@ -99,10 +130,10 @@
 .timeline-switch > [type="checkbox"]:checked + label:after,
 .timeline-switch > [type="checkbox"]:not(:checked) + label:after {
     content: "";
-    top: 4px;
-    right: 10px;
-    width: 30px;
-    height: 12px;
+    top: -2px;
+    right: 3px;
+    width: 50px;
+    height: 24px;
     position: absolute;
     border-radius: 30px; 
 }
@@ -117,7 +148,7 @@
     position: absolute;
     cursor: pointer;
     pointer-events: none;
-    box-shadow: 1px 1px 1px #dddddd;
+    box-shadow: 1px 1px 1px #ff9900;
     -webkit-transition: right .1s ease-in, background-color .1s ease-in;
     -moz-transition: right .1s ease-in, background-color .1s ease-in;
     -o-transition: right .1s ease-in, background-color .1s ease-in;
@@ -127,7 +158,7 @@
 .timeline-switch > [type="checkbox"]:checked:focus + label:after, .timeline-switch > [type="checkbox"]:checked:focus + label + .timeline-switch-knob,
 .timeline-switch > [type="checkbox"]:not(:checked):focus + label:after,
 .timeline-switch > [type="checkbox"]:not(:checked):focus + label + .timeline-switch-knob {
-    box-shadow: 0 0 6px 0 #6fb5fb; 
+    box-shadow: 0 0 6px 0 #fff; 
 }
 
 .timeline-switch > [type="checkbox"]:checked[disabled] + label, .timeline-switch > [type="checkbox"]:checked[disabled] + label:after, .timeline-switch > [type="checkbox"]:checked[disabled] + label + .timeline-switch-knob,
@@ -139,21 +170,32 @@
 }
 
 .timeline-switch > [type="checkbox"]:checked + label:after {
-    background-color: #9effc4; 
+    background-color: #ff9900; 
 }
 
 .timeline-switch > [type="checkbox"]:not(:checked) + label:after {
-    background-color: #dddddd; 
+    background-color: #ff9900; 
 }
 
 .timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob {
-    right: 5px;
-    background-color: #57cb85; 
+    right: 6px;
+    background-color: #fff; 
 }
 
 .timeline-switch > [type="checkbox"]:not(:checked) + label + .timeline-switch-knob {
-    right: 25px;
-    background-color: #849fbb; 
+    right: 30px;
+    background-color: #fff; 
+}
+
+.timeline-axis {
+    color: #fff;
+    font-size: 14px;
+    font-family: "azo-sans-web", sans-serif;  
+}
+
+.card-style {
+    box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.25);
+    border: none;
 }
 
 

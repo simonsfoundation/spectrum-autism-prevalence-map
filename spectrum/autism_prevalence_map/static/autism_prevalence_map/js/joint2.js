@@ -8,8 +8,8 @@ $(document).ready(function (){
         const param_string = "?min_year_of_publication="+min_year_of_publication+"&max_year_of_publication="+max_year_of_publication+"&min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&methodology="+encodeURIComponent(methodology)+"&keyword="+keyword; 
         window.history.pushState(obj, "Updated URL Parameters", param_string);
         // set the links to the map and list to hold the url params
-        $('#list-link').attr('href', "/list/" + param_string);
-        $('#map-link').attr('href', "/" + param_string);
+        $('#list-link').attr('href', "/list2/" + param_string);
+        $('#map-link').attr('href', "/map2/" + param_string);
         $('#download-link').attr('href', "/studies-csv/" + param_string);
     }
 
@@ -192,6 +192,9 @@ $(document).ready(function (){
     // initialize
     app.updateURL();
 
+    // enable tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+
     // enable popovers
     $('[data-toggle="popover"]').popover();
 
@@ -210,6 +213,18 @@ $(document).ready(function (){
         dummy.select();
         document.execCommand('copy');
         document.body.removeChild(dummy);
+    });
+
+    $("#filters-link").click(function(){
+        if ($('#filter-list').hasClass("invisible")) {
+            $('#filter-list').removeClass("invisible");
+            $('#filter-list').addClass("visible");
+            $(this).tooltip('hide').prop('title', 'Close fliter drawer').attr('data-original-title', 'Close fliter drawer').tooltip('fixTitle').tooltip('show');
+            
+        } else {
+            $('#filter-list').addClass("invisible");
+            $('#filter-list').removeClass("visible");
+            $(this).tooltip('hide').prop('title', 'Open fliter drawer').attr('data-original-title', 'Open fliter drawer').tooltip('fixTitle').tooltip('show');        }
     });
 
 });

@@ -28,7 +28,7 @@ $(document).ready(function (){
                 })
                 .classed("study_row", true);
 
-            row1.append("th")
+            row1.append("td")
                 .attr("scope", "row")
                 .append("i")
                 .classed("fas", true)
@@ -70,12 +70,6 @@ $(document).ready(function (){
                     return d.properties.confidence_interval; 
                 })
 
-            row1.append("td")
-                .append("button")
-                .attr("type", "button")
-                .classed("btn", true)
-                .classed("btn-warning", true)
-                .text("Share")
 
             let row2 = enter_selection.insert("tr")
                 .classed("collapse", true)

@@ -11,7 +11,7 @@ from django.contrib.postgres.search import SearchVector, SearchQuery
 from autism_prevalence_map.models import *
 
 # Create your views here.
-def index(request):
+def index1(request):
 	"""
 	  Index page/Main Map
 	"""
@@ -27,9 +27,28 @@ def index(request):
 
 
 	context_dict = {"min_year_of_publication":min_year_of_publication, "max_year_of_publication":max_year_of_publication, "min_study_size":min_study_size, "max_study_size":max_study_size, "min_prevalence_rate":min_prevalence_rate, "max_prevalence_rate":max_prevalence_rate, "methodology":methodology , "keyword":keyword}
-	return render(request, 'autism_prevalence_map/map.html', context_dict)
+	return render(request, 'autism_prevalence_map/map1.html', context_dict)
 
-def list_view(request):
+def index2(request):
+	"""
+	  Index page/Main Map
+	"""
+	if request.method == 'GET':
+		min_year_of_publication = request.GET.get("min_year_of_publication","")
+		max_year_of_publication = request.GET.get("max_year_of_publication","")
+		min_study_size = request.GET.get("min_study_size","")
+		max_study_size = request.GET.get("max_study_size","")
+		min_prevalence_rate = request.GET.get("min_prevalence_rate","")
+		max_prevalence_rate = request.GET.get("max_prevalence_rate","")
+		methodology = request.GET.get("methodology","")
+		keyword = request.GET.get("keyword","")
+
+
+	context_dict = {"min_year_of_publication":min_year_of_publication, "max_year_of_publication":max_year_of_publication, "min_study_size":min_study_size, "max_study_size":max_study_size, "min_prevalence_rate":min_prevalence_rate, "max_prevalence_rate":max_prevalence_rate, "methodology":methodology , "keyword":keyword}
+	return render(request, 'autism_prevalence_map/map2.html', context_dict)
+
+
+def list_view1(request):
 	"""
 	  List of studies page
 	"""
@@ -46,7 +65,27 @@ def list_view(request):
 
 	context_dict = {"min_year_of_publication":min_year_of_publication, "max_year_of_publication":max_year_of_publication, "min_study_size":min_study_size, "max_study_size":max_study_size, "min_prevalence_rate":min_prevalence_rate, "max_prevalence_rate":max_prevalence_rate, "methodology":methodology ,"keyword":keyword}
 
-	return render(request, 'autism_prevalence_map/list.html', context_dict)
+	return render(request, 'autism_prevalence_map/list1.html', context_dict)
+
+def list_view2(request):
+	"""
+	  List of studies page
+	"""
+	if request.method == 'GET':
+		min_year_of_publication = request.GET.get("min_year_of_publication","")
+		max_year_of_publication = request.GET.get("max_year_of_publication","")
+		min_study_size = request.GET.get("min_study_size","")
+		max_study_size = request.GET.get("max_study_size","")
+		min_prevalence_rate = request.GET.get("min_prevalence_rate","")
+		max_prevalence_rate = request.GET.get("max_prevalence_rate","")
+		methodology = request.GET.get("methodology","")
+		keyword = request.GET.get("keyword","")
+
+
+	context_dict = {"min_year_of_publication":min_year_of_publication, "max_year_of_publication":max_year_of_publication, "min_study_size":min_study_size, "max_study_size":max_study_size, "min_prevalence_rate":min_prevalence_rate, "max_prevalence_rate":max_prevalence_rate, "methodology":methodology ,"keyword":keyword}
+
+	return render(request, 'autism_prevalence_map/list2.html', context_dict)
+
 
 def about(request):
 	"""

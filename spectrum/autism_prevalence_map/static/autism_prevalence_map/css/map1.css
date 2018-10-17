@@ -1,0 +1,199 @@
+#map {
+    height: 70vh;
+}
+
+#countries {
+    fill: #ccc;
+    fill-opacity: 1;
+}
+
+#country-borders {
+    fill: #fff;
+    fill-opacity: 0;
+    stroke: #fff;
+    stroke-width: 1px;
+}
+
+.zoom-buttons {
+    position: absolute;
+    bottom: 22vh;
+    right: 15px;
+}
+
+.zoom-buttons .zoom-button {
+    border-radius: 30px !important;
+    background-color: #c9c9c9;
+    color: #fff;
+    margin: 10px 0;
+    padding: 3px 8px;
+}
+
+.graticule {
+    fill: none;
+    stroke:#ccc;
+    stroke-width: 0.5px;
+}
+
+.more-information-card {
+    display: none;
+    position: absolute;
+    top: 100px;
+    left: 15px;
+}
+
+.card-header {
+    color: #fff;
+    background-color: #009BCC;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+.card-close {
+    position: absolute;
+    top: 11px;
+    right: 25px;
+    z-index: 1;
+    text-shadow: none;
+    opacity: 1;
+    color: #fff;
+}
+
+.close:not(:disabled):not(.disabled):focus, .close:not(:disabled):not(.disabled):hover {
+    color: #eee;
+    text-decoration: none;
+    opacity: 1;
+
+}
+
+.ui-brush {
+    background: #cccccc;
+    height: 19vh;
+}
+
+.brush .extent {
+    stroke:#cccccc;
+    fill-opacity: 0.125;
+    shape-rendering:crispEdges;
+}
+
+.brush .selection {
+    stroke: #6d6e70;
+    fill: #666666;
+    stroke-dasharray: 5;
+}
+
+.timeline-wrapper:first-child:before {
+    content:'';
+    position:absolute;
+    width:100%;
+    height:5px;
+    top:-5px;
+    left:0;
+    background-color: #FFC10D;
+    background-image: -webkit-linear-gradient(left, #FFC10D, #F89C2C);
+    background-image: linear-gradient(to right, #FFC10D, #F89C2C);
+}
+
+.timeline-wrapper {
+    background-color: #cccccc;
+    height: 21vh;
+}
+
+.timeline-toggle {
+    padding-top: 30px;
+    padding-left: 30px;
+}
+
+/* Switch CSS */
+.timeline-switch {
+    position: relative; 
+}
+
+.timeline-switch > [type="checkbox"]:checked,
+.timeline-switch > [type="checkbox"]:not(:checked) {
+    width: 0;
+    height: 0;
+    display: none;
+    opacity: 0; 
+}
+
+.timeline-switch > [type="checkbox"]:checked + label,
+.timeline-switch > [type="checkbox"]:not(:checked) + label {
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 7px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    padding-right: 45px; 
+}
+    
+.timeline-switch > [type="checkbox"]:checked + label:after,
+.timeline-switch > [type="checkbox"]:not(:checked) + label:after {
+    content: "";
+    top: -2px;
+    right: 3px;
+    width: 50px;
+    height: 24px;
+    position: absolute;
+    border-radius: 30px; 
+}
+
+.timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob,
+.timeline-switch > [type="checkbox"]:not(:checked) + label + .timeline-switch-knob {
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 30px;
+    display: inline-block;
+    position: absolute;
+    cursor: pointer;
+    pointer-events: none;
+    box-shadow: 1px 1px 1px #ff9900;
+    -webkit-transition: right .1s ease-in, background-color .1s ease-in;
+    -moz-transition: right .1s ease-in, background-color .1s ease-in;
+    -o-transition: right .1s ease-in, background-color .1s ease-in;
+    -ms-transition: right .1s ease-in, background-color .1s ease-in; 
+}
+
+.timeline-switch > [type="checkbox"]:checked:focus + label:after, .timeline-switch > [type="checkbox"]:checked:focus + label + .timeline-switch-knob,
+.timeline-switch > [type="checkbox"]:not(:checked):focus + label:after,
+.timeline-switch > [type="checkbox"]:not(:checked):focus + label + .timeline-switch-knob {
+    box-shadow: 0 0 6px 0 #fff; 
+}
+
+.timeline-switch > [type="checkbox"]:checked[disabled] + label, .timeline-switch > [type="checkbox"]:checked[disabled] + label:after, .timeline-switch > [type="checkbox"]:checked[disabled] + label + .timeline-switch-knob,
+.timeline-switch > [type="checkbox"]:not(:checked)[disabled] + label,
+.timeline-switch > [type="checkbox"]:not(:checked)[disabled] + label:after,
+.timeline-switch > [type="checkbox"]:not(:checked)[disabled] + label + .timeline-switch-knob {
+    cursor: not-allowed;
+    opacity: 0.4; 
+}
+
+.timeline-switch > [type="checkbox"]:checked + label:after {
+    background-color: #ff9900; 
+}
+
+.timeline-switch > [type="checkbox"]:not(:checked) + label:after {
+    background-color: #ff9900; 
+}
+
+.timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob {
+    right: 6px;
+    background-color: #fff; 
+}
+
+.timeline-switch > [type="checkbox"]:not(:checked) + label + .timeline-switch-knob {
+    right: 30px;
+    background-color: #fff; 
+}
+
+.timeline-axis {
+    font-size: 14px;
+    font-family: "azo-sans-web", sans-serif;  
+}
+
+.card-style {
+    box-shadow: 1px 1px 4px 0px rgba(0, 0, 0, 0.25);
+    border: none;
+}
+
+
