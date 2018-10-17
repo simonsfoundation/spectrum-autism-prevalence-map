@@ -13,13 +13,13 @@ body {
 } */
 
 .spectrum-gradient {
-    background-color: #FFC10D;
-    background-image: -webkit-linear-gradient(left, #FFC10D, #F89C2C);
-    background-image: linear-gradient(to right, #FFC10D, #F89C2C);
+    background-color: #34BBEC;
+    background-image: -webkit-linear-gradient(left, #65D5EF, #34BBEC);
+    background-image: linear-gradient(to right, #65D5EF, #34BBEC);
 }
 
 .spectrum-button {
-    background-color: #ff9900;
+    background-color: #34BBEC;
     color: #fff;
 }
 

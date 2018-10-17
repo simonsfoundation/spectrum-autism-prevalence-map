@@ -88,9 +88,9 @@
     height:5px;
     top:-5px;
     left:0;
-    background-color: #FFC10D;
-    background-image: -webkit-linear-gradient(left, #FFC10D, #F89C2C);
-    background-image: linear-gradient(to right, #FFC10D, #F89C2C);
+    background-color: #34BBEC;
+    background-image: -webkit-linear-gradient(left, #65D5EF, #34BBEC);
+    background-image: linear-gradient(to right, #65D5EF, #34BBEC);
 }
 
 .timeline-wrapper {
@@ -148,7 +148,7 @@
     position: absolute;
     cursor: pointer;
     pointer-events: none;
-    box-shadow: 1px 1px 1px #ff9900;
+    box-shadow: 1px 1px 1px #34BBEC;
     -webkit-transition: right .1s ease-in, background-color .1s ease-in;
     -moz-transition: right .1s ease-in, background-color .1s ease-in;
     -o-transition: right .1s ease-in, background-color .1s ease-in;
@@ -170,11 +170,11 @@
 }
 
 .timeline-switch > [type="checkbox"]:checked + label:after {
-    background-color: #ff9900; 
+    background-color: #34BBEC; 
 }
 
 .timeline-switch > [type="checkbox"]:not(:checked) + label:after {
-    background-color: #ff9900; 
+    background-color: #34BBEC; 
 }
 
 .timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob {
