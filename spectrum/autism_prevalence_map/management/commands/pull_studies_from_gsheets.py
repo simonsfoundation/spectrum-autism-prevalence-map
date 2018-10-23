@@ -83,8 +83,6 @@ class Command(BaseCommand):
         kwargs = {}
         kwargs['country__isnull'] = False
         kwargs['area__isnull'] = False
-        kwargs['latitude__isnull'] = True
-        kwargs['longitude__isnull'] = True
 
         pulled_studies = studies.objects.filter(**kwargs)
 
