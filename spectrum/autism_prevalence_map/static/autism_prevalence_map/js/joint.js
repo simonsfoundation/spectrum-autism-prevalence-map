@@ -5,11 +5,11 @@ $(document).ready(function (){
     // function for updating url state
     app.updateURL = function() {
         const obj = { foo: "bar" };
-        const param_string = "?min_year_of_publication="+min_year_of_publication+"&max_year_of_publication="+max_year_of_publication+"&min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&methodology="+encodeURIComponent(methodology)+"&keyword="+keyword; 
+        const param_string = "?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+encodeURIComponent(studytype)+"&keyword="+keyword; 
         window.history.pushState(obj, "Updated URL Parameters", param_string);
         // set the links to the map and list to hold the url params
-        $('#list-link').attr('href', "/list2/" + param_string);
-        $('#map-link').attr('href', "/map2/" + param_string);
+        $('#list-link').attr('href', "/list/" + param_string);
+        $('#map-link').attr('href', "/" + param_string);
         $('#download-link').attr('href', "/studies-csv/" + param_string);
     }
 
@@ -17,18 +17,23 @@ $(document).ready(function (){
     app.runUpdate = function() {
         // run update
         if ($('#map-link').hasClass("active")) {
-            app.map.addOverlay();
+            app.map.pullDataAndUpdate();
         } else {
             app.list.addRows();
         }
         app.updateURL();
     }
 
-    // making the combo box options for methodology
+    // making the combo box options for studytype
     d3.json("/studies-api/").then(function(data) {
         let methodsArray = [];
         for (let index = 0; index < data.features.length; index++) {
-            methodsArray.push(data.features[index].properties.methodology); 
+            const studytype_array = data.features[index].properties.studytype.replace(/ *([|]) */g, '$1').split('|')
+            for (let index = 0; index < studytype_array.length; index++) {
+                if (studytype_array[index]) {
+                    methodsArray.push(studytype_array[index].trim());
+                }
+            }
         }
         const uniqueMethods = methodsArray.filter(onlyUnique);
         uniqueMethods.sort(function(a, b) {
@@ -36,15 +41,15 @@ $(document).ready(function (){
             var textB = b.toUpperCase();
             return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
         });
-        const comboBox = d3.select("#methodology");
+        const comboBox = d3.select("#studytype");
         for (let index = 0; index < uniqueMethods.length; index++) {
             comboBox.append("option")
                 .attr("value", uniqueMethods[index])
                 .text(uniqueMethods[index]);
         }
 
-        if (methodology) {
-            $("#methodology").val(methodology);
+        if (studytype) {
+            $("#studytype").val(studytype);
         }
 
     });
@@ -63,24 +68,24 @@ $(document).ready(function (){
         }
     });
 
-    $("#min_year_of_publication").on("change", function(e) {
+    $("#min_yearpublished").on("change", function(e) {
         $("#more-information-card").css("display", "none");
         // update filters
-        min_year_of_publication = $(this).val();
+        min_yearpublished = $(this).val();
         app.runUpdate();
     }); 
 
-    $("#max_year_of_publication").on("change", function(e) {
+    $("#max_yearpublished").on("change", function(e) {
         $("#more-information-card").css("display", "none");
         // update filters
-        max_year_of_publication = $(this).val();
+        max_yearpublished = $(this).val();
         app.runUpdate();
     }); 
 
-    $("#methodology").on("change", function(e) {
+    $("#studytype").on("change", function(e) {
         $("#more-information-card").css("display", "none");
         // update filters
-        methodology = $(this).val();
+        studytype = $(this).val();
         app.runUpdate();
     });   
 
@@ -90,44 +95,44 @@ $(document).ready(function (){
         const prevalence = $(this).val();
         switch (prevalence) {
             case "low":
-                min_prevalence_rate = "0";
-                max_prevalence_rate = "99.99"; 
+                min_prevalenceper10000 = "0";
+                max_prevalenceper10000 = "99.99"; 
                 break;                             
             case "med":        
-                min_prevalence_rate = "100";
-                max_prevalence_rate = "200";
+                min_prevalenceper10000 = "100";
+                max_prevalenceper10000 = "200";
                 break;                          
             case "high":        
-                min_prevalence_rate = "200.01";
-                max_prevalence_rate = "";   
+                min_prevalenceper10000 = "200.01";
+                max_prevalenceper10000 = "";   
                 break;                       
             default:
-                min_prevalence_rate = "";
-                max_prevalence_rate = ""; 
+                min_prevalenceper10000 = "";
+                max_prevalenceper10000 = ""; 
         }
         app.runUpdate();
     });   
 
-    $("#study_size").on("change", function(e) {
+    $("#samplesize").on("change", function(e) {
         $("#more-information-card").css("display", "none");
         // update filters
-        const study_size = $(this).val();
-        switch (study_size) {
+        const samplesize = $(this).val();
+        switch (samplesize) {
             case "low":
-                min_study_size = "0";
-                max_study_size = "9999"; 
+                min_samplesize = "0";
+                max_samplesize = "9999"; 
                 break;                             
             case "med":        
-                min_study_size = "10000";
-                max_study_size = "100000";
+                min_samplesize = "10000";
+                max_samplesize = "100000";
                 break;                          
             case "high":        
-                min_study_size = "100001";
-                max_study_size = "";   
+                min_samplesize = "100001";
+                max_samplesize = "";   
                 break;                       
             default:
-                min_study_size = "";
-                max_study_size = ""; 
+                min_samplesize = "";
+                max_samplesize = ""; 
         }
         app.runUpdate();
     });  
@@ -135,23 +140,28 @@ $(document).ready(function (){
     // listener for the clear filters button
     $("#clear-filters").click(function(){
         // reset variables
-        min_year_of_publication = "";
-        max_year_of_publication = "";
-        methodology = "";
-        min_prevalence_rate = "";
-        max_prevalence_rate = ""; 
-        min_study_size = "";
-        max_study_size = ""; 
+        min_yearpublished = "";
+        max_yearpublished = "";
+        min_prevalenceper10000 = "";
+        max_prevalenceper10000 = ""; 
+        min_samplesize = "";
+        max_samplesize = ""; 
+        studytype = "";
         keyword = "";
 
         // set dropdown menu values
         $("#search").val('');
-        $("#min_year_of_publication").val($("#min_year_of_publication option:first").val());
-        $("#max_year_of_publication").val($("#max_year_of_publication option:last").val());
-        $("#methodology").val('');
+        $("#min_yearpublished").val($("#min_yearpublished option:first").val());
+        $("#max_yearpublished").val($("#max_yearpublished option:last").val());
+        $("#studytype").val('');
         $("#prevalence").val('all');
-        $("#study_size").val('all');
+        $("#samplesize").val('all');
 
+        // remove brush from timeline
+        if ($('#map-link').hasClass("active")) {
+            app.map.clearTimelineBrush();
+        } 
+        
         // run update
         app.runUpdate();
 
@@ -159,7 +169,7 @@ $(document).ready(function (){
 
 
     // set dropdowns and inputs on page load
-    switch (min_prevalence_rate) {
+    switch (min_prevalenceper10000) {
         case "0":
             $("#prevalence").val("low");
             break;                             
@@ -173,18 +183,18 @@ $(document).ready(function (){
             $("#prevalence").val("all"); 
     }
 
-    switch (min_study_size) {
+    switch (min_samplesize) {
         case "0":
-            $("#study_size").val("low");
+            $("#samplesize").val("low");
             break;                             
         case "10000":        
-            $("#study_size").val("med");
+            $("#samplesize").val("med");
             break;                          
         case "100001":        
-            $("#study_size").val("high"); 
+            $("#samplesize").val("high"); 
             break;                       
         default:
-            $("#study_size").val("all"); 
+            $("#samplesize").val("all"); 
     }
 
     // 

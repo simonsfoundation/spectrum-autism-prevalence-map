@@ -1,4 +1,4 @@
-{% extends 'autism_prevalence_map/base2.html' %} 
+{% extends 'autism_prevalence_map/base.html' %} 
 
 {% load staticfiles %} 
 
@@ -7,7 +7,7 @@
 {% block css_block %}
 <!-- Custom map CSS
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/list2.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/list.css' %}">
 {% endblock %} 
 
 
@@ -28,9 +28,9 @@
                             <th scope="col">AUTHOR</th>
                             <th scope="col">COUNTRY</th>
                             <th scope="col">AREA</th>
-                            <th scope="col">STUDY SIZE</th>
-                            <th scope="col">PREVALENCE</th>
-                            <th scope="col">CI</th>
+                            <th scope="col">SAMPLE SIZE</th>
+                            <th scope="col">PREVALENCE (PER 10,000)</th>
+                            <th scope="col">95% CONFIDENCE INTERVAL</th>
                         </tr>
                     </thead>
                 </table>
@@ -39,7 +39,7 @@
     </div>
 </div>
 
-{% include "autism_prevalence_map/action_buttons.html" %}
+{% include "autism_prevalence_map/action_buttons.html" with template="list" %}
 
 {% endblock %}
 
@@ -50,15 +50,16 @@
 <!-- Custom JS
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->  
 <script>
-    let min_year_of_publication = "{{ min_year_of_publication }}";
-    let max_year_of_publication = "{{ max_year_of_publication }}";
-    let min_study_size = "{{ min_study_size }}";
-    let max_study_size = "{{ max_study_size }}";
-    let min_prevalence_rate = "{{ min_prevalence_rate }}";
-    let max_prevalence_rate = "{{ max_prevalence_rate }}";
-    let methodology = "{{ methodology }}";
+    let min_yearpublished = "{{ min_yearpublished }}";
+    let max_yearpublished = "{{ max_yearpublished }}";
+    let min_samplesize = "{{ min_samplesize }}";
+    let max_samplesize = "{{ max_samplesize }}";
+    let min_prevalenceper10000 = "{{ min_prevalenceper10000 }}";
+    let max_prevalenceper10000 = "{{ max_prevalenceper10000 }}";
+    let studytype = "{{ studytype }}";
     let keyword = "{{ keyword }}";
+    const world_atlas = "{% static 'autism_prevalence_map/vendor/data/50m.json' %}";
 </script>  
-<script src="{% static 'autism_prevalence_map/js/joint2.js' %}"></script>
+<script src="{% static 'autism_prevalence_map/js/joint.js' %}"></script>
 <script src="{% static 'autism_prevalence_map/js/list.js' %}"></script>
 {% endblock %}

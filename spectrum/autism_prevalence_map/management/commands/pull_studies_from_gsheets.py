@@ -20,43 +20,52 @@ class Command(BaseCommand):
         for data in data['feed']['entry']:
             try:
                 #skip if year not a date
-                year_of_publication = re.sub("[^0-9]", "", data['gsx$yearofpublication']['$t'])
+                yearpublished = re.sub("[^0-9]", "", data['gsx$yearpublished']['$t'])
 
-                if year_of_publication:
+                if yearpublished:
                     try:
-                        year_of_publication_number = datetime.datetime.strptime(year_of_publication, '%Y')
+                        yearpublished_number = datetime.datetime.strptime(yearpublished, '%Y')
                     except ValueError:
-                        year_of_publication_number = None
+                        yearpublished_number = None
                 else:
-                    year_of_publication_number = None
+                    yearpublished_number = None
 
-                if year_of_publication_number:
+                if yearpublished_number:
 
                     #use get or create to only create records for objects newly added to the spreadsheets
                     updated_values = {
-                        'year_of_publication': data['gsx$yearofpublication']['$t'],
+                        'yearpublished': data['gsx$yearpublished']['$t'],
                         'authors': data['gsx$authors']['$t'], 
                         'country': data['gsx$country']['$t'], 
                         'area': data['gsx$area']['$t'], 
-                        'study_size': data['gsx$studysize']['$t'], 
-                        'age': data['gsx$age']['$t'], 
-                        'number_affected': data['gsx$numberaffected']['$t'], 
-                        'diagnostic_criteria': data['gsx$diagnosticcriteria']['$t'], 
-                        'pct_with_normal_iq': data['gsx$withnormaliq']['$t'], 
-                        'gender_ratio': data['gsx$genderratiomf']['$t'], 
-                        'prevalence_rate': data['gsx$prevalenceper10000']['$t'], 
-                        'confidence_interval': data['gsx$ci']['$t'], 
-                        'category': data['gsx$categoryasdoradorpdd']['$t'],
-                        'time_period_studied': data['gsx$timeperiodstudied']['$t'],
-                        'reliability_quality': data['gsx$reliabilityquality']['$t'], 
-                        'methodology': data['gsx$methodologycdcsurveillancedataregistryclinicalsurveyorpopulationsurvey']['$t'],
-                        'mean_income_of_participants': data['gsx$meanincomeofparticipants']['$t'],
-                        'education_level_of_participants': data['gsx$educationlevelofparticipants']['$t'],
+                        'samplesize': data['gsx$samplesize']['$t'], 
+                        'age': data['gsx$ageyears']['$t'], 
+                        'individualswithautism': data['gsx$individualswithautism']['$t'], 
+                        'diagnosticcriteria': data['gsx$diagnosticcriteria']['$t'], 
+                        'percentwaverageiq': data['gsx$percentwaverageiq']['$t'], 
+                        'sexratiomf': data['gsx$sexratiomf']['$t'], 
+                        'prevalenceper10000': data['gsx$prevalenceper10000']['$t'], 
+                        'confidenceinterval': data['gsx$confidenceinterval']['$t'], 
+                        'categoryadpddorasd': data['gsx$categoryadpddorasd']['$t'],
+                        'yearsstudied': data['gsx$yearsstudied']['$t'],
+                        'recommended': data['gsx$recommended']['$t'], 
+                        'studytype': data['gsx$studytype']['$t'],
+                        'meanincomeofparticipants': data['gsx$meanincomeofparticipants']['$t'],
+                        'educationlevelofparticipants': data['gsx$educationlevelofparticipants']['$t'],
                         'citation': data['gsx$citation']['$t'],
-                        'url': data['gsx$url']['$t'],
-                        'link_to_news_coverage_by_spectrum': data['gsx$linktonewscoveragebyspectrum']['$t'], 
-                        'erics_quality_assessment': data['gsx$ericsqualityassessment']['$t'], 
-                        'erics_reasons_for_lower_quality': data['gsx$ericsreasonsforlowerqualitybasedonmyrecallofthestudies']['$t']
+                        'link1title': data['gsx$link1title']['$t'],
+                        'link1url': data['gsx$link1url']['$t'],
+                        'link2title': data['gsx$link2title']['$t'],
+                        'link2url': data['gsx$link2url']['$t'],
+                        'link3title': data['gsx$link3title']['$t'],
+                        'link3url': data['gsx$link3url']['$t'],
+                        'link4title': data['gsx$link4title']['$t'],
+                        'link4url': data['gsx$link4url']['$t'],
+                        'sourceofdataforthisspreadsheet': data['gsx$sourceofdataforthisspreadsheet']['$t'], 
+                        'ericsqualityassessment': data['gsx$ericsqualityassessment']['$t'], 
+                        'ericsreasonsbasedonmyrecallofthestudies': data['gsx$ericsreasonsbasedonmyrecallofthestudies']['$t'],
+                        'commentsfromotheradvisors': data['gsx$commentsfromotheradvisors']['$t']
+
                     }
                     
                     obj, created = studies.objects.update_or_create(gsheet_id=data['id']['$t'], defaults=updated_values)
@@ -105,43 +114,69 @@ class Command(BaseCommand):
 
         for study in pulled_studies:
             # ensure year string has no non-number characters, convert to date
-            year_of_publication = re.sub("[^0-9]", "", study.year_of_publication)
-            if year_of_publication:
+            yearpublished = re.sub("[^0-9]", "", study.yearpublished)
+            if yearpublished:
                 try:
-                    year_of_publication_number = datetime.datetime.strptime(year_of_publication, '%Y')
+                    yearpublished_number = datetime.datetime.strptime(yearpublished, '%Y')
                 except ValueError:
-                    year_of_publication_number = None
+                    yearpublished_number = None
             else:
-                year_of_publication_number = None
+                yearpublished_number = None
 
             # ensure population string has no non-number characters, convert to integer
-            study_size = re.sub("[^0-9]", "", study.study_size)
+            samplesize = re.sub("[^0-9]", "", study.samplesize)
 
-            if study_size:
+            if samplesize:
                 try:
-                    study_size_number = int(study_size)
+                    samplesize_number = int(samplesize)
                 except ValueError:
-                    study_size_number = None
+                    samplesize_number = None
             else:
-                study_size_number = None 
+                samplesize_number = None 
 
             # ensure prevalence rate string has no non-number characters, convert to float            
             try:
-                prevalence_rate = re.findall(r"[-+]?\d*\.\d+|\d+", study.prevalence_rate)[0]
+                prevalenceper10000 = re.findall(r"[-+]?\d*\.\d+|\d+", study.prevalenceper10000)[0]
             except IndexError:
-                prevalence_rate = None
+                prevalenceper10000 = None
 
-            if prevalence_rate:
+            if prevalenceper10000:
                 try:
-                    prevalence_rate_number = float(prevalence_rate)
+                    prevalenceper10000_number = float(prevalenceper10000)
                 except ValueError:
-                    prevalence_rate_number = None
+                    prevalenceper10000_number = None
             else:
-                prevalence_rate_number = None 
+                prevalenceper10000_number = None 
 
+            # extract the maximum and minimum dates from the `yearstudied` field 
+            years = study.yearsstudied.split('-')
 
+            try:
+                yearsstudied_min = re.sub("[^0-9]", "", years[0])
+                if yearsstudied_min:
+                    try:
+                        yearsstudied_number_min = datetime.datetime.strptime(yearsstudied_min, '%Y')
+                    except ValueError:
+                        yearsstudied_number_min = None
+                else:
+                    yearsstudied_number_min = None
+            except IndexError:
+                yearsstudied_number_min = None
 
-            studies.objects.filter(gsheet_id=study.gsheet_id).update(year_of_publication_number=year_of_publication_number, study_size_number=study_size_number, prevalence_rate_number=prevalence_rate_number)
+            try:
+                yearsstudied_max = re.sub("[^0-9]", "", years[1])
+                if yearsstudied_max:
+                    try:
+                        yearsstudied_number_max = datetime.datetime.strptime(yearsstudied_max, '%Y')
+                    except ValueError:
+                        yearsstudied_number_max = None
+                else:
+                    yearsstudied_number_max = None
+            except IndexError:
+                yearsstudied_number_max = None
+          
+
+            studies.objects.filter(gsheet_id=study.gsheet_id).update(yearpublished_number=yearpublished_number, samplesize_number=samplesize_number, prevalenceper10000_number=prevalenceper10000_number, yearsstudied_number_min=yearsstudied_number_min, yearsstudied_number_max=yearsstudied_number_max)
 
 
 

@@ -5,9 +5,13 @@ $(document).ready(function (){
     // create tbody 
     const table = d3.select("#studies");
 
+    let world_topojson = null;
+
+
+
     app.list.addRows = function() {
         d3.select("#studies_tbody").remove();      
-        d3.json("/studies-api/?min_year_of_publication="+min_year_of_publication+"&max_year_of_publication="+max_year_of_publication+"&min_study_size="+min_study_size+"&max_study_size="+max_study_size+"&min_prevalence_rate="+min_prevalence_rate+"&max_prevalence_rate="+max_prevalence_rate+"&methodology="+methodology+"&keyword="+keyword).then(function(data) {
+        d3.json("/studies-api/?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+studytype+"&keyword="+keyword).then(function(data) {
             studies = data;
             let enter_selection = table.append("tbody")
                 .attr("id", "studies_tbody")
@@ -37,7 +41,7 @@ $(document).ready(function (){
             
             row1.append("td")
                 .text(function (d) { 
-                    return d.properties.year_of_publication; 
+                    return d.properties.yearpublished; 
                 })
 
             row1.append("td")
@@ -52,22 +56,23 @@ $(document).ready(function (){
 
             row1.append("td")
                 .text(function (d) { 
-                    return d.properties.area; 
+                    return d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
                 })
 
             row1.append("td")
                 .text(function (d) { 
-                    return d.properties.study_size; 
+                    return d.properties.samplesize; 
                 })
 
             row1.append("td")
                 .text(function (d) { 
-                    return d.properties.prevalence_rate; 
+                    return d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
+                    ; 
                 })
 
             row1.append("td")
                 .text(function (d) { 
-                    return d.properties.confidence_interval; 
+                    return d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', '); 
                 })
 
 
@@ -80,18 +85,18 @@ $(document).ready(function (){
             let card_div = row2.append("td")
                 .attr("colspan", "9")
                 .append("div")
-                .classed("card", true)
-                .classed("card-body", true);
-            
-            card_div.append("h4")
-                .text("More data");
+                .classed("list-more-information", true);
             
             card_div.append("p")
                 .html(function (d) { 
-                    return "<b>Age:</b> " + d.properties.age + "<br />" +
-                    "<b>Number Affected:</b> " + d.properties.number_affected + "<br />" +
-                    "<b>Diagnostic Criteria:</b> " + d.properties.diagnostic_criteria + "<br />" +                  "<b>% With Normal IQ:</b> " + d.properties.pct_with_normal_iq + "<br />" +
-                    "<b>Gender Ratio M:F:</b> " + d.properties.gender_ratio + "<br />"; 
+                    const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
+                    const diagnosticcriteria = d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
+            
+                    return "<b>Age (years):</b> " + age + "<br />" +
+                    "<b>Individuals with autism:</b> " + d.properties.individualswithautism + "<br />" +
+                    "<b>Diagnostic criteria:</b> " + diagnosticcriteria + "<br />" + 
+                    "<b>Percent w/ average IQ:</b> " + d.properties.percentwaverageiq + "<br />" +
+                    "<b>Sex ratio (M:F):</b> " + d.properties.sexratiomf + "<br />"; 
                 });
 
             d3.select('#studies_tbody').selectAll('tr').sort(function(a, b){ 
@@ -101,8 +106,7 @@ $(document).ready(function (){
             $('.collapse').collapse({
                 toggle: false
             });
-
-              
+ 
         });
     } 
 
@@ -118,32 +122,32 @@ $(document).ready(function (){
         }
     });
 
-    // making the combo box options for earliest published and lateste published
+    // making the combo box options for earliest published and latest published
     d3.json("/studies-api/").then(function(data) {
-        const comboBox_min_year_of_publication = d3.select("#min_year_of_publication");
-        const comboBox_max_year_of_publication = d3.select("#max_year_of_publication");
-        const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.year_of_publication); }).getUTCFullYear();
-        const timeMax = d3.max(data.features, function(d) { return new Date(d.properties.year_of_publication); }).getUTCFullYear();
+        const comboBox_min_yearpublished = d3.select("#min_yearpublished");
+        const comboBox_max_yearpublished = d3.select("#max_yearpublished");
+        const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.yearpublished); }).getUTCFullYear();
+        const timeMax = d3.max(data.features, function(d) { return new Date(d.properties.yearpublished); }).getUTCFullYear();
 
         for (let index = timeMin; index <= timeMax; index++) {
-            comboBox_min_year_of_publication.append("option")
+            comboBox_min_yearpublished.append("option")
                 .attr("value", index)
                 .text(index);
 
-            comboBox_max_year_of_publication.append("option")
+            comboBox_max_yearpublished.append("option")
                 .attr("value", index)
                 .text(index);
         }
 
-        if (min_year_of_publication) {
-            $("#min_year_of_publication").val(min_year_of_publication);
+        if (min_yearpublished) {
+            $("#min_yearpublished").val(min_yearpublished);
         } else {
-            $("#min_year_of_publication").val($("#min_year_of_publication option:first").val());
+            $("#min_yearpublished").val($("#min_yearpublished option:first").val());
         }
-        if (max_year_of_publication) {
-            $("#max_year_of_publication").val(max_year_of_publication);
+        if (max_yearpublished) {
+            $("#max_yearpublished").val(max_yearpublished);
         } else {
-            $("#max_year_of_publication").val($("#max_year_of_publication option:last").val());
+            $("#max_yearpublished").val($("#max_yearpublished option:first").val());
         }
     });
 

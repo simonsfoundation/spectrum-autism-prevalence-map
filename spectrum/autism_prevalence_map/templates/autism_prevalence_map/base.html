@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <!-- Custom site-wide CSS
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/style1.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/style.css' %}">
 
     {% block css_block %} {% endblock %}
 
@@ -33,8 +33,10 @@
     <!-- Navbar
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <nav class="navbar navbar-expand-lg fixed-top navbar-light spectrum-gradient">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="https://spectrumnews.org/">
             <img src="{% static 'autism_prevalence_map/img/spectrum-logo-white.png' %}" width="auto" height="40" class="d-inline-block" alt="">
+        </a>
+        <a class="navbar-brand centered-title" href="#">
             <span class="navbar-brand-text">Global Autism Prevalence</span>
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#right-nav-container" aria-controls="right-nav-container" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,10 +47,10 @@
             <span class="mr-auto"></span>
             <ul class="nav nav-tabs mr-4">
                 <li class="nav-item">
-                    <a id="map-link" class="nav-link {% if request.path == '/map1/' %}active{% endif %} " href="{% url 'index1' %}">Map</a>
+                    <a id="map-link" class="nav-link {% if request.path == '/' %}active{% endif %} " href="{% url 'index' %}">Map</a>
                 </li>
                 <li class="nav-item">
-                    <a id="list-link" class="nav-link {% if request.path == '/list1/' %}active{% endif %}" href="{% url 'list_view1' %}">List</a>
+                    <a id="list-link" class="nav-link {% if request.path == '/list/' %}active{% endif %}" href="{% url 'list_view' %}">List</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">About</a>
@@ -56,7 +58,7 @@
             </ul>
             <form class="form-inline">
                 <div class="input-group">
-                    <input id="search" class="form-control spectrum-form" type="search" placeholder="Search" aria-label="Search">
+                    <input id="search" class="form-control spectrum-form" type="search" placeholder="Filter data by keyword" aria-label="Filter data by keyword">
                     <div class="input-group-append">
                         <span class="input-group-text spectrum-append"><i class="fas fa-search"></i></span>
                     </div>
