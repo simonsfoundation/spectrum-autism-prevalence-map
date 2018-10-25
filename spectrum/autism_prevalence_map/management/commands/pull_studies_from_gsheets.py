@@ -88,6 +88,9 @@ class Command(BaseCommand):
 
         for study in pulled_studies:
             # call the geocode URL
+            # TODO we need a more elegant solution, but, for now, we will hide these two areas
+            if study.area in ('Mainland and Azores', 'Northern Ostrobothnia County') :
+                study.area = ''
             address = '?address=' + study.area + ', ' + study.country
             url = base_url + address + gmaps_api_key
             response = urllib.urlopen(url.encode('utf8'))
