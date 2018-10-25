@@ -39,6 +39,18 @@
     </div>
 </div>
 
+<div class="container-fluid">    
+    <div class="row">
+        <div class="col-11">
+            <div class="container-fluid">    
+                <div class="row">
+                    <div id="width-check" class="col-4">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>           
+
 {% include "autism_prevalence_map/action_buttons.html" with template="list" %}
 
 {% endblock %}
@@ -47,6 +59,13 @@
 {% endblock %} 
 
 {% block js_block %}
+<!-- Mapping JS libraries
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<script src="{% static 'autism_prevalence_map/vendor/js/topojson.js' %}"></script>
+<script src="{% static 'autism_prevalence_map/vendor/js/d3-array.v1.min.js' %}"></script>
+<script src="{% static 'autism_prevalence_map/vendor/js/d3-geo.v1.min.js' %}"></script>
+<script src="{% static 'autism_prevalence_map/vendor/js/d3-geo-projection.v2.min.js' %}"></script>
+
 <!-- Custom JS
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->  
 <script>
@@ -58,7 +77,7 @@
     let max_prevalenceper10000 = "{{ max_prevalenceper10000 }}";
     let studytype = "{{ studytype }}";
     let keyword = "{{ keyword }}";
-    const world_atlas = "{% static 'autism_prevalence_map/vendor/data/50m.json' %}";
+    const world_atlas = "{% static 'autism_prevalence_map/vendor/data/110m.json' %}";
 </script>  
 <script src="{% static 'autism_prevalence_map/js/joint.js' %}"></script>
 <script src="{% static 'autism_prevalence_map/js/list.js' %}"></script>

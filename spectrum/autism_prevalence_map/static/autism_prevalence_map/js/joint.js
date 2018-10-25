@@ -96,14 +96,14 @@ $(document).ready(function (){
         switch (prevalence) {
             case "low":
                 min_prevalenceper10000 = "0";
-                max_prevalenceper10000 = "99.99"; 
+                max_prevalenceper10000 = "49.99"; 
                 break;                             
             case "med":        
-                min_prevalenceper10000 = "100";
-                max_prevalenceper10000 = "200";
+                min_prevalenceper10000 = "50";
+                max_prevalenceper10000 = "100";
                 break;                          
             case "high":        
-                min_prevalenceper10000 = "200.01";
+                min_prevalenceper10000 = "100.01";
                 max_prevalenceper10000 = "";   
                 break;                       
             default:
@@ -173,10 +173,10 @@ $(document).ready(function (){
         case "0":
             $("#prevalence").val("low");
             break;                             
-        case "100":        
+        case "50":        
             $("#prevalence").val("med");
             break;                          
-        case "200.01":        
+        case "100.01":        
             $("#prevalence").val("high"); 
             break;                       
         default:
@@ -197,7 +197,14 @@ $(document).ready(function (){
             $("#samplesize").val("all"); 
     }
 
-    // 
+    if (keyword) {
+        $("#search").val(keyword);
+    }
+
+    if (studytype) {
+        $("#studytype").val(studytype);
+    }
+    
 
     // initialize
     app.updateURL();

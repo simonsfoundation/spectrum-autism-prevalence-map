@@ -184,3 +184,15 @@ body {
     border-radius: 0;
 }
 
+.countries {
+    fill: #ccc;
+    fill-opacity: 1;
+}
+
+.country-borders {
+    fill: #fff;
+    fill-opacity: 0;
+    stroke: #fff;
+    stroke-width: 1px;
+}
+

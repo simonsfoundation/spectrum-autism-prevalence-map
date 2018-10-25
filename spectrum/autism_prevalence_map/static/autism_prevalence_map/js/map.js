@@ -27,8 +27,7 @@ $(document).ready(function (){
         .append("svg")
         .attr('id', 'svg')
         .style("width", "100%")
-        .style("height", "100%")
-        .append("g");
+        .style("height", "100%");
 
         
     // create g container for world map    
@@ -37,15 +36,15 @@ $(document).ready(function (){
 
     // create container for graticule
     const graticuleG = g.append("g")
-        .attr("id", "graticule")
+        .attr("id", "graticule");
 
     // create container for countries
     const countriesG = g.append("g")
-        .attr("id", "countries")
+        .classed("countries", true);
 
     // create container for studies
     const studiesG = g.append("g")
-        .attr("id", "studies")
+        .attr("id", "studies");
 
     // create container for timeline
     const timelineDiv = d3.select('#timeline'),
@@ -78,31 +77,29 @@ $(document).ready(function (){
 
     // set up clusering grid
     let clusterPoints = [];
-    let clusterRange = 45;
+    let clusterRange = 25;
     let quadtree;
     
-    const grid = svg.append('g')
-        .attr('class', 'grid');
+    // const grid = svg.append('g')
+    //     .attr('class', 'grid');
     
-    for (let x = 0; x <= width; x += clusterRange) {
-        for (let y = 0; y <= height; y+= clusterRange) {
-        grid.append('rect')
-            .attr({
-                x: x,
-                y: y,
-                width: clusterRange,
-                height: clusterRange,
-                class: "grid"
-            });
-        }
-    }
+    // for (let x = 0; x <= width; x += clusterRange) {
+    //     for (let y = 0; y <= height; y+= clusterRange) {
+    //         grid.append('rect')
+    //             .attr("x", x)
+    //             .attr("y", y)
+    //             .attr("width", clusterRange)
+    //             .attr("height", clusterRange)
+    //             .classed("grid", true);
+    //     }
+    // }
 
     // add map data to the world map g container
     d3.json(world_atlas).then(function(world) {
         countriesG.selectAll("path")
             .data(topojson.feature(world, world.objects.countries).features.filter(function(d){
                 if (d.id !== "010") {
-                    return d
+                    return d;
                 }
             }))
             .enter().append("path")
@@ -113,7 +110,7 @@ $(document).ready(function (){
 
         countriesG.append("path")
             .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
-            .attr("id", "country-borders")
+            .classed("country-borders", true)
             .attr("d", path);
 
         app.map.initializeTimeline();
@@ -178,7 +175,7 @@ $(document).ready(function (){
         timelineSVG.append("g")
             .attr("transform", "translate(0," + axisHeight + ")")
             .classed("timeline-axis", true)
-            .call(d3.axisBottom(timelineX).ticks(5).tickSize(-10).tickPadding(6));
+            .call(d3.axisBottom(timelineX).ticks(5).tickSize(6).tickPadding(3));
         
 
         handle = brushG.selectAll(".handle--custom")
@@ -339,8 +336,10 @@ $(document).ready(function (){
             })
             .attr("data-toggle", "tooltip")
             .attr("data-placement", "top")
+            .attr("data-html", true)
             .attr("title", function(d){
-                return d.properties.authors + ' ' + d.properties.yearpublished
+                const authors = d.properties.authors.replace("et al.", "<em>et al.</em>");
+                return authors + ' ' + d.properties.yearpublished
             })
             .on("click", viewMoreInfo)
             .on("mouseover", function(d) {
@@ -414,9 +413,10 @@ $(document).ready(function (){
         // Find the nodes within the specified rectangle.
         let validData = [];
         quadtree.visit(function(node, x1, y1, x2, y2) {
-            const p = node.point;
+            const p = node;
+            //console.log(p);
             if (p) {
-                p.selected = (p[0] >= x0) && (p[0] < x3) && (p[1] >= y0) && (p[1] < y3);
+                p.selected = (p.data[0] >= x0) && (p.data[0] < x3) && (p.data[1] >= y0) && (p.data[1] < y3);
                 if (p.selected) {
                     validData.push(p);
                 }
@@ -432,13 +432,18 @@ $(document).ready(function (){
             point.push(i);
             return point;
         });
-        
-        quadtree = d3.geom.quadtree()(pointsRaw);
+
+        console.log(pointsRaw);
+        quadtree = d3.quadtree().addAll(pointsRaw);
 
         for (let x = 0; x <= width; x += clusterRange) {
             for (let y = 0; y <= height; y+= clusterRange) {
-                const searched = search(quadtree, x, y, x + clusterRange, y + clusterRange);
-            
+                const searched = app.map.inQuadTree(quadtree, x, y, x + clusterRange, y + clusterRange);
+                
+                if (searched.length > 0) {
+                    console.log(searched);
+                }
+                
                 const centerPoint = searched.reduce(function(prev, current) {
                     return [prev[0] + current[0], prev[1] + current[1]];
                 }, [0, 0]);
@@ -498,6 +503,7 @@ $(document).ready(function (){
 
     // define zooming function for zooming map
     function zoomed() {
+        g_zoom.style("stroke-width", 1.5 / d3.event.scale + "px");
         g_zoom.attr('transform', `translate(${d3.event.transform.x},  ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
         // set pin zizes based on zoom level
         //scalePins(d3.event.transform.k);
@@ -601,13 +607,14 @@ $(document).ready(function (){
         showTimelineTooltip(d);
 
         // add data to card
-        const card_title = d.properties.authors + ' ' + d.properties.yearpublished;
+        const authors = d.properties.authors.replace("et al.", "<em>et al.</em>");
+        const card_title = authors + ' ' + d.properties.yearpublished;
         const area = d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
         const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
         const diagnosticcriteria = d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
         const prevalenceper10000 = d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
         const confidenceinterval = d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', ');
-        $("#card-title").text(card_title);
+        $("#card-title").html(card_title);
         $("#card-country").text(d.properties.country);
         $("#card-area").text(area);
         $("#card-samplesize").text(d.properties.samplesize);
@@ -617,7 +624,27 @@ $(document).ready(function (){
         $("#card-sexratiomf").text(d.properties.sexratiomf);
         $("#card-prevalenceper10000").text(prevalenceper10000);
         $("#card-confidenceinterval").text(confidenceinterval);
+        $("#card-yearsstudied").text(d.properties.yearsstudied);
+        $("#card-categoryadpddorasd").text(d.properties.categoryadpddorasd);
+
+        // add links to card
+        let links = [];
+        if (d.properties.link1title && d.properties.link1url) {
+            links.push('<a href="'+ d.properties.link1url +'" >'+ d.properties.link1title +'</a>') 
+        }
+        if (d.properties.link2title && d.properties.link2url) {
+            links.push('<a href="'+ d.properties.link2url +'" >'+ d.properties.link2title +'</a>') 
+        }
+        if (d.properties.link3title && d.properties.link3url) {
+            links.push('<a href="'+ d.properties.link3url +'" >'+ d.properties.link3title +'</a>') 
+        }
+        if (d.properties.link4title && d.properties.link4url) {
+            links.push('<a href="'+ d.properties.link4url +'" >'+ d.properties.link4title +'</a>') 
+        }
         
+        const links_string = links.join('<br />');
+        $("#card-links").html(links_string);
+
         // show card
         $("#more-information-card").css("display", "block");
     }

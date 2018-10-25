@@ -1,0 +1,18 @@
+body {
+    margin-top: 150px;
+}
+
+.navbar-brand img {
+    height: 39px;
+    vertical-align: middle;
+    border-style: none;
+}
+
+#right-nav-container .form-inline {
+    display: none;
+}
+
+#how-to-use {
+    padding-top: 90px;
+    margin-top: -90px;
+}

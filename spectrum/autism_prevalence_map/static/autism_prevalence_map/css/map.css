@@ -2,18 +2,6 @@
     height: 70vh;
 }
 
-#countries {
-    fill: #ccc;
-    fill-opacity: 1;
-}
-
-#country-borders {
-    fill: #fff;
-    fill-opacity: 0;
-    stroke: #fff;
-    stroke-width: 1px;
-}
-
 .zoom-buttons {
     position: absolute;
     bottom: 22vh;
@@ -198,4 +186,8 @@
     border: none;
 }
 
-
+.grid {
+    fill: none;
+    stroke: #000;
+    stroke-width: 1px;
+}
