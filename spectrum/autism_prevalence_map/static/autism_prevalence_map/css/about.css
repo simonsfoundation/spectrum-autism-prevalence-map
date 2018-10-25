@@ -2,6 +2,12 @@ body {
     margin-top: 150px;
 }
 
+#content-container.container,
+.hero-nav.container,
+.hero-nav.container .sidebar-container {
+    max-width: none;
+}
+
 .navbar-brand img {
     height: 39px;
     vertical-align: middle;
