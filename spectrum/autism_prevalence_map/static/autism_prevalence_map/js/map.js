@@ -48,7 +48,7 @@ $(document).ready(function (){
 
     // create container for timeline
     const timelineDiv = d3.select('#timeline'),
-        timelineWidth = timelineDiv.node().offsetWidth - 15,
+        timelineWidth = timelineDiv.node().offsetWidth - 45,
         timelineHeight = timeline_height;    
                 
     const timelineSVG = timelineDiv.append('svg')
@@ -136,6 +136,7 @@ $(document).ready(function (){
     app.map.addTimeline = function() {
         timeMin = d3.min(studies.features, function(d) { return new Date(d.properties.yearsstudied_number_min); });
         timeMax = d3.max(studies.features, function(d) { return new Date(d.properties.yearpublished); });
+        timeMax.setUTCFullYear(timeMax.getUTCFullYear() + 1);
         // add the x brush
         brush = d3.brushX()
             .extent([[50, 0], [timelineWidth-50, timelineHeight-20]])
@@ -154,43 +155,10 @@ $(document).ready(function (){
             .domain([timeMin, timeMax])
             .nice(d3.timeYear);        
 
-        // if(timeline_type == "studied") {
-        //     studiesByYear = [];
-        //     let yearsstudied_min, yearsstudied_max;
-        //     for (let index = 1960; index <= timeMax.getUTCFullYear(); index++) {
-        //         studiesByYear.push({key: index, value: 0});
-        //     }
-        //     for (let index = 0; index < studies.features.length; index++) {
-        //         if (studies.features[index].properties.yearsstudied_number_min) {
-        //             yearsstudied_min = studies.features[index].properties.yearsstudied_number_min.split('-');
-        //         }
-        //         if (studies.features[index].properties.yearsstudied_number_max) {
-        //             yearsstudied_max = studies.features[index].properties.yearsstudied_number_max.split('-');
-        //         } else {
-        //             yearsstudied_max = yearsstudied_min;
-        //         }
-                
-        //         for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
-        //             for (let k = 0; k < studiesByYear.length; k++) {
-        //                 if (studiesByYear[k].key == j) {
-        //                     studiesByYear[k].value++ 
-        //                 } 
-        //             }
-        //         }   
-        //     }
-        // } else {
-        //     studiesByYear = d3.nest()
-        //         .key(function(d) { return d.properties.yearpublished; })
-        //         .rollup(function(v) { return v.length; })
-        //         .entries(studies.features);
-        // }
-            
-        // for (let index = 0; index < studiesByYear.length; index++) {
-        //     studiesByYear[index].count = 0;
-        // }
+
 
         timelineY = d3.scaleLinear()
-            .range([timelineHeight-25, -20]);
+            .range([timelineHeight-30, 20]);
 
         // Add the x axis
         const axisHeight = timelineHeight - 20;
@@ -365,6 +333,19 @@ $(document).ready(function (){
                 .data(studies.features.sort(function(a,b) {
                     return a.num_yearsstudied - b.num_yearsstudied; 
                 }), function(d){ return d.properties.pk });
+
+            // set up simulation
+            const simulation = d3.forceSimulation(studies.features)
+                .force("x", d3.forceX(function(d) { 
+                    let date = new Date(d.properties.yearsstudied_number_min);
+                    return timelineX(date); 
+                }).strength(1))
+                .force("y", d3.forceY((timelineHeight-20)/2).strength(1))
+                .force("collide", d3.forceCollide(12))
+                .stop();
+
+            for (var i = 0; i < 1000; ++i) simulation.tick();
+
         } else {
             timelineSelection = timelineG.selectAll('rect.timeline-circles')
                 .data(studies.features, function(d){ return d.properties.pk });
@@ -373,61 +354,30 @@ $(document).ready(function (){
 
         timelineSelection
             .transition()
-            .duration(500)
-            .attr('transform', function(d, i) {
+            .duration(1000)
+            .attr("x", function(d){
+                if(timeline_type == "studied") {
+                    return d.x;
+                } else {
+                    let date = new Date(d.properties.yearpublished)
+                    return timelineX(date);
+                }
+            })
+            .attr("y", function(d){
                 let count = 0;
                 if(timeline_type == "studied") {
-                    let yearsstudied_min, yearsstudied_max;
-                    for (let index = 0; index < studiesByYear.length; index++) {
-                        if (d.properties.yearsstudied_number_min) {
-                            yearsstudied_min = d.properties.yearsstudied_number_min.split('-')[0];
-                        }
-                        if (d.properties.yearsstudied_number_max) {
-                            yearsstudied_max = d.properties.yearsstudied_number_max.split('-')[0];
-                        } else {
-                            yearsstudied_max = yearsstudied_min;
-                        }
-                        for (let j = yearsstudied_min; j <= yearsstudied_max; j++) {
-                            if (studiesByYear[index].key == j) {
-                                studiesByYear[index].count++;
-                                count = studiesByYear[index].count;
-                            }
-                        }                    
-                    }
-                    let date = new Date(d.properties.yearsstudied_number_min);
-                    return 'translate(' + [timelineX(date), timelineY(count)] + ')';
+                    return d.y;
                 } else {
                     for (let index = 0; index < studiesByYear.length; index++) {
                         if (studiesByYear[index].key == d.properties.yearpublished) {
                             studiesByYear[index].count++;
                             count = studiesByYear[index].count;
+                            console.log(count);
                         }
                     }
-                    let date = new Date(d.properties.yearpublished)
-                    return 'translate(' + [timelineX(date), timelineY(count)] + ')';
+                    return timelineY(count);
                 }
             })
-            .attr("width", function(d){
-                if(timeline_type == "studied") {
-                    if (d.properties.yearsstudied_number_min) {
-                        yearsstudied_min = d.properties.yearsstudied_number_min.split('-')[0];
-                    }
-                    if (d.properties.yearsstudied_number_max) {
-                        yearsstudied_max = d.properties.yearsstudied_number_max.split('-')[0];
-                    } else {
-                        yearsstudied_max = yearsstudied_min;
-                    }
-                    let distance = yearsstudied_max - yearsstudied_min + 1;
-                    return distance * 10; 
-                } else {
-                    return 10;
-                }   
-            });
-
-        timelineSelection.enter()
-            .append('rect')
-            .attr("x", 0)
-            .attr("y", -5)
             .attr("width", function(d){
                 if(timeline_type == "studied") {
                     let distance = d.properties.num_yearsstudied + 1;
@@ -436,9 +386,81 @@ $(document).ready(function (){
                     return 10;
                 }   
             })
-            .attr("height", 10)
-            .attr("rx", 5)
-            .attr("ry", 5)
+            .attr("height", function(d){
+                if(timeline_type == "studied") {
+                    return 5
+                } else {
+                    return 10
+                }
+            })
+            .attr("rx", function(d){
+                if(timeline_type == "studied") {
+                    return 2.5
+                } else {
+                    return 5
+                }
+            })
+            .attr("ry", function(d){
+                if(timeline_type == "studied") {
+                    return 2.5
+                } else {
+                    return 5
+                }
+            });
+
+        timelineSelection.enter()
+            .append('rect')
+            .attr("x", function(d){
+                if(timeline_type == "studied") {
+                    return d.x;
+                } else {
+                    let date = new Date(d.properties.yearpublished)
+                    return timelineX(date);
+                }
+            })
+            .attr("y", function(d){
+                let count = 0;
+                if(timeline_type == "studied") {
+                    return d.y;
+                } else {
+                    for (let index = 0; index < studiesByYear.length; index++) {
+                        if (studiesByYear[index].key == d.properties.yearpublished) {
+                            studiesByYear[index].count++;
+                            count = studiesByYear[index].count;
+                        }
+                    }
+                    return timelineY(count);
+                }
+            })
+            .attr("width", function(d){
+                if(timeline_type == "studied") {
+                    let distance = d.properties.num_yearsstudied + 1;
+                    return distance * 10; 
+                } else {
+                    return 10;
+                }   
+            })
+            .attr("height", function(d){
+                if(timeline_type == "studied") {
+                    return 5
+                } else {
+                    return 10
+                }
+            })
+            .attr("rx", function(d){
+                if(timeline_type == "studied") {
+                    return 2.5
+                } else {
+                    return 5
+                }
+            })
+            .attr("ry", function(d){
+                if(timeline_type == "studied") {
+                    return 2.5
+                } else {
+                    return 5
+                }
+            })
             .style("fill", pointColor)
             .style("fill-opacity", "1")
             .style("stroke", "#fff")
@@ -454,42 +476,10 @@ $(document).ready(function (){
                 const authors = d.properties.authors.replace("et al.", "<em>et al.</em>");
                 return authors + ' ' + d.properties.yearpublished
             })
-            .attr('transform', function(d, i) {
-                let count = 0;
-                if(timeline_type == "studied") {
-                    let yearsstudied_min, yearsstudied_max;
-                    for (let index = 0; index < studiesByYear.length; index++) {
-                        if (d.properties.yearsstudied_number_min) {
-                            yearsstudied_min = d.properties.yearsstudied_number_min.split('-')[0];
-                        }
-                        if (d.properties.yearsstudied_number_max) {
-                            yearsstudied_max = d.properties.yearsstudied_number_max.split('-')[0];
-                        } else {
-                            yearsstudied_max = yearsstudied_min;
-                        }
-                        for (let j = yearsstudied_min; j <= yearsstudied_max; j++) {
-                            if (studiesByYear[index].key == j) {
-                                studiesByYear[index].count++;
-                                count = studiesByYear[index].count;
-                            }
-                        }                    
-                    }
-                    let date = new Date(d.properties.yearsstudied_number_min);
-                    return 'translate(' + [timelineX(date), timelineY(count)] + ')';
-                } else {
-                    for (let index = 0; index < studiesByYear.length; index++) {
-                        if (studiesByYear[index].key == d.properties.yearpublished) {
-                            studiesByYear[index].count++;
-                            count = studiesByYear[index].count;
-                        }
-                    }
-                    let date = new Date(d.properties.yearpublished)
-                    return 'translate(' + [timelineX(date), timelineY(count)] + ')';
-                }
-
-            })
             .on("click", viewMoreInfo)
             .on("mouseover", function(d) {
+                const sel = d3.select(this);
+                sel.moveToFront();
                 showTimelineTooltip(d);
                 d3.select(this).style("cursor", "pointer");
                 showDotOnMap(d);
@@ -829,5 +819,12 @@ $(document).ready(function (){
             app.map.pullDataAndUpdate();
         }
     });
+
+    // move to the front prototype
+    d3.selection.prototype.moveToFront = function() {
+        return this.each(function(){
+            this.parentNode.appendChild(this);
+        });
+    };
     
 });
