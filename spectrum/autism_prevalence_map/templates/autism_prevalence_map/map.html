@@ -31,11 +31,25 @@
                     <div id="timeline-toggle" class='timeline-toggle col-sm-3'>
                         <h2>Timeline of studies</h2>
                         <span class="timeline-switch">
-                            <input type="checkbox" id="timeline-switch" name="timeline-switch">
-                            <label for="timeline-switch">Year published</label>
+                            
+                            <input type="checkbox" id="timeline-switch" name="timeline-switch" {% if timeline_type == "studied" %}checked{% endif %}>
+
+                            <label for="timeline-switch">
+                                {% if timeline_type == "published" %}
+                                    <strong>Year published</strong>
+                                {% else %}
+                                    Year published
+                                {% endif %}
+                            </label>
                             <span class="timeline-switch-knob"></span>
                         </span>
-                        <span>Year(s) studied</span>
+                        <span>                                
+                            {% if timeline_type == "studied" %}
+                                <strong>Year(s) studied</strong>
+                            {% else %}
+                                Year(s) studied
+                            {% endif %}
+                        </span>
                     </div>
                     <div id="timeline" class='ui-brush timeline col-sm-9'></div>
                 </div>
@@ -114,12 +128,15 @@
 <script>
     let min_yearpublished = "{{ min_yearpublished }}";
     let max_yearpublished = "{{ max_yearpublished }}";
+    let yearsstudied_number_min = "{{ yearsstudied_number_min }}";
+    let yearsstudied_number_max = "{{ yearsstudied_number_max }}";
     let min_samplesize = "{{ min_samplesize }}";
     let max_samplesize = "{{ max_samplesize }}";
     let min_prevalenceper10000 = "{{ min_prevalenceper10000 }}";
     let max_prevalenceper10000 = "{{ max_prevalenceper10000 }}";
     let studytype = "{{ studytype }}";
     let keyword = "{{ keyword }}";
+    let timeline_type = "{{ timeline_type }}";
     const world_atlas = "{% static 'autism_prevalence_map/vendor/data/110m.json' %}";
 </script>
 <script src="{% static 'autism_prevalence_map/js/joint.js' %}"></script>

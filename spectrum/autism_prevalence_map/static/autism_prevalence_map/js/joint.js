@@ -1,27 +1,32 @@
 let app = {};
 
 $(document).ready(function (){
-    
+
+    // api call holder
+    app.api_call_param_string = "?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&yearsstudied_number_min="+yearsstudied_number_min+"&yearsstudied_number_max="+yearsstudied_number_max+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+encodeURIComponent(studytype)+"&keyword="+encodeURIComponent(keyword)+"&timeline_type="+timeline_type;
+
     // function for updating url state
     app.updateURL = function() {
+        
         const obj = { foo: "bar" };
-        const param_string = "?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+encodeURIComponent(studytype)+"&keyword="+keyword; 
-        window.history.pushState(obj, "Updated URL Parameters", param_string);
+        app.api_call_param_string = "?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&yearsstudied_number_min="+yearsstudied_number_min+"&yearsstudied_number_max="+yearsstudied_number_max+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+encodeURIComponent(studytype)+"&keyword="+encodeURIComponent(keyword)+"&timeline_type="+timeline_type;
+
+        window.history.pushState(obj, "Updated URL Parameters", app.api_call_param_string);
         // set the links to the map and list to hold the url params
-        $('#list-link').attr('href', "/list/" + param_string);
-        $('#map-link').attr('href', "/" + param_string);
-        $('#download-link').attr('href', "/studies-csv/" + param_string);
+        $('#list-link').attr('href', "/list/" + app.api_call_param_string);
+        $('#map-link').attr('href', "/" + app.api_call_param_string);
+        $('#download-link').attr('href', "/studies-csv/" + app.api_call_param_string);
     }
 
     // function for updating content based on filters
     app.runUpdate = function() {
         // run update
+        app.updateURL();
         if ($('#map-link').hasClass("active")) {
             app.map.pullDataAndUpdate();
         } else {
             app.list.addRows();
         }
-        app.updateURL();
     }
 
     // making the combo box options for studytype
@@ -68,14 +73,14 @@ $(document).ready(function (){
         }
     });
 
-    $("#min_yearpublished").on("change", function(e) {
+    $("#min_year").on("change", function(e) {
         $("#more-information-card").css("display", "none");
         // update filters
         min_yearpublished = $(this).val();
         app.runUpdate();
     }); 
 
-    $("#max_yearpublished").on("change", function(e) {
+    $("#max_year").on("change", function(e) {
         $("#more-information-card").css("display", "none");
         // update filters
         max_yearpublished = $(this).val();
@@ -142,6 +147,8 @@ $(document).ready(function (){
         // reset variables
         min_yearpublished = "";
         max_yearpublished = "";
+        yearsstudied_number_min = "";
+        yearsstudied_number_max = "";
         min_prevalenceper10000 = "";
         max_prevalenceper10000 = ""; 
         min_samplesize = "";
@@ -151,8 +158,8 @@ $(document).ready(function (){
 
         // set dropdown menu values
         $("#search").val('');
-        $("#min_yearpublished").val($("#min_yearpublished option:first").val());
-        $("#max_yearpublished").val($("#max_yearpublished option:last").val());
+        $("#min_year").val($("#min_year option:first").val());
+        $("#max_year").val($("#max_year option:first").val());
         $("#studytype").val('');
         $("#prevalence").val('all');
         $("#samplesize").val('all');

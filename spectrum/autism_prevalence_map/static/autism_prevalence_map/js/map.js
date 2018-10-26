@@ -11,7 +11,7 @@ $(document).ready(function (){
     // data holder
     let studies = null;
 
-    // have any points been clicked 
+    // have any points been clicked?
     let clicked = false;
 
     // map projection
@@ -56,8 +56,7 @@ $(document).ready(function (){
         .attr('height', timelineHeight);
 
     // globaly scope some variables for the timeline
-    let brush, brushG, timelineG, timelineX, timelineY, studiesByYear, handle, handleText;
-
+    let brush, brushG, timelineG, timelineX, timelineY, studiesByYear, handle, handleText, timeMin, timeMax;
 
     // add a graticule to the map
     const graticuleOutline = d3.geoGraticule().outline();
@@ -119,10 +118,10 @@ $(document).ready(function (){
 
     // pull data and update timeline function
     app.map.pullDataAndUpdate = function() {
-        d3.json("/studies-api/?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+studytype+"&keyword="+keyword).then(function(data) {
-            studies = data;
+        app.updateURL();
+        d3.json("/studies-api/" + app.api_call_param_string).then(function(data) {
+            studies = data;   
             app.map.updateTimeline();
-            app.updateURL();
         });
     }
 
@@ -135,6 +134,8 @@ $(document).ready(function (){
     }
 
     app.map.addTimeline = function() {
+        timeMin = d3.min(studies.features, function(d) { return new Date(d.properties.yearsstudied_number_min); });
+        timeMax = d3.max(studies.features, function(d) { return new Date(d.properties.yearpublished); });
         // add the x brush
         brush = d3.brushX()
             .extent([[50, 0], [timelineWidth-50, timelineHeight-20]])
@@ -148,27 +149,48 @@ $(document).ready(function (){
         timelineG = timelineSVG.append('g')
             .attr('class', 'timeline-circles');
            
-        studiesByYear = d3.nest()
-            .key(function(d) { return d.properties.yearpublished; })
-            .rollup(function(v) { return v.length; })
-            .entries(studies.features);
-            
-        for (let index = 0; index < studiesByYear.length; index++) {
-            studiesByYear[index].count = 0;
-        }
-
-        const timeMin = d3.min(studies.features, function(d) { return new Date(d.properties.yearpublished); });
-        const timeMax = d3.max(studies.features, function(d) { return new Date(d.properties.yearpublished); });
-
         timelineX = d3.scaleTime()
             .range([50, timelineWidth-50])
             .domain([timeMin, timeMax])
             .nice(d3.timeYear);        
 
-        timelineY = d3.scaleLinear()
-            .range([timelineHeight-25, 20])
-            .domain([1, d3.max(studiesByYear, function(d) { return d.value; })]);
+        // if(timeline_type == "studied") {
+        //     studiesByYear = [];
+        //     let yearsstudied_min, yearsstudied_max;
+        //     for (let index = 1960; index <= timeMax.getUTCFullYear(); index++) {
+        //         studiesByYear.push({key: index, value: 0});
+        //     }
+        //     for (let index = 0; index < studies.features.length; index++) {
+        //         if (studies.features[index].properties.yearsstudied_number_min) {
+        //             yearsstudied_min = studies.features[index].properties.yearsstudied_number_min.split('-');
+        //         }
+        //         if (studies.features[index].properties.yearsstudied_number_max) {
+        //             yearsstudied_max = studies.features[index].properties.yearsstudied_number_max.split('-');
+        //         } else {
+        //             yearsstudied_max = yearsstudied_min;
+        //         }
+                
+        //         for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
+        //             for (let k = 0; k < studiesByYear.length; k++) {
+        //                 if (studiesByYear[k].key == j) {
+        //                     studiesByYear[k].value++ 
+        //                 } 
+        //             }
+        //         }   
+        //     }
+        // } else {
+        //     studiesByYear = d3.nest()
+        //         .key(function(d) { return d.properties.yearpublished; })
+        //         .rollup(function(v) { return v.length; })
+        //         .entries(studies.features);
+        // }
+            
+        // for (let index = 0; index < studiesByYear.length; index++) {
+        //     studiesByYear[index].count = 0;
+        // }
 
+        timelineY = d3.scaleLinear()
+            .range([timelineHeight-25, -20]);
 
         // Add the x axis
         const axisHeight = timelineHeight - 20;
@@ -195,10 +217,10 @@ $(document).ready(function (){
             .data([{type: "w"}, {type: "e"}])
             .enter().append("text")
             .classed("handle--text", true)
-            .attr("y", timelineHeight / 2.1)
+            .attr("y", timelineHeight / 2.2)
             .attr("dy", ".35em")
             .attr("fill", "#fff")
-            .attr("font-size", "10px")
+            .attr("font-size", "12px")
             .attr("text-anchor", "start")
             .attr("display", "none");
 
@@ -211,10 +233,15 @@ $(document).ready(function (){
 
             d1[0] = d3.timeYear.ceil(d0[0]);
             d1[1] = d3.timeYear.floor(d0[1]);
-    
-            min_yearpublished = d1[0].getUTCFullYear();
-            max_yearpublished = d1[1].getUTCFullYear();
-    
+
+            if(timeline_type == "studied") {
+                yearsstudied_number_min = d1[0].getUTCFullYear();
+                yearsstudied_number_max = d1[1].getUTCFullYear();
+            } else {
+                min_yearpublished = d1[0].getUTCFullYear();
+                max_yearpublished = d1[1].getUTCFullYear();    
+            }
+
             app.map.pullDataAndUpdate();
         } 
 
@@ -239,16 +266,16 @@ $(document).ready(function (){
                 handle
                     .attr("display", null)
                     .attr("transform", function(d, i) { 
-                        return "translate(" + s[i] + "," + timelineHeight / 2.1 + ")"; 
+                        return "translate(" + s[i] + "," + timelineHeight / 2.2 + ")"; 
                     });
     
                 handleText
                     .attr("display", null)
                     .attr("x", function(d, i) {
                         if (i === 0) {
-                            return s[i] - 30;
+                            return s[i] - 32;
                         } else {
-                            return s[i] + 6;
+                            return s[i] + 4;
                         }
                     })
                     .text(function(d, i) { 
@@ -258,20 +285,29 @@ $(document).ready(function (){
     
         } 
         
-        if (min_yearpublished || max_yearpublished) {
+        let min_year, max_year;
+        if(timeline_type == "studied") {
+            min_year = yearsstudied_number_min;
+            max_year = yearsstudied_number_max;
+        } else {
+            min_year = min_yearpublished
+            max_year = max_yearpublished    
+        }
+
+
+        if (min_year || max_year) {
             let brush_min, brush_max;
-            if (min_yearpublished) {
-                brush_min = new Date(min_yearpublished);
+            if (min_year) {
+                brush_min = new Date(min_year);
             } else {
                 brush_min = timeMin;
             }
 
-            if (max_yearpublished) {
-                brush_max = new Date(max_yearpublished);
+            if (max_year) {
+                brush_max = new Date(max_year);
             } else {
                 brush_max = timeMax;
             }
-
             brushG.call(brush.move, [brush_min, brush_max].map(timelineX));
 
         }
@@ -283,49 +319,126 @@ $(document).ready(function (){
 
     app.map.updateTimeline = function() {
 
-        studiesByYear = d3.nest()
-            .key(function(d) { return d.properties.yearpublished; })
-            .rollup(function(v) { return v.length; })
-            .entries(studies.features);
+        if(timeline_type == "studied") {
+            studiesByYear = [];
+            let yearsstudied_min, yearsstudied_max;
+            const mostRecentYear = timeMax.getUTCFullYear();
+
+            for (let index = 1960; index <= mostRecentYear; index++) {
+                studiesByYear.push({key: index.toString(), value: 0});
+            }
+            for (let index = 0; index < studies.features.length; index++) {
+                if (studies.features[index].properties.yearsstudied_number_min) {
+                    yearsstudied_min = studies.features[index].properties.yearsstudied_number_min.split('-');
+                }
+                if (studies.features[index].properties.yearsstudied_number_max) {
+                    yearsstudied_max = studies.features[index].properties.yearsstudied_number_max.split('-');
+                } else {
+                    yearsstudied_max = yearsstudied_min;
+                }
+                
+                for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
+                    for (let k = 0; k < studiesByYear.length; k++) {
+                        if (studiesByYear[k].key == j) {
+                            studiesByYear[k].value++ 
+                        } 
+                    }
+                }   
+            }
+        } else {
+            studiesByYear = d3.nest()
+                .key(function(d) { return d.properties.yearpublished; })
+                .rollup(function(v) { return v.length; })
+                .entries(studies.features);
+        }
             
         for (let index = 0; index < studiesByYear.length; index++) {
             studiesByYear[index].count = 0;
         }
 
+        timelineY
+            .domain([1, d3.max(studiesByYear, function(d) { return d.value; })]);
         
-        const timelineSelection = timelineG.selectAll('circle.timeline-circles')
-            .data(studies.features, function(d){ return d.properties.pk });
+        let timelineSelection;
+        if(timeline_type == "studied") {
+            timelineSelection = timelineG.selectAll('rect.timeline-circles')
+                .data(studies.features.sort(function(a,b) {
+                    return a.num_yearsstudied - b.num_yearsstudied; 
+                }), function(d){ return d.properties.pk });
+        } else {
+            timelineSelection = timelineG.selectAll('rect.timeline-circles')
+                .data(studies.features, function(d){ return d.properties.pk });
+        }
 
 
         timelineSelection
             .transition()
             .duration(500)
-            .attr('transform', function(d) {
+            .attr('transform', function(d, i) {
                 let count = 0;
-                for (let index = 0; index < studiesByYear.length; index++) {
-                    if (studiesByYear[index].key == d.properties.yearpublished) {
-                        studiesByYear[index].count++;
-                        count = studiesByYear[index].count;
+                if(timeline_type == "studied") {
+                    let yearsstudied_min, yearsstudied_max;
+                    for (let index = 0; index < studiesByYear.length; index++) {
+                        if (d.properties.yearsstudied_number_min) {
+                            yearsstudied_min = d.properties.yearsstudied_number_min.split('-')[0];
+                        }
+                        if (d.properties.yearsstudied_number_max) {
+                            yearsstudied_max = d.properties.yearsstudied_number_max.split('-')[0];
+                        } else {
+                            yearsstudied_max = yearsstudied_min;
+                        }
+                        for (let j = yearsstudied_min; j <= yearsstudied_max; j++) {
+                            if (studiesByYear[index].key == j) {
+                                studiesByYear[index].count++;
+                                count = studiesByYear[index].count;
+                            }
+                        }                    
                     }
+                    let date = new Date(d.properties.yearsstudied_number_min);
+                    return 'translate(' + [timelineX(date), timelineY(count)] + ')';
+                } else {
+                    for (let index = 0; index < studiesByYear.length; index++) {
+                        if (studiesByYear[index].key == d.properties.yearpublished) {
+                            studiesByYear[index].count++;
+                            count = studiesByYear[index].count;
+                        }
+                    }
+                    let date = new Date(d.properties.yearpublished)
+                    return 'translate(' + [timelineX(date), timelineY(count)] + ')';
                 }
-                let date = new Date(d.properties.yearpublished)
-                return 'translate(' + [timelineX(date), timelineY(count)] + ')';
             })
+            .attr("width", function(d){
+                if(timeline_type == "studied") {
+                    if (d.properties.yearsstudied_number_min) {
+                        yearsstudied_min = d.properties.yearsstudied_number_min.split('-')[0];
+                    }
+                    if (d.properties.yearsstudied_number_max) {
+                        yearsstudied_max = d.properties.yearsstudied_number_max.split('-')[0];
+                    } else {
+                        yearsstudied_max = yearsstudied_min;
+                    }
+                    let distance = yearsstudied_max - yearsstudied_min + 1;
+                    return distance * 10; 
+                } else {
+                    return 10;
+                }   
+            });
 
         timelineSelection.enter()
-            .append('circle')
-            .attr('transform', function(d) {
-                let count = 0;
-                for (let index = 0; index < studiesByYear.length; index++) {
-                    if (studiesByYear[index].key == d.properties.yearpublished) {
-                        studiesByYear[index].count++;
-                        count = studiesByYear[index].count;
-                    }
-                }
-                let date = new Date(d.properties.yearpublished)
-                return 'translate(' + [timelineX(date), timelineY(count)] + ')';
+            .append('rect')
+            .attr("x", 0)
+            .attr("y", -5)
+            .attr("width", function(d){
+                if(timeline_type == "studied") {
+                    let distance = d.properties.num_yearsstudied + 1;
+                    return distance * 10; 
+                } else {
+                    return 10;
+                }   
             })
-            .attr("r", 5)
+            .attr("height", 10)
+            .attr("rx", 5)
+            .attr("ry", 5)
             .style("fill", pointColor)
             .style("fill-opacity", "1")
             .style("stroke", "#fff")
@@ -337,9 +450,43 @@ $(document).ready(function (){
             .attr("data-toggle", "tooltip")
             .attr("data-placement", "top")
             .attr("data-html", true)
-            .attr("title", function(d){
+            .attr("title", function(d, i){
                 const authors = d.properties.authors.replace("et al.", "<em>et al.</em>");
                 return authors + ' ' + d.properties.yearpublished
+            })
+            .attr('transform', function(d, i) {
+                let count = 0;
+                if(timeline_type == "studied") {
+                    let yearsstudied_min, yearsstudied_max;
+                    for (let index = 0; index < studiesByYear.length; index++) {
+                        if (d.properties.yearsstudied_number_min) {
+                            yearsstudied_min = d.properties.yearsstudied_number_min.split('-')[0];
+                        }
+                        if (d.properties.yearsstudied_number_max) {
+                            yearsstudied_max = d.properties.yearsstudied_number_max.split('-')[0];
+                        } else {
+                            yearsstudied_max = yearsstudied_min;
+                        }
+                        for (let j = yearsstudied_min; j <= yearsstudied_max; j++) {
+                            if (studiesByYear[index].key == j) {
+                                studiesByYear[index].count++;
+                                count = studiesByYear[index].count;
+                            }
+                        }                    
+                    }
+                    let date = new Date(d.properties.yearsstudied_number_min);
+                    return 'translate(' + [timelineX(date), timelineY(count)] + ')';
+                } else {
+                    for (let index = 0; index < studiesByYear.length; index++) {
+                        if (studiesByYear[index].key == d.properties.yearpublished) {
+                            studiesByYear[index].count++;
+                            count = studiesByYear[index].count;
+                        }
+                    }
+                    let date = new Date(d.properties.yearpublished)
+                    return 'translate(' + [timelineX(date), timelineY(count)] + ')';
+                }
+
             })
             .on("click", viewMoreInfo)
             .on("mouseover", function(d) {
@@ -661,5 +808,26 @@ $(document).ready(function (){
         hideDotsOnMap();
         hideTimelineTooltip();
     }
+
+    // listen for state change in the timeline switch
+    $("#timeline-switch").change(function() {
+        if($(this).is(":checked")) {
+            // switch visualization to year(s) studied
+            timeline_type = "studied";
+            yearsstudied_number_min = min_yearpublished;
+            yearsstudied_number_max = max_yearpublished; 
+            min_yearpublished = '';
+            max_yearpublished = '';
+            app.map.pullDataAndUpdate();
+        } else {
+            // switch visualization to year published
+            timeline_type = "published";
+            min_yearpublished = yearsstudied_number_min;
+            max_yearpublished = yearsstudied_number_max;
+            yearsstudied_number_min = ''; 
+            yearsstudied_number_max = '';
+            app.map.pullDataAndUpdate();
+        }
+    });
     
 });

@@ -18,15 +18,18 @@ def index(request):
 	if request.method == 'GET':
 		min_yearpublished = request.GET.get("min_yearpublished","")
 		max_yearpublished = request.GET.get("max_yearpublished","")
+		yearsstudied_number_min = request.GET.get("yearsstudied_number_min","")
+		yearsstudied_number_max = request.GET.get("yearsstudied_number_max","")
 		min_samplesize = request.GET.get("min_samplesize","")
 		max_samplesize = request.GET.get("max_samplesize","")
 		min_prevalenceper10000 = request.GET.get("min_prevalenceper10000","")
 		max_prevalenceper10000 = request.GET.get("max_prevalenceper10000","")
 		studytype = request.GET.get("studytype","")
 		keyword = request.GET.get("keyword","")
+		timeline_type = request.GET.get("timeline_type","published")
 
 
-	context_dict = {"min_yearpublished":min_yearpublished, "max_yearpublished":max_yearpublished, "min_samplesize":min_samplesize, "max_samplesize":max_samplesize, "min_prevalenceper10000":min_prevalenceper10000, "max_prevalenceper10000":max_prevalenceper10000, "studytype":studytype , "keyword":keyword}
+	context_dict = {"min_yearpublished":min_yearpublished, "max_yearpublished":max_yearpublished, "yearsstudied_number_min":yearsstudied_number_min, "yearsstudied_number_max":yearsstudied_number_max, "min_samplesize":min_samplesize, "max_samplesize":max_samplesize, "min_prevalenceper10000":min_prevalenceper10000, "max_prevalenceper10000":max_prevalenceper10000, "studytype":studytype , "keyword":keyword, "timeline_type":timeline_type}
 	return render(request, 'autism_prevalence_map/map.html', context_dict)
 
 
@@ -37,15 +40,18 @@ def list_view(request):
 	if request.method == 'GET':
 		min_yearpublished = request.GET.get("min_yearpublished","")
 		max_yearpublished = request.GET.get("max_yearpublished","")
+		yearsstudied_number_min = request.GET.get("yearsstudied_number_min","")
+		yearsstudied_number_max = request.GET.get("yearsstudied_number_max","")
 		min_samplesize = request.GET.get("min_samplesize","")
 		max_samplesize = request.GET.get("max_samplesize","")
 		min_prevalenceper10000 = request.GET.get("min_prevalenceper10000","")
 		max_prevalenceper10000 = request.GET.get("max_prevalenceper10000","")
 		studytype = request.GET.get("studytype","")
 		keyword = request.GET.get("keyword","")
+		timeline_type = request.GET.get("timeline_type","published")
 
 
-	context_dict = {"min_yearpublished":min_yearpublished, "max_yearpublished":max_yearpublished, "min_samplesize":min_samplesize, "max_samplesize":max_samplesize, "min_prevalenceper10000":min_prevalenceper10000, "max_prevalenceper10000":max_prevalenceper10000, "studytype":studytype ,"keyword":keyword}
+	context_dict = {"min_yearpublished":min_yearpublished, "max_yearpublished":max_yearpublished,"yearsstudied_number_min":yearsstudied_number_min, "yearsstudied_number_max":yearsstudied_number_max, "min_samplesize":min_samplesize, "max_samplesize":max_samplesize, "min_prevalenceper10000":min_prevalenceper10000, "max_prevalenceper10000":max_prevalenceper10000, "studytype":studytype ,"keyword":keyword, "timeline_type":timeline_type}
 
 	return render(request, 'autism_prevalence_map/list.html', context_dict)
 
@@ -70,6 +76,8 @@ def studiesApi(request):
 		# filters
 		min_yearpublished = request.GET.get("min_yearpublished","")
 		max_yearpublished = request.GET.get("max_yearpublished","")
+		yearsstudied_number_min = request.GET.get("yearsstudied_number_min","")
+		yearsstudied_number_max = request.GET.get("yearsstudied_number_max","")
 		min_samplesize = request.GET.get("min_samplesize","")
 		max_samplesize = request.GET.get("max_samplesize","")
 		min_prevalenceper10000 = request.GET.get("min_prevalenceper10000","")
@@ -92,6 +100,21 @@ def studiesApi(request):
 				kwargs['yearpublished_number__lte'] = date(int(max_yearpublished_re), 1, 1)
 			except TypeError:
 				response['status'] = "The maximum year of publication you entered was not a recognizable 4-digit year. Please try again."
+
+		if yearsstudied_number_min:
+			try:
+				yearsstudied_number_min_re = re.sub("[^0-9]", "", yearsstudied_number_min)
+				kwargs['yearsstudied_number_min__gte'] = date(int(yearsstudied_number_min_re), 1, 1)
+			except TypeError:
+				response['status'] = "The minimum year studied you entered was not a recognizable 4-digit year. Please try again."
+				
+		if yearsstudied_number_max:
+			try:
+				yearsstudied_number_max_re = re.sub("[^0-9]", "", yearsstudied_number_max)
+				kwargs['yearsstudied_number_max__lte'] = date(int(yearsstudied_number_max_re), 1, 1)
+			except TypeError:
+				response['status'] = "The maximum year studied you entered was not a recognizable 4-digit year. Please try again."
+
 
 		if min_samplesize:
 			try:
@@ -191,6 +214,9 @@ def studiesApi(request):
 			data['properties']['confidenceinterval'] = study.confidenceinterval
 			data['properties']['categoryadpddorasd'] = study.categoryadpddorasd
 			data['properties']['yearsstudied'] = study.yearsstudied
+			data['properties']['yearsstudied_number_min'] = study.yearsstudied_number_min
+			data['properties']['yearsstudied_number_max'] = study.yearsstudied_number_max
+			data['properties']['num_yearsstudied'] = study.num_yearsstudied
 			data['properties']['recommended'] = study.recommended
 			data['properties']['studytype'] = study.studytype
 			data['properties']['meanincomeofparticipants'] = study.meanincomeofparticipants
@@ -231,6 +257,8 @@ def studiesCsv(request):
 		# filters
 		min_yearpublished = request.GET.get("min_yearpublished","")
 		max_yearpublished = request.GET.get("max_yearpublished","")
+		yearsstudied_number_min = request.GET.get("yearsstudied_number_min","")
+		yearsstudied_number_max = request.GET.get("yearsstudied_number_max","")
 		min_samplesize = request.GET.get("min_samplesize","")
 		max_samplesize = request.GET.get("max_samplesize","")
 		min_prevalenceper10000 = request.GET.get("min_prevalenceper10000","")
@@ -253,6 +281,20 @@ def studiesCsv(request):
 				kwargs['yearpublished_number__lte'] = date(int(max_yearpublished_re), 1, 1)
 			except TypeError:
 				response['status'] = "The maximum year of publication you entered was not a recognizable 4-digit year. Please try again."
+
+		if yearsstudied_number_min:
+			try:
+				yearsstudied_number_min_re = re.sub("[^0-9]", "", yearsstudied_number_min)
+				kwargs['yearsstudied_number_min__gte'] = date(int(yearsstudied_number_min_re), 1, 1)
+			except TypeError:
+				response['status'] = "The minimum year studied you entered was not a recognizable 4-digit year. Please try again."
+				
+		if yearsstudied_number_max:
+			try:
+				yearsstudied_number_max_re = re.sub("[^0-9]", "", yearsstudied_number_max)
+				kwargs['yearsstudied_number_max__lte'] = date(int(yearsstudied_number_max_re), 1, 1)
+			except TypeError:
+				response['status'] = "The maximum year studied you entered was not a recognizable 4-digit year. Please try again."
 
 		if min_samplesize:
 			try:

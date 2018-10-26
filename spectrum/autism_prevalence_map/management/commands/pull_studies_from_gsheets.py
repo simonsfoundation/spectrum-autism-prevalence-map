@@ -172,9 +172,18 @@ class Command(BaseCommand):
                     yearsstudied_number_max = None
             except IndexError:
                 yearsstudied_number_max = None
-          
 
-            studies.objects.filter(gsheet_id=study.gsheet_id).update(yearpublished_number=yearpublished_number, samplesize_number=samplesize_number, prevalenceper10000_number=prevalenceper10000_number, yearsstudied_number_min=yearsstudied_number_min, yearsstudied_number_max=yearsstudied_number_max)
+            #calculate the span of years of study
+            if yearsstudied_min and yearsstudied_max:
+                try:
+                    num_yearsstudied = int(yearsstudied_max) - int(yearsstudied_min)
+                except ValueError:
+                    num_yearsstudied = None
+            else:
+                num_yearsstudied = None
+
+
+            studies.objects.filter(gsheet_id=study.gsheet_id).update(yearpublished_number=yearpublished_number, samplesize_number=samplesize_number, prevalenceper10000_number=prevalenceper10000_number, yearsstudied_number_min=yearsstudied_number_min, yearsstudied_number_max=yearsstudied_number_max, num_yearsstudied=num_yearsstudied)
 
 
 
