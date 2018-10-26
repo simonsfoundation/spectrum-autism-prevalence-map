@@ -12,7 +12,7 @@ $(document).ready(function (){
     // Fixed elements on scroll
     function fixSidebarElements() {
 
-        var marginFromNav = 47;
+        var marginFromNav = 85;
         if ( $(window).width() < 1140 ) marginFromNav = 0;
         var scrollPosition = $(document).scrollTop();
 
@@ -20,7 +20,7 @@ $(document).ready(function (){
 
         if ( $('.sidebar-container').length ) {
 
-            var chaptersTop = ( $(document).scrollTop() + $('.main-bar').height() + marginFromNav );
+            var chaptersTop = ( $(document).scrollTop() + marginFromNav );
             if ( $(window).width() < 1140 ) chaptersTop = chaptersTop + $('aside.sidebar').height();
 
             var chaptersPosition = $('#content-container').offset().top;
@@ -90,7 +90,6 @@ $(document).ready(function (){
                     chapterEnd = $('.chapter-start#' + chapterPlusOne + '').offset().top;
 
                 var progress = ( ( chaptersTop - $(this).offset().top ) / ( chapterEnd - $(this).offset().top ) ) * 100;
-                console.log(chaptersTop - $(this).offset().top);
                 if ( progress < 0 )
                     progress = 0;
                 else if ( progress > 100 )
