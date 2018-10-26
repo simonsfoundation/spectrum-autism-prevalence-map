@@ -2,10 +2,11 @@ $(document).ready(function (){
 
     d3.json("https://www.spectrumnews.org/wp-json/wp/v2/pages/62361").then(function(data) {
         content = data;
-        $("#wp-content").html(content.content.rendered);   
+        $("#wp-content").html(content.content.rendered);
         if(window.location.hash) {
             location.hash = window.location.hash;
         }
+        fixSidebarElements();
     });
 
     // Fixed elements on scroll
@@ -22,7 +23,7 @@ $(document).ready(function (){
             var chaptersTop = ( $(document).scrollTop() + $('.main-bar').height() + marginFromNav );
             if ( $(window).width() < 1140 ) chaptersTop = chaptersTop + $('aside.sidebar').height();
 
-            var chaptersPosition = $('#content-container').offset().top + $('.part-of-special-report').height();
+            var chaptersPosition = $('#content-container').offset().top;
             if ( $(window).width() < 1140 ) chaptersPosition = chaptersPosition - $('aside.sidebar').height() - 24;
 
             var endPoint = $('#end-row').offset().top - ( $('.chapter-navigation').height() + marginFromNav) - 36;
@@ -56,8 +57,7 @@ $(document).ready(function (){
 
             // Select current chapter
             $('.chapter-start').each(function() {
-
-                // Chapter selection 
+                // Chapter selection
 
                 var chapterIndex = parseInt( $(this).attr('id') );
                 var chapterPlusOne  = chapterIndex + 1;
@@ -90,6 +90,7 @@ $(document).ready(function (){
                     chapterEnd = $('.chapter-start#' + chapterPlusOne + '').offset().top;
 
                 var progress = ( ( chaptersTop - $(this).offset().top ) / ( chapterEnd - $(this).offset().top ) ) * 100;
+                console.log(chaptersTop - $(this).offset().top);
                 if ( progress < 0 )
                     progress = 0;
                 else if ( progress > 100 )
@@ -111,8 +112,6 @@ $(document).ready(function (){
     }
 
     $('.chapter-link a').first().addClass('active');
-
-    fixSidebarElements();
 
     $(window).on('resize', function() {
         fixSidebarElements();

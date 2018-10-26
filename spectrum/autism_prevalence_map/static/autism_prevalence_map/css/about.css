@@ -18,7 +18,25 @@ body {
     display: none;
 }
 
-#how-to-use {
-    padding-top: 90px;
-    margin-top: -90px;
+.hero-nav {
+    padding-bottom: 9px;
 }
+
+.hero-nav .sidebar-container {
+    top: 0;
+}
+
+aside.sidebar {
+    pointer-events: none;
+}
+    aside.sidebar ul.chapter-navigation {
+        pointer-events: all;
+    }
+
+.about#content-container .row .content:first-child h2 {
+    margin-top: 2em;
+}
+    .about#content-container .row .content:first-child h2#about {
+        margin-top: -6px;
+    }
+
