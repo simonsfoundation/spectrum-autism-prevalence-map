@@ -40,3 +40,6 @@ aside.sidebar {
         margin-top: -6px;
     }
 
+p a, ol a, .summary a {
+    font-weight: normal;
+}
