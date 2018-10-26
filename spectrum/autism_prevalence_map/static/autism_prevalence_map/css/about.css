@@ -40,6 +40,30 @@ aside.sidebar {
         margin-top: -6px;
     }
 
-p a, ol a, .summary a {
-    font-weight: normal;
+.container .content .bio h4 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.container .content .bio h5 {
+    font-weight: 400;
+    font-size: 13px;
+    color: #4d4d4d;
+    text-transform: none;
+    margin-top: -14px;
+    letter-spacing: 0;
+}
+
+.container#content-container .content .bio p {
+    width: 465px;
+    font-weight: 400;
+    font-family: "azo-sans-web", sans-serif;
+    font-size: 16px;
+}
+
+.bio a {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+    text-transform: uppercase;
 }
