@@ -148,6 +148,8 @@ class Command(BaseCommand):
 
             # extract the maximum and minimum dates from the `yearstudied` field 
             years = study.yearsstudied.split('-')
+            yearsstudied_min = None
+            yearsstudied_max = None
 
             try:
                 yearsstudied_min = re.sub("[^0-9]", "", years[0])
