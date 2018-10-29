@@ -34,37 +34,43 @@
     <!-- Navbar
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <nav class="navbar navbar-expand-lg fixed-top navbar-light spectrum-gradient">
-        <a class="navbar-brand" href="https://spectrumnews.org/">
-            <img src="{% static 'autism_prevalence_map/img/spectrum-logo-white.png' %}" width="auto" height="40" class="d-inline-block" alt="">
-        </a>
-        <a class="navbar-brand centered-title" href="#">
-            <span class="navbar-brand-text">Global Autism Prevalence</span>
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#right-nav-container" aria-controls="right-nav-container" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="left">
+            <a class="navbar-brand" href="https://spectrumnews.org/">
+                <img src="{% static 'autism_prevalence_map/img/spectrum-logo-white.png' %}" width="auto" height="40" class="d-inline-block" alt="">
+            </a>
+        </div>
+        <div class="middle">
+            <a class="navbar-brand centered-title" href="#">
+                <span class="navbar-brand-text">Global Autism Prevalence</span>
+            </a>
+        </div>
+        <div class="right">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#right-nav-container" aria-controls="right-nav-container" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="right-nav-container">
-            <span class="mr-auto"></span>
-            <ul class="nav nav-tabs mr-4">
-                <li class="nav-item">
-                    <a id="map-link" class="nav-link {% if request.path == '/' %}active{% endif %} " href="{% url 'index' %}">Map</a>
-                </li>
-                <li class="nav-item">
-                    <a id="list-link" class="nav-link {% if request.path == '/list/' %}active{% endif %}" href="{% url 'list_view' %}">List</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">About</a>
-                </li>
-            </ul>
-            <form class="form-inline">
-                <div class="input-group">
-                    <input id="search" class="form-control spectrum-form" type="search" placeholder="Filter data by keyword" aria-label="Filter data by keyword">
-                    <div class="input-group-append">
-                        <span class="input-group-text spectrum-append"><i class="fas fa-search"></i></span>
+            <div class="collapse navbar-collapse" id="right-nav-container">
+                <span class="mr-auto"></span>
+                <ul class="nav nav-tabs mr-4">
+                    <li class="nav-item">
+                        <a id="map-link" class="nav-link {% if request.path == '/' %}active{% endif %} " href="{% url 'index' %}">Map</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="list-link" class="nav-link {% if request.path == '/list/' %}active{% endif %}" href="{% url 'list_view' %}">List</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">About</a>
+                    </li>
+                </ul>
+                <form class="form-inline">
+                    <div class="input-group">
+                        <input id="search" class="form-control spectrum-form" type="search" placeholder="Filter data by keyword" aria-label="Filter data by keyword">
+                        <div class="input-group-append">
+                            <span class="input-group-text spectrum-append"><i class="fas fa-search"></i></span>
+                        </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </nav>
 
