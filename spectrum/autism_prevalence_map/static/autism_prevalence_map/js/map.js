@@ -528,6 +528,8 @@ $(document).ready(function (){
             })
             .on("click", viewMoreInfo)
             .on("mouseover", function(d) {
+                const sel = d3.select(this);
+                sel.moveToFront();
                 showTimelineTooltip(d);
                 d3.select(this).style("cursor", "pointer");
                 showDotOnMap(d);
