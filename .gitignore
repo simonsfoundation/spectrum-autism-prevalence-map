@@ -48,4 +48,4 @@ Thumbs.db
 ##########
 .vscode/*
 env/*
-
+.ebextensions/ssl.config 
