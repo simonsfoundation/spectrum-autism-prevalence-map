@@ -112,10 +112,6 @@
     position: relative; 
 }
 
-.timeline-toggle span {
-    display: none;
-}
-
 .timeline-switch > [type="checkbox"]:checked,
 .timeline-switch > [type="checkbox"]:not(:checked) {
     width: 0;
