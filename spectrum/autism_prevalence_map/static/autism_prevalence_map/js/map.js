@@ -3,118 +3,127 @@ $(document).ready(function (){
     // app.map scope
     app.map = {};
 
-    // constants
-    const width = $("#map").width();
-    const height = $("#map").height();
-    const timeline_height = $("#timeline").height();
-    
-    // data holder
-    let studies = null;
 
-    // have any points been clicked?
-    let clicked = false;
+    // globaly scope some variables for the map
+    let studies, clicked, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG;
 
-    // map projection
-    const projection = d3.geoKavrayskiy7()
-        .scale(250)
-        .translate([width / 2, height / 1.8]);
-
-    // function to create paths from map projection
-    const path = d3.geoPath().projection(projection);
-
-    // create svg container and apply zoom function
-    const svg = d3.select("#map")
-        .append("svg")
-        .attr('id', 'svg')
-        .style("width", "100%")
-        .style("height", "100%");
-
-        
-    // create g container for world map    
-    const g = svg.append("g")
-        .attr('id', 'g');
-
-    // create container for graticule
-    const graticuleG = g.append("g")
-        .attr("id", "graticule");
-
-    // create container for countries
-    const countriesG = g.append("g")
-        .classed("countries", true);
-
-    // create container for studies
-    const studiesG = g.append("g")
-        .attr("id", "studies");
-
-    // create container for timeline
-    const timelineDiv = d3.select('#timeline'),
-        timelineWidth = timelineDiv.node().offsetWidth - 45,
-        timelineHeight = timeline_height;    
-                
-    const timelineSVG = timelineDiv.append('svg')
-        .attr('width', timelineWidth)
-        .attr('height', timelineHeight);
-
-    // globaly scope some variables for the timeline
-    let brush, brushG, timelineG, timelineX, timelineY, studiesByYear, handle, handleText, timeMin, timeMax;
-
-    // add a graticule to the map
+    // functions for adding a graticule to the map
     const graticuleOutline = d3.geoGraticule().outline();
     const graticule = d3.geoGraticule10();
 
-    function addGraticule() {
-        graticuleG.append("path")
-            .datum(graticuleOutline)
-            .attr("class", "graticule")
-            .attr("d", path);
-
-        graticuleG.append("path")
-            .datum(graticule)
-            .attr("class", "graticule")
-            .attr("d", path);       
-    }
+    // globaly scope some variables for the timeline
+    let timeline_height, brush, brushG, timelineDiv, timelineSVG, timelineG, timelineX, timelineY, studiesByYear, handle, handleText, timeMin, timeMax;
 
     // set up clusering grid
     let clusterPoints = [];
     let clusterRange = 25;
     let quadtree;
     
-    // const grid = svg.append('g')
-    //     .attr('class', 'grid');
-    
-    // for (let x = 0; x <= width; x += clusterRange) {
-    //     for (let y = 0; y <= height; y+= clusterRange) {
-    //         grid.append('rect')
-    //             .attr("x", x)
-    //             .attr("y", y)
-    //             .attr("width", clusterRange)
-    //             .attr("height", clusterRange)
-    //             .classed("grid", true);
-    //     }
-    // }
 
     // add map data to the world map g container
-    d3.json(world_atlas).then(function(world) {
-        countriesG.selectAll("path")
-            .data(topojson.feature(world, world.objects.countries).features.filter(function(d){
-                if (d.id !== "010") {
-                    return d;
-                }
-            }))
-            .enter().append("path")
-            .attr("d", path)
-            .attr("id", function(d) {
-                return d.id;
-            });
+    app.map.initializeMap = function() {
+        // remove containers if they exist
+        d3.select("#map-svg").remove();
+        d3.select("#timeline-svg").remove();
 
-        countriesG.append("path")
-            .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
-            .classed("country-borders", true)
-            .attr("d", path);
+        if (width < 500) {
+            scale = 150;
+            $(".timeline-wrapper").addClass("invisible");
+        } else if (width < 1000) {
+            scale = 200;
+            $(".timeline-wrapper").addClass("invisible");
+        } else {
+            scale = 250;
+            $(".timeline-wrapper").removeClass("invisible");
+        }
 
-        app.map.initializeTimeline();
-        addGraticule();
-    });
+        // constants
+        width = $("#map").width();
+        height = $("#map").height();
+        timeline_height = $("#timeline").height();
+        
+        // data holder
+        studies = null;
+
+        // have any points been clicked?
+        clicked = false;
+
+        // set scale based on breakpoints
+        console.log(width);
+
+        // map projection
+        projection = d3.geoKavrayskiy7()
+            .scale(scale)
+            .translate([width / 2, height / 1.8]);
+
+        // function to create paths from map projection
+        path = d3.geoPath().projection(projection);
+
+        // create svg container and apply zoom function
+        svg = d3.select("#map")
+            .append("svg")
+            .attr("id", "map-svg")
+            .attr('width', width)
+            .attr('height', height);
+
+        // create g container for world map    
+        g = svg.append("g")
+            .attr('id', 'map-g');
+
+        // create container for graticule
+        graticuleG = g.append("g")
+            .attr("id", "graticule");
+
+        // create container for countries
+        countriesG = g.append("g")
+            .classed("countries", true);
+
+        // create container for studies
+        studiesG = g.append("g")
+            .attr("id", "studies");
+
+        // create container for timeline
+        timelineDiv = d3.select('#timeline'),
+            timelineWidth = timelineDiv.node().offsetWidth - 45,
+            timelineHeight = timeline_height; 
+    
+        timelineSVG = timelineDiv.append('svg')
+            .attr('id', "timeline-svg")
+            .attr('width', timelineWidth)
+            .attr('height', timelineHeight);
+
+        d3.json(world_atlas).then(function(world) {
+            countriesG.selectAll("path")
+                .data(topojson.feature(world, world.objects.countries).features.filter(function(d){
+                    if (d.id !== "010") {
+                        return d;
+                    }
+                }))
+                .enter().append("path")
+                .attr("d", path)
+                .attr("id", function(d) {
+                    return d.id;
+                });
+    
+            countriesG.append("path")
+                .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
+                .classed("country-borders", true)
+                .attr("d", path);
+
+            graticuleG.append("path")
+                .datum(graticuleOutline)
+                .attr("class", "graticule")
+                .attr("d", path);
+
+            graticuleG.append("path")
+                .datum(graticule)
+                .attr("class", "graticule")
+                .attr("d", path);  
+                
+            app.map.initializeTimeline();
+
+        });        
+    }
 
     // pull data and update timeline function
     app.map.pullDataAndUpdate = function() {
@@ -528,6 +537,8 @@ $(document).ready(function (){
             })
             .on("click", viewMoreInfo)
             .on("mouseover", function(d) {
+                const sel = d3.select(this);
+                sel.moveToFront();
                 showTimelineTooltip(d);
                 d3.select(this).style("cursor", "pointer");
                 showDotOnMap(d);
@@ -629,8 +640,8 @@ $(document).ready(function (){
     }
 
     // set up map for zooming
-    const g_zoom = d3.select("#g");
-    const svg_zoom = d3.select('#svg');
+    const g_zoom = d3.select("map-g");
+    const svg_zoom = d3.select('#map-   svg');
 
     const zoom = d3.zoom()
         .scaleExtent([0.75, 3.375])
@@ -655,6 +666,7 @@ $(document).ready(function (){
     
     // define the radius change for points as we soom in annd out
     function scalePins(k) {
+        console.log(k);
 
         // calculate new radius
         const new_radius = 5 - k;
@@ -665,11 +677,11 @@ $(document).ready(function (){
             .attr("r", new_radius);
 
         // select all pins and apply new stroke width on hover
-        // d3.selectAll('.map-circles')
-        //     .on("mouseover", function(d) {
-        //         d3.select(this).style("cursor", "pointer"); 
-        //         d3.select(this).style("stroke-width", new_radius/2.5);            
-        //     });
+        d3.selectAll('.map-circles')
+            .on("mouseover", function(d) {
+                d3.select(this).style("cursor", "pointer"); 
+                d3.select(this).style("stroke-width", new_radius/2.5);            
+            });
     }
 
     // set up listeners for zoom
@@ -828,5 +840,17 @@ $(document).ready(function (){
             this.parentNode.appendChild(this);
         });
     };
+
+
+    // listen for window resize and redraw map and timeline
+    let resize_id;
+    $(window).resize(function () { 
+        clearTimeout(resize_id);
+        resize_id = setTimeout(app.map.initializeMap(), 500);
+    });
+
+
+    // initialize map and timeline
+    app.map.initializeMap();
     
 });

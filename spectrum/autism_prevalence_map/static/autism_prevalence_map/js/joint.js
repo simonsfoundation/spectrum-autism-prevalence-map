@@ -76,14 +76,22 @@ $(document).ready(function (){
     $("#min_year").on("change", function(e) {
         $("#more-information-card").css("display", "none");
         // update filters
-        min_yearpublished = $(this).val();
+        if (timeline_type == "studied") {
+            yearsstudied_number_min = $(this).val();
+        } else {
+            min_yearpublished = $(this).val();
+        }
         app.runUpdate();
     }); 
 
     $("#max_year").on("change", function(e) {
         $("#more-information-card").css("display", "none");
         // update filters
-        max_yearpublished = $(this).val();
+        if (timeline_type == "studied") {
+            yearsstudied_number_max = $(this).val();
+        } else {
+            max_yearpublished = $(this).val();
+        }
         app.runUpdate();
     }); 
 

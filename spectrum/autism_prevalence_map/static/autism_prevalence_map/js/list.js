@@ -14,8 +14,7 @@ $(document).ready(function (){
     const path = d3.geoPath().projection(projection);
 
     let world = null;
-    let lat = null;
-    let lng = null;
+    let thisMapSVG = null;
 
     app.list.loadWorldMap = function() {
         d3.json(world_atlas).then(function(data) {
@@ -27,7 +26,7 @@ $(document).ready(function (){
 
     app.list.addRows = function() {
         d3.select("#studies_tbody").remove();      
-        d3.json("/studies-api/?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+studytype+"&keyword="+keyword).then(function(data) {
+        d3.json("/studies-api/" + app.api_call_param_string).then(function(data) {
             studies = data;
             let enter_selection = table.append("tbody")
                 .attr("id", "studies_tbody")
@@ -146,10 +145,18 @@ $(document).ready(function (){
 
             let mapSVG = mapBlock.append("svg")
                 .style("width", "100%")
-                .style("height", "100%");
+                .style("height", "100%")
+                .attr("id", function (d) { 
+                    return "map_svg_" + d.properties.pk;
+                });
+
+            thisMapSVG = mapSVG;
 
             let mapG = mapSVG.append("g")
-                .classed("countries", true);
+                .classed("countries", true)
+                .attr("id", function (d) { 
+                    return "map_svg_g_" + d.properties.pk;
+                });
 
             mapG.selectAll("path")
                 .data(topojson.feature(world, world.objects.countries).features.filter(function(d){
@@ -171,12 +178,10 @@ $(document).ready(function (){
 
             const mapSelection = studiesG.append("circle")
                 .attr("cx", function (d) { 
-                    lat = projection(d.geometry.coordinates)[0];
-                    return lat; 
+                    return projection(d.geometry.coordinates)[0]; 
                 })
                 .attr("cy", function (d) { 
-                    lng = projection(d.geometry.coordinates)[1];
-                    return lng; 
+                    return projection(d.geometry.coordinates)[1]; 
                 })
                 .attr("r", 5)
                 .style("fill", pointColor)
@@ -187,14 +192,16 @@ $(document).ready(function (){
                 .attr("id", function(d){
                     return "map_dot_" + d.properties.pk
                 });
-               
-            const zoom = d3.zoom()
-                .on("zoom", function() {
-                    mapG.attr("transform", d3.event.transform);
-                })
 
-            mapSVG.call(zoom.scaleTo, 2)
-                .call(zoom.translateTo, lat - (mapWidth/4), lng - (mapWidth/6));
+            thisMapSVG.each(function(d) {
+                let zoom = d3.zoom()
+                    .on("zoom", function() {
+                        d3.select("#map_svg_g_" + d.properties.pk).attr("transform", d3.event.transform);
+                    });
+                d3.select("#map_svg_" + d.properties.pk)
+                    .call(zoom.scaleTo, 2)
+                    .call(zoom.translateTo, projection(d.geometry.coordinates)[0] - (mapWidth/4), projection(d.geometry.coordinates)[1] - (mapWidth/6));
+            })
 
             // add confidence interval graphic
             let ciBlock = card_div.append("div")
@@ -398,34 +405,48 @@ $(document).ready(function (){
 
     // making the combo box options for earliest published and latest published
     d3.json("/studies-api/").then(function(data) {
-        const comboBox_min_yearpublished = d3.select("#min_yearpublished");
-        const comboBox_max_yearpublished = d3.select("#max_yearpublished");
-        const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.yearpublished); }).getUTCFullYear();
+        const comboBox_min_year = d3.select("#min_year");
+        const comboBox_max_year = d3.select("#max_year");
+
+        const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.yearsstudied_number_min); }).getUTCFullYear();
         const timeMax = d3.max(data.features, function(d) { return new Date(d.properties.yearpublished); }).getUTCFullYear();
 
         for (let index = timeMin; index <= timeMax; index++) {
-            comboBox_min_yearpublished.append("option")
+            comboBox_min_year.append("option")
                 .attr("value", index)
                 .text(index);
 
-            comboBox_max_yearpublished.append("option")
+            comboBox_max_year.append("option")
                 .attr("value", index)
                 .text(index);
         }
 
         if (min_yearpublished) {
-            $("#min_yearpublished").val(min_yearpublished);
+            $("#min_year").val(min_yearpublished);
+        } else if (yearsstudied_number_min) {
+            $("#min_year").val(yearsstudied_number_min);
         } else {
-            $("#min_yearpublished").val($("#min_yearpublished option:first").val());
+            $("#min_year").val($("#min_year option:first").val());
         }
+
         if (max_yearpublished) {
-            $("#max_yearpublished").val(max_yearpublished);
+            $("#max_year").val(max_yearpublished);
+        } else if (yearsstudied_number_max) {
+            $("#max_year").val(yearsstudied_number_max);
         } else {
-            $("#max_yearpublished").val($("#max_yearpublished option:first").val());
+            $("#max_year").val($("#max_year option:first").val());
         }
     });
 
 // initialize
-app.list.loadWorldMap();    
+app.list.loadWorldMap();
+
+if (timeline_type == "studied") {
+    $("#earliest-label").text("Earliest year studied");
+    $("#latest-label").text("Latest year studied");
+} else {
+    $("#earliest-label").text("Earliest publication date");
+    $("#latest-label").text("Latest publication date");
+}
 
 });
