@@ -25,9 +25,12 @@ $(document).ready(function (){
     // create svg container and apply zoom function
     const svg = d3.select("#map")
         .append("svg")
-        .attr('id', 'svg')
-        .style("width", "100%")
-        .style("height", "100%");
+        .classed("svg-container", true) //container class to make it responsive
+        //responsive SVG needs these 2 attributes and no width and height attr
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 " + width + " " + height)
+        //class to make it responsive
+        .classed("svg-content-responsive", true);
 
         
     // create g container for world map    
@@ -52,8 +55,14 @@ $(document).ready(function (){
         timelineHeight = timeline_height;    
                 
     const timelineSVG = timelineDiv.append('svg')
-        .attr('width', timelineWidth)
-        .attr('height', timelineHeight);
+        // .attr('width', timelineWidth)
+        // .attr('height', timelineHeight)
+        .classed("svg-container", true) //container class to make it responsive
+        //responsive SVG needs these 2 attributes and no width and height attr
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 "+ timelineWidth + " " + timelineHeight)
+        //class to make it responsive
+        .classed("svg-content-responsive", true);
 
     // globaly scope some variables for the timeline
     let brush, brushG, timelineG, timelineX, timelineY, studiesByYear, handle, handleText, timeMin, timeMax;

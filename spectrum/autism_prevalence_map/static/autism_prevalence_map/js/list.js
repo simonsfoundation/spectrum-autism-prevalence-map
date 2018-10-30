@@ -191,15 +191,14 @@ $(document).ready(function (){
                 .attr("id", function(d){
                     return "map_dot_" + d.properties.pk
                 });
-               
 
             thisMapSVG.each(function(d) {
-                const mapG_zoom = d3.select("map_svg_g_" + d.properties.pk);
-                const zoom = d3.zoom()
+                let zoom = d3.zoom()
                     .on("zoom", function() {
-                        mapG_zoom.attr("transform", d3.event.transform);
+                        d3.select("#map_svg_g_" + d.properties.pk).attr("transform", d3.event.transform);
                     });
-                d3.select("#map_svg_" + d.properties.pk).call(zoom.scaleTo, 2)
+                d3.select("#map_svg_" + d.properties.pk)
+                    .call(zoom.scaleTo, 2)
                     .call(zoom.translateTo, projection(d.geometry.coordinates)[0] - (mapWidth/4), projection(d.geometry.coordinates)[1] - (mapWidth/6));
             })
 
