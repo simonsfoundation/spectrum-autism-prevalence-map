@@ -76,7 +76,7 @@ class Command(BaseCommand):
                 print e
 
     def geocode(self):
-        gmaps_api_key = '&key=' + 'AIzaSyDf-cF98Txqwy7t1Bks58-iFBFS6xkNgf0'
+        gmaps_api_key = '&key=' + 'AIzaSyACddN3i59_QccZTqB4cWGyK6ZDFCLCVBE'
         base_url = 'https://maps.googleapis.com/maps/api/geocode/json'
 
         # try to geocode only where country and area are not null, and where lat and lon are null
