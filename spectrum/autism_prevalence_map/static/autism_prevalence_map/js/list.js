@@ -152,7 +152,10 @@ $(document).ready(function (){
             thisMapSVG = mapSVG;
 
             let mapG = mapSVG.append("g")
-                .classed("countries", true);
+                .classed("countries", true)
+                .attr("id", function (d) { 
+                    return "map_svg_g_" + d.properties.pk;
+                });
 
             mapG.selectAll("path")
                 .data(topojson.feature(world, world.objects.countries).features.filter(function(d){
@@ -189,12 +192,13 @@ $(document).ready(function (){
                     return "map_dot_" + d.properties.pk
                 });
                
-            const zoom = d3.zoom()
-                .on("zoom", function() {
-                    mapG.attr("transform", d3.event.transform);
-                })
 
             thisMapSVG.each(function(d) {
+                let mapG_zoom = d3.select("map_svg_g_" + d.properties.pk);
+                let zoom = d3.zoom()
+                .on("zoom", function() {
+                    mapG_zoom.attr("transform", d3.event.transform);
+                })
                 d3.select("#map_svg_" + d.properties.pk).call(zoom.scaleTo, 2)
                 .call(zoom.translateTo, projection(d.geometry.coordinates)[0] - (mapWidth/4), projection(d.geometry.coordinates)[1] - (mapWidth/6));
             })
