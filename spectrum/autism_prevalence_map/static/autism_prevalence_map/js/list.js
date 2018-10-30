@@ -14,8 +14,7 @@ $(document).ready(function (){
     const path = d3.geoPath().projection(projection);
 
     let world = null;
-    let lat = null;
-    let lng = null;
+    let thisMapSVG = null;
 
     app.list.loadWorldMap = function() {
         d3.json(world_atlas).then(function(data) {
@@ -147,8 +146,10 @@ $(document).ready(function (){
                 .style("width", "100%")
                 .style("height", "100%")
                 .attr("id", function (d) { 
-                    return "map_svg_" + d.properties.pk; 
+                    return "map_svg_" + d.properties.pk;
                 });
+
+            thisMapSVG = mapSVG;
 
             let mapG = mapSVG.append("g")
                 .classed("countries", true);
@@ -173,12 +174,10 @@ $(document).ready(function (){
 
             const mapSelection = studiesG.append("circle")
                 .attr("cx", function (d) { 
-                    lat = projection(d.geometry.coordinates)[0];
-                    return lat; 
+                    return projection(d.geometry.coordinates)[0]; 
                 })
                 .attr("cy", function (d) { 
-                    lng = projection(d.geometry.coordinates)[1];
-                    return lng; 
+                    return projection(d.geometry.coordinates)[1]; 
                 })
                 .attr("r", 5)
                 .style("fill", pointColor)
@@ -195,8 +194,10 @@ $(document).ready(function (){
                     mapG.attr("transform", d3.event.transform);
                 })
 
-            mapSVG.call(zoom.scaleTo, 2)
-                .call(zoom.translateTo, lat - (mapWidth/4), lng - (mapWidth/6));
+            thisMapSVG.each(function(d) {
+                d3.select("#map_svg_" + d.properties.pk).call(zoom.scaleTo, 2)
+                .call(zoom.translateTo, projection(d.geometry.coordinates)[0] - (mapWidth/4), projection(d.geometry.coordinates)[1] - (mapWidth/6));
+            })
 
             // add confidence interval graphic
             let ciBlock = card_div.append("div")
