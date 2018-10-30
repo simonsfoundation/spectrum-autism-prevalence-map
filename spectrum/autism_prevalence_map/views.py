@@ -84,6 +84,7 @@ def studiesApi(request):
 		max_prevalenceper10000 = request.GET.get("max_prevalenceper10000","")
 		studytype = request.GET.get("studytype","")
 		keyword = request.GET.get("keyword","")
+		timeline_type = request.GET.get("timeline_type","published")
 
 
 		#apply filters
@@ -102,6 +103,7 @@ def studiesApi(request):
 				response['status'] = "The maximum year of publication you entered was not a recognizable 4-digit year. Please try again."
 
 		if yearsstudied_number_min:
+			kwargs['yearsstudied__isnull'] = False
 			try:
 				yearsstudied_number_min_re = re.sub("[^0-9]", "", yearsstudied_number_min)
 				kwargs['yearsstudied_number_min__gte'] = date(int(yearsstudied_number_min_re), 1, 1)
@@ -148,10 +150,13 @@ def studiesApi(request):
 		if studytype:
 			kwargs['studytype__icontains'] = studytype
 
+		if timeline_type == "studied":
+			kwargs['yearsstudied_number_min__isnull'] = False
+
 		#pull data with lat/lngs only
 		#kwargs['latitude__isnull'] = False
 		#kwargs['longitude__isnull'] = False
-
+		
 		# add postgres keyword search
 		if keyword:
 			#search vectors
@@ -194,7 +199,7 @@ def studiesApi(request):
 		else:
 			pulled_studies = studies.objects.filter(**kwargs)
 
-
+			
 		for study in pulled_studies:
 			data = {}
 			data['type'] = 'Feature'
@@ -265,6 +270,7 @@ def studiesCsv(request):
 		max_prevalenceper10000 = request.GET.get("max_prevalenceper10000","")
 		studytype = request.GET.get("studytype","")
 		keyword = request.GET.get("keyword","")
+		timeline_type = request.GET.get("timeline_type","published")
 
 
 		#apply filters
@@ -328,9 +334,13 @@ def studiesCsv(request):
 		if studytype:
 			kwargs['studytype__icontains'] = studytype
 
+		if timeline_type == "studied":
+			kwargs['yearsstudied_number_min__isnull'] = False
+
 		#pull data with lat/lngs only
 		kwargs['latitude__isnull'] = False
 		kwargs['longitude__isnull'] = False
+
 
 		# add postgres keyword search
 		if keyword:
