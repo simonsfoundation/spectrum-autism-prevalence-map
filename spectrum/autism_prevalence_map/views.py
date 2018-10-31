@@ -113,7 +113,7 @@ def studiesApi(request):
 		if yearsstudied_number_max:
 			try:
 				yearsstudied_number_max_re = re.sub("[^0-9]", "", yearsstudied_number_max)
-				kwargs['yearsstudied_number_max__lte'] = date(int(yearsstudied_number_max_re), 1, 1)
+				kwargs['yearsstudied_number_max__lte'] = date(int(yearsstudied_number_max_re), 1, 2)
 			except TypeError:
 				response['status'] = "The maximum year studied you entered was not a recognizable 4-digit year. Please try again."
 

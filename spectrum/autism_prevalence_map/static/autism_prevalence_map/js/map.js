@@ -12,7 +12,7 @@ $(document).ready(function (){
     const graticule = d3.geoGraticule10();
 
     // globaly scope some variables for the timeline
-    let timeline_height, brush, brushG, timelineDiv, timelineSVG, timelineG, timelineX, timelineY, studiesByYear, handle, handleText, timeMin, timeMax;
+    let timeline_height, brush, brushG, timelineDiv, timelineSVG, timelineG, timelineX, timelineY, max_Y_domain, studiesByYear, handle, handleText, timeMin, timeMax;
 
     // set up clusering grid
     let clusterPoints = [];
@@ -130,6 +130,7 @@ $(document).ready(function (){
         app.updateURL();
         d3.json("/studies-api/" + app.api_call_param_string).then(function(data) {
             studies = data;   
+            console.log(studies);
             app.map.updateTimeline();
         });
     }
@@ -167,7 +168,7 @@ $(document).ready(function (){
 
 
         timelineY = d3.scaleLinear()
-            .range([timelineHeight-30, 20]);
+            .range([timelineHeight-30, 10]);
 
         // Add the x axis
         const axisHeight = timelineHeight - 20;
@@ -297,6 +298,7 @@ $(document).ready(function (){
     app.map.updateTimeline = function() {
 
         if(timeline_type == "studied") {
+            // count the years in which each study was operative for calculating the max domain
             studiesByYear = [];
             let yearsstudied_min, yearsstudied_max;
             const mostRecentYear = timeMax.getUTCFullYear();
@@ -304,23 +306,29 @@ $(document).ready(function (){
             for (let index = 1960; index <= mostRecentYear; index++) {
                 studiesByYear.push({key: index.toString(), value: 0});
             }
-            for (let index = 0; index < studies.features.length; index++) {
+            for (let index = 0; index < studies.features.length; index++) {                
                 if (studies.features[index].properties.yearsstudied_number_min) {
                     yearsstudied_min = studies.features[index].properties.yearsstudied_number_min.split('-');
+                } else {
+                    yearsstudied_min = [0, 0];
                 }
                 if (studies.features[index].properties.yearsstudied_number_max) {
                     yearsstudied_max = studies.features[index].properties.yearsstudied_number_max.split('-');
                 } else {
                     yearsstudied_max = yearsstudied_min;
                 }
-                
+                // console.log(yearsstudied_min[0]);
+                // console.log(yearsstudied_max[0]);
                 for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
                     for (let k = 0; k < studiesByYear.length; k++) {
                         if (studiesByYear[k].key == j) {
+                            // console.log(studiesByYear[k].key);
+                            // console.log(j);
+
                             studiesByYear[k].value++ 
                         } 
                     }
-                }   
+                }
             }
         } else {
             studiesByYear = d3.nest()
@@ -328,32 +336,43 @@ $(document).ready(function (){
                 .rollup(function(v) { return v.length; })
                 .entries(studies.features);
         }
-            
+
+        max_Y_domain = d3.max(studiesByYear, function(d) { return d.value; });
+        timelineY
+            .domain([1, max_Y_domain]);
+
+        // set count = 0 for each year for every year studied/published and
+        // set up battleship grid in studiesByYear to mark where pills are when plotted
         for (let index = 0; index < studiesByYear.length; index++) {
             studiesByYear[index].count = 0;
+            studiesByYear[index].grid = [];
+            for (let j = 0; j < max_Y_domain; j++) {
+                studiesByYear[index].grid.push(0);
+            }
         }
 
-        timelineY
-            .domain([1, d3.max(studiesByYear, function(d) { return d.value; })]);
-        
+
         let timelineSelection;
         if(timeline_type == "studied") {
             timelineSelection = timelineG.selectAll('rect.timeline-circles')
                 .data(studies.features.sort(function(a,b) {
-                    return a.num_yearsstudied - b.num_yearsstudied; 
+                    return b.properties.num_yearsstudied - a.properties.num_yearsstudied; 
                 }), function(d){ return d.properties.pk });
 
             // set up simulation
-            const simulation = d3.forceSimulation(studies.features)
-                .force("x", d3.forceX(function(d) { 
-                    let date = new Date(d.properties.yearsstudied_number_min);
-                    return timelineX(date); 
-                }).strength(1))
-                .force("y", d3.forceY((timelineHeight-20)/2).strength(1))
-                .force("collide", d3.forceCollide(12))
-                .stop();
+            // const simulation = d3.forceSimulation(studies.features)
+            //     .force("x", d3.forceX(function(d) { 
+            //         let date = new Date(d.properties.yearsstudied_number_min);
+            //         return timelineX(date); 
+            //     }).strength(1))
+            //     .force("y", d3.forceY(function(d) { 
+            //         const max_Y_domain = d3.max(studiesByYear, function(d) { return d.value; })
+            //         return timelineY(max_Y_domain - (d.properties.num_yearsstudied+1)); 
+            //     }).strength(1))
+            //     .force("collide", d3.forceCollide(12))
+            //     .stop();
 
-            for (var i = 0; i < 1000; ++i) simulation.tick();
+            // for (var i = 0; i < 1000; ++i) simulation.tick();
 
         } else {
             timelineSelection = timelineG.selectAll('rect.timeline-circles')
@@ -366,7 +385,9 @@ $(document).ready(function (){
             .duration(1000)
             .attr("x", function(d){
                 if(timeline_type == "studied") {
-                    return d.x;
+                    let date = new Date(d.properties.yearsstudied_number_min);
+                    return timelineX(date);
+                    //return d.x;
                 } else {
                     let date = new Date(d.properties.yearpublished)
                     return timelineX(date);
@@ -374,14 +395,47 @@ $(document).ready(function (){
             })
             .attr("y", function(d){
                 let count = 0;
-                if(timeline_type == "studied") {
-                    return d.y;
+                if(timeline_type == "studied") {                    
+                    if (d.properties.yearsstudied_number_min) {
+                        yearsstudied_min = d.properties.yearsstudied_number_min.split('-');
+                    }
+                    if (d.properties.yearsstudied_number_max) {
+                        yearsstudied_max = d.properties.yearsstudied_number_max.split('-');
+                    } else {
+                        yearsstudied_max = yearsstudied_min;
+                    }
+
+                    // check to see if grid has already been marked as used across the pill
+                    // which y grid cell does every value = 0?
+                    let largestK = 1;
+                    for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
+                        for (let index = 0; index < studiesByYear.length; index++) {
+                            if (studiesByYear[index].key == j) {
+                                for (let k = largestK; k <= max_Y_domain; k++) {
+                                    if (studiesByYear[index].grid[k] == 0) {
+                                        largestK = k;
+                                        break;
+                                    } 
+                                }                                
+                            }
+                        }
+                    }
+                    
+                    // mark grid cells as already filled
+                    for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
+                        for (let index = 0; index < studiesByYear.length; index++) {
+                            if (studiesByYear[index].key == j) {
+                                studiesByYear[index].grid[largestK] = 1;
+                            }
+                        }
+                    }
+                    console.log(studiesByYear);
+                    return timelineY(largestK);
                 } else {
                     for (let index = 0; index < studiesByYear.length; index++) {
                         if (studiesByYear[index].key == d.properties.yearpublished) {
                             studiesByYear[index].count++;
                             count = studiesByYear[index].count;
-                            console.log(count);
                         }
                     }
                     return timelineY(count);
@@ -389,8 +443,17 @@ $(document).ready(function (){
             })
             .attr("width", function(d){
                 if(timeline_type == "studied") {
-                    let distance = d.properties.num_yearsstudied + 1;
-                    return distance * 10; 
+                    let mindate, maxdate;
+                    if (d.properties.yearsstudied_number_min) {
+                        mindate = new Date(d.properties.yearsstudied_number_min);
+                    }
+                    if (d.properties.yearsstudied_number_max) {
+                        maxdate = new Date(d.properties.yearsstudied_number_max);
+                    } else {
+                        return 10;
+                    }
+                    return (timelineX(maxdate) - timelineX(mindate)) + 10;
+
                 } else {
                     return 10;
                 }   
@@ -421,7 +484,9 @@ $(document).ready(function (){
             .append('rect')
             .attr("x", function(d){
                 if(timeline_type == "studied") {
-                    return d.x;
+                    let date = new Date(d.properties.yearsstudied_number_min);
+                    return timelineX(date);
+                    //return d.x;
                 } else {
                     let date = new Date(d.properties.yearpublished)
                     return timelineX(date);
@@ -429,8 +494,42 @@ $(document).ready(function (){
             })
             .attr("y", function(d){
                 let count = 0;
-                if(timeline_type == "studied") {
-                    return d.y;
+                if(timeline_type == "studied") {                    
+                    if (d.properties.yearsstudied_number_min) {
+                        yearsstudied_min = d.properties.yearsstudied_number_min.split('-');
+                    }
+                    if (d.properties.yearsstudied_number_max) {
+                        yearsstudied_max = d.properties.yearsstudied_number_max.split('-');
+                    } else {
+                        yearsstudied_max = yearsstudied_min;
+                    }
+
+                    // check to see if grid has already been marked as used across the pill
+                    // which y grid cell does every value = 0?
+                    let largestK = 1;
+                    for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
+                        for (let index = 0; index < studiesByYear.length; index++) {
+                            if (studiesByYear[index].key == j) {
+                                for (let k = largestK; k <= max_Y_domain; k++) {
+                                    if (studiesByYear[index].grid[k] == 0) {
+                                        largestK = k;
+                                        break;
+                                    } 
+                                }                                
+                            }
+                        }
+                    }
+                    
+                    // mark grid cells as already filled
+                    for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
+                        for (let index = 0; index < studiesByYear.length; index++) {
+                            if (studiesByYear[index].key == j) {
+                                studiesByYear[index].grid[largestK] = 1;
+                            }
+                        }
+                    }
+                    console.log(studiesByYear);
+                    return timelineY(largestK);
                 } else {
                     for (let index = 0; index < studiesByYear.length; index++) {
                         if (studiesByYear[index].key == d.properties.yearpublished) {
@@ -443,8 +542,17 @@ $(document).ready(function (){
             })
             .attr("width", function(d){
                 if(timeline_type == "studied") {
-                    let distance = d.properties.num_yearsstudied + 1;
-                    return distance * 10; 
+                    let mindate, maxdate;
+                    if (d.properties.yearsstudied_number_min) {
+                        mindate = new Date(d.properties.yearsstudied_number_min);
+                    }
+                    if (d.properties.yearsstudied_number_max) {
+                        maxdate = new Date(d.properties.yearsstudied_number_max);
+                    } else {
+                        return 10;
+                    }
+                    return (timelineX(maxdate) - timelineX(mindate)) + 10;
+
                 } else {
                     return 10;
                 }   
