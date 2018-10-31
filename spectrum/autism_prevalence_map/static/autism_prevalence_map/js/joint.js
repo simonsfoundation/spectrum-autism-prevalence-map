@@ -2,12 +2,15 @@ let app = {};
 
 $(document).ready(function (){
 
+    if( $(window).width() < 1024 ) {
+        alert( 'This map is currently best viewed on desktop devices. A mobile-friendly version is coming soon.' );
+    }
     // api call holder
     app.api_call_param_string = "?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&yearsstudied_number_min="+yearsstudied_number_min+"&yearsstudied_number_max="+yearsstudied_number_max+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+encodeURIComponent(studytype)+"&keyword="+encodeURIComponent(keyword)+"&timeline_type="+timeline_type;
 
     // function for updating url state
     app.updateURL = function() {
-        
+
         const obj = { foo: "bar" };
         app.api_call_param_string = "?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&yearsstudied_number_min="+yearsstudied_number_min+"&yearsstudied_number_max="+yearsstudied_number_max+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+encodeURIComponent(studytype)+"&keyword="+encodeURIComponent(keyword)+"&timeline_type="+timeline_type;
 
