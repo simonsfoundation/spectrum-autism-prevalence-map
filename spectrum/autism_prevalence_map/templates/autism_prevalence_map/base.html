@@ -33,7 +33,7 @@
 <body>
     <!-- Navbar
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <nav class="navbar navbar-expand-lg fixed-top navbar-light spectrum-gradient">
+    <nav class="navbar navbar-expand-xl fixed-top navbar-light spectrum-gradient">
         <div class="left">
             <a class="navbar-brand" href="https://spectrumnews.org/">
                 <img src="{% static 'autism_prevalence_map/img/spectrum-logo-white.png' %}" width="auto" height="40" class="d-inline-block" alt="">
@@ -50,7 +50,7 @@
             </button>
 
             <div class="collapse navbar-collapse" id="right-nav-container">
-                <span class="mr-auto"></span>
+                <!-- <span class="mr-auto"></span> -->
                 <ul class="nav nav-tabs mr-4">
                     <li class="nav-item">
                         <a id="map-link" class="nav-link {% if request.path == '/' %}active{% endif %} " href="{% url 'index' %}">Map</a>

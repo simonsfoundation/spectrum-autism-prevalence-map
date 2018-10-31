@@ -1,26 +1,23 @@
 #map {
-    height: 70vh;
+    height: calc(100vh - 73px);
 }
 
-/* .svg-container {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 100%; aspect ratio
-    vertical-align: top;
-    overflow: hidden;
+@media (min-width: 576px) { 
+    #map {
+        height: 70vh;
+    }
 }
-.svg-content-responsive {
-    display: inline-block;
-    position: absolute;
-    top: 0;
-    left: 0;
-} */
 
 .zoom-buttons {
     position: absolute;
-    bottom: 22vh;
+    bottom: 1vh;
     right: 15px;
+}
+
+@media (min-width: 576px) { 
+    .zoom-buttons {
+        bottom: 22vh;
+    }
 }
 
 .zoom-buttons .zoom-button {
@@ -40,8 +37,16 @@
 .more-information-card {
     display: none;
     position: absolute;
-    top: 100px;
-    left: 15px;
+    top: 72px;
+    left: 0;
+    padding: 0;
+}
+
+@media (min-width: 576px) { 
+    .more-information-card {
+        top: 100px;
+        left: 15px;        
+    }
 }
 
 .card-header {
@@ -53,7 +58,7 @@
 .card-close {
     position: absolute;
     top: 11px;
-    right: 25px;
+    right: 16px;
     z-index: 1;
     text-shadow: none;
     opacity: 1;
@@ -69,7 +74,15 @@
 
 .ui-brush {
     background: #4d4d4d;
-    height: 19vh;
+    height: 0vh;
+    display: none;
+}
+
+@media (min-width: 576px) { 
+    .ui-brush {
+        height: 19vh;
+        display: block;
+    }
 }
 
 .brush .extent {
@@ -98,13 +111,26 @@
 
 .timeline-wrapper {
     background-color: #4d4d4d;
-    height: 21vh;
+    height: 0vh;
+}
+
+@media (min-width: 576px) { 
+    .timeline-wrapper {
+        height: 21vh;
+    }
 }
 
 .timeline-toggle {
+    display: none;
     padding-top: 30px;
     padding-left: 30px;
     color: #fff;
+}
+
+@media (min-width: 576px) { 
+    .timeline-toggle {
+        display: block;
+    }
 }
 
 /* Switch CSS */
@@ -206,3 +232,5 @@
     stroke: #000;
     stroke-width: 1px;
 }
+
+

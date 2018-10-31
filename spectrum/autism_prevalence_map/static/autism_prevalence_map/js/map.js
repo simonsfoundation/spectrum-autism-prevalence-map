@@ -5,14 +5,14 @@ $(document).ready(function (){
 
 
     // globaly scope some variables for the map
-    let studies, clicked, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG;
+    let studies, clicked, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius;
 
     // functions for adding a graticule to the map
     const graticuleOutline = d3.geoGraticule().outline();
     const graticule = d3.geoGraticule10();
 
     // globaly scope some variables for the timeline
-    let timeline_height, brush, brushG, timelineDiv, timelineSVG, timelineG, timelineX, timelineY, studiesByYear, handle, handleText, timeMin, timeMax;
+    let timeline_height, brush, brushG, timelineDiv, timelineSVG, timelineG, timelineX, timelineY, max_Y_domain, studiesByYear, handle, handleText, timeMin, timeMax;
 
     // set up clusering grid
     let clusterPoints = [];
@@ -26,30 +26,30 @@ $(document).ready(function (){
         d3.select("#map-svg").remove();
         d3.select("#timeline-svg").remove();
 
-        if (width < 500) {
-            scale = 150;
-            $(".timeline-wrapper").addClass("invisible");
-        } else if (width < 1000) {
-            scale = 200;
-            $(".timeline-wrapper").addClass("invisible");
-        } else {
-            scale = 250;
-            $(".timeline-wrapper").removeClass("invisible");
-        }
-
         // constants
         width = $("#map").width();
         height = $("#map").height();
         timeline_height = $("#timeline").height();
+
+        if (width < 567) {
+            scale = 150;
+            // close filter drawers
+            $('#filter-list').addClass("invisible");
+            $('#filter-list').removeClass("visible");
+            $("#filters-link").prop('title', 'Open fliter drawer').attr('data-original-title', 'Open fliter drawer');            
+        } else if (width < 992) {
+            scale = 200;
+        } else if (width < 1800) {
+            scale = 250;
+        } else {
+            scale = 350;
+        }
         
         // data holder
         studies = null;
 
         // have any points been clicked?
         clicked = false;
-
-        // set scale based on breakpoints
-        console.log(width);
 
         // map projection
         projection = d3.geoKavrayskiy7()
@@ -81,6 +81,25 @@ $(document).ready(function (){
         // create container for studies
         studiesG = g.append("g")
             .attr("id", "studies");
+
+        // set up map for zooming
+        g_zoom = d3.select("#map-g");
+        svg_zoom = d3.select("#map-svg");
+
+        zoom = d3.zoom()
+            .scaleExtent([1, 5])
+            .on("zoom", zoomed);
+
+        svg_zoom.call(zoom);
+
+        // define zooming function for zooming map
+        function zoomed() {
+            //g_zoom.style("stroke-width", 1.5 / d3.event.scale + "px");
+            g_zoom.attr('transform', `translate(${d3.event.transform.x},  ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
+            // set pin sizes based on zoom level
+            scalePins(d3.event.transform.k);
+        };
+        
 
         // create container for timeline
         timelineDiv = d3.select('#timeline'),
@@ -167,7 +186,7 @@ $(document).ready(function (){
 
 
         timelineY = d3.scaleLinear()
-            .range([timelineHeight-30, 20]);
+            .range([timelineHeight-30, 10]);
 
         // Add the x axis
         const axisHeight = timelineHeight - 20;
@@ -297,6 +316,7 @@ $(document).ready(function (){
     app.map.updateTimeline = function() {
 
         if(timeline_type == "studied") {
+            // count the years in which each study was operative for calculating the max domain
             studiesByYear = [];
             let yearsstudied_min, yearsstudied_max;
             const mostRecentYear = timeMax.getUTCFullYear();
@@ -304,23 +324,24 @@ $(document).ready(function (){
             for (let index = 1960; index <= mostRecentYear; index++) {
                 studiesByYear.push({key: index.toString(), value: 0});
             }
-            for (let index = 0; index < studies.features.length; index++) {
+            for (let index = 0; index < studies.features.length; index++) {                
                 if (studies.features[index].properties.yearsstudied_number_min) {
                     yearsstudied_min = studies.features[index].properties.yearsstudied_number_min.split('-');
+                } else {
+                    yearsstudied_min = [0, 0];
                 }
                 if (studies.features[index].properties.yearsstudied_number_max) {
                     yearsstudied_max = studies.features[index].properties.yearsstudied_number_max.split('-');
                 } else {
                     yearsstudied_max = yearsstudied_min;
                 }
-                
                 for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
                     for (let k = 0; k < studiesByYear.length; k++) {
                         if (studiesByYear[k].key == j) {
                             studiesByYear[k].value++ 
                         } 
                     }
-                }   
+                }
             }
         } else {
             studiesByYear = d3.nest()
@@ -328,32 +349,43 @@ $(document).ready(function (){
                 .rollup(function(v) { return v.length; })
                 .entries(studies.features);
         }
-            
+
+        max_Y_domain = d3.max(studiesByYear, function(d) { return d.value; });
+        timelineY
+            .domain([1, max_Y_domain]);
+
+        // set count = 0 for each year for every year studied/published and
+        // set up battleship grid in studiesByYear to mark where pills are when plotted
         for (let index = 0; index < studiesByYear.length; index++) {
             studiesByYear[index].count = 0;
+            studiesByYear[index].grid = [];
+            for (let j = 0; j < max_Y_domain; j++) {
+                studiesByYear[index].grid.push(0);
+            }
         }
 
-        timelineY
-            .domain([1, d3.max(studiesByYear, function(d) { return d.value; })]);
-        
+
         let timelineSelection;
         if(timeline_type == "studied") {
             timelineSelection = timelineG.selectAll('rect.timeline-circles')
                 .data(studies.features.sort(function(a,b) {
-                    return a.num_yearsstudied - b.num_yearsstudied; 
+                    return b.properties.num_yearsstudied - a.properties.num_yearsstudied; 
                 }), function(d){ return d.properties.pk });
 
             // set up simulation
-            const simulation = d3.forceSimulation(studies.features)
-                .force("x", d3.forceX(function(d) { 
-                    let date = new Date(d.properties.yearsstudied_number_min);
-                    return timelineX(date); 
-                }).strength(1))
-                .force("y", d3.forceY((timelineHeight-20)/2).strength(1))
-                .force("collide", d3.forceCollide(12))
-                .stop();
+            // const simulation = d3.forceSimulation(studies.features)
+            //     .force("x", d3.forceX(function(d) { 
+            //         let date = new Date(d.properties.yearsstudied_number_min);
+            //         return timelineX(date); 
+            //     }).strength(1))
+            //     .force("y", d3.forceY(function(d) { 
+            //         const max_Y_domain = d3.max(studiesByYear, function(d) { return d.value; })
+            //         return timelineY(max_Y_domain - (d.properties.num_yearsstudied+1)); 
+            //     }).strength(1))
+            //     .force("collide", d3.forceCollide(12))
+            //     .stop();
 
-            for (var i = 0; i < 1000; ++i) simulation.tick();
+            // for (var i = 0; i < 1000; ++i) simulation.tick();
 
         } else {
             timelineSelection = timelineG.selectAll('rect.timeline-circles')
@@ -366,7 +398,9 @@ $(document).ready(function (){
             .duration(1000)
             .attr("x", function(d){
                 if(timeline_type == "studied") {
-                    return d.x;
+                    let date = new Date(d.properties.yearsstudied_number_min);
+                    return timelineX(date);
+                    //return d.x;
                 } else {
                     let date = new Date(d.properties.yearpublished)
                     return timelineX(date);
@@ -374,14 +408,46 @@ $(document).ready(function (){
             })
             .attr("y", function(d){
                 let count = 0;
-                if(timeline_type == "studied") {
-                    return d.y;
+                if(timeline_type == "studied") {                    
+                    if (d.properties.yearsstudied_number_min) {
+                        yearsstudied_min = d.properties.yearsstudied_number_min.split('-');
+                    }
+                    if (d.properties.yearsstudied_number_max) {
+                        yearsstudied_max = d.properties.yearsstudied_number_max.split('-');
+                    } else {
+                        yearsstudied_max = yearsstudied_min;
+                    }
+
+                    // check to see if grid has already been marked as used across the pill
+                    // which y grid cell does every value = 0?
+                    let largestK = 1;
+                    for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
+                        for (let index = 0; index < studiesByYear.length; index++) {
+                            if (studiesByYear[index].key == j) {
+                                for (let k = largestK; k <= max_Y_domain; k++) {
+                                    if (studiesByYear[index].grid[k] == 0) {
+                                        largestK = k;
+                                        break;
+                                    } 
+                                }                                
+                            }
+                        }
+                    }
+                    
+                    // mark grid cells as already filled
+                    for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
+                        for (let index = 0; index < studiesByYear.length; index++) {
+                            if (studiesByYear[index].key == j) {
+                                studiesByYear[index].grid[largestK] = 1;
+                            }
+                        }
+                    }
+                    return timelineY(largestK);
                 } else {
                     for (let index = 0; index < studiesByYear.length; index++) {
                         if (studiesByYear[index].key == d.properties.yearpublished) {
                             studiesByYear[index].count++;
                             count = studiesByYear[index].count;
-                            console.log(count);
                         }
                     }
                     return timelineY(count);
@@ -389,8 +455,17 @@ $(document).ready(function (){
             })
             .attr("width", function(d){
                 if(timeline_type == "studied") {
-                    let distance = d.properties.num_yearsstudied + 1;
-                    return distance * 10; 
+                    let mindate, maxdate;
+                    if (d.properties.yearsstudied_number_min) {
+                        mindate = new Date(d.properties.yearsstudied_number_min);
+                    }
+                    if (d.properties.yearsstudied_number_max) {
+                        maxdate = new Date(d.properties.yearsstudied_number_max);
+                    } else {
+                        return 10;
+                    }
+                    return (timelineX(maxdate) - timelineX(mindate)) + 10;
+
                 } else {
                     return 10;
                 }   
@@ -421,7 +496,9 @@ $(document).ready(function (){
             .append('rect')
             .attr("x", function(d){
                 if(timeline_type == "studied") {
-                    return d.x;
+                    let date = new Date(d.properties.yearsstudied_number_min);
+                    return timelineX(date);
+                    //return d.x;
                 } else {
                     let date = new Date(d.properties.yearpublished)
                     return timelineX(date);
@@ -429,8 +506,41 @@ $(document).ready(function (){
             })
             .attr("y", function(d){
                 let count = 0;
-                if(timeline_type == "studied") {
-                    return d.y;
+                if(timeline_type == "studied") {                    
+                    if (d.properties.yearsstudied_number_min) {
+                        yearsstudied_min = d.properties.yearsstudied_number_min.split('-');
+                    }
+                    if (d.properties.yearsstudied_number_max) {
+                        yearsstudied_max = d.properties.yearsstudied_number_max.split('-');
+                    } else {
+                        yearsstudied_max = yearsstudied_min;
+                    }
+
+                    // check to see if grid has already been marked as used across the pill
+                    // which y grid cell does every value = 0?
+                    let largestK = 1;
+                    for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
+                        for (let index = 0; index < studiesByYear.length; index++) {
+                            if (studiesByYear[index].key == j) {
+                                for (let k = largestK; k <= max_Y_domain; k++) {
+                                    if (studiesByYear[index].grid[k] == 0) {
+                                        largestK = k;
+                                        break;
+                                    } 
+                                }                                
+                            }
+                        }
+                    }
+                    
+                    // mark grid cells as already filled
+                    for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
+                        for (let index = 0; index < studiesByYear.length; index++) {
+                            if (studiesByYear[index].key == j) {
+                                studiesByYear[index].grid[largestK] = 1;
+                            }
+                        }
+                    }
+                    return timelineY(largestK);
                 } else {
                     for (let index = 0; index < studiesByYear.length; index++) {
                         if (studiesByYear[index].key == d.properties.yearpublished) {
@@ -443,8 +553,17 @@ $(document).ready(function (){
             })
             .attr("width", function(d){
                 if(timeline_type == "studied") {
-                    let distance = d.properties.num_yearsstudied + 1;
-                    return distance * 10; 
+                    let mindate, maxdate;
+                    if (d.properties.yearsstudied_number_min) {
+                        mindate = new Date(d.properties.yearsstudied_number_min);
+                    }
+                    if (d.properties.yearsstudied_number_max) {
+                        maxdate = new Date(d.properties.yearsstudied_number_max);
+                    } else {
+                        return 10;
+                    }
+                    return (timelineX(maxdate) - timelineX(mindate)) + 10;
+
                 } else {
                     return 10;
                 }   
@@ -478,7 +597,6 @@ $(document).ready(function (){
             .attr("id", function(d){
                 return "timeline_dot_" + d.properties.pk
             })
-            .attr("data-toggle", "tooltip")
             .attr("data-placement", "top")
             .attr("data-html", true)
             .attr("title", function(d, i){
@@ -526,7 +644,6 @@ $(document).ready(function (){
             .append("circle")
             .attr("cx", function (d) { return projection(d.geometry.coordinates)[0]; })
             .attr("cy", function (d) { return projection(d.geometry.coordinates)[1]; })
-            .attr("r", 5)
             .style("fill", pointColor)
             .style("fill-opacity", "1")
             .style("stroke", "#fff")
@@ -552,6 +669,8 @@ $(document).ready(function (){
             });
             
         mapSelection.exit().remove();
+
+        zoom_transition(1); 
         
         //app.map.clusterPoints(studies);
     }
@@ -562,7 +681,6 @@ $(document).ready(function (){
         let validData = [];
         quadtree.visit(function(node, x1, y1, x2, y2) {
             const p = node;
-            //console.log(p);
             if (p) {
                 p.selected = (p.data[0] >= x0) && (p.data[0] < x3) && (p.data[1] >= y0) && (p.data[1] < y3);
                 if (p.selected) {
@@ -581,16 +699,11 @@ $(document).ready(function (){
             return point;
         });
 
-        console.log(pointsRaw);
         quadtree = d3.quadtree().addAll(pointsRaw);
 
         for (let x = 0; x <= width; x += clusterRange) {
             for (let y = 0; y <= height; y+= clusterRange) {
                 const searched = app.map.inQuadTree(quadtree, x, y, x + clusterRange, y + clusterRange);
-                
-                if (searched.length > 0) {
-                    console.log(searched);
-                }
                 
                 const centerPoint = searched.reduce(function(prev, current) {
                     return [prev[0] + current[0], prev[1] + current[1]];
@@ -628,8 +741,6 @@ $(document).ready(function (){
             })
     }
 
-
-
     // point color function
     function pointColor(feature) {
         if (feature.properties.recommended == "yes" || feature.properties.recommended == "Yes") {
@@ -639,62 +750,39 @@ $(document).ready(function (){
         }
     }
 
-    // set up map for zooming
-    const g_zoom = d3.select("map-g");
-    const svg_zoom = d3.select('#map-   svg');
-
-    const zoom = d3.zoom()
-        .scaleExtent([0.75, 3.375])
-        .on("zoom", zoomed);
-
-    svg_zoom.call(zoom);
-
-    // define zooming function for zooming map
-    function zoomed() {
-        g_zoom.style("stroke-width", 1.5 / d3.event.scale + "px");
-        g_zoom.attr('transform', `translate(${d3.event.transform.x},  ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
-        // set pin zizes based on zoom level
-        //scalePins(d3.event.transform.k);
-    };
-
     // define function zoom transiton 
-    function transition(zoomLevel) {
+    function zoom_transition(zoomLevel) {
         svg_zoom.transition()
             .duration(500)
             .call(zoom.scaleBy, zoomLevel);
     }
-    
-    // define the radius change for points as we soom in annd out
+
+    // define the radius change for points as we zoom in annd out
     function scalePins(k) {
-        console.log(k);
 
         // calculate new radius
-        const new_radius = 5 - k;
+        new_radius = 6/k;
 
         // select all pins and apply new radius in transition with zoom
         d3.selectAll('.map-circles').transition()
             .duration(100)
             .attr("r", new_radius);
 
-        // select all pins and apply new stroke width on hover
-        d3.selectAll('.map-circles')
-            .on("mouseover", function(d) {
-                d3.select(this).style("cursor", "pointer"); 
-                d3.select(this).style("stroke-width", new_radius/2.5);            
-            });
+        // also scale the country borders
+        d3.selectAll(".country-borders").transition()
+            .duration(100)
+            .attr("stroke-width", new_radius/5);
     }
 
     // set up listeners for zoom
     d3.selectAll('button').on('click', function() {
         // zoom in 0.5 each time
         if (this.id === 'zoom-in') {
-            transition(1.5); 
-            //scalePins(-1);
+            zoom_transition(1.75); 
         }
         // zoom out 0.5 each time
         if (this.id === 'zoom-out') {
-            transition(0.7);
-            //scalePins(1); 
+            zoom_transition(0.575);
         }
         // return to initial state
         if (this.id === 'zoom_init') {
@@ -712,7 +800,7 @@ $(document).ready(function (){
             
         // show clicked dot on map
         d3.select('#map_dot_' + d.properties.pk)
-            .style("stroke-width", "2");        
+            .style("stroke-width", new_radius/2.5);        
     }
 
     // remove highlighting from dots on map
@@ -720,7 +808,6 @@ $(document).ready(function (){
         d3.selectAll(".map-circles")
             .style("stroke-width", "0");
     }
-
 
     // show tooltip on timeline dot
     function showTimelineTooltip(d) {
@@ -840,15 +927,6 @@ $(document).ready(function (){
             this.parentNode.appendChild(this);
         });
     };
-
-
-    // listen for window resize and redraw map and timeline
-    let resize_id;
-    $(window).resize(function () { 
-        clearTimeout(resize_id);
-        resize_id = setTimeout(app.map.initializeMap(), 500);
-    });
-
 
     // initialize map and timeline
     app.map.initializeMap();

@@ -165,6 +165,7 @@ class Command(BaseCommand):
                     yearsstudied_number_min = None
             except IndexError:
                 yearsstudied_number_min = None
+                yearsstudied_min = None
 
             try:
                 yearsstudied_max = re.sub("[^0-9]", "", years[1])
@@ -177,13 +178,20 @@ class Command(BaseCommand):
                     yearsstudied_number_max = None
             except IndexError:
                 yearsstudied_number_max = None
+                yearsstudied_max = None
+
+            if yearsstudied_number_min and yearsstudied_number_max is None:
+                yearsstudied_number_max = yearsstudied_number_min
+                yearsstudied_min = yearsstudied_max
 
             #calculate the span of years of study
             if yearsstudied_min and yearsstudied_max:
                 try:
-                    num_yearsstudied = int(yearsstudied_max) - int(yearsstudied_min)
+                    num_yearsstudied = (int(yearsstudied_max) - int(yearsstudied_min)) + 1
                 except ValueError:
                     num_yearsstudied = None
+            elif yearsstudied_min:
+                num_yearsstudied = 1
             else:
                 num_yearsstudied = None
 
