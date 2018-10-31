@@ -37,8 +37,16 @@
 .more-information-card {
     display: none;
     position: absolute;
-    top: 100px;
-    left: 15px;
+    top: 72px;
+    left: 0;
+    padding: 0;
+}
+
+@media (min-width: 576px) { 
+    .more-information-card {
+        top: 100px;
+        left: 15px;        
+    }
 }
 
 .card-header {
@@ -50,7 +58,7 @@
 .card-close {
     position: absolute;
     top: 11px;
-    right: 25px;
+    right: 16px;
     z-index: 1;
     text-shadow: none;
     opacity: 1;

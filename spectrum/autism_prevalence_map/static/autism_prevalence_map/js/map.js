@@ -51,9 +51,6 @@ $(document).ready(function (){
         // have any points been clicked?
         clicked = false;
 
-        // set scale based on breakpoints
-        console.log(width);
-
         // map projection
         projection = d3.geoKavrayskiy7()
             .scale(scale)
@@ -600,7 +597,6 @@ $(document).ready(function (){
             .attr("id", function(d){
                 return "timeline_dot_" + d.properties.pk
             })
-            .attr("data-toggle", "tooltip")
             .attr("data-placement", "top")
             .attr("data-html", true)
             .attr("title", function(d, i){
