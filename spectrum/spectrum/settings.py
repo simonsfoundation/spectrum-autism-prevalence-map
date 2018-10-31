@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import environ
+
 root = environ.Path(__file__) - 3 # three folder back (/a/b/c/ - 3 = /)
 env = environ.Env(DEBUG=(bool, False),) # set default values and casting
 environ.Env.read_env() # reading .env file
@@ -24,9 +25,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ["DJANGO_DEBUG"]
 
 ALLOWED_HOSTS =  os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
@@ -79,8 +77,12 @@ WSGI_APPLICATION = 'spectrum.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ["DB_NAME"],
+        'USER': os.environ["DB_USER"],
+        'PASSWORD': os.environ["DB_PASSWORD"],
+        'HOST': os.environ["DB_HOST"],
+        'PORT': '5432'
     }
 }
 
@@ -122,4 +124,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = os.environ["DJANGO_STATIC_URL"]
-
