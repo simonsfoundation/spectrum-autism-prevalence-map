@@ -2,6 +2,12 @@ body {
     margin-top: 150px;
 }
 
+#content-container.container,
+.hero-nav.container,
+.hero-nav.container .sidebar-container {
+    max-width: none;
+}
+
 .navbar-brand img {
     height: 39px;
     vertical-align: middle;
@@ -12,7 +18,52 @@ body {
     display: none;
 }
 
-#how-to-use {
-    padding-top: 90px;
-    margin-top: -90px;
+.hero-nav {
+    padding-bottom: 9px;
+}
+
+.hero-nav .sidebar-container {
+    top: 0;
+}
+
+aside.sidebar {
+    pointer-events: none;
+}
+    aside.sidebar ul.chapter-navigation {
+        pointer-events: all;
+    }
+
+.about#content-container .row .content:first-child h2 {
+    margin-top: 2em;
+}
+    .about#content-container .row .content:first-child h2#about {
+        margin-top: -6px;
+    }
+
+.container .content .bio h4 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.container .content .bio h5 {
+    font-weight: 400;
+    font-size: 13px;
+    color: #4d4d4d;
+    text-transform: none;
+    margin-top: -14px;
+    letter-spacing: 0;
+}
+
+.container#content-container .content .bio p {
+    width: 465px;
+    font-weight: 400;
+    font-family: "azo-sans-web", sans-serif;
+    font-size: 16px;
+}
+
+.bio a {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    font-weight: bold;
+    text-transform: uppercase;
 }

@@ -790,8 +790,10 @@ $(document).ready(function (){
         if (d.properties.link4title && d.properties.link4url) {
             links.push('<a href="'+ d.properties.link4url +'" >'+ d.properties.link4title +'</a>') 
         }
-        
-        const links_string = links.join('<br />');
+
+        let links_string = links.join('<br />');
+        links_string = links_string.replace('>Spectrum', '><em>Spectrum</em>');
+
         $("#card-links").html(links_string);
 
         // show card

@@ -16,12 +16,27 @@
 {% block body_block %}
 <!-- Main Container
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<div class="container-fluid">    
-    <div class="row">
-        <div class="col">
-            <div id="wp-content"></div>
+<section class="hero-nav container orange">
+    <div class="sidebar-container container">
+        <div class="row">
+            <aside class="col-3 sidebar">
+                <ul class="chapter-navigation">
+                    <li class="chapter-link"><a href="#1" class="active">About the map<div class="progress background" style="height: 62.9278%; width: 5px;"></div></a></li>
+                    <li class="chapter-link"><a href="#2">How to use the map<div class="progress background" style="height: 0%; width: 5px;"></div></a></li>
+                    <li class="chapter-link"><a href="#3">More information<div class="progress background" style="height: 0%; width: 5px;"></div></a></li>
+                    <li class="chapter-link"><a href="#4">The team<div class="progress background" style="height: 0%; width: 5px;"></div></a></li>
+                                        </ul>
+            </aside>
         </div>
     </div>
+</section>
+<div class="container-fluid about container orange" id="content-container">
+    <main class="row">
+        <div class="col col-7 push-3 content" id="about_spectrum">
+            <div id="wp-content"></div>
+            <div id="end-row"></div>
+        </div>
+    </main>
 </div>
 
 {% endblock %}

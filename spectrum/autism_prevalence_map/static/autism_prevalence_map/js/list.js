@@ -127,16 +127,17 @@ $(document).ready(function (){
                         links.push('<a href="'+ d.properties.link4url +'" >'+ d.properties.link4title +'</a>') 
                     }
 
-                    const links_string = links.join('<br />');
-            
-                    return "<span class='font-weight-bold'>Age (years):</span> " + age + "<br />" +
-                    "<span class='font-weight-bold'>Individuals with autism:</span> " + d.properties.individualswithautism + "<br />" +
-                    "<span class='font-weight-bold'>Diagnostic criteria:</span> " + diagnosticcriteria + "<br />" + 
-                    "<span class='font-weight-bold'>Percent w/ average IQ:</span> " + d.properties.percentwaverageiq + "<br />" +
-                    "<span class='font-weight-bold'>Sex ratio (M:F):</span> " + d.properties.sexratiomf + "<br />" + 
-                    "<span class='font-weight-bold'>Year(s) studied:</span> " + d.properties.yearsstudied + "<br />" + 
-                    "<span class='font-weight-bold'>Category:</span> " + d.properties.categoryadpddorasd + "<br />" + 
-                    links_string; 
+                    let links_string = links.join('<br />');
+                    links_string = links_string.replace('>Spectrum', '><em>Spectrum</em>');
+
+                    return "<b>Age (years):</b> " + age + "<br />" +
+                    "<b>Individuals with autism:</b> " + d.properties.individualswithautism + "<br />" +
+                    "<b>Diagnostic criteria:</b> " + diagnosticcriteria + "<br />" +
+                    "<b>Percent w/ average IQ:</b> " + d.properties.percentwaverageiq + "<br />" +
+                    "<b>Sex ratio (M:F):</b> " + d.properties.sexratiomf + "<br />" +
+                    "<b>Year(s) studied:</b> " + d.properties.yearsstudied + "<br />" +
+                    "<b>Category:</b> " + d.properties.categoryadpddorasd + "<br />" +
+                    links_string;
                 });
 
             let mapBlock = card_div.append("div")
