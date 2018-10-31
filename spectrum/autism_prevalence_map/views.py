@@ -154,8 +154,8 @@ def studiesApi(request):
 			kwargs['yearsstudied_number_min__isnull'] = False
 
 		#pull data with lat/lngs only
-		#kwargs['latitude__isnull'] = False
-		#kwargs['longitude__isnull'] = False
+		kwargs['latitude__isnull'] = False
+		kwargs['longitude__isnull'] = False
 		
 		# add postgres keyword search
 		if keyword:

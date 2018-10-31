@@ -89,12 +89,10 @@ body {
     justify-content: flex-start;
 }
 .navbar .middle {
-    flex: 1;
-    justify-content: center;
+    display: none;
 }
 .navbar .right {
-    flex: 1;
-    justify-content: right;
+    display: contents;
 }
 
 .nav-tabs .nav-link {
@@ -207,15 +205,65 @@ body {
     fill: #fff;
     fill-opacity: 0;
     stroke: #fff;
-    stroke-width: 1px;
 }
 
-@media screen and (max-width: 1300px) {
-    .navbar-expand-lg .navbar-toggler {
-        display: block;
-        float: right;
-    }
-    .navbar-expand-lg .navbar-collapse {
-        display: none !important;
+.navbar-expand-xl .navbar-toggler {
+    display: block;
+    float: right;
+} 
+
+.navbar-expand-xl .collapse:not(.show) {
+    display: none !important;
+} 
+
+.navbar-expand-xl .collapse.show {
+    display: flex;
+} 
+
+.navbar-expand-xl .collapse.show ul {
+    display: flex;
+}
+
+.navbar-expand-xl .collapse.show .form-inline {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+
+.navbar-expand-xl .collapse.show .nav-item {
+    margin: 8px 0;
+}
+
+@media (min-width: 768px) { 
+    .navbar .middle {
+        display: flex;
+        flex: 10;
+        justify-content: center;
     }
 }
+
+@media (min-width: 1300px) { 
+    .navbar-expand-xl .navbar-toggler {
+        display: none;
+    } 
+    
+    .navbar-expand-xl .collapse:not(.show) {
+        display: flex !important;
+        justify-content: right;
+    } 
+
+    .navbar .right {
+        display: flex;
+        flex: 1;
+        justify-content: right;
+    }
+
+    .navbar .middle {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+
+

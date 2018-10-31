@@ -5,7 +5,7 @@ $(document).ready(function (){
 
 
     // globaly scope some variables for the map
-    let studies, clicked, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG;
+    let studies, clicked, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius;
 
     // functions for adding a graticule to the map
     const graticuleOutline = d3.geoGraticule().outline();
@@ -26,21 +26,24 @@ $(document).ready(function (){
         d3.select("#map-svg").remove();
         d3.select("#timeline-svg").remove();
 
-        if (width < 500) {
-            scale = 150;
-            $(".timeline-wrapper").addClass("invisible");
-        } else if (width < 1000) {
-            scale = 200;
-            $(".timeline-wrapper").addClass("invisible");
-        } else {
-            scale = 250;
-            $(".timeline-wrapper").removeClass("invisible");
-        }
-
         // constants
         width = $("#map").width();
         height = $("#map").height();
         timeline_height = $("#timeline").height();
+
+        if (width < 567) {
+            scale = 150;
+            // close filter drawers
+            $('#filter-list').addClass("invisible");
+            $('#filter-list').removeClass("visible");
+            $("#filters-link").prop('title', 'Open fliter drawer').attr('data-original-title', 'Open fliter drawer');            
+        } else if (width < 992) {
+            scale = 200;
+        } else if (width < 1800) {
+            scale = 250;
+        } else {
+            scale = 350;
+        }
         
         // data holder
         studies = null;
@@ -81,6 +84,25 @@ $(document).ready(function (){
         // create container for studies
         studiesG = g.append("g")
             .attr("id", "studies");
+
+        // set up map for zooming
+        g_zoom = d3.select("#map-g");
+        svg_zoom = d3.select("#map-svg");
+
+        zoom = d3.zoom()
+            .scaleExtent([1, 5])
+            .on("zoom", zoomed);
+
+        svg_zoom.call(zoom);
+
+        // define zooming function for zooming map
+        function zoomed() {
+            //g_zoom.style("stroke-width", 1.5 / d3.event.scale + "px");
+            g_zoom.attr('transform', `translate(${d3.event.transform.x},  ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
+            // set pin sizes based on zoom level
+            scalePins(d3.event.transform.k);
+        };
+        
 
         // create container for timeline
         timelineDiv = d3.select('#timeline'),
@@ -130,7 +152,6 @@ $(document).ready(function (){
         app.updateURL();
         d3.json("/studies-api/" + app.api_call_param_string).then(function(data) {
             studies = data;   
-            console.log(studies);
             app.map.updateTimeline();
         });
     }
@@ -317,14 +338,9 @@ $(document).ready(function (){
                 } else {
                     yearsstudied_max = yearsstudied_min;
                 }
-                // console.log(yearsstudied_min[0]);
-                // console.log(yearsstudied_max[0]);
                 for (let j = parseInt(yearsstudied_min[0]); j <= parseInt(yearsstudied_max[0]); j++) {
                     for (let k = 0; k < studiesByYear.length; k++) {
                         if (studiesByYear[k].key == j) {
-                            // console.log(studiesByYear[k].key);
-                            // console.log(j);
-
                             studiesByYear[k].value++ 
                         } 
                     }
@@ -429,7 +445,6 @@ $(document).ready(function (){
                             }
                         }
                     }
-                    console.log(studiesByYear);
                     return timelineY(largestK);
                 } else {
                     for (let index = 0; index < studiesByYear.length; index++) {
@@ -528,7 +543,6 @@ $(document).ready(function (){
                             }
                         }
                     }
-                    console.log(studiesByYear);
                     return timelineY(largestK);
                 } else {
                     for (let index = 0; index < studiesByYear.length; index++) {
@@ -634,7 +648,6 @@ $(document).ready(function (){
             .append("circle")
             .attr("cx", function (d) { return projection(d.geometry.coordinates)[0]; })
             .attr("cy", function (d) { return projection(d.geometry.coordinates)[1]; })
-            .attr("r", 5)
             .style("fill", pointColor)
             .style("fill-opacity", "1")
             .style("stroke", "#fff")
@@ -660,6 +673,8 @@ $(document).ready(function (){
             });
             
         mapSelection.exit().remove();
+
+        zoom_transition(1); 
         
         //app.map.clusterPoints(studies);
     }
@@ -670,7 +685,6 @@ $(document).ready(function (){
         let validData = [];
         quadtree.visit(function(node, x1, y1, x2, y2) {
             const p = node;
-            //console.log(p);
             if (p) {
                 p.selected = (p.data[0] >= x0) && (p.data[0] < x3) && (p.data[1] >= y0) && (p.data[1] < y3);
                 if (p.selected) {
@@ -689,16 +703,11 @@ $(document).ready(function (){
             return point;
         });
 
-        console.log(pointsRaw);
         quadtree = d3.quadtree().addAll(pointsRaw);
 
         for (let x = 0; x <= width; x += clusterRange) {
             for (let y = 0; y <= height; y+= clusterRange) {
                 const searched = app.map.inQuadTree(quadtree, x, y, x + clusterRange, y + clusterRange);
-                
-                if (searched.length > 0) {
-                    console.log(searched);
-                }
                 
                 const centerPoint = searched.reduce(function(prev, current) {
                     return [prev[0] + current[0], prev[1] + current[1]];
@@ -736,8 +745,6 @@ $(document).ready(function (){
             })
     }
 
-
-
     // point color function
     function pointColor(feature) {
         if (feature.properties.recommended == "yes" || feature.properties.recommended == "Yes") {
@@ -747,62 +754,39 @@ $(document).ready(function (){
         }
     }
 
-    // set up map for zooming
-    const g_zoom = d3.select("map-g");
-    const svg_zoom = d3.select('#map-   svg');
-
-    const zoom = d3.zoom()
-        .scaleExtent([0.75, 3.375])
-        .on("zoom", zoomed);
-
-    svg_zoom.call(zoom);
-
-    // define zooming function for zooming map
-    function zoomed() {
-        g_zoom.style("stroke-width", 1.5 / d3.event.scale + "px");
-        g_zoom.attr('transform', `translate(${d3.event.transform.x},  ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
-        // set pin zizes based on zoom level
-        //scalePins(d3.event.transform.k);
-    };
-
     // define function zoom transiton 
-    function transition(zoomLevel) {
+    function zoom_transition(zoomLevel) {
         svg_zoom.transition()
             .duration(500)
             .call(zoom.scaleBy, zoomLevel);
     }
-    
-    // define the radius change for points as we soom in annd out
+
+    // define the radius change for points as we zoom in annd out
     function scalePins(k) {
-        console.log(k);
 
         // calculate new radius
-        const new_radius = 5 - k;
+        new_radius = 6/k;
 
         // select all pins and apply new radius in transition with zoom
         d3.selectAll('.map-circles').transition()
             .duration(100)
             .attr("r", new_radius);
 
-        // select all pins and apply new stroke width on hover
-        d3.selectAll('.map-circles')
-            .on("mouseover", function(d) {
-                d3.select(this).style("cursor", "pointer"); 
-                d3.select(this).style("stroke-width", new_radius/2.5);            
-            });
+        // also scale the country borders
+        d3.selectAll(".country-borders").transition()
+            .duration(100)
+            .attr("stroke-width", new_radius/5);
     }
 
     // set up listeners for zoom
     d3.selectAll('button').on('click', function() {
         // zoom in 0.5 each time
         if (this.id === 'zoom-in') {
-            transition(1.5); 
-            //scalePins(-1);
+            zoom_transition(1.75); 
         }
         // zoom out 0.5 each time
         if (this.id === 'zoom-out') {
-            transition(0.7);
-            //scalePins(1); 
+            zoom_transition(0.575);
         }
         // return to initial state
         if (this.id === 'zoom_init') {
@@ -820,7 +804,7 @@ $(document).ready(function (){
             
         // show clicked dot on map
         d3.select('#map_dot_' + d.properties.pk)
-            .style("stroke-width", "2");        
+            .style("stroke-width", new_radius/2.5);        
     }
 
     // remove highlighting from dots on map
@@ -828,7 +812,6 @@ $(document).ready(function (){
         d3.selectAll(".map-circles")
             .style("stroke-width", "0");
     }
-
 
     // show tooltip on timeline dot
     function showTimelineTooltip(d) {
@@ -948,15 +931,6 @@ $(document).ready(function (){
             this.parentNode.appendChild(this);
         });
     };
-
-
-    // listen for window resize and redraw map and timeline
-    let resize_id;
-    $(window).resize(function () { 
-        clearTimeout(resize_id);
-        resize_id = setTimeout(app.map.initializeMap(), 500);
-    });
-
 
     // initialize map and timeline
     app.map.initializeMap();

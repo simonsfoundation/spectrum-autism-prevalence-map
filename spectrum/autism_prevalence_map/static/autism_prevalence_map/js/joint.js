@@ -251,12 +251,24 @@ $(document).ready(function (){
         if ($('#filter-list').hasClass("invisible")) {
             $('#filter-list').removeClass("invisible");
             $('#filter-list').addClass("visible");
-            $(this).tooltip('hide').prop('title', 'Close fliter drawer').attr('data-original-title', 'Close fliter drawer').tooltip('fixTitle').tooltip('show');
+            $(this).tooltip('hide').prop('title', 'Close fliter drawer').attr('data-original-title', 'Close fliter drawer').tooltip('show');
             
         } else {
             $('#filter-list').addClass("invisible");
             $('#filter-list').removeClass("visible");
-            $(this).tooltip('hide').prop('title', 'Open fliter drawer').attr('data-original-title', 'Open fliter drawer').tooltip('fixTitle').tooltip('show');        }
+            $(this).tooltip('hide').prop('title', 'Open fliter drawer').attr('data-original-title', 'Open fliter drawer').tooltip('show');
+        }
+    });
+
+
+    // listen for window resize
+    let resize_id;
+    $(window).resize(function () { 
+        // redraw map and timeline
+        clearTimeout(resize_id);
+        if ($('#map-link').hasClass("active")) {
+            resize_id = setTimeout(app.map.initializeMap(), 500);
+        }
     });
 
 });

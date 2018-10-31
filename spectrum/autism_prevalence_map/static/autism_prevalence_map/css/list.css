@@ -30,4 +30,8 @@
     line-height: 2;
 }
 
+.country-borders {
+    stroke-width: 0.5px;
+}
+
 
