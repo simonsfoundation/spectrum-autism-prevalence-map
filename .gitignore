@@ -48,4 +48,10 @@ Thumbs.db
 ##########
 .vscode/*
 env/*
-.ebextensions/ssl.config 
+.ebextensions/ssl.config
+
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
