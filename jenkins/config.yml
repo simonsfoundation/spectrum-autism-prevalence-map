@@ -1,0 +1,22 @@
+branch-defaults:
+  master:
+    environment: prevalence-prod
+  sf-deployment:
+    environment: prevalence-staging
+environment-defaults:
+  prevalence-staging:
+    branch: null
+    repository: null
+global:
+  application_name: spectrumnews.org
+  default_ec2_keyname: ansible at rack
+  default_platform: arn:aws:elasticbeanstalk:us-east-1::platform/Python 2.7 running
+    on 64bit Amazon Linux/2.7.4
+  default_region: us-east-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: null
+  sc: git
+  workspace_type: Application

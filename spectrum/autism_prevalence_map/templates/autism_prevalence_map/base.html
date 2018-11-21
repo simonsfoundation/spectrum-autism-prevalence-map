@@ -8,6 +8,17 @@
     <title>{% block title %}{% endblock %}</title>
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@spectrum">
+    <meta name="twitter:creator" content="@spectrum">
+    <meta name="twitter:title" content="Global Autism Prevalence Map | Spectrum">
+    <meta name="twitter:description" content="The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.">
+    <meta name="twitter:image" content="https://prevalence.spectrumnews.org/static/autism_prevalence_map/img/PrevalenceMapSG.png">
+    <meta property="og:title" content="Global Autism Prevalence Map | Spectrum" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://prevalence.spectrumnews.org/" />
+    <meta property="og:image" content="https://prevalence.spectrumnews.org/static/autism_prevalence_map/img/PrevalenceMapSG.png" />
+    <meta property="og:description" content="The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing." />
 
     <!-- Mobile Specific Metas
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -27,7 +38,54 @@
 
     <!-- Favicon
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/img/favicon.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'autism_prevalence_map/img/favicon.png' %}">
+
+    <!-- [Google Analytics/Optimize] -->
+    <style>.async-hide { opacity: 0 !important} </style>
+    <script>
+
+    var stagingTrackingProperty = 'UA-8526335-27';
+    var stagingOptimizeContainer = 'GTM-T96ZVZZ';
+
+    var prodTrackingProperty = 'UA-8526335-18';
+    var prodOptimizeContainer = 'GTM-K4R62V8';
+
+    var trackingProperty = prodTrackingProperty;
+    var optimizeContainer = prodOptimizeContainer;
+
+    if (window.location.hostname.indexOf('staging') != -1){
+        trackingProperty = stagingTrackingProperty;
+        optimizeContainer = stagingOptimizeContainer;
+
+        //page hiding snippet for staging
+        (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+        h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+        })(window,document.documentElement,'async-hide','dataLayer',4000,
+        {'GTM-T96ZVZZ':true});
+
+    }else{
+
+        //page hiding snippet for production
+        (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+        h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+        })(window,document.documentElement,'async-hide','dataLayer',4000,
+        {'GTM-K4R62V8':true});
+
+    }
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    ga('create', trackingProperty, 'auto');
+    ga('require', optimizeContainer);
+    ga('send', 'pageview');
+
+    </script>
+    <!-- [/Google Analytics and Optimize] -->
+
 </head>
 
 <body>

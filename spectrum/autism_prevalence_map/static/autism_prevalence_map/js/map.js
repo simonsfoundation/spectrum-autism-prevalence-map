@@ -632,14 +632,9 @@ $(document).ready(function (){
         const mapSelection = studiesG.selectAll("circle.map-circles")
             .data(nodes, function(d){ return d.properties.pk });
 
-        // mapSelection
-        //     .attr("cx", function (d) { return projection(d.geometry.coordinates)[0]; })
-        //     .attr("cy", function (d) { return projection(d.geometry.coordinates)[1]; }); 
 
         mapSelection.enter()
             .append("circle")
-            // .attr("cx", function (d) { return projection(d.geometry.coordinates)[0]; })
-            // .attr("cy", function (d) { return projection(d.geometry.coordinates)[1]; })
             .style("fill", pointColor)
             .style("fill-opacity", "1")
             .style("stroke", "#fff")
