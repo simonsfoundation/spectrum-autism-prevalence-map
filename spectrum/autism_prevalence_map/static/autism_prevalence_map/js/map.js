@@ -3,9 +3,8 @@ $(document).ready(function (){
     // app.map scope
     app.map = {};
 
-
     // globaly scope some variables for the map
-    let studies, clicked, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius;
+    let studies, clicked, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius, nodes, simulation;
 
     // functions for adding a graticule to the map
     const graticuleOutline = d3.geoGraticule().outline();
@@ -14,11 +13,6 @@ $(document).ready(function (){
     // globaly scope some variables for the timeline
     let timeline_height, brush, brushG, timelineDiv, timelineSVG, timelineG, timelineX, timelineY, max_Y_domain, studiesByYear, handle, handleText, timeMin, timeMax;
 
-    // set up clusering grid
-    let clusterPoints = [];
-    let clusterRange = 25;
-    let quadtree;
-    
 
     // add map data to the world map g container
     app.map.initializeMap = function() {
@@ -87,7 +81,7 @@ $(document).ready(function (){
         svg_zoom = d3.select("#map-svg");
 
         zoom = d3.zoom()
-            .scaleExtent([1, 5])
+            .scaleExtent([0.75, 5])
             .on("zoom", zoomed);
 
         svg_zoom.call(zoom);
@@ -98,6 +92,7 @@ $(document).ready(function (){
             g_zoom.attr('transform', `translate(${d3.event.transform.x},  ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
             // set pin sizes based on zoom level
             scalePins(d3.event.transform.k);
+            
         };
         
 
@@ -372,21 +367,6 @@ $(document).ready(function (){
                     return b.properties.num_yearsstudied - a.properties.num_yearsstudied; 
                 }), function(d){ return d.properties.pk });
 
-            // set up simulation
-            // const simulation = d3.forceSimulation(studies.features)
-            //     .force("x", d3.forceX(function(d) { 
-            //         let date = new Date(d.properties.yearsstudied_number_min);
-            //         return timelineX(date); 
-            //     }).strength(1))
-            //     .force("y", d3.forceY(function(d) { 
-            //         const max_Y_domain = d3.max(studiesByYear, function(d) { return d.value; })
-            //         return timelineY(max_Y_domain - (d.properties.num_yearsstudied+1)); 
-            //     }).strength(1))
-            //     .force("collide", d3.forceCollide(12))
-            //     .stop();
-
-            // for (var i = 0; i < 1000; ++i) simulation.tick();
-
         } else {
             timelineSelection = timelineG.selectAll('rect.timeline-circles')
                 .data(studies.features, function(d){ return d.properties.pk });
@@ -400,7 +380,6 @@ $(document).ready(function (){
                 if(timeline_type == "studied") {
                     let date = new Date(d.properties.yearsstudied_number_min);
                     return timelineX(date);
-                    //return d.x;
                 } else {
                     let date = new Date(d.properties.yearpublished)
                     return timelineX(date);
@@ -637,13 +616,30 @@ $(document).ready(function (){
 
     // add overlay dataset
     app.map.updateMapPoints = function() {   
+
+        nodes = studies.features.map(function(n) {
+            const pos = projection(n.geometry.coordinates);
+            return {
+                x: pos[0],
+                y: pos[1],
+                originalX: pos[0],
+                originalY: pos[1],
+                properties: n.properties,
+                geometry: n.geometry
+            };
+        });
+
         const mapSelection = studiesG.selectAll("circle.map-circles")
-            .data(studies.features, function(d){ return d.properties.pk });
+            .data(nodes, function(d){ return d.properties.pk });
+
+        // mapSelection
+        //     .attr("cx", function (d) { return projection(d.geometry.coordinates)[0]; })
+        //     .attr("cy", function (d) { return projection(d.geometry.coordinates)[1]; }); 
 
         mapSelection.enter()
             .append("circle")
-            .attr("cx", function (d) { return projection(d.geometry.coordinates)[0]; })
-            .attr("cy", function (d) { return projection(d.geometry.coordinates)[1]; })
+            // .attr("cx", function (d) { return projection(d.geometry.coordinates)[0]; })
+            // .attr("cy", function (d) { return projection(d.geometry.coordinates)[1]; })
             .style("fill", pointColor)
             .style("fill-opacity", "1")
             .style("stroke", "#fff")
@@ -670,76 +666,25 @@ $(document).ready(function (){
             
         mapSelection.exit().remove();
 
+        simulation = forceSimulation(nodes).on("tick", ticked);
+
         zoom_transition(1); 
-        
-        //app.map.clusterPoints(studies);
+
     }
 
-    // function that determines if points are inside the quad tree
-    app.map.inQuadTree = function(quadtree, x0, y0, x3, y3) {
-        // Find the nodes within the specified rectangle.
-        let validData = [];
-        quadtree.visit(function(node, x1, y1, x2, y2) {
-            const p = node;
-            if (p) {
-                p.selected = (p.data[0] >= x0) && (p.data[0] < x3) && (p.data[1] >= y0) && (p.data[1] < y3);
-                if (p.selected) {
-                    validData.push(p);
-                }
-            }
-            return x1 >= x3 || y1 >= y3 || x2 < x0 || y2 < y0;
-        });
-        return validData;
+    function forceSimulation(nodes) {
+        return d3.forceSimulation(nodes)
+            .force("charge", d3.forceCollide().radius(new_radius))
+            .force("x", d3.forceX(d => d.originalX).strength(0.2))
+            .force("y", d3.forceY(d => d.originalY).strength(0.2));
     }
 
-    app.map.clusterPoints = function(points) {
-        const pointsRaw = points.features.map(function(d, i) {
-            const point = path.centroid(d);
-            point.push(i);
-            return point;
-        });
+    function ticked() {
+        studiesG.selectAll("circle.map-circles")
+            .attr("cx", function (d) { return d.x; })
+            .attr("cy", function (d) { return d.y; });
+    }  
 
-        quadtree = d3.quadtree().addAll(pointsRaw);
-
-        for (let x = 0; x <= width; x += clusterRange) {
-            for (let y = 0; y <= height; y+= clusterRange) {
-                const searched = app.map.inQuadTree(quadtree, x, y, x + clusterRange, y + clusterRange);
-                
-                const centerPoint = searched.reduce(function(prev, current) {
-                    return [prev[0] + current[0], prev[1] + current[1]];
-                }, [0, 0]);
-            
-                centerPoint[0] = centerPoint[0] / searched.length;
-                centerPoint[1] = centerPoint[1] / searched.length;
-                centerPoint.push(searched);
-            
-                if (centerPoint[0] && centerPoint[1]) {
-                    clusterPoints.push(centerPoint);
-                }
-            }
-        }
-          
-        const pointSizeScale = d3.scaleLinear()
-            .domain([
-                d3.min(clusterPoints, function(d) {return d[2].length;}),
-                d3.max(clusterPoints, function(d) {return d[2].length;})
-            ])
-            .rangeRound([3, 15]);
-    
-        g.append("g")
-            .attr("id", "clusters")
-            .selectAll(".centerPoint")
-            .data(clusterPoints)
-            .enter().append("circle")
-            .attr("class", function(d) {return "centerPoint"})
-            .attr("cx", function(d) {return d[0];})
-            .attr("cy", function(d) {return d[1];})
-            .attr("fill", '#FFA500')
-            .attr("r", function(d, i) {return pointSizeScale(d[2].length);})
-            .on("click", function(d, i) {
-                console.log(d, pointSizeScale(d[2].length));
-            })
-    }
 
     // point color function
     function pointColor(feature) {
@@ -757,11 +702,11 @@ $(document).ready(function (){
             .call(zoom.scaleBy, zoomLevel);
     }
 
-    // define the radius change for points as we zoom in annd out
+    // define the radius change for points as we zoom in and out
     function scalePins(k) {
 
         // calculate new radius
-        new_radius = 6/k;
+        new_radius = 5/k;
 
         // select all pins and apply new radius in transition with zoom
         d3.selectAll('.map-circles').transition()
@@ -772,6 +717,11 @@ $(document).ready(function (){
         d3.selectAll(".country-borders").transition()
             .duration(100)
             .attr("stroke-width", new_radius/5);
+
+        simulation.force("charge").radius(new_radius);
+
+        simulation.alpha(1).restart();
+
     }
 
     // set up listeners for zoom
