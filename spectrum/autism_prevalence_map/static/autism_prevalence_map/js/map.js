@@ -26,17 +26,17 @@ $(document).ready(function (){
         timeline_height = $("#timeline").height();
 
         if (width < 567) {
-            scale = 150;
+            scale = 100;
             // close filter drawers
             $('#filter-list').addClass("invisible");
             $('#filter-list').removeClass("visible");
             $("#filters-link").prop('title', 'Open fliter drawer').attr('data-original-title', 'Open fliter drawer');            
         } else if (width < 992) {
-            scale = 200;
+            scale = 150;
         } else if (width < 1800) {
-            scale = 250;
+            scale = 190;
         } else {
-            scale = 350;
+            scale = 280;
         }
         
         // data holder
@@ -48,7 +48,7 @@ $(document).ready(function (){
         // map projection
         projection = d3.geoKavrayskiy7()
             .scale(scale)
-            .translate([width / 2, height / 1.8]);
+            .translate([width / 2, height / 2]);
 
         // function to create paths from map projection
         path = d3.geoPath().projection(projection);
@@ -345,7 +345,7 @@ $(document).ready(function (){
                 .entries(studies.features);
         }
 
-        max_Y_domain = d3.max(studiesByYear, function(d) { return d.value; });
+        max_Y_domain = d3.max(studiesByYear, function(d) { return d.value; }) + 1;
         timelineY
             .domain([1, max_Y_domain]);
 
