@@ -684,9 +684,9 @@ $(document).ready(function (){
     // point color function
     function pointColor(feature) {
         if (feature.properties.recommended == "yes" || feature.properties.recommended == "Yes") {
-            return "#03C0FF";
-        } else {
             return "#007095";
+        } else {
+            return "#03C0FF";
         }
     }
 
