@@ -16,8 +16,8 @@ if [[ -n "${ACTION_BRANCH}" ]]; then
 fi
 
 if $(grep -q \$ANSIBLE_VAULT jenkins/ssl.config) ; then 
-  ansible-vault decrypt jenkins/ssl.config --vault-password-file=~/\ /ansible.vault ;
-  mv jenkins/ssl.config .ebextensions/ssl.config
+  cp jenkins/ssl.config .ebextensions/ssl.config
+  ansible-vault decrypt .ebextensions/ssl.config --vault-password-file=~/\ /ansible.vault ;
 fi
 
 if [[ -z "${OUTPUT_ENV}" ]]; then
@@ -25,8 +25,4 @@ if [[ -z "${OUTPUT_ENV}" ]]; then
 fi
 
 eb deploy "${OUTPUT_ENV}" --timeout 30
-
-if ! $(grep -q \$ANSIBLE_VAULT jenkins/ssl.config) ; then 
-  mv .ebextensions/ssl.config jenkins/ssl.config
-  ansible-vault encrypt jenkins/ssl.config --vault-password-file=~/\ /ansible.vault ;
-fi
+rm -f .ebextensions/ssl.config
