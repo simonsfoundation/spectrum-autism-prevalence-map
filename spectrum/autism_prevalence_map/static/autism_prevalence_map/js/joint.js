@@ -153,6 +153,30 @@ $(document).ready(function (){
         app.runUpdate();
     });  
 
+    $("#samplesize").on("change", function(e) {
+        $("#more-information-card").css("display", "none");
+        // update filters
+        const samplesize = $(this).val();
+        switch (samplesize) {
+            case "low":
+                min_samplesize = "0";
+                max_samplesize = "9999";
+                break;
+            case "med":
+                min_samplesize = "10000";
+                max_samplesize = "100000";
+                break;
+            case "high":
+                min_samplesize = "100001";
+                max_samplesize = "";
+                break;
+            default:
+                min_samplesize = "";
+                max_samplesize = "";
+        }
+        app.runUpdate();
+    });
+
     // listener for the clear filters button
     $("#clear-filters").click(function(){
         // reset variables
