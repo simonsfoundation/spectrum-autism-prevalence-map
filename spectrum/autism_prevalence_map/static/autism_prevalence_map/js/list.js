@@ -145,6 +145,8 @@ $(document).ready(function (){
                     "<b>Sex ratio (M:F):</b> " + d.properties.sexratiomf + "<br />" +
                     "<b>Year(s) studied:</b> " + d.properties.yearsstudied + "<br />" +
                     "<b>Category:</b> " + d.properties.categoryadpddorasd + "<br />" +
+                    "<b>Income Level:</b> " + d.properties.meanincomeofparticipants + "<br />" +
+                    "<b>Education Level:</b> " + d.properties.educationlevelofparticipants + "<br />" +
                     links_string;
                 });
 
