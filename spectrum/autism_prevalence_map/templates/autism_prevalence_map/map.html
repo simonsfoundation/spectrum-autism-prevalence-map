@@ -101,6 +101,10 @@
             <p class="card-text" id="card-yearsstudied"></p>
             <h6 class="card-subtitle font-weight-bold">Category</h6>
             <p class="card-text" id="card-categoryadpddorasd"></p>
+            <h6 class="card-subtitle font-weight-bold">Income</h6>
+            <p class="card-text" id="card-income"></p>
+            <h6 class="card-subtitle font-weight-bold">Education</h6>
+            <p class="card-text" id="card-education"></p>
             <p class="card-text" id="card-links"></p>
         </div>
 
@@ -134,9 +138,13 @@
     let max_samplesize = "{{ max_samplesize }}";
     let min_prevalenceper10000 = "{{ min_prevalenceper10000 }}";
     let max_prevalenceper10000 = "{{ max_prevalenceper10000 }}";
+    let meanincomeofparticipants = "{{ meanincomeofparticipants }}";
+    let educationlevelofparticipants = "{{ educationlevelofparticipants }}";
     let studytype = "{{ studytype }}";
     let keyword = "{{ keyword }}";
     let timeline_type = "{{ timeline_type }}";
+    let income = "{{ meanincome }}";
+    let education = "{{ education }}";
     const world_atlas = "{% static 'autism_prevalence_map/vendor/data/110m.json' %}";
 </script>
 <script src="{% static 'autism_prevalence_map/js/joint.js' %}"></script>
