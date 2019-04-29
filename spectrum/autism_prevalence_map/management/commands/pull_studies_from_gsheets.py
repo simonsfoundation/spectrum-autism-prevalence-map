@@ -50,8 +50,8 @@ class Command(BaseCommand):
                         'yearsstudied': data['gsx$yearsstudied']['$t'],
                         'recommended': data['gsx$recommended']['$t'], 
                         'studytype': data['gsx$studytype']['$t'],
-                        'meanincomeofparticipants': data['gsx$meanincomeofparticipants']['$t'],
-                        'educationlevelofparticipants': data['gsx$educationlevelofparticipants']['$t'],
+                        'meanincomeofparticipants': data['gsx$income']['$t'],
+                        'educationlevelofparticipants': data['gsx$education']['$t'],
                         'citation': data['gsx$citation']['$t'],
                         'link1title': data['gsx$link1title']['$t'],
                         'link1url': data['gsx$link1url']['$t'],
@@ -67,11 +67,10 @@ class Command(BaseCommand):
                         'commentsfromotheradvisors': data['gsx$commentsfromotheradvisors']['$t']
 
                     }
-                    
                     obj, created = studies.objects.update_or_create(gsheet_id=data['id']['$t'], defaults=updated_values)
 
-            
-            except Exception as e: 
+
+            except Exception as e:
                 # if error
                 print e
 
@@ -98,16 +97,16 @@ class Command(BaseCommand):
 
             if data['status'] == "OK":
                 latitude = float(data['results'][0]['geometry']['location']['lat'])
-                longitude = float(data['results'][0]['geometry']['location']['lng'])             
+                longitude = float(data['results'][0]['geometry']['location']['lng'])
             else:
                 latitude = None
                 longitude = None
 
-            
+
             studies.objects.filter(gsheet_id=study.gsheet_id).update(latitude=latitude, longitude=longitude)
 
             time.sleep(1)
-            
+
     def parse_data(self):
         # for year, population, and prevalence rate, convert from strings to dates and numbers and store in DB
 
@@ -133,9 +132,9 @@ class Command(BaseCommand):
                 except ValueError:
                     samplesize_number = None
             else:
-                samplesize_number = None 
+                samplesize_number = None
 
-            # ensure prevalence rate string has no non-number characters, convert to float            
+            # ensure prevalence rate string has no non-number characters, convert to float
             try:
                 prevalenceper10000 = re.findall(r"[-+]?\d*\.\d+|\d+", study.prevalenceper10000)[0]
             except IndexError:
@@ -147,9 +146,9 @@ class Command(BaseCommand):
                 except ValueError:
                     prevalenceper10000_number = None
             else:
-                prevalenceper10000_number = None 
+                prevalenceper10000_number = None
 
-            # extract the maximum and minimum dates from the `yearstudied` field 
+            # extract the maximum and minimum dates from the `yearstudied` field
             years = study.yearsstudied.split('-')
             yearsstudied_min = None
             yearsstudied_max = None
@@ -196,6 +195,7 @@ class Command(BaseCommand):
                 num_yearsstudied = None
 
 
+
             studies.objects.filter(gsheet_id=study.gsheet_id).update(yearpublished_number=yearpublished_number, samplesize_number=samplesize_number, prevalenceper10000_number=prevalenceper10000_number, yearsstudied_number_min=yearsstudied_number_min, yearsstudied_number_max=yearsstudied_number_max, num_yearsstudied=num_yearsstudied)
 
 
@@ -211,10 +211,3 @@ class Command(BaseCommand):
         print "Geocode research papers where lat/lon is null..."
         self.geocode()
         print "Done."
-
-
-        
-
-
-
-

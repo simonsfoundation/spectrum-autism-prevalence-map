@@ -6,13 +6,13 @@ $(document).ready(function (){
         alert( 'This map is currently best viewed on desktop devices. A mobile-friendly version is coming soon.' );
     }
     // api call holder
-    app.api_call_param_string = "?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&yearsstudied_number_min="+yearsstudied_number_min+"&yearsstudied_number_max="+yearsstudied_number_max+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+encodeURIComponent(studytype)+"&keyword="+encodeURIComponent(keyword)+"&timeline_type="+timeline_type;
+    app.api_call_param_string = "?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&yearsstudied_number_min="+yearsstudied_number_min+"&yearsstudied_number_max="+yearsstudied_number_max+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+encodeURIComponent(studytype)+"&keyword="+encodeURIComponent(keyword)+"&timeline_type="+timeline_type+"&meanincome="+income+"&education="+education;
 
     // function for updating url state
     app.updateURL = function() {
 
         const obj = { foo: "bar" };
-        app.api_call_param_string = "?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&yearsstudied_number_min="+yearsstudied_number_min+"&yearsstudied_number_max="+yearsstudied_number_max+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+encodeURIComponent(studytype)+"&keyword="+encodeURIComponent(keyword)+"&timeline_type="+timeline_type;
+        app.api_call_param_string = "?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&yearsstudied_number_min="+yearsstudied_number_min+"&yearsstudied_number_max="+yearsstudied_number_max+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+encodeURIComponent(studytype)+"&keyword="+encodeURIComponent(keyword)+"&timeline_type="+timeline_type+"&meanincome="+income+"&education="+education;
 
         window.history.pushState(obj, "Updated URL Parameters", app.api_call_param_string);
         // set the links to the map and list to hold the url params
@@ -62,7 +62,7 @@ $(document).ready(function (){
 
     });
 
-    function onlyUnique(value, index, self) { 
+    function onlyUnique(value, index, self) {
         return self.indexOf(value) === index;
     }
 
@@ -72,7 +72,7 @@ $(document).ready(function (){
             e.preventDefault();
             $("#more-information-card").css("display", "none");
             keyword = $(this).val();
-            app.runUpdate();   
+            app.runUpdate();
         }
     });
 
@@ -85,7 +85,7 @@ $(document).ready(function (){
             min_yearpublished = $(this).val();
         }
         app.runUpdate();
-    }); 
+    });
 
     $("#max_year").on("change", function(e) {
         $("#more-information-card").css("display", "none");
@@ -96,14 +96,14 @@ $(document).ready(function (){
             max_yearpublished = $(this).val();
         }
         app.runUpdate();
-    }); 
+    });
 
     $("#studytype").on("change", function(e) {
         $("#more-information-card").css("display", "none");
         // update filters
         studytype = $(this).val();
         app.runUpdate();
-    });   
+    });
 
     $("#prevalence").on("change", function(e) {
         $("#more-information-card").css("display", "none");
@@ -112,22 +112,22 @@ $(document).ready(function (){
         switch (prevalence) {
             case "low":
                 min_prevalenceper10000 = "0";
-                max_prevalenceper10000 = "49.99"; 
-                break;                             
-            case "med":        
+                max_prevalenceper10000 = "49.99";
+                break;
+            case "med":
                 min_prevalenceper10000 = "50";
                 max_prevalenceper10000 = "100";
-                break;                          
-            case "high":        
+                break;
+            case "high":
                 min_prevalenceper10000 = "100.01";
-                max_prevalenceper10000 = "";   
-                break;                       
+                max_prevalenceper10000 = "";
+                break;
             default:
                 min_prevalenceper10000 = "";
-                max_prevalenceper10000 = ""; 
+                max_prevalenceper10000 = "";
         }
         app.runUpdate();
-    });   
+    });
 
     $("#samplesize").on("change", function(e) {
         $("#more-information-card").css("display", "none");
@@ -136,22 +136,38 @@ $(document).ready(function (){
         switch (samplesize) {
             case "low":
                 min_samplesize = "0";
-                max_samplesize = "9999"; 
-                break;                             
-            case "med":        
+                max_samplesize = "9999";
+                break;
+            case "med":
                 min_samplesize = "10000";
                 max_samplesize = "100000";
-                break;                          
-            case "high":        
+                break;
+            case "high":
                 min_samplesize = "100001";
-                max_samplesize = "";   
-                break;                       
+                max_samplesize = "";
+                break;
             default:
                 min_samplesize = "";
-                max_samplesize = ""; 
+                max_samplesize = "";
         }
         app.runUpdate();
-    });  
+    });
+
+    $("#meanincomeofparticipants").on("change", function(e) {
+        $("#more-information-card").css("display", "none");
+        // update filters
+        income = $(this).val();
+        if( income === 'all' ) income = '';
+        app.runUpdate();
+    });
+
+    $("#educationlevelofparticipants").on("change", function(e) {
+        $("#more-information-card").css("display", "none");
+        // update filters
+        education = $(this).val();
+        if( education === 'all' ) education = '';
+        app.runUpdate();
+    });
 
     // listener for the clear filters button
     $("#clear-filters").click(function(){
@@ -161,11 +177,13 @@ $(document).ready(function (){
         yearsstudied_number_min = "";
         yearsstudied_number_max = "";
         min_prevalenceper10000 = "";
-        max_prevalenceper10000 = ""; 
+        max_prevalenceper10000 = "";
         min_samplesize = "";
-        max_samplesize = ""; 
+        max_samplesize = "";
         studytype = "";
         keyword = "";
+        income = "";
+        education = "";
 
         // set dropdown menu values
         $("#search").val('');
@@ -174,12 +192,14 @@ $(document).ready(function (){
         $("#studytype").val('');
         $("#prevalence").val('all');
         $("#samplesize").val('all');
+        $("#meanincomeofparticipants").val('all');
+        $("#educationlevelofparticipants").val('all');
 
         // remove brush from timeline
         if ($('#map-link').hasClass("active")) {
             app.map.clearTimelineBrush();
-        } 
-        
+        }
+
         // run update
         app.runUpdate();
 
@@ -190,29 +210,29 @@ $(document).ready(function (){
     switch (min_prevalenceper10000) {
         case "0":
             $("#prevalence").val("low");
-            break;                             
-        case "50":        
+            break;
+        case "50":
             $("#prevalence").val("med");
-            break;                          
-        case "100.01":        
-            $("#prevalence").val("high"); 
-            break;                       
+            break;
+        case "100.01":
+            $("#prevalence").val("high");
+            break;
         default:
-            $("#prevalence").val("all"); 
+            $("#prevalence").val("all");
     }
 
     switch (min_samplesize) {
         case "0":
             $("#samplesize").val("low");
-            break;                             
-        case "10000":        
+            break;
+        case "10000":
             $("#samplesize").val("med");
-            break;                          
-        case "100001":        
-            $("#samplesize").val("high"); 
-            break;                       
+            break;
+        case "100001":
+            $("#samplesize").val("high");
+            break;
         default:
-            $("#samplesize").val("all"); 
+            $("#samplesize").val("all");
     }
 
     if (keyword) {
@@ -222,7 +242,7 @@ $(document).ready(function (){
     if (studytype) {
         $("#studytype").val(studytype);
     }
-    
+
 
     // initialize
     app.updateURL();
@@ -255,7 +275,7 @@ $(document).ready(function (){
             $('#filter-list').removeClass("invisible");
             $('#filter-list').addClass("visible");
             $(this).tooltip('hide').prop('title', 'Close fliter drawer').attr('data-original-title', 'Close fliter drawer').tooltip('show');
-            
+
         } else {
             $('#filter-list').addClass("invisible");
             $('#filter-list').removeClass("visible");
