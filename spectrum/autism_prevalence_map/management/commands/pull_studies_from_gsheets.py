@@ -16,7 +16,7 @@ class Command(BaseCommand):
         url = base_url + key + params
         response = urllib.urlopen(url.encode('utf8'))
         data = json.loads(response.read())
-#        print data
+
         for data in data['feed']['entry']:
             try:
                 #skip if year not a date
@@ -72,7 +72,6 @@ class Command(BaseCommand):
 
             except Exception as e:
                 # if error
-                print 'houston, we have a problem'
                 print e
 
     def geocode(self):
