@@ -251,7 +251,7 @@ def studiesApi(request):
 			data['geometry']['coordinates'] = [study.longitude, study.latitude]
 			response['features'].append(data)
 
-		response['status'] = "OK"
+		response['status'] = "200"
 
 	else:
 		print request.method
@@ -407,9 +407,9 @@ def studiesCsv(request):
 		for study in pulled_studies:
 			writer.writerow([study.yearpublished.encode('utf8'), study.authors.encode('utf8'), study.country.encode('utf8'), study.area.encode('utf8'), study.samplesize.encode('utf8'), study.age.encode('utf8'), study.individualswithautism.encode('utf8'), study.diagnosticcriteria.encode('utf8'), study.percentwaverageiq.encode('utf8'), study.sexratiomf.encode('utf8'), study.prevalenceper10000.encode('utf8'), study.confidenceinterval.encode('utf8'), study.categoryadpddorasd.encode('utf8'), study.yearsstudied.encode('utf8'), study.recommended.encode('utf8'), study.studytype.encode('utf8'), study.meanincomeofparticipants.encode('utf8'), study.educationlevelofparticipants.encode('utf8'), study.citation.encode('utf8'), study.link1title.encode('utf8'),  study.link1url.encode('utf8'), study.link2title.encode('utf8'),  study.link2url.encode('utf8'), study.link3title.encode('utf8'),  study.link3url.encode('utf8'), study.link4title.encode('utf8'),  study.link4url.encode('utf8')])
 
-		response['status'] = "OK"
+		response['status'] = "200"
 
 	else:
 		print request.method
 
-	return response	
+	return response
