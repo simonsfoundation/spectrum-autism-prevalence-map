@@ -1,8 +1,10 @@
 $(document).ready(function (){
 
     d3.json("https://www.spectrumnews.org/wp-json/wp/v2/pages/62361").then(function(data) {
-        content = data;
-        $("#wp-content").html(content.content.rendered);
+        var form = $("#wp-content").html();
+        var content = data.content.rendered;
+        content = content.replace('<div id="end-row"></div>', '');
+        $("#wp-content").prepend(content);
         if(window.location.hash) {
             location.hash = window.location.hash;
         }
@@ -26,7 +28,7 @@ $(document).ready(function (){
             var chaptersPosition = $('#content-container').offset().top;
             if ( $(window).width() < 1140 ) chaptersPosition = chaptersPosition - $('aside.sidebar').height() - 24;
 
-            var endPoint = $('#end-row').offset().top - ( $('.chapter-navigation').height() + marginFromNav) - 36;
+            var endPoint = $('#end-row').offset().top - ( $('.chapter-navigation').height() + marginFromNav);
 
             // Fix chapter nav
             if (scrollPosition >= endPoint ) {
@@ -65,6 +67,8 @@ $(document).ready(function (){
 
                 if ( ( chaptersTop >= $(this).offset().top && chaptersTop < $('.chapter-start#' + chapterPlusOne + '' ).offset().top ) || chaptersTop >= $(this).offset().top && chapterIndex == chapterPlusOne ) {
 
+                    if( chapterIndex == 5 ) console.log( 'greater' );
+
                     $('.chapter-link a[href="#' + chapterIndex + '"]').addClass('active');
 
                     // Animate to selected chapter on mobile
@@ -74,6 +78,7 @@ $(document).ready(function (){
 
                 } else if ( chaptersTop < $('.chapter-start').first().offset().top ) {
 
+                    if( chapterIndex == 5 ) console.log( 'less than' );
                     // Make first chapter active when above nav
                     $('.chapter-link a[href="#1"]').addClass('active');
 
@@ -84,12 +89,16 @@ $(document).ready(function (){
                 // Progress bar
 
                 var chapterEnd;
-                if ( chapterIndex == chapterPlusOne )
+                if ( chapterIndex === chapterPlusOne )
                     chapterEnd = endPoint;
                 else
                     chapterEnd = $('.chapter-start#' + chapterPlusOne + '').offset().top;
 
                 var progress = ( ( chaptersTop - $(this).offset().top ) / ( chapterEnd - $(this).offset().top ) ) * 100;
+                if( chapterIndex === 5 ) {
+                    console.log(chaptersTop - $(this).offset().top, chapterEnd - $(this).offset().top );
+                    console.log(progress);
+                }
                 if ( progress < 0 )
                     progress = 0;
                 else if ( progress > 100 )
