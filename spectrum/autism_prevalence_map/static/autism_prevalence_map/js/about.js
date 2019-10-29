@@ -69,8 +69,6 @@ $(document).ready(function (){
 
                 if ( ( chaptersTop >= thisChapterTop && chaptersTop < $('.chapter-start#' + chapterPlusOne + '' ).offset().top ) || chaptersTop >= thisChapterTop && chapterIndex == chapterPlusOne ) {
 
-                    if( chapterIndex == 5 ) console.log( 'greater' );
-
                     $('.chapter-link a[href="#' + chapterIndex + '"]').addClass('active');
 
                     // Animate to selected chapter on mobile
@@ -80,7 +78,6 @@ $(document).ready(function (){
 
                 } else if ( chaptersTop < $('.chapter-start').first().offset().top ) {
 
-                    if( chapterIndex == 5 ) console.log( 'less than' );
                     // Make first chapter active when above nav
                     $('.chapter-link a[href="#1"]').addClass('active');
 
