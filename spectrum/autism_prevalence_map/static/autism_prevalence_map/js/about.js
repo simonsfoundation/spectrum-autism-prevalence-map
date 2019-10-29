@@ -28,7 +28,7 @@ $(document).ready(function (){
             var chaptersPosition = $('#content-container').offset().top;
             if ( $(window).width() < 1140 ) chaptersPosition = chaptersPosition - $('aside.sidebar').height() - 24;
 
-            var endPoint = $('#end-row').offset().top - ( $('.chapter-navigation').height() + marginFromNav);
+            var endPoint = $('#end-row').offset().top - ( $('.chapter-navigation').height() + marginFromNav );
 
             // Fix chapter nav
             if (scrollPosition >= endPoint ) {
@@ -63,9 +63,11 @@ $(document).ready(function (){
 
                 var chapterIndex = parseInt( $(this).attr('id') );
                 var chapterPlusOne  = chapterIndex + 1;
+                var thisChapterTop = $(this).offset().top - ( $('.chapter-navigation').height() + marginFromNav );
+
                 if ( chapterPlusOne > $('.chapter-start').length ) chapterPlusOne = $('.chapter-start').length;
 
-                if ( ( chaptersTop >= $(this).offset().top && chaptersTop < $('.chapter-start#' + chapterPlusOne + '' ).offset().top ) || chaptersTop >= $(this).offset().top && chapterIndex == chapterPlusOne ) {
+                if ( ( chaptersTop >= thisChapterTop && chaptersTop < $('.chapter-start#' + chapterPlusOne + '' ).offset().top ) || chaptersTop >= thisChapterTop && chapterIndex == chapterPlusOne ) {
 
                     if( chapterIndex == 5 ) console.log( 'greater' );
 
@@ -94,11 +96,7 @@ $(document).ready(function (){
                 else
                     chapterEnd = $('.chapter-start#' + chapterPlusOne + '').offset().top;
 
-                var progress = ( ( chaptersTop - $(this).offset().top ) / ( chapterEnd - $(this).offset().top ) ) * 100;
-                if( chapterIndex === 5 ) {
-                    console.log(chaptersTop - $(this).offset().top, chapterEnd - $(this).offset().top );
-                    console.log(progress);
-                }
+                var progress = ( ( chaptersTop - thisChapterTop ) / ( chapterEnd - thisChapterTop ) ) * 100;
                 if ( progress < 0 )
                     progress = 0;
                 else if ( progress > 100 )

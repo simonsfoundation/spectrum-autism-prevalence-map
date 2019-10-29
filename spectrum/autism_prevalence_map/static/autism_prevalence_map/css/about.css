@@ -73,7 +73,6 @@ aside.sidebar {
     background-image: linear-gradient(to right, #FFC10D, #F89C2C);
     padding: 15px 10px 18px 13px;
     max-width: 465px;
-    margin-bottom: 12em;
 }
     .about#content-container .row .content:first-child .newsletter h2 {
         color: white;
@@ -134,6 +133,9 @@ aside.sidebar {
         text-decoration: underline;
     }
 
+#end-row {
+    margin-bottom: 12em;
+}
 
 @media (max-width: 767px) {
     #content-container .content.col-7 {
