@@ -15,11 +15,12 @@ class Command(BaseCommand):
         params = '/4/public/values?alt=json'
         url = base_url + key + params
         response = urllib.urlopen(url.encode('utf8'))
-        data = json.loads(response.read())
+        source = json.loads(response.read())
 
-        for data in data['feed']['entry']:
+        for data in source['feed']['entry']:
             try:
                 #skip if year not a date
+                print data['gsx$yearpublished']['$t'] + ', ' + data['gsx$authors']['$t']
                 yearpublished = re.sub("[^0-9]", "", data['gsx$yearpublished']['$t'])
 
                 if yearpublished:
@@ -72,6 +73,7 @@ class Command(BaseCommand):
 
             except Exception as e:
                 # if error
+                print 'load research data error'
                 print e
 
     def geocode(self):
