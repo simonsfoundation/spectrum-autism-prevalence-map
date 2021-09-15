@@ -254,7 +254,7 @@ def studiesApi(request):
 		response['status'] = "200"
 
 	else:
-		print request.method
+		print(request.method)
 
 	return JsonResponse(response)
 
@@ -410,6 +410,6 @@ def studiesCsv(request):
 		response['status'] = "200"
 
 	else:
-		print request.method
+		print(request.method)
 
 	return response

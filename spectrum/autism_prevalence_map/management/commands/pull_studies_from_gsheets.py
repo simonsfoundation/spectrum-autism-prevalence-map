@@ -20,7 +20,7 @@ class Command(BaseCommand):
         for data in source['feed']['entry']:
             try:
                 #skip if year not a date
-                print data['gsx$yearpublished']['$t'] + ', ' + data['gsx$authors']['$t']
+                print(data['gsx$yearpublished']['$t'] + ', ' + data['gsx$authors']['$t'])
                 yearpublished = re.sub("[^0-9]", "", data['gsx$yearpublished']['$t'])
 
                 if yearpublished:
@@ -73,8 +73,8 @@ class Command(BaseCommand):
 
             except Exception as e:
                 # if error
-                print 'load research data error'
-                print e
+                print('load research data error')
+                print(e)
 
     def geocode(self):
         gmaps_api_key = '&key=' + 'AIzaSyACddN3i59_QccZTqB4cWGyK6ZDFCLCVBE'
@@ -204,12 +204,12 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **options):
-        print "Loading Academic Research Data...."
+        print("Loading Academic Research Data....")
         self.load_research_data()
-        print "Done."
-        print "Parse strings to numbers..."
+        print("Done.")
+        print("Parse strings to numbers...")
         self.parse_data()
-        print "Done."
-        print "Geocode research papers where lat/lon is null..."
+        print("Done.")
+        print("Geocode research papers where lat/lon is null...")
         self.geocode()
-        print "Done."
+        print("Done.")
