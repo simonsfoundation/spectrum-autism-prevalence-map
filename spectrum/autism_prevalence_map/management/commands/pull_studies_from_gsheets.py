@@ -1,4 +1,4 @@
-import sys, os, urllib, json, time, datetime, re
+import sys, os, urllib.request, json, time, datetime, re
 from django.core.management.base import BaseCommand, CommandError
 from autism_prevalence_map.models import *
 
@@ -9,19 +9,28 @@ from autism_prevalence_map.models import *
 class Command(BaseCommand):
 
     def load_research_data(self):
+        # Old (v3) style of fetching data from Gsheets
         # https://spreadsheets.google.com/feeds/list/1l8Ih7BGIo9AyPRwX7Vb2jPLZkRMo0d7QA7SboM9-JNk/4/public/values?alt=json
         key = '1l8Ih7BGIo9AyPRwX7Vb2jPLZkRMo0d7QA7SboM9-JNk'
-        base_url = 'https://spreadsheets.google.com/feeds/list/'
-        params = '/4/public/values?alt=json'
+        # base_url = 'https://spreadsheets.google.com/feeds/list/'
+        # params = '/4/public/values?alt=json'
+        base_url = 'https://docs.google.com/spreadsheets/d/'
+        params = '/gviz/tq?tqx=out:json'
         url = base_url + key + params
-        response = urllib.urlopen(url.encode('utf8'))
-        source = json.loads(response.read())
 
-        for data in source['feed']['entry']:
+        print('response')
+        response = urllib.request.urlopen(url)
+        read_response = response.read()
+        trimmed_response = re.sub(r'(?<!\\)\\(?!["\\/bfnrt]|u[0-9a-fA-F]{4})', r'', read_response[47:-2].decode("utf-8"))
+        source = json.loads(trimmed_response)
+        print(source['table']['cols'])
+
+        for data in source['table']['rows']:
+            # print(data['c'])
             try:
                 #skip if year not a date
-                print(data['gsx$yearpublished']['$t'] + ', ' + data['gsx$authors']['$t'])
-                yearpublished = re.sub("[^0-9]", "", data['gsx$yearpublished']['$t'])
+                print(data['c'][0]['f'] + ', ' + data['c'][1]['v'])
+                yearpublished = data['c'][0]['f']
 
                 if yearpublished:
                     try:
@@ -35,37 +44,37 @@ class Command(BaseCommand):
 
                     #use get or create to only create records for objects newly added to the spreadsheets
                     updated_values = {
-                        'yearpublished': data['gsx$yearpublished']['$t'],
-                        'authors': data['gsx$authors']['$t'], 
-                        'country': data['gsx$country']['$t'], 
-                        'area': data['gsx$area']['$t'], 
-                        'samplesize': data['gsx$samplesize']['$t'], 
-                        'age': data['gsx$ageyears']['$t'], 
-                        'individualswithautism': data['gsx$individualswithautism']['$t'], 
-                        'diagnosticcriteria': data['gsx$diagnosticcriteria']['$t'], 
-                        'percentwaverageiq': data['gsx$percentwaverageiq']['$t'], 
-                        'sexratiomf': data['gsx$sexratiomf']['$t'], 
-                        'prevalenceper10000': data['gsx$prevalenceper10000']['$t'], 
-                        'confidenceinterval': data['gsx$confidenceinterval']['$t'], 
-                        'categoryadpddorasd': data['gsx$categoryadpddorasd']['$t'],
-                        'yearsstudied': data['gsx$yearsstudied']['$t'],
-                        'recommended': data['gsx$recommended']['$t'], 
-                        'studytype': data['gsx$studytype']['$t'],
-                        'meanincomeofparticipants': data['gsx$income']['$t'],
-                        'educationlevelofparticipants': data['gsx$education']['$t'],
-                        'citation': data['gsx$citation']['$t'],
-                        'link1title': data['gsx$link1title']['$t'],
-                        'link1url': data['gsx$link1url']['$t'],
-                        'link2title': data['gsx$link2title']['$t'],
-                        'link2url': data['gsx$link2url']['$t'],
-                        'link3title': data['gsx$link3title']['$t'],
-                        'link3url': data['gsx$link3url']['$t'],
-                        'link4title': data['gsx$link4title']['$t'],
-                        'link4url': data['gsx$link4url']['$t'],
-                        'sourceofdataforthisspreadsheet': data['gsx$sourceofdataforthisspreadsheet']['$t'], 
-                        'ericsqualityassessment': data['gsx$ericsqualityassessment']['$t'], 
-                        'ericsreasonsbasedonmyrecallofthestudies': data['gsx$ericsreasonsbasedonmyrecallofthestudies']['$t'],
-                        'commentsfromotheradvisors': data['gsx$commentsfromotheradvisors']['$t']
+                        'yearpublished': data['c'][0]['f'],
+                        'authors': data['c'][1]['v'], 
+                        'country': data['c'][2]['v'], 
+                        'area': data['c'][3]['v'], 
+                        'samplesize': data['c'][4]['v'], 
+                        'age': data['c'][5]['v'], 
+                        'individualswithautism': data['c'][6]['v'], 
+                        'diagnosticcriteria': data['c'][7]['v'], 
+                        'percentwaverageiq': data['c'][8]['v'], 
+                        'sexratiomf': data['c'][9]['v'], 
+                        'prevalenceper10000': data['c'][10]['v'], 
+                        'confidenceinterval': data['c'][11]['v'], 
+                        'categoryadpddorasd': data['c'][12]['v'],
+                        'yearsstudied': data['c'][13]['v'],
+                        'recommended': data['c'][14]['v'], 
+                        'studytype': data['c'][15]['v'],
+                        'meanincomeofparticipants': data['c'][16]['v'],
+                        'educationlevelofparticipants': data['c'][17]['v'],
+                        'citation': data['c'][18]['v'],
+                        'link1title': data['c'][19]['v'] if data['c'][19] is not None else '',
+                        'link1url': data['c'][20]['v'] if data['c'][20] is not None else '',
+                        'link2title': data['c'][21]['v'] if data['c'][21] is not None else '',
+                        'link2url': data['c'][22]['v'] if data['c'][22] is not None else '',
+                        'link3title': data['c'][23]['v'] if data['c'][23] is not None else '',
+                        'link3url': data['c'][24]['v'] if data['c'][24] is not None else '',
+                        'link4title': data['c'][25]['v'] if data['c'][25] is not None else '',
+                        'link4url': data['c'][26]['v'] if data['c'][26] is not None else '',
+                        'sourceofdataforthisspreadsheet': data['c'][27]['v'], 
+                        'ericsqualityassessment': data['c'][28]['v'], 
+                        'ericsreasonsbasedonmyrecallofthestudies': data['c'][29]['v'],
+                        'commentsfromotheradvisors': data['c'][30]['v'] if data['c'][30] is not None else ''
 
                     }
                     obj, created = studies.objects.update_or_create(gsheet_id=data['id']['$t'], defaults=updated_values)
@@ -94,7 +103,7 @@ class Command(BaseCommand):
                 study.area = ''
             address = '?address=' + study.area + ', ' + study.country
             url = base_url + address + gmaps_api_key
-            response = urllib.urlopen(url.encode('utf8'))
+            response = urllib.request.urlopen(url.encode('utf8'))
             data = json.loads(response.read())
 
             if data['status'] == "OK":
@@ -208,8 +217,8 @@ class Command(BaseCommand):
         self.load_research_data()
         print("Done.")
         print("Parse strings to numbers...")
-        self.parse_data()
+        # self.parse_data()
         print("Done.")
         print("Geocode research papers where lat/lon is null...")
-        self.geocode()
+        # self.geocode()
         print("Done.")
