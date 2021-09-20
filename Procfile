@@ -1,1 +1,1 @@
-web: uwsgi --http :8000 --wsgi-file spectrum/wsgi.py --master --processes 4 --threads 2
+web: uwsgi --http :8000 --wsgi-file spectrum/wsgi.py --master --processes 1 --threads 4
