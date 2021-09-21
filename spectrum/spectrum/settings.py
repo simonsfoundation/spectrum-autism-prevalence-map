@@ -128,7 +128,7 @@ USE_TZ = True
 
 STATIC_URL = os.environ["DJANGO_STATIC_URL"]
 
-STATIC_ROOT = "/var/www/html" + os.environ["DJANGO_STATIC_URL"]
+STATIC_ROOT = "/var/www/html"
 
 STATICFILES_DIRS = [
     (f"{BASE_DIR}" + "/autism_prevalence_map/")
