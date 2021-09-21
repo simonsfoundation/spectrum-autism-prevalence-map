@@ -43,12 +43,6 @@ if [[ -n "${ACTION_BRANCH}" ]]; then
   git pull
 fi
 
-echo "Creating .ebextensions with updated wsgi.py ..."
-if $(grep -q \$ANSIBLE_VAULT jenkins/ssl.config) ; then
-  cp jenkins/ssl.config .ebextensions/ssl.config
-  ansible-vault decrypt .ebextensions/ssl.config --vault-password-file=~/.ansible.vault ;
-fi
-
 if [[ -z "${OUTPUT_ENV}" ]]; then
   exit 1
 fi
