@@ -131,5 +131,5 @@ STATIC_URL = os.environ["DJANGO_STATIC_URL"]
 STATIC_ROOT = "/var/www/html" + os.environ["DJANGO_STATIC_URL"]
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "/autism_prevalence_map/")
+    (f"{BASE_DIR}" + "/autism_prevalence_map/")
 ]
