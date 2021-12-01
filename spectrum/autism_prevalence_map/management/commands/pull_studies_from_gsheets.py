@@ -15,7 +15,9 @@ class Command(BaseCommand):
         # base_url = 'https://spreadsheets.google.com/feeds/list/'
         # params = '/4/public/values?alt=json'
         base_url = 'https://docs.google.com/spreadsheets/d/'
-        params = '/gviz/tq?tqx=out:json'
+        # production sheet
+        params = '/gviz/tq?tqx=out:json&gid=536000761'
+        # params = '/gviz/tq?tqx=out:json'
         url = base_url + key + params
 
         print('response')
@@ -25,11 +27,11 @@ class Command(BaseCommand):
         source = json.loads(trimmed_response)
         print(source['table']['cols'])
 
-        for data in source['table']['rows']:
+        for index, data in enumerate(source['table']['rows']):
             # print(data['c'])
             try:
                 #skip if year not a date
-                print(data['c'][0]['f'] + ', ' + data['c'][1]['v'])
+                # print(data['c'][0]['f'] + ', ' + data['c'][1]['v'])
                 yearpublished = data['c'][0]['f']
 
                 if yearpublished:
@@ -44,25 +46,25 @@ class Command(BaseCommand):
 
                     #use get or create to only create records for objects newly added to the spreadsheets
                     updated_values = {
-                        'yearpublished': data['c'][0]['f'],
-                        'authors': data['c'][1]['v'], 
-                        'country': data['c'][2]['v'], 
-                        'area': data['c'][3]['v'], 
-                        'samplesize': data['c'][4]['v'], 
-                        'age': data['c'][5]['v'], 
-                        'individualswithautism': data['c'][6]['v'], 
-                        'diagnosticcriteria': data['c'][7]['v'], 
-                        'percentwaverageiq': data['c'][8]['v'], 
-                        'sexratiomf': data['c'][9]['v'], 
-                        'prevalenceper10000': data['c'][10]['v'], 
-                        'confidenceinterval': data['c'][11]['v'], 
-                        'categoryadpddorasd': data['c'][12]['v'],
-                        'yearsstudied': data['c'][13]['v'],
-                        'recommended': data['c'][14]['v'], 
-                        'studytype': data['c'][15]['v'],
-                        'meanincomeofparticipants': data['c'][16]['v'],
-                        'educationlevelofparticipants': data['c'][17]['v'],
-                        'citation': data['c'][18]['v'],
+                        'yearpublished': data['c'][0]['f'] if data['c'][0] is not None else '',
+                        'authors': data['c'][1]['v'] if data['c'][1] is not None else '', 
+                        'country': data['c'][2]['v'] if data['c'][2] is not None else '', 
+                        'area': data['c'][3]['v'] if data['c'][3] is not None else '', 
+                        'samplesize': data['c'][4]['v'] if data['c'][4] is not None else '', 
+                        'age': data['c'][5]['v'] if data['c'][5] is not None else '', 
+                        'individualswithautism': data['c'][6]['v'] if data['c'][6] is not None else '', 
+                        'diagnosticcriteria': data['c'][7]['v'] if data['c'][7] is not None else '', 
+                        'percentwaverageiq': data['c'][8]['v'] if data['c'][8] is not None else '', 
+                        'sexratiomf': data['c'][9]['v'] if data['c'][9] is not None else '', 
+                        'prevalenceper10000': data['c'][10]['v'] if data['c'][10] is not None else '', 
+                        'confidenceinterval': data['c'][11]['v'] if data['c'][11] is not None else '', 
+                        'categoryadpddorasd': data['c'][12]['v'] if data['c'][12] is not None else '',
+                        'yearsstudied': data['c'][13]['v'] if data['c'][13] is not None else '',
+                        'recommended': data['c'][14]['v'] if data['c'][14] is not None else '', 
+                        'studytype': data['c'][15]['v'] if data['c'][15] is not None else '',
+                        'meanincomeofparticipants': data['c'][16]['v'] if data['c'][16] is not None else '',
+                        'educationlevelofparticipants': data['c'][17]['v'] if data['c'][17] is not None else '',
+                        'citation': data['c'][18]['v'] if data['c'][18] is not None else '',
                         'link1title': data['c'][19]['v'] if data['c'][19] is not None else '',
                         'link1url': data['c'][20]['v'] if data['c'][20] is not None else '',
                         'link2title': data['c'][21]['v'] if data['c'][21] is not None else '',
@@ -71,22 +73,23 @@ class Command(BaseCommand):
                         'link3url': data['c'][24]['v'] if data['c'][24] is not None else '',
                         'link4title': data['c'][25]['v'] if data['c'][25] is not None else '',
                         'link4url': data['c'][26]['v'] if data['c'][26] is not None else '',
-                        'sourceofdataforthisspreadsheet': data['c'][27]['v'], 
-                        'ericsqualityassessment': data['c'][28]['v'], 
-                        'ericsreasonsbasedonmyrecallofthestudies': data['c'][29]['v'],
+                        'sourceofdataforthisspreadsheet': data['c'][27]['v'] if data['c'][27] is not None else '', 
+                        'ericsqualityassessment': data['c'][28]['v'] if data['c'][28] is not None else '', 
+                        'ericsreasonsbasedonmyrecallofthestudies': data['c'][29]['v'] if data['c'][29] is not None else '',
                         'commentsfromotheradvisors': data['c'][30]['v'] if data['c'][30] is not None else ''
 
                     }
-                    obj, created = studies.objects.update_or_create(gsheet_id=data['id']['$t'], defaults=updated_values)
+                    obj, created = studies.objects.update_or_create(gsheet_id=index, defaults=updated_values)
 
 
             except Exception as e:
                 # if error
+                print(index)
                 print('load research data error')
                 print(e)
 
     def geocode(self):
-        gmaps_api_key = '&key=' + 'AIzaSyACddN3i59_QccZTqB4cWGyK6ZDFCLCVBE'
+        gmaps_api_key = '&key=AIzaSyACddN3i59_QccZTqB4cWGyK6ZDFCLCVBE'
         base_url = 'https://maps.googleapis.com/maps/api/geocode/json'
 
         # try to geocode only where country and area are not null, and where lat and lon are null
@@ -101,9 +104,9 @@ class Command(BaseCommand):
             # TODO we need a more elegant solution, but, for now, we will hide these two areas
             if study.area in ('Mainland and Azores', 'Northern Ostrobothnia County') :
                 study.area = ''
-            address = '?address=' + study.area + ', ' + study.country
+            address = '?address=' + urllib.parse.quote(study.area) + ',' + urllib.parse.quote(study.country)
             url = base_url + address + gmaps_api_key
-            response = urllib.request.urlopen(url.encode('utf8'))
+            response = urllib.request.urlopen(url)
             data = json.loads(response.read())
 
             if data['status'] == "OK":
@@ -217,8 +220,8 @@ class Command(BaseCommand):
         self.load_research_data()
         print("Done.")
         print("Parse strings to numbers...")
-        # self.parse_data()
+        self.parse_data()
         print("Done.")
         print("Geocode research papers where lat/lon is null...")
-        # self.geocode()
+        self.geocode()
         print("Done.")
