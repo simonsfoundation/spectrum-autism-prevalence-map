@@ -19,6 +19,7 @@ class studies(models.Model):
     age = models.CharField(max_length=255, default='', blank=True, null=True)
     individualswithautism = models.CharField(max_length=255, default='', blank=True, null=True)
     diagnosticcriteria = models.CharField(max_length=255, default='', blank=True, null=True)
+    diagnostictools = models.CharField(max_length=255, default='', blank=True, null=True)
     percentwaverageiq = models.CharField(max_length=255, default='', blank=True, null=True)
     sexratiomf = models.CharField(max_length=255, default='', blank=True, null=True)
     prevalenceper10000 = models.CharField(max_length=255, default='', blank=True, null=True)

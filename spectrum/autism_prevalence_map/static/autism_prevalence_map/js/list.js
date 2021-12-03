@@ -121,6 +121,8 @@ $(document).ready(function (){
                     const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
                     const diagnosticcriteria = d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
 
+                    const diagnostictools = d.properties.diagnostictools.replace(/ *([|]) */g, '$1').split('|').join(', ');
+
                     let links = [];
                     if (d.properties.link1title && d.properties.link1url) {
                         links.push('<a href="'+ d.properties.link1url +'" >'+ d.properties.link1title +'</a>') 
@@ -141,6 +143,7 @@ $(document).ready(function (){
                     return "<b>Age (years):</b> " + age + "<br />" +
                     "<b>Individuals with autism:</b> " + d.properties.individualswithautism + "<br />" +
                     "<b>Diagnostic criteria:</b> " + diagnosticcriteria + "<br />" +
+                    "<b>Diagnostic tools:</b> " + diagnostictools + "<br />" +
                     "<b>Percent w/ average IQ:</b> " + d.properties.percentwaverageiq + "<br />" +
                     "<b>Sex ratio (M:F):</b> " + d.properties.sexratiomf + "<br />" +
                     "<b>Year(s) studied:</b> " + d.properties.yearsstudied + "<br />" +
