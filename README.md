@@ -5,7 +5,7 @@ To set this up:
 If you don’t have postgresql,
 `brew install postgresql`
 
-Create a db in postgres and add your postgres db info into .env. The following is an example.
+Create an empty db in postgres and add your postgres db info into .env. The following is an example.
 
 ```
 DB_HOST='localhost'
