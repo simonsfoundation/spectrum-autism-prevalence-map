@@ -16,8 +16,7 @@ class Command(BaseCommand):
         # params = '/4/public/values?alt=json'
         base_url = 'https://docs.google.com/spreadsheets/d/'
         # production sheet
-        # params = '/gviz/tq?tqx=out:json&gid=536000761'
-        params = '/gviz/tq?tqx=out:json'
+        params = '/gviz/tq?tqx=out:json&gid=536000761'
         url = base_url + key + params
 
         print('response')
