@@ -194,11 +194,7 @@ def studiesApi(request):
 				SearchVector('link3title') +
 				SearchVector('link3url') +
 				SearchVector('link4title') +
-				SearchVector('link4url') +
-				SearchVector('sourceofdataforthisspreadsheet') +
-				SearchVector('ericsqualityassessment') +
-				SearchVector('ericsreasonsbasedonmyrecallofthestudies') +
-				SearchVector('commentsfromotheradvisors')
+				SearchVector('link4url')
 			)
 
 
@@ -242,10 +238,6 @@ def studiesApi(request):
 			data['properties']['link3url'] = study.link3url
 			data['properties']['link4title'] = study.link4title
 			data['properties']['link4url'] = study.link4url
-			data['properties']['sourceofdataforthisspreadsheet'] = study.sourceofdataforthisspreadsheet
-			data['properties']['ericsqualityassessment'] = study.ericsqualityassessment
-			data['properties']['ericsreasonsbasedonmyrecallofthestudies	'] = study.ericsreasonsbasedonmyrecallofthestudies	
-			data['properties']['commentsfromotheradvisors'] = study.commentsfromotheradvisors
 			data['geometry'] = {}
 			data['geometry']['type'] = 'Point'
 			data['geometry']['coordinates'] = [study.longitude, study.latitude]
@@ -385,11 +377,7 @@ def studiesCsv(request):
 				SearchVector('link3title') +
 				SearchVector('link3url') +
 				SearchVector('link4title') +
-				SearchVector('link4url') +
-				SearchVector('sourceofdataforthisspreadsheet') +
-				SearchVector('ericsqualityassessment') +
-				SearchVector('ericsreasonsbasedonmyrecallofthestudies') +
-				SearchVector('commentsfromotheradvisors')
+				SearchVector('link4url')
 			)
 
 

@@ -72,12 +72,7 @@ class Command(BaseCommand):
                         'link3title': data['c'][23]['v'] if data['c'][23] is not None else '',
                         'link3url': data['c'][24]['v'] if data['c'][24] is not None else '',
                         'link4title': data['c'][25]['v'] if data['c'][25] is not None else '',
-                        'link4url': data['c'][26]['v'] if data['c'][26] is not None else '',
-                        'sourceofdataforthisspreadsheet': data['c'][27]['v'] if data['c'][27] is not None else '', 
-                        'ericsqualityassessment': data['c'][28]['v'] if data['c'][28] is not None else '', 
-                        'ericsreasonsbasedonmyrecallofthestudies': data['c'][29]['v'] if data['c'][29] is not None else '',
-                        'commentsfromotheradvisors': data['c'][30]['v'] if data['c'][30] is not None else ''
-
+                        'link4url': data['c'][26]['v'] if data['c'][26] is not None else ''
                     }
                     obj, created = studies.objects.update_or_create(gsheet_id=index, defaults=updated_values)
 
