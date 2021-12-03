@@ -225,8 +225,20 @@ $(document).ready(function (){
                 .text("95% Confidence interval");
                 
             let ciSVG = ciBlock.append("svg")
-                .style("width", "100%")
-                .style("height", "140"); 
+                .style("width", function (d) {
+                    if (d.properties.confidenceinterval.includes('Unavailable')) {
+                        return "0"
+                    } else {
+                        return "100%"
+                    }
+                })
+                .style("height", function (d) {
+                    if (d.properties.confidenceinterval.includes('Unavailable')) {
+                        return "0"
+                    } else {
+                        return "140"
+                    }
+                });
 
             let ciOuterLineG = ciSVG.append("g")
                 .classed("ci-lines", true);
