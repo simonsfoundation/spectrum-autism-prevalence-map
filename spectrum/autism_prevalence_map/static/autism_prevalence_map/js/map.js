@@ -793,6 +793,7 @@ $(document).ready(function (){
         const area = d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
         const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
         const diagnosticcriteria = d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
+        const diagnostictools = d.properties.diagnostictools.replace(/ *([|]) */g, '$1').split('|').join(', ');
         const prevalenceper10000 = d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
         const confidenceinterval = d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', ');
         $("#card-title").html(card_title);
@@ -801,6 +802,7 @@ $(document).ready(function (){
         $("#card-samplesize").text(d.properties.samplesize);
         $("#card-age").text(age);
         $("#card-diagnosticcriteria").text(diagnosticcriteria);
+        $("#card-diagnostictools").text(diagnostictools);
         $("#card-percentwaverageiq").text(d.properties.percentwaverageiq);
         $("#card-sexratiomf").text(d.properties.sexratiomf);
         $("#card-prevalenceper10000").text(prevalenceper10000);

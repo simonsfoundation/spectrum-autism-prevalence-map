@@ -121,6 +121,8 @@ $(document).ready(function (){
                     const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
                     const diagnosticcriteria = d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
 
+                    const diagnostictools = d.properties.diagnostictools.replace(/ *([|]) */g, '$1').split('|').join(', ');
+
                     let links = [];
                     if (d.properties.link1title && d.properties.link1url) {
                         links.push('<a href="'+ d.properties.link1url +'" >'+ d.properties.link1title +'</a>') 
@@ -141,6 +143,7 @@ $(document).ready(function (){
                     return "<b>Age (years):</b> " + age + "<br />" +
                     "<b>Individuals with autism:</b> " + d.properties.individualswithautism + "<br />" +
                     "<b>Diagnostic criteria:</b> " + diagnosticcriteria + "<br />" +
+                    "<b>Diagnostic tools:</b> " + diagnostictools + "<br />" +
                     "<b>Percent w/ average IQ:</b> " + d.properties.percentwaverageiq + "<br />" +
                     "<b>Sex ratio (M:F):</b> " + d.properties.sexratiomf + "<br />" +
                     "<b>Year(s) studied:</b> " + d.properties.yearsstudied + "<br />" +
@@ -222,8 +225,20 @@ $(document).ready(function (){
                 .text("95% Confidence interval");
                 
             let ciSVG = ciBlock.append("svg")
-                .style("width", "100%")
-                .style("height", "140"); 
+                .style("width", function (d) {
+                    if (d.properties.confidenceinterval.includes('Unavailable')) {
+                        return "0"
+                    } else {
+                        return "100%"
+                    }
+                })
+                .style("height", function (d) {
+                    if (d.properties.confidenceinterval.includes('Unavailable')) {
+                        return "0"
+                    } else {
+                        return "140"
+                    }
+                });
 
             let ciOuterLineG = ciSVG.append("g")
                 .classed("ci-lines", true);
@@ -231,12 +246,15 @@ $(document).ready(function (){
             ciOuterLineG.append("line")
                 .attr("x1", mapWidth/2)
                 .attr("x2", function (d) {
-                    let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                    if (biggest <= 25) {
-                        biggest = 25;
-                    } else if (biggest >= 70) {
-                        biggest = 70;
-                    } else {}
+                    let biggest = 25;
+                    if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
+                        biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
+                        if (biggest <= 25) {
+                            biggest = 25;
+                        } else if (biggest >= 70) {
+                            biggest = 70;
+                        }
+                    }
                     return (mapWidth/2) + biggest + 30; 
                 })
                 .attr("y1", 50)
@@ -252,12 +270,15 @@ $(document).ready(function (){
 
             ciOuterLineG.append("text")
                 .attr("x", function (d) {
-                    let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                    if (biggest <= 25) {
-                        biggest = 25;
-                    } else if (biggest >= 70) {
-                        biggest = 70;
-                    } else {}
+                    let biggest = 25;
+                    if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
+                        biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
+                        if (biggest <= 25) {
+                            biggest = 25;
+                        } else if (biggest >= 70) {
+                            biggest = 70;
+                        } 
+                    }
                     return (mapWidth/2) + biggest + 35; 
                 })
                 .attr("y", 55)
@@ -277,12 +298,15 @@ $(document).ready(function (){
                 .attr("cx", mapWidth/2)
                 .attr("cy", 70)
                 .attr("r", function (d) {
-                    let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                    if (biggest <= 25) {
-                        biggest = 25;
-                    } else if (biggest >= 70) {
-                        biggest = 70;
-                    } else {}
+                    let biggest = 25;
+                    if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
+                        biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
+                        if (biggest <= 25) {
+                            biggest = 25;
+                        } else if (biggest >= 70) {
+                            biggest = 70;
+                        }
+                    }
                     return biggest; 
                 })
                 .attr("fill", "#93e1f5")
@@ -294,18 +318,22 @@ $(document).ready(function (){
                 .attr("cx", mapWidth/2)
                 .attr("cy", 70)
                 .attr("r", function (d) {
-                    let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                    let halfway = parseFloat(d.properties.prevalenceper10000);
-                    if (biggest <= 25) {
-                        halfway = halfway + (25 - biggest);
-                    } else if (biggest >= 70) {
-                        halfway = halfway - (biggest - 70);
-                    } else {}
-
-                    if (halfway < 10) {
-                        halfway = 10;
+                    let halfway = 10;
+                    if (!isNaN(parseFloat(d.properties.prevalenceper10000))) {
+                        halfway = parseFloat(d.properties.prevalenceper10000);
+                        if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))){
+                            let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
+                            if (biggest <= 25) {
+                                halfway = halfway + (25 - biggest);
+                            } else if (biggest >= 70) {
+                                halfway = halfway - (biggest - 70);
+                            }
+                        }
+                        if (halfway < 10) {
+                            halfway = 10;
+                        }
                     }
-                    return halfway; 
+                    return halfway;
                 })
                 .attr("fill", "#00bcf0")
                 .attr("fill-opacity", 1)
@@ -318,12 +346,15 @@ $(document).ready(function (){
             ciInnerLineG.append("line")
                 .attr("x1", mapWidth/2)
                 .attr("x2", function (d) {
-                    let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                    if (biggest <= 25) {
-                        biggest = 25;
-                    } else if (biggest >= 70) {
-                        biggest = 70;
-                    } else {}
+                    let biggest = 25;
+                    if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
+                        biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
+                        if (biggest <= 25) {
+                            biggest = 25;
+                        } else if (biggest >= 70) {
+                            biggest = 70;
+                        }
+                    }
                     return (mapWidth/2) + biggest + 20; 
                 })
                 .attr("y1", 70)
@@ -339,12 +370,15 @@ $(document).ready(function (){
 
             ciInnerLineG.append("text")
                 .attr("x", function (d) {
-                    let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                    if (biggest <= 25) {
-                        biggest = 25;
-                    } else if (biggest >= 70) {
-                        biggest = 70;
-                    } else {}
+                    let biggest = 25;
+                    if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
+                        biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
+                        if (biggest <= 25) {
+                            biggest = 25;
+                        } else if (biggest >= 70) {
+                            biggest = 70;
+                        }
+                    }
                     return (mapWidth/2) + biggest + 25; 
                 })
                 .attr("y", 75)
@@ -364,15 +398,20 @@ $(document).ready(function (){
                 .attr("cx", mapWidth/2)
                 .attr("cy", 70)
                 .attr("r", function (d) {
-                    let smallest = parseFloat(d.properties.confidenceinterval.split("-")[0]);
-                    let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                    if (biggest <= 25) {
-                        smallest = smallest + (25 - biggest);
-                    } else if (biggest >= 70) {
-                        smallest = smallest - (biggest - 70);
-                    } else {}
-                    if (smallest < 5) {
-                        smallest = 5;
+                    let smallest = 5;
+                    if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[0]))) {
+                        smallest = parseFloat(d.properties.confidenceinterval.split("-")[0]);
+                        if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
+                            let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
+                            if (biggest <= 25) {
+                                smallest = smallest + (25 - biggest);
+                            } else if (biggest >= 70) {
+                                smallest = smallest - (biggest - 70);
+                            }
+                            if (smallest < 5) {
+                                smallest = 5;
+                            }
+                        }
                     }
                     return smallest; 
                 })
