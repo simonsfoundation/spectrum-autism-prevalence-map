@@ -32,7 +32,6 @@ class Command(BaseCommand):
         for index, data in enumerate(source['table']['rows']):
             try:
                 #skip if year not a date
-                # print(data['c'][0]['f'] + ', ' + data['c'][1]['v'])
                 yearpublished = data['c'][0]['f']
 
                 if yearpublished:
