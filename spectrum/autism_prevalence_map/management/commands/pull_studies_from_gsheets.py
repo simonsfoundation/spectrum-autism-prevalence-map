@@ -98,9 +98,15 @@ class Command(BaseCommand):
         for study in pulled_studies:
             # call the geocode URL
             # TODO we need a more elegant solution, but, for now, we will hide these two areas
-            if study.area in ('Mainland and Azores', 'Northern Ostrobothnia County') :
-                study.area = ''
-            address = '?address=' + urllib.parse.quote(study.area) + ',' + urllib.parse.quote(study.country)
+            area = study.area
+            country = study.country
+            if area in ('Mainland and Azores', 'Northern Ostrobothnia County') :
+                area = ''
+            address = '?address=' + urllib.parse.quote(area) + ',' + urllib.parse.quote(country)
+            #add region codes for the countries that are being located wrongly by google geocode API
+            countrymap = {'Japan': 'jp', 'Qatar': 'qa', 'Iran': 'ir'};
+            if country in countrymap.keys() :
+                address = address + '&region=' + countrymap[country]
             url = base_url + address + gmaps_api_key
             response = urllib.request.urlopen(url)
             data = json.loads(response.read())
