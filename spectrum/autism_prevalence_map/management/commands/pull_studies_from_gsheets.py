@@ -32,7 +32,8 @@ class Command(BaseCommand):
         for index, data in enumerate(source['table']['rows']):
             try:
                 #skip if year not a date
-                yearpublished = data['c'][0]['f']
+                print(data)
+                yearpublished = data['c'][0]['v']
 
                 if yearpublished:
                     try:
@@ -46,7 +47,7 @@ class Command(BaseCommand):
 
                     #use get or create to only create records for objects newly added to the spreadsheets
                     updated_values = {
-                        'yearpublished': data['c'][0]['f'] if data['c'][0] is not None else '',
+                        'yearpublished': data['c'][0]['v'] if data['c'][0] is not None else '',
                         'authors': data['c'][1]['v'] if data['c'][1] is not None else '', 
                         'country': data['c'][2]['v'] if data['c'][2] is not None else '', 
                         'area': data['c'][3]['v'][:255] if data['c'][3] is not None else '', 
