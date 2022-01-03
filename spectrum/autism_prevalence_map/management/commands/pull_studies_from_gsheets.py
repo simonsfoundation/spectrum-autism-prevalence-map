@@ -32,7 +32,8 @@ class Command(BaseCommand):
         for index, data in enumerate(source['table']['rows']):
             try:
                 #skip if year not a date
-                yearpublished = data['c'][0]['f']
+                print(data)
+                yearpublished = data['c'][0]['v']
 
                 if yearpublished:
                     try:
@@ -46,7 +47,7 @@ class Command(BaseCommand):
 
                     #use get or create to only create records for objects newly added to the spreadsheets
                     updated_values = {
-                        'yearpublished': data['c'][0]['f'] if data['c'][0] is not None else '',
+                        'yearpublished': data['c'][0]['v'] if data['c'][0] is not None else '',
                         'authors': data['c'][1]['v'] if data['c'][1] is not None else '', 
                         'country': data['c'][2]['v'] if data['c'][2] is not None else '', 
                         'area': data['c'][3]['v'][:255] if data['c'][3] is not None else '', 
@@ -98,9 +99,15 @@ class Command(BaseCommand):
         for study in pulled_studies:
             # call the geocode URL
             # TODO we need a more elegant solution, but, for now, we will hide these two areas
-            if study.area in ('Mainland and Azores', 'Northern Ostrobothnia County') :
-                study.area = ''
-            address = '?address=' + urllib.parse.quote(study.area) + ',' + urllib.parse.quote(study.country)
+            area = study.area
+            country = study.country
+            if area in ('Mainland and Azores', 'Northern Ostrobothnia County') :
+                area = ''
+            address = '?address=' + urllib.parse.quote(area) + ',' + urllib.parse.quote(country)
+            #add region codes for the countries that are being located wrongly by google geocode API
+            countrymap = {'Japan': 'jp', 'Qatar': 'qa', 'Iran': 'ir'};
+            if country in countrymap.keys() :
+                address = address + '&region=' + countrymap[country]
             url = base_url + address + gmaps_api_key
             response = urllib.request.urlopen(url)
             data = json.loads(response.read())
