@@ -105,7 +105,7 @@ class Command(BaseCommand):
                 area = ''
             address = '?address=' + urllib.parse.quote(area) + ',' + urllib.parse.quote(country)
             #add region codes for the countries that are being located wrongly by google geocode API
-            countrymap = {'Japan': 'jp', 'Qatar': 'qa', 'Iran': 'ir'};
+            countrymap = {'Japan': 'jp', 'Qatar': 'qa', 'Iran': 'ir', 'Greece': 'gr', 'Scotland': 'gb', 'Taiwan': 'tw', 'South Korea': 'kr', 'Wales': 'gb', 'France': 'fr', 'Norway': 'no'};
             if country in countrymap.keys() :
                 address = address + '&region=' + countrymap[country]
             url = base_url + address + gmaps_api_key
