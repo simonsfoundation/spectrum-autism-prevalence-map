@@ -11,7 +11,8 @@ class Command(BaseCommand):
     def load_research_data(self):
         # Old (v3) style of fetching data from Gsheets
         # https://spreadsheets.google.com/feeds/list/1l8Ih7BGIo9AyPRwX7Vb2jPLZkRMo0d7QA7SboM9-JNk/4/public/values?alt=json
-        key = '1l8Ih7BGIo9AyPRwX7Vb2jPLZkRMo0d7QA7SboM9-JNk'
+        # key = '1l8Ih7BGIo9AyPRwX7Vb2jPLZkRMo0d7QA7SboM9-JNk'
+        key = '1zlc6pdiCccGPZYh2sqVvykzgaHBjP4741atiDOf1ew8'
         # base_url = 'https://spreadsheets.google.com/feeds/list/'
         # params = '/4/public/values?alt=json'
         base_url = 'https://docs.google.com/spreadsheets/d/'
