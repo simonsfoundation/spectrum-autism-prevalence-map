@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
+import os
 from datetime import date
 import re, csv
 from django.contrib.postgres.search import SearchVector, SearchQuery
@@ -63,7 +64,15 @@ def about(request):
 	"""
 	  About page
 	"""
-	context_dict = {}
+	if os.environ["DJANGO_ALLOWED_HOSTS"] == 'prevalence-staging.spectrumnews.org' :
+		css_base = 'https://staging.spectrumnews.org'
+	elif os.environ["DJANGO_ALLOWED_HOSTS"] == '127.0.0.1' :
+		css_base = 'http://dev.spectrum.test:8010'
+	else :
+		css_base = 'https://www.spectrumnews.org'
+	context_dict = {
+		'css_base' : css_base,
+	}
 	return render(request, 'autism_prevalence_map/about.html', context_dict)
 
 
