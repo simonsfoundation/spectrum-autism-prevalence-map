@@ -1,22 +1,21 @@
-{% extends 'autism_prevalence_map/base.html' %} 
+{% extends 'autism_prevalence_map/base.html' %}
 
-{% load staticfiles %} 
+{% load staticfiles %}
 
-{% block title %}Spectrum | Global Autism Prevalence Map{% endblock %} 
+{% block title %}Spectrum | Global Autism Prevalence Map{% endblock %}
 
 {% block css_block %}
 <!-- Custom map CSS
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<link rel='stylesheet' id='main-stylesheet-css'  href='https://www.spectrumnews.org/wp-content/themes/sfari-spectrum/style.css?ver=2.0.2' type='text/css' media='all' />
-<link rel='stylesheet' id='spectrum-style-css'  href='https://www.spectrumnews.org/wp-content/themes/sfari-spectrum/css/spectrum.min.css?ver=2.0.2' type='text/css' media='all' />
+<link rel='stylesheet' id='spectrum-style-css'  href={{css_base|add:'/wp-content/themes/sfari-spectrum/css/spectrum.min.css?ver=2.0.2'}} type='text/css' media='all' />
 <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/about.css' %}">
-{% endblock %} 
+{% endblock %}
 
 
 {% block body_block %}
 <!-- Main Container
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<section class="hero-nav container orange">
+<section class="hero-nav container orange page-template-page-about">
     <div class="sidebar-container container">
         <div class="row">
             <aside class="col-3 sidebar">
@@ -62,12 +61,12 @@
 
 {% endblock %}
 
-{% block modal_block %} 
-{% endblock %} 
+{% block modal_block %}
+{% endblock %}
 
 {% block js_block %}
 <!-- Custom JS
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->   
+–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <script src="{% static 'autism_prevalence_map/js/about.js' %}"></script>
 <script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
 {% endblock %}
