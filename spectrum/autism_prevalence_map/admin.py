@@ -8,7 +8,7 @@ from .models import studies
 
 @admin.register(studies)
 class AdminStudies(admin.ModelAdmin):
-    list_display = ("id","yearpublished", "authors", "country", "area", "samplesize", "age", "individualswithautism", "diagnosticcriteria")
+    list_display = ("id","yearpublished", "authors", "country", "area", "samplesize", "age", "individualswithautism", "diagnosticcriteria", "diagnostictools", "percentwaverageiq", "sexratiomf","prevalenceper10000", "confidenceinterval", "categoryadpddorasd", "yearsstudied", "recommended", "studytype", "meanincomeofparticipants", "educationlevelofparticipants", "citation", "link1title", "link1url", "link2title", "link2url", "link3title", "link3url", "latitude", "longitude" )
     exclude = ('gsheet_id','latitude','longitude','yearpublished_number','yearsstudied_number_min', 'yearsstudied_number_max','prevalenceper10000_number', 'samplesize_number', 'num_yearsstudied')
     
     def save_model(self, request, obj, form, change):
