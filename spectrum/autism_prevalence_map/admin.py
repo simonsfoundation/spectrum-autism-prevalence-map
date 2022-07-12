@@ -3,14 +3,50 @@ from __future__ import unicode_literals
 import sys, os, urllib.request, json, time, datetime, re
 from django.contrib import admin
 from .models import studies
+from django import forms
 
 # Register your models here.
+class StudiesForm(forms.ModelForm):
+    
+    yearpublished = forms.CharField(label='Yearrrr Published', required=False, initial='')
+    authors = forms.CharField(label="Authors", required=False, initial='')
+    country = forms.CharField(required=False, initial='')
+    area = forms.CharField(required=False, initial='')
+    samplesize = forms.CharField(label='Sample Size',required=False, initial='')
+    age = forms.CharField(required=False, initial='')
+    individualswithautism = forms.CharField(label='Individual with Autism',required=False, initial='')
+    diagnosticcriteria = forms.CharField(label='Diagnostic Criteria',required=False, initial='')
+    percentwaverageiq = forms.CharField(label='Percent w/ Average IQ',required=False, initial='')
+    sexratiomf = forms.CharField(label='Sex Ratio (M:F)',required=False, initial='')
+    prevalenceper10000 = forms.CharField(label='Prevalence (per 10,000)',required=False, initial='')
+    confidenceinterval = forms.CharField(label='95% Confidence interval',required=False, initial='')
+    categoryadpddorasd = forms.CharField(label='Category (AD, PDD or ASD)',required=False, initial='')
+    yearsstudied = forms.CharField(label='Year(s) Studied',required=False, initial='')
+    recommended = forms.CharField(required=False, initial='')
+    studytype = forms.CharField(label='Study Type', required=False, initial='')
+    meanincomeofparticipants = forms.CharField(label='Mean Income of Participants', required=False, initial='')
+    educationlevelofparticipants = forms.CharField(label='Education Level of Participants', required=False, initial='')
+    citation = forms.CharField( required=False, initial='')
+    link1title = forms.CharField(label='Link 1 Title', required=False, initial='')
+    link1url = forms.CharField(label='Link 1 Url', required=False, initial='')
+    link2title = forms.CharField(label='Link 2 Title', required=False, initial='')
+    link2url = forms.CharField(label='Link 2 Url', required=False, initial='')
+    link3title = forms.CharField(label='Link 3 Title', required=False, initial='')
+    link3url = forms.CharField(label='Link 3 Url', required=False, initial='')
+
+    class Meta:
+        model = studies
+        exclude = ['gsheet_id','latitude','longitude','yearpublished_number','yearsstudied_number_min', 'yearsstudied_number_max','prevalenceper10000_number', 'samplesize_number', 'num_yearsstudied']
+    
+
 
 @admin.register(studies)
-class AdminStudies(admin.ModelAdmin):
+class StudiesAdmin(admin.ModelAdmin):
     list_display = ("id","yearpublished", "authors", "country", "area", "samplesize", "age", "individualswithautism", "diagnosticcriteria", "diagnostictools", "percentwaverageiq", "sexratiomf","prevalenceper10000", "confidenceinterval", "categoryadpddorasd", "yearsstudied", "recommended", "studytype", "meanincomeofparticipants", "educationlevelofparticipants", "citation", "link1title", "link1url", "link2title", "link2url", "link3title", "link3url", "latitude", "longitude" )
-    exclude = ('gsheet_id','latitude','longitude','yearpublished_number','yearsstudied_number_min', 'yearsstudied_number_max','prevalenceper10000_number', 'samplesize_number', 'num_yearsstudied')
-    
+    # exclude = ('gsheet_id','latitude','longitude','yearpublished_number','yearsstudied_number_min', 'yearsstudied_number_max','prevalenceper10000_number', 'samplesize_number', 'num_yearsstudied')
+    search_fields = ("authors","country", "area")
+    form = StudiesForm
+
     def save_model(self, request, obj, form, change):
         self.parse_data(obj)
         self.geocode(obj)
@@ -20,14 +56,10 @@ class AdminStudies(admin.ModelAdmin):
         gmaps_api_key = '&key=AIzaSyACddN3i59_QccZTqB4cWGyK6ZDFCLCVBE'
         base_url = 'https://maps.googleapis.com/maps/api/geocode/json'
 
-        # try to geocode only where country and area are not null, and where lat and lon are null
-        kwargs = {}
-        kwargs['country__isnull'] = False
-        kwargs['area__isnull'] = False
-
         # call the geocode URL
         area = study.area
         country = study.country
+    
         if area in ('Mainland and Azores', 'Northern Ostrobothnia County') :
             area = ''
         address = '?address=' + urllib.parse.quote(area) + ',' + urllib.parse.quote(country)
@@ -51,10 +83,11 @@ class AdminStudies(admin.ModelAdmin):
 
     def parse_data(self, study):
         # for year, population, and prevalence rate, convert from strings to dates and numbers and store in DB
-
-
+        from pprint import pprint
+        pprint(vars(study))
         # ensure year string has no non-number characters, convert to date
         yearpublished = re.sub("[^0-9]", "", study.yearpublished)
+
         if yearpublished:
             try:
                 yearpublished_number = datetime.datetime.strptime(yearpublished, '%Y')
