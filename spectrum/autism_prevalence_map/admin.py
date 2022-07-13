@@ -13,9 +13,10 @@ class StudiesForm(forms.ModelForm):
     country = forms.CharField(required=False, initial='')
     area = forms.CharField(required=False, initial='')
     samplesize = forms.CharField(label='Sample Size',required=False, initial='')
-    age = forms.CharField(required=False, initial='')
+    age = forms.CharField(label="Age(years)",required=False, initial='')
     individualswithautism = forms.CharField(label='Individual with Autism',required=False, initial='')
     diagnosticcriteria = forms.CharField(label='Diagnostic Criteria',required=False, initial='')
+    diagnostictools = forms.CharField(label='Diagnostic Tools',required=False, initial='')
     percentwaverageiq = forms.CharField(label='Percent w/ Average IQ',required=False, initial='')
     sexratiomf = forms.CharField(label='Sex Ratio (M:F)',required=False, initial='')
     prevalenceper10000 = forms.CharField(label='Prevalence (per 10,000)',required=False, initial='')
@@ -24,8 +25,8 @@ class StudiesForm(forms.ModelForm):
     yearsstudied = forms.CharField(label='Year(s) Studied',required=False, initial='')
     recommended = forms.CharField(required=False, initial='')
     studytype = forms.CharField(label='Study Type', required=False, initial='')
-    meanincomeofparticipants = forms.CharField(label='Mean Income of Participants', required=False, initial='')
-    educationlevelofparticipants = forms.CharField(label='Education Level of Participants', required=False, initial='')
+    meanincomeofparticipants = forms.CharField(label='Income', required=False, initial='')
+    educationlevelofparticipants = forms.CharField(label='Education', required=False, initial='')
     citation = forms.CharField( required=False, initial='')
     link1title = forms.CharField(label='Link 1 Title', required=False, initial='')
     link1url = forms.CharField(label='Link 1 Url', required=False, initial='')
@@ -33,6 +34,8 @@ class StudiesForm(forms.ModelForm):
     link2url = forms.CharField(label='Link 2 Url', required=False, initial='')
     link3title = forms.CharField(label='Link 3 Title', required=False, initial='')
     link3url = forms.CharField(label='Link 3 Url', required=False, initial='')
+    link4title = forms.CharField(label='Link 4 Title', required=False, initial='')
+    link4url = forms.CharField(label='Link 4 Url', required=False, initial='')
 
     class Meta:
         model = studies
@@ -42,7 +45,7 @@ class StudiesForm(forms.ModelForm):
 
 @admin.register(studies)
 class StudiesAdmin(admin.ModelAdmin):
-    list_display = ("id","yearpublished", "authors", "country", "area", "samplesize", "age", "individualswithautism", "diagnosticcriteria", "diagnostictools", "percentwaverageiq", "sexratiomf","prevalenceper10000", "confidenceinterval", "categoryadpddorasd", "yearsstudied", "recommended", "studytype", "meanincomeofparticipants", "educationlevelofparticipants", "citation", "link1title", "link1url", "link2title", "link2url", "link3title", "link3url", "latitude", "longitude" )
+    list_display = ("id","yearpublished", "authors", "country", "area", "samplesize", "age", "individualswithautism", "diagnosticcriteria", "diagnostictools", "percentwaverageiq", "sexratiomf","prevalenceper10000", "confidenceinterval", "categoryadpddorasd", "yearsstudied", "recommended", "studytype", "meanincomeofparticipants", "educationlevelofparticipants", "citation", "link1title", "link1url", "link2title", "link2url", "link3title", "link3url", "link4title", "link4url", "latitude", "longitude" )
     # exclude = ('gsheet_id','latitude','longitude','yearpublished_number','yearsstudied_number_min', 'yearsstudied_number_max','prevalenceper10000_number', 'samplesize_number', 'num_yearsstudied')
     search_fields = ("authors","country", "area")
     form = StudiesForm
