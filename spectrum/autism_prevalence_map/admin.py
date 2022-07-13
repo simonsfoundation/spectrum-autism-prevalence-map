@@ -42,7 +42,7 @@ class StudiesForm(forms.ModelForm):
 @admin.register(studies)
 class StudiesAdmin(admin.ModelAdmin):
     list_display = ("id","yearpublished", "authors", "country", "area", "samplesize", "age", "individualswithautism", "diagnosticcriteria", "diagnostictools", "percentwaverageiq", "sexratiomf","prevalenceper10000", "confidenceinterval", "categoryadpddorasd", "yearsstudied", "recommended", "studytype", "meanincomeofparticipants", "educationlevelofparticipants", "citation", "link1title", "link1url", "link2title", "link2url", "link3title", "link3url", "link4title", "link4url", "latitude", "longitude" )
-    search_fields = ("authors","country", "area")
+    search_fields = ("yearpublished", "authors","country", "area", "age", "samplesize", "individualswithautism", "diagnosticcriteria", "diagnostictools", "percentwaverageiq", "sexratiomf","prevalenceper10000", "confidenceinterval", "categoryadpddorasd", "yearsstudied", "recommended", "studytype", "meanincomeofparticipants", "educationlevelofparticipants", "citation", "link1title", "link1url", "link2title", "link2url", "link3title", "link3url", "link4title", "link4url", "latitude", "longitude")
     form = StudiesForm
 
     def save_model(self, request, obj, form, change):
