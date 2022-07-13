@@ -55,4 +55,4 @@ Run `python manage.py dbshell`.
 
 3. If you want to access the backend admin site on http://127.0.0.1:8000/admin/ but without a user
 
-Run `python manage.py createsuperuser`.
+Run `python manage.py createsuperuser` to create a super user.
