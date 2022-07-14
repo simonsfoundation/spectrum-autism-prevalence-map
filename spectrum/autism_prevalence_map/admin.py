@@ -6,7 +6,7 @@ from .models import studies
 from django import forms
 class StudiesForm(forms.ModelForm):
     
-    yearpublished = forms.CharField(label='Yearrrr Published', required=False, initial='')
+    yearpublished = forms.CharField(label='Year Published', required=False, initial='')
     authors = forms.CharField(label="Authors", required=False, initial='')
     country = forms.CharField(required=False, initial='')
     area = forms.CharField(required=False, initial='')
