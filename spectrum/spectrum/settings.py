@@ -31,6 +31,8 @@ DEBUG = (os.getenv('DJANGO_DEBUG', 'False') == 'True')
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
+GMAP_API_KEY = os.environ["GMAP_API_KEY"]
+
 # Application definition
 
 INSTALLED_APPS = [

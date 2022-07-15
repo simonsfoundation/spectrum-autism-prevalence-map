@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+from django.conf import settings
 import sys, os, urllib.request, json, time, datetime, re
 from django.contrib import admin
 from .models import studies
@@ -71,7 +72,7 @@ class StudiesAdmin(admin.ModelAdmin):
         return super().save_model(request, obj, form, change)
 
     def geocode(self, study):
-        gmaps_api_key = '&key=AIzaSyACddN3i59_QccZTqB4cWGyK6ZDFCLCVBE'
+        gmaps_api_key = '&key=' + settings.GMAP_API_KEY
         base_url = 'https://maps.googleapis.com/maps/api/geocode/json'
 
         # call the geocode URL
