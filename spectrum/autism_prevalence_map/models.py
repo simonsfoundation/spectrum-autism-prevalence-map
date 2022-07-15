@@ -8,6 +8,10 @@ from datetime import date
 # Create your models here.
 
 class studies(models.Model):
+    class Meta:
+        verbose_name = 'Study'
+        verbose_name_plural = 'Studies'
+        
     gsheet_id = models.CharField(max_length=255, default='', blank=True, null=True)
     yearpublished = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Year Published')
     yearpublished_number = models.DateField(default=date.today, blank=True, null=True)
