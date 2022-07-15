@@ -37,12 +37,32 @@ class StudiesForm(forms.ModelForm):
 
     class Meta:
         model = studies
-        exclude = ['gsheet_id','latitude','longitude','yearpublished_number','yearsstudied_number_min', 'yearsstudied_number_max','prevalenceper10000_number', 'samplesize_number', 'num_yearsstudied']
+        exclude = ['gsheet_id', 'latitude', 'longitude', 'yearpublished_number',
+                   'yearsstudied_number_min', 'yearsstudied_number_max', 'prevalenceper10000_number', 'samplesize_number',
+                   'num_yearsstudied'
+                   ]
+
 
 @admin.register(studies)
 class StudiesAdmin(admin.ModelAdmin):
-    list_display = ("id","yearpublished", "authors", "country", "area", "samplesize", "age", "individualswithautism", "diagnosticcriteria", "diagnostictools", "percentwaverageiq", "sexratiomf", "prevalenceper10000", "confidenceinterval", "categoryadpddorasd", "yearsstudied", "recommended", "studytype", "meanincomeofparticipants", "educationlevelofparticipants", "citation", "link1title","link1url", "link2title", "link2url", "link3title", "link3url", "link4title", "link4url", "latitude", "longitude")
-    search_fields = ("yearpublished", "authors", "country", "area", "age", "samplesize", "individualswithautism", "diagnosticcriteria", "diagnostictools", "percentwaverageiq", "sexratiomf", "prevalenceper10000", "confidenceinterval", "categoryadpddorasd", "yearsstudied", "recommended", "studytype", "meanincomeofparticipants", "educationlevelofparticipants", "citation", "link1title", "link1url", "link2title", "link2url", "link3title", "link3url", "link4title", "link4url", "latitude", "longitude")
+    list_display = ("id", "yearpublished", "authors", "country", "area",
+                    "samplesize", "age", "individualswithautism", "diagnosticcriteria",
+                    "diagnostictools", "percentwaverageiq", "sexratiomf", "prevalenceper10000",
+                    "confidenceinterval", "categoryadpddorasd", "yearsstudied", "recommended",
+                    "studytype", "meanincomeofparticipants", "educationlevelofparticipants", "citation",
+                    "link1title", "link1url", "link2title", "link2url",
+                    "link3title", "link3url", "link4title", "link4url",
+                    "latitude", "longitude"
+                    )
+    search_fields = ("yearpublished", "authors", "country", "area",
+                     "age", "samplesize", "individualswithautism", "diagnosticcriteria",
+                     "diagnostictools", "percentwaverageiq", "sexratiomf", "prevalenceper10000",
+                     "confidenceinterval", "categoryadpddorasd", "yearsstudied", "recommended",
+                     "studytype", "meanincomeofparticipants", "educationlevelofparticipants",
+                     "citation", "link1title", "link1url", "link2title",
+                     "link2url", "link3title", "link3url", "link4title",
+                     "link4url", "latitude", "longitude"
+                     )
     form = StudiesForm
 
     def save_model(self, request, obj, form, change):
@@ -65,7 +85,12 @@ class StudiesAdmin(admin.ModelAdmin):
             area = ''
         address = '?address=' + urllib.parse.quote(area) + ',' + urllib.parse.quote(country)
         #add region codes for the countries that are being located wrongly by google geocode API
-        countrymap = {'Japan': 'jp', 'Qatar': 'qa', 'Iran': 'ir', 'Greece': 'gr', 'Scotland': 'gb', 'Taiwan': 'tw', 'South Korea': 'kr', 'Wales': 'gb', 'France': 'fr', 'Norway': 'no'}
+        countrymap = {'Japan': 'jp', 'Qatar': 'qa',
+                      'Iran': 'ir', 'Greece': 'gr',
+                      'Scotland': 'gb', 'Taiwan': 'tw',
+                      'South Korea': 'kr', 'Wales': 'gb',
+                      'France': 'fr', 'Norway': 'no'
+                      }
         if country in countrymap.keys() :
             address = address + '&region=' + countrymap[country]
         url = base_url + address + gmaps_api_key
