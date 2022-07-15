@@ -1,4 +1,5 @@
 import sys, os, urllib.request, json, time, datetime, re
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from autism_prevalence_map.models import *
 
@@ -87,7 +88,7 @@ class Command(BaseCommand):
                 print(e)
 
     def geocode(self):
-        gmaps_api_key = '&key=AIzaSyACddN3i59_QccZTqB4cWGyK6ZDFCLCVBE'
+        gmaps_api_key = '&key=' + settings.GMAP_API_KEY
         base_url = 'https://maps.googleapis.com/maps/api/geocode/json'
 
         # try to geocode only where country and area are not null, and where lat and lon are null
