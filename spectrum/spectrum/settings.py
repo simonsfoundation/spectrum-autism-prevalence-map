@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'admin_ip_restrictor.middleware.AdminIPRestrictorMiddleware',
 ]
 
 ROOT_URLCONF = 'spectrum.urls'
@@ -135,3 +136,21 @@ STATIC_ROOT = f"{BASE_DIR}" + "/static/"
 STATICFILES_DIRS = [
     (f"{BASE_DIR}" + "/autism_prevalence_map/")
 ]
+
+# Access Restrictions
+RESTRICT_ADMIN=True
+ALLOWED_ADMIN_IPS=['127.0.0.1', '::1']
+ALLOWED_ADMIN_IP_RANGES = ["34.231.5.44/32",
+                           "34.226.50.120/32",
+                           "34.198.66.69/32",
+                           "34.192.31.106/32",
+                           "34.231.5.44/32",
+                           "158.106.193.214/32",
+                           "158.106.193.218/32",
+                           "158.106.193.198/32",
+                           "65.51.12.214/32",
+                           "65.51.12.218/32",
+                           "65.51.12.198/32"
+                           ]
+RESTRICTED_APP_NAMES=['admin']
+TRUST_PRIVATE_IP=True
