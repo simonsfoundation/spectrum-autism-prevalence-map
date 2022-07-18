@@ -40,6 +40,8 @@ Get the schema for your empty database from earlier. The schema files are in aut
 Clear all the data in your current tables and pull data from google sheets.
 `python manage.py pull_studies_from_gsheets`
 
+If you get a certificate error, then go to Applications/python and run 'Install Certificates.command'.
+
 Run the server to see the app on http://127.0.0.1:8000/.
 `python manage.py runserver`
 
