@@ -20,7 +20,6 @@ DB_PASSWORD='prevalence'
 DB_USER='mcho'
 
 DJANGO_DEBUG=True
-DJANGO_SECRET_KEY='uopxp*9s18aul82xmg_y6zc+bf%ovr4h*oulcx4p45z#elt)k8'
 DJANGO_STATIC_URL='/static/'
 DJANGO_STATIC_ROOT='/Users/skhaled/Desktop/Simons_dev/prevalence/spectrum-autism-prevalence-map/spectrum/autism_prevalence_map/static'
 DJANGO_ALLOWED_HOSTS='127.0.0.1'
