@@ -13,7 +13,7 @@ class StudiesForm(forms.ModelForm):
     area = forms.CharField(required=False, initial='')
     samplesize = forms.CharField(label='Sample Size',required=False, initial='')
     age = forms.CharField(label="Age(years)",required=False, initial='')
-    individualswithautism = forms.CharField(label='Individual with Autism',required=False, initial='')
+    individualswithautism = forms.CharField(label='Individuals with Autism',required=False, initial='')
     diagnosticcriteria = forms.CharField(label='Diagnostic Criteria',required=False, initial='')
     diagnostictools = forms.CharField(label='Diagnostic Tools',required=False, initial='')
     percentwaverageiq = forms.CharField(label='Percent w/ Average IQ',required=False, initial='')

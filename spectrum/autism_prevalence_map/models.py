@@ -21,7 +21,7 @@ class studies(models.Model):
     samplesize = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Sample Size')
     samplesize_number = models.IntegerField(default=0, blank=True, null=True)
     age = models.CharField(max_length=255, default='', blank=True, null=True)
-    individualswithautism = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Individual with Autism')
+    individualswithautism = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Individuals with Autism')
     diagnosticcriteria = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Diagnostic Criteria')
     diagnostictools = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Diagnostic Tools')
     percentwaverageiq = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Percent w/ Average IQ')
