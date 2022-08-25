@@ -5,6 +5,8 @@ import sys, os, urllib.request, json, time, datetime, re
 from django.contrib import admin
 from .models import studies
 from django import forms
+from django.conf.urls import url
+from django.template.response import TemplateResponse
 class StudiesForm(forms.ModelForm):
     
     yearpublished = forms.CharField(label='Year Published', required=False, initial='')
@@ -66,6 +68,21 @@ class StudiesAdmin(admin.ModelAdmin):
                      )
     form = StudiesForm
 
+    def get_urls(self):
+        urls = super().get_urls()
+        bulk_import_urls = [
+            url(r'bulk-import/', self.bulk_import_vew),
+        ]
+        return bulk_import_urls + urls
+
+    def bulk_import_vew(self, request):
+        context = dict(
+           # Include common variables for rendering the admin template.
+           self.admin_site.each_context(request),
+           # Anything else you want in the context...
+        )
+        return TemplateResponse(request, "admin/bulk_import.html", context)
+        
     def save_model(self, request, obj, form, change):
         self.parse_data(obj)
         self.geocode(obj)

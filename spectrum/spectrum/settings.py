@@ -59,11 +59,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'spectrum.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'autism_prevalence_map', 'templates', 'autism_prevalence_map')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
