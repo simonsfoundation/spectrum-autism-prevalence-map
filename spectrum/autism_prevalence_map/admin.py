@@ -7,6 +7,9 @@ from .models import studies
 from django import forms
 from django.conf.urls import url
 from django.template.response import TemplateResponse
+from django.shortcuts import redirect
+import csv
+import io
 class StudiesForm(forms.ModelForm):
     
     yearpublished = forms.CharField(label='Year Published', required=False, initial='')
@@ -45,7 +48,8 @@ class StudiesForm(forms.ModelForm):
                    'num_yearsstudied'
                    ]
 
-
+class CsvImportForm(forms.Form):
+    csv_file = forms.FileField()
 @admin.register(studies)
 class StudiesAdmin(admin.ModelAdmin):
     list_display = ("id", "yearpublished", "authors", "country", "area",
@@ -76,12 +80,19 @@ class StudiesAdmin(admin.ModelAdmin):
         return bulk_import_urls + urls
 
     def bulk_import_vew(self, request):
-        context = dict(
-           # Include common variables for rendering the admin template.
-           self.admin_site.each_context(request),
-           # Anything else you want in the context...
-        )
-        return TemplateResponse(request, "admin/bulk_import.html", context)
+        if request.method == 'POST':
+            #import data to database here
+            with io.TextIOWrapper(request.FILES["csv_file"], encoding="utf-8", newline='\n') as text_file:
+                reader = csv.reader(text_file)
+                for row in reader:
+                    print(row)
+            
+            #...
+            self.message_user(request, "Your csv file has been imported")
+            return redirect("..")
+        form = CsvImportForm()
+        payload = {"form": form}
+        return TemplateResponse(request, "admin/bulk_import.html", payload)
         
     def save_model(self, request, obj, form, change):
         self.parse_data(obj)

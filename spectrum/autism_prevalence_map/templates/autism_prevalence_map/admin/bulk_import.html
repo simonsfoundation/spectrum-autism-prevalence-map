@@ -1,1 +1,15 @@
-<h1>Bulk import succeeded</h1>
+
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_list %}
+{% block content %}
+    <div>
+        <form action="." method="POST" enctype="multipart/form-data">
+            {{ form.as_p }}
+            {% csrf_token %}
+
+                <button type="submit">Upload CSV</button>
+        </form>
+    </div>
+    <br />
+
+{% endblock %}
