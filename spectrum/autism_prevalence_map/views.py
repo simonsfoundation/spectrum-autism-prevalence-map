@@ -401,11 +401,19 @@ def studiesCsv(request):
 		writer = csv.writer(response)
 
 		# CSV header
-		writer.writerow(['Year published', 'Authors', 'Country', 'Area', 'Sample size', 'Age (years)', 'Individuals with autism', 'Diagnostic criteria', 'Diagnostic tools', 'Percent w/ average IQ', 'Sex ratio (M:F)', 'Prevalence (per 10,000)', '95% Confidence interval', 'Category (AD, PDD or ASD)', 'Year(s) studied', 'Recommended', 'Study type', 'Mean income of participants', 'Education level of participants', 'Citation', 'Link 1 Title', 'Link 1 URL', 'Link 2 Title', 'Link 2 URL', 'Link 3 Title', 'Link 3 URL', 'Link 4 Title', 'Link 4 URL'])
-
+		writer.writerow(['Year published', 'Authors', 'Country', 'Area', 'Sample size', 'Age (years)', 
+        'Individuals with autism', 'Diagnostic criteria', 'Diagnostic tools', 'Percent w/ average IQ', 
+        'Sex ratio (M:F)', 'Prevalence (per 10,000)', '95% Confidence interval', 'Category (AD, PDD or ASD)', 
+        'Year(s) studied', 'Recommended', 'Study type', 'Mean income of participants', 'Education level of participants', 
+        'Citation', 'Link 1 Title', 'Link 1 URL', 'Link 2 Title', 'Link 2 URL', 'Link 3 Title', 'Link 3 URL', 'Link 4 Title', 
+        'Link 4 URL'])
 
 		for study in pulled_studies:
-			writer.writerow([study.yearpublished.encode('utf8'), study.authors.encode('utf8'), study.country.encode('utf8'), study.area.encode('utf8'), study.samplesize.encode('utf8'), study.age.encode('utf8'), study.individualswithautism.encode('utf8'), study.diagnosticcriteria.encode('utf8'), study.diagnostictools.encode('utf8'), study.percentwaverageiq.encode('utf8'), study.sexratiomf.encode('utf8'), study.prevalenceper10000.encode('utf8'), study.confidenceinterval.encode('utf8'), study.categoryadpddorasd.encode('utf8'), study.yearsstudied.encode('utf8'), study.recommended.encode('utf8'), study.studytype.encode('utf8'), study.meanincomeofparticipants.encode('utf8'), study.educationlevelofparticipants.encode('utf8'), study.citation.encode('utf8'), study.link1title.encode('utf8'),  study.link1url.encode('utf8'), study.link2title.encode('utf8'),  study.link2url.encode('utf8'), study.link3title.encode('utf8'),  study.link3url.encode('utf8'), study.link4title.encode('utf8'),  study.link4url.encode('utf8')])
+			writer.writerow([study.yearpublished, study.authors, study.country, study.area, study.samplesize, study.age, 
+            study.individualswithautism, study.diagnosticcriteria, study.diagnostictools, study.percentwaverageiq, study.sexratiomf, 
+            study.prevalenceper10000, study.confidenceinterval, study.categoryadpddorasd, study.yearsstudied, study.recommended, 
+            study.studytype, study.meanincomeofparticipants, study.educationlevelofparticipants, study.citation, study.link1title,  
+            study.link1url, study.link2title,  study.link2url, study.link3title,  study.link3url, study.link4title,  study.link4url])
 
 		response['status'] = "200"
 
