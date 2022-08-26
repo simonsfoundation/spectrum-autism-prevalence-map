@@ -83,9 +83,60 @@ class StudiesAdmin(admin.ModelAdmin):
         if request.method == 'POST':
             #import data to database here
             with io.TextIOWrapper(request.FILES["csv_file"], encoding="utf-8", newline='\n') as text_file:
-                reader = csv.reader(text_file)
+                reader = csv.DictReader(text_file)
                 for row in reader:
-                    print(row)
+                    try:
+                        #skip if year not a date
+                        print(row)
+                        yearpublished = row['Year published']
+
+                        if yearpublished:
+                            try:
+                                yearpublished_number = datetime.datetime.strptime(yearpublished, '%Y')
+                            except ValueError:
+                                yearpublished_number = None
+                        else:
+                            yearpublished_number = None
+
+                        if yearpublished_number:
+
+                            #use get or create to only create records for objects newly added to the spreadsheets
+                            updated_values = {
+                                'yearpublished': row['Year published'] if row['Year published'] is not None else '',
+                                'authors': row['Authors'] if row['Authors'] is not None else '', 
+                                'country': row['Country'] if row['Country'] is not None else '', 
+                                'area': row['Area'] if row['Area'] is not None else '', 
+                                'samplesize': row['Sample size'] if row['Sample size'] is not None else '', 
+                                'age': row['Age (years)'] if row['Age (years)'] is not None else '', 
+                                'individualswithautism': row['Individuals with autism'] if row['Individuals with autism'] is not None else '', 
+                                'diagnosticcriteria': row['Diagnostic criteria'] if row['Diagnostic criteria'] is not None else '', 
+                                'diagnostictools': row['Diagnostic tools'] if row['Diagnostic tools'] is not None else '', 
+                                'percentwaverageiq': row['Percent w/ average IQ'] if row['Percent w/ average IQ'] is not None else '', 
+                                'sexratiomf': row['Sex ratio (M:F)'] if row['Sex ratio (M:F)'] is not None else '', 
+                                'prevalenceper10000': row['Prevalence (per 10,000)'] if row['Prevalence (per 10,000)'] is not None else '', 
+                                'confidenceinterval': row['95% Confidence interval'] if row['95% Confidence interval'] is not None else '', 
+                                'categoryadpddorasd': row['Category (AD, PDD or ASD)'] if row['Category (AD, PDD or ASD)'] is not None else '',
+                                'yearsstudied': row['Year(s) studied'] if row['Year(s) studied'] is not None else '',
+                                'recommended': row['Recommended'] if row['Recommended'] is not None else '', 
+                                'studytype': row['Study type'] if row['Study type'] is not None else '',
+                                'meanincomeofparticipants': row['Mean income of participants'] if row['Mean income of participants'] is not None else '',
+                                'educationlevelofparticipants': row['Education level of participants'] if row['Education level of participants'] is not None else '',
+                                'citation': row['Citation'] if row['Citation'] is not None else '',
+                                'link1title': row['Link 1 Title'] if row['Link 1 Title'] is not None else '',
+                                'link1url': row['Link 1 URL'] if row['Link 1 URL'] is not None else '',
+                                'link2title': row['Link 2 Title'] if row['Link 2 Title'] is not None else '',
+                                'link2url': row['Link 2 URL'] if row['Link 2 URL'] is not None else '',
+                                'link3title': row['Link 3 Title'] if row['Link 3 Title'] is not None else '',
+                                'link3url': row['Link 3 URL'] if row['Link 3 URL'] is not None else '',
+                                'link4title': row['Link 4 Title'] if row['Link 4 Title'] is not None else '',
+                                'link4url': row['Link 4 URL'] if row['Link 4 URL'] is not None else ''
+                            }
+                            obj, created = studies.objects.update_or_create(gsheet_id=index, defaults=updated_values)
+
+                    except Exception as e:
+                        # if error
+                        print('load research data error')
+                        print(e)
             
             #...
             self.message_user(request, "Your csv file has been imported")
