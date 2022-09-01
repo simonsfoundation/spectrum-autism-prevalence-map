@@ -81,15 +81,15 @@ class StudiesAdmin(admin.ModelAdmin):
 
     def bulk_import_vew(self, request):
         if request.method == 'POST':
-            #import data to database here
             with io.TextIOWrapper(request.FILES["csv_file"], encoding="utf-8", newline='\n') as text_file:
+                studies.objects.all().delete()
                 reader = csv.DictReader(text_file)
+                index = 0
                 for row in reader:
+                    index = index + 1
                     try:
                         #skip if year not a date
-                        print(row)
                         yearpublished = row['Year published']
-
                         if yearpublished:
                             try:
                                 yearpublished_number = datetime.datetime.strptime(yearpublished, '%Y')
@@ -97,10 +97,7 @@ class StudiesAdmin(admin.ModelAdmin):
                                 yearpublished_number = None
                         else:
                             yearpublished_number = None
-
                         if yearpublished_number:
-
-                            #use get or create to only create records for objects newly added to the spreadsheets
                             updated_values = {
                                 'yearpublished': row['Year published'] if row['Year published'] is not None else '',
                                 'authors': row['Authors'] if row['Authors'] is not None else '', 
@@ -131,14 +128,16 @@ class StudiesAdmin(admin.ModelAdmin):
                                 'link4title': row['Link 4 Title'] if row['Link 4 Title'] is not None else '',
                                 'link4url': row['Link 4 URL'] if row['Link 4 URL'] is not None else ''
                             }
-                            obj, created = studies.objects.update_or_create(gsheet_id=index, defaults=updated_values)
+                            
+                            obj, created= studies.objects.update_or_create(gsheet_id=index,defaults=updated_values)
+                            self.parse_data(obj)
+                            self.geocode(obj)
+                            obj.save()
 
                     except Exception as e:
-                        # if error
                         print('load research data error')
                         print(e)
             
-            #...
             self.message_user(request, "Your csv file has been imported")
             return redirect("..")
         form = CsvImportForm()
