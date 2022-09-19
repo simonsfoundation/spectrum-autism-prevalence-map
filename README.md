@@ -40,6 +40,8 @@ Get the schema for your empty database from earlier. The schema files are in aut
 Clear all the data in your current tables and pull data from google sheets.
 `python manage.py pull_studies_from_gsheets`
 
+If you get a certificate error, then go to Applications/python and run 'Install Certificates.command'.
+
 Run the server to see the app on http://127.0.0.1:8000/.
 `python manage.py runserver`
 
@@ -52,3 +54,9 @@ First change models.py and then run `python manage.py makemigrations` to automat
 2. If you want to access the postgresql database,
 
 Run `python manage.py dbshell`.
+
+3. If you want to access the backend admin site on http://127.0.0.1:8000/admin/ but without a user
+
+Run `python manage.py createsuperuser` to create a super user.
+
+4. Removed hardcoded GMAP_API_KEY value from code and added it to file .env for security reason.

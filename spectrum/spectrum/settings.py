@@ -27,9 +27,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ["DJANGO_DEBUG"]
+DEBUG = (os.getenv('DJANGO_DEBUG', 'False') == 'True')
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
+
+GMAP_API_KEY = os.environ["GMAP_API_KEY"]
 
 # Application definition
 
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    'admin_honeypot',
 ]
 
 MIDDLEWARE = [
@@ -52,14 +55,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'admin_ip_restrictor.middleware.AdminIPRestrictorMiddleware',
 ]
 
 ROOT_URLCONF = 'spectrum.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'autism_prevalence_map', 'templates', 'autism_prevalence_map')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,7 +123,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -133,3 +136,21 @@ STATIC_ROOT = f"{BASE_DIR}" + "/static/"
 STATICFILES_DIRS = [
     (f"{BASE_DIR}" + "/autism_prevalence_map/")
 ]
+
+# Access Restrictions
+RESTRICT_ADMIN=True
+ALLOWED_ADMIN_IPS=['127.0.0.1', '::1']
+ALLOWED_ADMIN_IP_RANGES = ["34.231.5.44/32",
+                           "34.226.50.120/32",
+                           "34.198.66.69/32",
+                           "34.192.31.106/32",
+                           "34.231.5.44/32",
+                           "158.106.193.214/32",
+                           "158.106.193.218/32",
+                           "158.106.193.198/32",
+                           "65.51.12.214/32",
+                           "65.51.12.218/32",
+                           "65.51.12.198/32"
+                           ]
+RESTRICTED_APP_NAMES=['admin']
+TRUST_PRIVATE_IP=True
