@@ -162,6 +162,9 @@ class StudiesAdmin(admin.ModelAdmin):
     
         if area in ('Mainland and Azores', 'Northern Ostrobothnia County', 'Nationwide'):
             area = ''
+        if area == 'Middlesex':
+            country = 'London'
+            
         address = '?address=' + urllib.parse.quote(area) + ',' + urllib.parse.quote(country)
         #add region codes for the countries/areas that are being located wrongly by google geocode API
         countrymap = {'Japan': 'jp', 'Qatar': 'qa',
