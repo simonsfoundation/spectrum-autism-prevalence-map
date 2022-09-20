@@ -157,13 +157,13 @@ class StudiesAdmin(admin.ModelAdmin):
         area = study.area
         country = study.country
 
-        if not area or not country:
+        if not country:
             return None 
     
-        if area in ('Mainland and Azores', 'Northern Ostrobothnia County') :
+        if area in ('Mainland and Azores', 'Northern Ostrobothnia County', 'Nationwide'):
             area = ''
         address = '?address=' + urllib.parse.quote(area) + ',' + urllib.parse.quote(country)
-        #add region codes for the countries that are being located wrongly by google geocode API
+        #add region codes for the countries/areas that are being located wrongly by google geocode API
         countrymap = {'Japan': 'jp', 'Qatar': 'qa',
                       'Iran': 'ir', 'Greece': 'gr',
                       'Scotland': 'gb', 'Taiwan': 'tw',
@@ -184,7 +184,6 @@ class StudiesAdmin(admin.ModelAdmin):
             longitude = None
         study.latitude=latitude
         study.longitude=longitude
-        time.sleep(1)
 
     def parse_data(self, study):
         # for year, population, and prevalence rate, convert from strings to dates and numbers and store in DB
