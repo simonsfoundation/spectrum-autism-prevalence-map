@@ -809,8 +809,6 @@ $(document).ready(function (){
         $("#card-confidenceinterval").text(confidenceinterval);
         $("#card-yearsstudied").text(d.properties.yearsstudied);
         $("#card-categoryadpddorasd").text(d.properties.categoryadpddorasd);
-        $("#card-income").text(d.properties.meanincomeofparticipants);
-        $("#card-education").text(d.properties.educationlevelofparticipants);
 
         // add links to card
         let links = [];
