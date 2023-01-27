@@ -8,9 +8,15 @@ If you don’t have postgresql,
 Create an empty db in postgres.
 `createdb prevalence`
 
+add GMAP_API_KEY(the actual value is in team's doc) to file .env like the following.
+```
+GMAP_API_KEY='ddN3i59_QccZTqB4cWGy'
+```
+
 Add your postgres db info into .env. The following is an example.
 
 ```
+
 DB_HOST='localhost'
 
 DB_NAME='prevalence'
@@ -55,7 +61,7 @@ First change models.py and then run `python manage.py makemigrations` to automat
 
 Run `python manage.py dbshell`.
 
-3. If you want to access the backend admin site on http://127.0.0.1:8000/admin/ but without a user
+3. If you want to access the backend admin site on http://127.0.0.1:8000/submarine/ but without a user.
 
 Run `python manage.py createsuperuser` to create a super user.
 
