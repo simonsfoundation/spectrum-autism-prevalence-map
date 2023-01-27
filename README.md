@@ -12,6 +12,11 @@ add GMAP_API_KEY(the actual value is in team's doc) to file .env like the follow
 ```
 GMAP_API_KEY='ddN3i59_QccZTqB4cWGy'
 ```
+Adapt your local DJANGO_STATIC_ROOT value accordingly in your .env file. The following is an example.
+
+```
+DJANGO_STATIC_ROOT='/Users/mkranz/Documents/Spectrum/PrevalenceMap/spectrum-autism-prevalence-map/spectrum/autism_prevalence_map/static'
+```
 
 Add your postgres db info into .env. The following is an example.
 
