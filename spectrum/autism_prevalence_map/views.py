@@ -401,22 +401,22 @@ def studiesCsv(request):
 		writer = csv.writer(response)
 
 		# CSV header
-		writer.writerow(['Year published', 'Authors', 'Country', 'Area', 'Sample size', 'Age (years)', 
-        'Individuals with autism', 'Diagnostic criteria', 'Diagnostic tools', 'Percent w/ average IQ', 
-        'Sex ratio (M:F)', 'Prevalence (per 10,000)', '95% Confidence interval', 'Category (AD, PDD or ASD)', 
-        'Year(s) studied', 'Recommended', 'Study type', 'Mean income of participants', 'Education level of participants', 
-        'Citation', 'Link 1 Title', 'Link 1 URL', 'Link 2 Title', 'Link 2 URL', 'Link 3 Title', 'Link 3 URL', 'Link 4 Title', 
-        'Link 4 URL'])
-
+		writer.writerow(['Year published', 'Authors', 'Country', 'Area', 'Sample size', 'Age (years)',
+        'Individuals with autism', 'Diagnostic criteria', 'Diagnostic tools', 'Percent w/ average IQ',
+        'Sex ratio (M:F)', 'Prevalence (per 10,000)', '95% Confidence interval', 'Category (AD, PDD or ASD)',
+        'Year(s) studied', 'Recommended', 'Study type', 'Citation', 'Link 1 Title', 'Link 1 URL', 'Link 2 Title',
+        'Link 2 URL', 'Link 3 Title', 'Link 3 URL', 'Link 4 Title', 'Link 4 URL'])
+        
+        # print(pulled_studies)
 		for study in pulled_studies:
-			writer.writerow([study.yearpublished, study.authors, study.country, study.area, study.samplesize, study.age, 
-            study.individualswithautism, study.diagnosticcriteria, study.diagnostictools, study.percentwaverageiq, study.sexratiomf, 
-            study.prevalenceper10000, study.confidenceinterval, study.categoryadpddorasd, study.yearsstudied, study.recommended, 
-            study.studytype, study.meanincomeofparticipants, study.educationlevelofparticipants, study.citation, study.link1title,  
-            study.link1url, study.link2title,  study.link2url, study.link3title,  study.link3url, study.link4title,  study.link4url])
+			writer.writerow([study.yearpublished, study.authors, study.country, study.area, study.samplesize, study.age,
+            study.individualswithautism, study.diagnosticcriteria, study.diagnostictools, study.percentwaverageiq, study.sexratiomf,
+            study.prevalenceper10000, study.confidenceinterval, study.categoryadpddorasd, study.yearsstudied, study.recommended,
+            study.studytype, study.citation, study.link1title, study.link1url, study.link2title,  study.link2url, study.link3title,
+            study.link3url, study.link4title,  study.link4url])
 
 		response['status'] = "200"
-
+        
 	else:
 		print(request.method)
 
