@@ -8,6 +8,7 @@ from django import forms
 from django.conf.urls import url
 from django.template.response import TemplateResponse
 from django.shortcuts import redirect
+from datetime import date
 import csv
 import io
 class StudiesForm(forms.ModelForm):
@@ -45,7 +46,7 @@ class StudiesForm(forms.ModelForm):
         model = studies
         exclude = ['gsheet_id', 'latitude', 'longitude', 'yearpublished_number',
                    'yearsstudied_number_min', 'yearsstudied_number_max', 'prevalenceper10000_number', 'samplesize_number',
-                   'num_yearsstudied'
+                   'num_yearsstudied', 'last_update'
                    ]
 
 class CsvImportForm(forms.Form):
@@ -278,4 +279,5 @@ class StudiesAdmin(admin.ModelAdmin):
         study.yearsstudied_number_min=yearsstudied_number_min
         study.yearsstudied_number_max=yearsstudied_number_max 
         study.num_yearsstudied=num_yearsstudied
+        study.last_update = date.today
 
