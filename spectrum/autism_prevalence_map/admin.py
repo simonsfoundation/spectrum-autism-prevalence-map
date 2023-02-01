@@ -279,5 +279,5 @@ class StudiesAdmin(admin.ModelAdmin):
         study.yearsstudied_number_min=yearsstudied_number_min
         study.yearsstudied_number_max=yearsstudied_number_max 
         study.num_yearsstudied=num_yearsstudied
-        study.last_update = date.today
+        study.last_update = date.today()
 
