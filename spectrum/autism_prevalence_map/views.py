@@ -30,7 +30,7 @@ def index(request):
 		timeline_type = request.GET.get("timeline_type", "published")
 		meanincome = request.GET.get("meanincome", "")
 		education = request.GET.get("education", "")
-		last_updated_on = studies.objects.latest("last_update").last_update.strftime("%a %b %d %Y")
+		last_updated_on = studies.objects.latest("last_update").last_update.strftime("%-d %B %Y")
 
 	context_dict = {"min_yearpublished": min_yearpublished,
                     "max_yearpublished": max_yearpublished,
