@@ -8,7 +8,6 @@ from django import forms
 from django.conf.urls import url
 from django.template.response import TemplateResponse
 from django.shortcuts import redirect
-from datetime import date
 import csv
 import io
 class StudiesForm(forms.ModelForm):
@@ -279,5 +278,5 @@ class StudiesAdmin(admin.ModelAdmin):
         study.yearsstudied_number_min=yearsstudied_number_min
         study.yearsstudied_number_max=yearsstudied_number_max 
         study.num_yearsstudied=num_yearsstudied
-        study.last_update = date.today()
+        study.last_update = datetime.date.today()
 
