@@ -31,7 +31,20 @@ def index(request):
 		meanincome = request.GET.get("meanincome","")
 		education = request.GET.get("education","")
 
-	context_dict = {"min_yearpublished":min_yearpublished, "max_yearpublished":max_yearpublished, "yearsstudied_number_min":yearsstudied_number_min, "yearsstudied_number_max":yearsstudied_number_max, "min_samplesize":min_samplesize, "max_samplesize":max_samplesize, "min_prevalenceper10000":min_prevalenceper10000, "max_prevalenceper10000":max_prevalenceper10000, "studytype":studytype , "keyword":keyword, "timeline_type":timeline_type, "meanincome":meanincome, "education":education}
+	context_dict = {"min_yearpublished": min_yearpublished,
+                    "max_yearpublished": max_yearpublished,
+                    "yearsstudied_number_min": yearsstudied_number_min,
+                    "yearsstudied_number_max": yearsstudied_number_max,
+                    "min_samplesize": min_samplesize,
+                    "max_samplesize": max_samplesize,
+                    "min_prevalenceper10000": min_prevalenceper10000,
+                    "max_prevalenceper10000": max_prevalenceper10000,
+                    "studytype": studytype, 
+                    "keyword": keyword, 
+                    "timeline_type": timeline_type, 
+                    "meanincome": meanincome, 
+                    "education": education,
+                    "last_updated_on": "Wed Jun 01 2023"}
 	return render(request, 'autism_prevalence_map/map.html', context_dict)
 
 
