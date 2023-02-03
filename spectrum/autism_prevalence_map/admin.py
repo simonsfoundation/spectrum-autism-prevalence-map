@@ -45,7 +45,7 @@ class StudiesForm(forms.ModelForm):
         model = studies
         exclude = ['gsheet_id', 'latitude', 'longitude', 'yearpublished_number',
                    'yearsstudied_number_min', 'yearsstudied_number_max', 'prevalenceper10000_number', 'samplesize_number',
-                   'num_yearsstudied', 'last_update'
+                   'num_yearsstudied'
                    ]
 
 class CsvImportForm(forms.Form):
