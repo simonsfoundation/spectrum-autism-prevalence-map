@@ -30,9 +30,11 @@ def index(request):
 		timeline_type = request.GET.get("timeline_type", "published")
 		meanincome = request.GET.get("meanincome", "")
 		education = request.GET.get("education", "")
-		last_updated_on_obj = options.objects.get(name="last_updated_on")
-		last_updated_on = last_updated_on_obj.value if last_updated_on_obj is not None else ""
-
+		try:
+		    last_updated_on_obj = options.objects.get(name="last_updated_on")
+		    last_updated_on = last_updated_on_obj.value
+		except:
+			last_updated_on = ""
 
 	context_dict = {"min_yearpublished": min_yearpublished,
                     "max_yearpublished": max_yearpublished,
