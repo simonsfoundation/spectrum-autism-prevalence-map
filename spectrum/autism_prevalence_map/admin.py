@@ -280,7 +280,7 @@ class StudiesAdmin(admin.ModelAdmin):
         study.yearsstudied_number_max=yearsstudied_number_max 
         study.num_yearsstudied=num_yearsstudied
         
-    def last_updated_on():
+    def last_updated_on(self):
         option_obj, _ = options.objects.update_or_create(name='last_updated_on',value=datetime.date.today().strftime("%-d %B %Y"))
         option_obj.save()
 
