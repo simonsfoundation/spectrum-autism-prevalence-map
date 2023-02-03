@@ -150,6 +150,10 @@ class StudiesAdmin(admin.ModelAdmin):
         self.last_updated_on()
         return super().save_model(request, obj, form, change)
 
+    def delete_model(self, request, obj):
+        self.last_updated_on()
+        return super().delete_model(request, obj)
+
     def geocode(self, study):
         gmaps_api_key = '&key=' + settings.GMAP_API_KEY
         base_url = 'https://maps.googleapis.com/maps/api/geocode/json'
@@ -281,6 +285,7 @@ class StudiesAdmin(admin.ModelAdmin):
         study.num_yearsstudied=num_yearsstudied
         
     def last_updated_on(self):
-        option_obj, _ = options.objects.update_or_create(name='last_updated_on',value=datetime.date.today().strftime("%-d %B %Y"))
+        option_obj, _ = options.objects.update_or_create(name='last_updated_on')
+        option_obj.value = datetime.date.today().strftime("%-d %B %Y")
         option_obj.save()
 
