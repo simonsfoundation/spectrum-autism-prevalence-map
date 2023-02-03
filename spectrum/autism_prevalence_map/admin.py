@@ -137,7 +137,7 @@ class StudiesAdmin(admin.ModelAdmin):
                     except Exception as e:
                         print('load research data error')
                         print(e)
-
+            self.last_updated_on()
             self.message_user(request, "Your csv file has been imported")
             return redirect("..")
         form = CsvImportForm()
