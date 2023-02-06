@@ -49,3 +49,10 @@ class studies(models.Model):
     link4url = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Link 4 Url')
     latitude = models.FloatField(default=None, blank=True, null=True)
     longitude = models.FloatField(default=None, blank=True, null=True)
+class options(models.Model):
+    class Meta:
+        verbose_name = 'Option'
+        verbose_name_plural = 'Options'
+    
+    name = models.CharField(max_length=255, default='', blank=True, null=True)
+    value = models.CharField(max_length=255, default='', blank=True, null=True)

@@ -50,6 +50,11 @@
                                 Year(s) studied
                             {% endif %}
                         </span>
+                        {% if last_updated_on != "" %}
+                            <div>
+                                Data last updated on {{last_updated_on}}
+                            </div>
+                        {% endif %}
                     </div>
                     <div id="timeline" class='ui-brush timeline col-xl-9'></div>
                 </div>

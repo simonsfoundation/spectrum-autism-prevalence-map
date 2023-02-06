@@ -17,21 +17,40 @@ def index(request):
 	  Index page/Main Map
 	"""
 	if request.method == 'GET':
-		min_yearpublished = request.GET.get("min_yearpublished","")
-		max_yearpublished = request.GET.get("max_yearpublished","")
-		yearsstudied_number_min = request.GET.get("yearsstudied_number_min","")
-		yearsstudied_number_max = request.GET.get("yearsstudied_number_max","")
-		min_samplesize = request.GET.get("min_samplesize","")
-		max_samplesize = request.GET.get("max_samplesize","")
-		min_prevalenceper10000 = request.GET.get("min_prevalenceper10000","")
-		max_prevalenceper10000 = request.GET.get("max_prevalenceper10000","")
-		studytype = request.GET.get("studytype","")
-		keyword = request.GET.get("keyword","")
-		timeline_type = request.GET.get("timeline_type","published")
-		meanincome = request.GET.get("meanincome","")
-		education = request.GET.get("education","")
+		min_yearpublished = request.GET.get("min_yearpublished", "")
+		max_yearpublished = request.GET.get("max_yearpublished", "")
+		yearsstudied_number_min = request.GET.get("yearsstudied_number_min", "")
+		yearsstudied_number_max = request.GET.get("yearsstudied_number_max", "")
+		min_samplesize = request.GET.get("min_samplesize", "")
+		max_samplesize = request.GET.get("max_samplesize", "")
+		min_prevalenceper10000 = request.GET.get("min_prevalenceper10000", "")
+		max_prevalenceper10000 = request.GET.get("max_prevalenceper10000", "")
+		studytype = request.GET.get("studytype", "")
+		keyword = request.GET.get("keyword", "")
+		timeline_type = request.GET.get("timeline_type", "published")
+		meanincome = request.GET.get("meanincome", "")
+		education = request.GET.get("education", "")
+		try:
+		    last_updated_on_obj = options.objects.get(name="last_updated_on")
+		    last_updated_on = last_updated_on_obj.value
+		except:
+			last_updated_on = ""
 
-	context_dict = {"min_yearpublished":min_yearpublished, "max_yearpublished":max_yearpublished, "yearsstudied_number_min":yearsstudied_number_min, "yearsstudied_number_max":yearsstudied_number_max, "min_samplesize":min_samplesize, "max_samplesize":max_samplesize, "min_prevalenceper10000":min_prevalenceper10000, "max_prevalenceper10000":max_prevalenceper10000, "studytype":studytype , "keyword":keyword, "timeline_type":timeline_type, "meanincome":meanincome, "education":education}
+	context_dict = {"min_yearpublished": min_yearpublished,
+                    "max_yearpublished": max_yearpublished,
+                    "yearsstudied_number_min": yearsstudied_number_min,
+                    "yearsstudied_number_max": yearsstudied_number_max,
+                    "min_samplesize": min_samplesize,
+                    "max_samplesize": max_samplesize,
+                    "min_prevalenceper10000": min_prevalenceper10000,
+                    "max_prevalenceper10000": max_prevalenceper10000,
+                    "studytype": studytype, 
+                    "keyword": keyword, 
+                    "timeline_type": timeline_type, 
+                    "meanincome": meanincome, 
+                    "education": education,
+                    "last_updated_on": last_updated_on}
+    
 	return render(request, 'autism_prevalence_map/map.html', context_dict)
 
 
