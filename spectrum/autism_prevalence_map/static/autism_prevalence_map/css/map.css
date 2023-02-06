@@ -131,6 +131,11 @@
     .timeline-toggle {
         display: block;
     }
+
+    .timeline-toggle div {
+       font-style: italic;
+    }
+
 }
 
 /* Switch CSS */
