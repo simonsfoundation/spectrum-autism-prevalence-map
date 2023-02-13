@@ -17,21 +17,40 @@ def index(request):
 	  Index page/Main Map
 	"""
 	if request.method == 'GET':
-		min_yearpublished = request.GET.get("min_yearpublished","")
-		max_yearpublished = request.GET.get("max_yearpublished","")
-		yearsstudied_number_min = request.GET.get("yearsstudied_number_min","")
-		yearsstudied_number_max = request.GET.get("yearsstudied_number_max","")
-		min_samplesize = request.GET.get("min_samplesize","")
-		max_samplesize = request.GET.get("max_samplesize","")
-		min_prevalenceper10000 = request.GET.get("min_prevalenceper10000","")
-		max_prevalenceper10000 = request.GET.get("max_prevalenceper10000","")
-		studytype = request.GET.get("studytype","")
-		keyword = request.GET.get("keyword","")
-		timeline_type = request.GET.get("timeline_type","published")
-		meanincome = request.GET.get("meanincome","")
-		education = request.GET.get("education","")
+		min_yearpublished = request.GET.get("min_yearpublished", "")
+		max_yearpublished = request.GET.get("max_yearpublished", "")
+		yearsstudied_number_min = request.GET.get("yearsstudied_number_min", "")
+		yearsstudied_number_max = request.GET.get("yearsstudied_number_max", "")
+		min_samplesize = request.GET.get("min_samplesize", "")
+		max_samplesize = request.GET.get("max_samplesize", "")
+		min_prevalenceper10000 = request.GET.get("min_prevalenceper10000", "")
+		max_prevalenceper10000 = request.GET.get("max_prevalenceper10000", "")
+		studytype = request.GET.get("studytype", "")
+		keyword = request.GET.get("keyword", "")
+		timeline_type = request.GET.get("timeline_type", "published")
+		meanincome = request.GET.get("meanincome", "")
+		education = request.GET.get("education", "")
+		try:
+		    last_updated_on_obj = options.objects.get(name="last_updated_on")
+		    last_updated_on = last_updated_on_obj.value
+		except:
+			last_updated_on = ""
 
-	context_dict = {"min_yearpublished":min_yearpublished, "max_yearpublished":max_yearpublished, "yearsstudied_number_min":yearsstudied_number_min, "yearsstudied_number_max":yearsstudied_number_max, "min_samplesize":min_samplesize, "max_samplesize":max_samplesize, "min_prevalenceper10000":min_prevalenceper10000, "max_prevalenceper10000":max_prevalenceper10000, "studytype":studytype , "keyword":keyword, "timeline_type":timeline_type, "meanincome":meanincome, "education":education}
+	context_dict = {"min_yearpublished": min_yearpublished,
+                    "max_yearpublished": max_yearpublished,
+                    "yearsstudied_number_min": yearsstudied_number_min,
+                    "yearsstudied_number_max": yearsstudied_number_max,
+                    "min_samplesize": min_samplesize,
+                    "max_samplesize": max_samplesize,
+                    "min_prevalenceper10000": min_prevalenceper10000,
+                    "max_prevalenceper10000": max_prevalenceper10000,
+                    "studytype": studytype, 
+                    "keyword": keyword, 
+                    "timeline_type": timeline_type, 
+                    "meanincome": meanincome, 
+                    "education": education,
+                    "last_updated_on": last_updated_on}
+    
 	return render(request, 'autism_prevalence_map/map.html', context_dict)
 
 
@@ -401,22 +420,22 @@ def studiesCsv(request):
 		writer = csv.writer(response)
 
 		# CSV header
-		writer.writerow(['Year published', 'Authors', 'Country', 'Area', 'Sample size', 'Age (years)', 
-        'Individuals with autism', 'Diagnostic criteria', 'Diagnostic tools', 'Percent w/ average IQ', 
-        'Sex ratio (M:F)', 'Prevalence (per 10,000)', '95% Confidence interval', 'Category (AD, PDD or ASD)', 
-        'Year(s) studied', 'Recommended', 'Study type', 'Mean income of participants', 'Education level of participants', 
-        'Citation', 'Link 1 Title', 'Link 1 URL', 'Link 2 Title', 'Link 2 URL', 'Link 3 Title', 'Link 3 URL', 'Link 4 Title', 
-        'Link 4 URL'])
-
+		writer.writerow(['Year published', 'Authors', 'Country', 'Area', 'Sample size', 'Age (years)',
+        'Individuals with autism', 'Diagnostic criteria', 'Diagnostic tools', 'Percent w/ average IQ',
+        'Sex ratio (M:F)', 'Prevalence (per 10,000)', '95% Confidence interval', 'Category (AD, PDD or ASD)',
+        'Year(s) studied', 'Recommended', 'Study type', 'Citation', 'Link 1 Title', 'Link 1 URL', 'Link 2 Title',
+        'Link 2 URL', 'Link 3 Title', 'Link 3 URL', 'Link 4 Title', 'Link 4 URL'])
+        
+        # print(pulled_studies)
 		for study in pulled_studies:
-			writer.writerow([study.yearpublished, study.authors, study.country, study.area, study.samplesize, study.age, 
-            study.individualswithautism, study.diagnosticcriteria, study.diagnostictools, study.percentwaverageiq, study.sexratiomf, 
-            study.prevalenceper10000, study.confidenceinterval, study.categoryadpddorasd, study.yearsstudied, study.recommended, 
-            study.studytype, study.meanincomeofparticipants, study.educationlevelofparticipants, study.citation, study.link1title,  
-            study.link1url, study.link2title,  study.link2url, study.link3title,  study.link3url, study.link4title,  study.link4url])
+			writer.writerow([study.yearpublished, study.authors, study.country, study.area, study.samplesize, study.age,
+            study.individualswithautism, study.diagnosticcriteria, study.diagnostictools, study.percentwaverageiq, study.sexratiomf,
+            study.prevalenceper10000, study.confidenceinterval, study.categoryadpddorasd, study.yearsstudied, study.recommended,
+            study.studytype, study.citation, study.link1title, study.link1url, study.link2title,  study.link2url, study.link3title,
+            study.link3url, study.link4title,  study.link4url])
 
 		response['status'] = "200"
-
+        
 	else:
 		print(request.method)
 

@@ -8,9 +8,20 @@ If you don’t have postgresql,
 Create an empty db in postgres.
 `createdb prevalence`
 
+add GMAP_API_KEY(the actual value is in team's doc) to file .env like the following.
+```
+GMAP_API_KEY='ddN3i59_QccZTqB4cWGy'
+```
+Adapt your local DJANGO_STATIC_ROOT value accordingly in your .env file. The following is an example.
+
+```
+DJANGO_STATIC_ROOT='/Users/mkranz/Documents/Spectrum/PrevalenceMap/spectrum-autism-prevalence-map/spectrum/autism_prevalence_map/static'
+```
+
 Add your postgres db info into .env. The following is an example.
 
 ```
+
 DB_HOST='localhost'
 
 DB_NAME='prevalence'
@@ -37,9 +48,6 @@ Change directory.
 Get the schema for your empty database from earlier. The schema files are in autism_prevalence_map/migrations. 
 `python manage.py migrate`
 
-Clear all the data in your current tables and pull data from google sheets.
-`python manage.py pull_studies_from_gsheets`
-
 If you get a certificate error, then go to Applications/python and run 'Install Certificates.command'.
 
 Run the server to see the app on http://127.0.0.1:8000/.
@@ -55,8 +63,10 @@ First change models.py and then run `python manage.py makemigrations` to automat
 
 Run `python manage.py dbshell`.
 
-3. If you want to access the backend admin site on http://127.0.0.1:8000/admin/ but without a user
+3. If you want to access the backend admin site on http://127.0.0.1:8000/submarine/ but without a user.
 
 Run `python manage.py createsuperuser` to create a super user.
 
 4. Removed hardcoded GMAP_API_KEY value from code and added it to file .env for security reason.
+
+5. Currently we still haven't had scripts to import production data. After creating a super user locally, please access our google drive to get the csv file to import it at the backend admin. 

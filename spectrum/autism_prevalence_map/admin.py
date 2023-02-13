@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 import sys, os, urllib.request, json, time, datetime, re
 from django.contrib import admin
-from .models import studies
+from .models import studies, options
 from django import forms
 from django.conf.urls import url
 from django.template.response import TemplateResponse
@@ -129,7 +129,7 @@ class StudiesAdmin(admin.ModelAdmin):
                                 'link4url': row['Link 4 URL'] if row['Link 4 URL'] is not None else ''
                             }
                             
-                            obj, created= studies.objects.update_or_create(gsheet_id=index,defaults=updated_values)
+                            obj, created = studies.objects.update_or_create(gsheet_id=index,defaults=updated_values)
                             self.parse_data(obj)
                             self.geocode(obj)
                             obj.save()
@@ -137,7 +137,7 @@ class StudiesAdmin(admin.ModelAdmin):
                     except Exception as e:
                         print('load research data error')
                         print(e)
-            
+            self.last_updated_on()
             self.message_user(request, "Your csv file has been imported")
             return redirect("..")
         form = CsvImportForm()
@@ -147,7 +147,12 @@ class StudiesAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         self.parse_data(obj)
         self.geocode(obj)
+        self.last_updated_on()
         return super().save_model(request, obj, form, change)
+
+    def delete_model(self, request, obj):
+        self.last_updated_on()
+        return super().delete_model(request, obj)
 
     def geocode(self, study):
         gmaps_api_key = '&key=' + settings.GMAP_API_KEY
@@ -278,4 +283,9 @@ class StudiesAdmin(admin.ModelAdmin):
         study.yearsstudied_number_min=yearsstudied_number_min
         study.yearsstudied_number_max=yearsstudied_number_max 
         study.num_yearsstudied=num_yearsstudied
+        
+    def last_updated_on(self):
+        option_obj, _ = options.objects.update_or_create(name='last_updated_on')
+        option_obj.value = datetime.date.today().strftime("%-d %B %Y")
+        option_obj.save()
 
