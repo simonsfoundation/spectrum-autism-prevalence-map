@@ -1,7 +1,7 @@
 astroid==1.6.5
 backports.functools-lru-cache==1.5
 configparser==3.5.0
-Django==1.11.17
+Django==3.2
 django-environ==0.4.5
 enum34==1.1.6
 futures==3.1.1
@@ -14,7 +14,7 @@ pytz==2018.5
 singledispatch==3.4.0.3
 six==1.11.0
 wrapt==1.10.11
-uWSGI==2.0.19.1
+uWSGI==2.0.26
 django-admin-ip-restrictor==2.2.0
 django-ipware==3.0.7
 django-admin-honeypot==1.1.0
