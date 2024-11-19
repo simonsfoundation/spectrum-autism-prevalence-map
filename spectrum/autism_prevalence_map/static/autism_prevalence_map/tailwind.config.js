@@ -25,7 +25,6 @@ module.exports = {
             screens: {
             },
             spacing: {
-                '32-75': '8.1875rem', // 131px
             },
             colors: {
                 'red': '#910E1C',
