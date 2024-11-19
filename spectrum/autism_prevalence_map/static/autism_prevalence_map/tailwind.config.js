@@ -1,8 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
-        '/ts/**/*.ts',
-        '../../templates/autism_prevalence/*.html'
+        './ts/**/*.ts',
+        '../svg/*.svg',
+        '../../templates/**/*.html',
     ],
     theme: {
         fontSize: {
@@ -24,8 +25,17 @@ module.exports = {
             screens: {
             },
             spacing: {
+                '32-75': '8.1875rem', // 131px
             },
             colors: {
+                'red': '#910E1C',
+                'navy': '#003049',
+                'tan': '#FEF9EE',
+                'med-navy': '#2E5367',
+                'light-navy-2': '#DFE8EC',
+                'dark-gray': '#2D2D2D',
+                'light-gray': '#F4F5F6 ',
+                'blue': '#0B6BC3',
             },
 
         }
