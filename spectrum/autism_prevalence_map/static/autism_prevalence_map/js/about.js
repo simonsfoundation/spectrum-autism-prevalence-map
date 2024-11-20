@@ -1,15 +1,8 @@
 $(document).ready(function (){
 
-    d3.json("https://www.spectrumnews.org/wp-json/wp/v2/pages/62361").then(function(data) {
-        var form = $("#wp-content").html();
-        var content = data.content.rendered;
-        content = content.replace('<div id="end-row"></div>', '');
-        $("#wp-content").prepend(content);
-        if(window.location.hash) {
-            location.hash = window.location.hash;
-        }
-        fixSidebarElements();
-    });
+    if (window.location.hash) {
+        location.hash = window.location.hash;
+    }
 
     // Fixed elements on scroll
     function fixSidebarElements() {
@@ -114,6 +107,7 @@ $(document).ready(function (){
         }
     }
 
+    fixSidebarElements();
     $('.chapter-link a').first().addClass('active');
 
     $(window).on('resize', function() {
