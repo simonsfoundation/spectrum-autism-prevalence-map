@@ -1,6 +1,6 @@
 $(document).ready(function (){
 
-    if(window.location.hash) {
+    if (window.location.hash) {
         location.hash = window.location.hash;
     }
 
