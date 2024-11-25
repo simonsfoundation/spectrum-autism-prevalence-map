@@ -112,11 +112,15 @@
 
     <!-- JS libraries
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <script src="{% static 'autism_prevalence_map/vendor/js/jquery-3.3.1.min.js' %}"></script> 
-    <script src="{% static 'autism_prevalence_map/vendor/js/popper.min.js' %}"></script> 
+    <script src="{% static 'autism_prevalence_map/vendor/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'autism_prevalence_map/vendor/js/popper.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'autism_prevalence_map/vendor/js/d3.v5.min.js' %}"></script>    
-    <script src="{% static 'autism_prevalence_map/dist/main.js' %}"></script>
+    <script src="{% static 'autism_prevalence_map/vendor/js/d3.v5.min.js' %}"></script>
+    {% if environment == 'development' %}
+        <script src="{% static 'autism_prevalence_map/dist/main.js' %}"></script>
+    {% else %}
+        <script src="{% static 'autism_prevalence_map/dist/main.min.js' %}"></script>
+    {% endif %}
 
     {% block js_block %} {% endblock %}
 </body>
