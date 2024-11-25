@@ -28,13 +28,13 @@ module.exports = {
             },
             colors: {
                 'red': '#910E1C',
+                'blue': '#0B6BC3',
                 'navy': '#003049',
-                'tan': '#FEF9EE',
                 'med-navy': '#2E5367',
                 'light-navy-2': '#DFE8EC',
+                'tan': '#FEF9EE',
                 'dark-gray': '#2D2D2D',
                 'light-gray': '#F4F5F6 ',
-                'blue': '#0B6BC3',
             },
 
         }
