@@ -7,7 +7,7 @@
 {% block css_block %}
 <!-- Custom map CSS
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<link rel="stylesheet" id="spectrum-style-css"  href="https://www.spectrumnews.org/wp-content/themes/sfari-spectrum/css/spectrum.min.css?ver=2.0.2" type="text/css" media="all" />
+<link rel="stylesheet" id="spectrum-style-css"  href="{% static 'autism_prevalence_map/css/spectrum.min.css' %}" type="text/css" media="all" />
 <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/about.css' %}">
 {% endblock %}
 
@@ -34,6 +34,138 @@
     <main class="row">
         <div class="col col-7 push-3 content" id="about_spectrum">
             <div id="wp-content">
+                <div id="1" class="chapter-start"></div>
+                <h2 id="about">About the map:</h2>
+                <p>This map was created by the team at <a href="https://www.thetransmitter.org/spectrum/"><i>Spectrum</i></a>, the leading source of news and expert opinion on autism research. (<a href="https://www.thetransmitter.org/newsletters-alerts/">Subscribe to our newsletters</a>.)</p>
+                <p>The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.</p>
+                <p>Each dot on the map represents a study. To identify these studies, we relied on our expert advisers. The darker dots represent studies that are recommended by the advisors for one or more reasons — although these studies may still be flawed in other aspects.</p>
+                <p>We plan to update the map with new studies as they become available.</p>
+                <div id="2" class="chapter-start"></div>
+                <h2 id="how-to">How to use the map:</h2>
+                <p>To see more information about a particular study, click on the corresponding dot. The window that pops up has key pieces of available information from that study.</p>
+                <p>You can also view and filter the studies in the ‘list’ view. In either the map or the list view, you can use the filters in the top-right corner to display studies that match certain criteria, such as sample size, prevalence estimate and study type. And you can use the timeline at the bottom of the page to filter by the years in which studies were conducted or published.</p>
+                <h3>Key to terms used on the map:</h3>
+                <p><b>Prevalence</b> is shown on the map as the estimated number of autistic people per 10,000 individuals in the population studied.</p>
+                <p><b>Confidence interval </b>refers to the uncertainty of a prevalence estimate. It is the range in which the true prevalence lies 95 percent of the time.</p>
+                <p>When available, the study shows the proportion of participants with at least an <b>average intelligence quotient (IQ)</b> — the definition of ‘average’ IQ varies from study to study but typically refers to a score above 70 or 80.</p>
+                <p><b>Diagnostic criteria</b> include the following options:<br>
+                ABC — Autism Behavior Checklist<br>
+                ADOS — Autism Diagnostic Observation Schedule<br>
+                ADI, ADI-R — Autism Diagnostic Interview, Autism Diagnostic Interview-Revised<br>
+                Autistic Disorder<br>
+                CABS — Clancy Autism Behavior Scale<br>
+                CARS — Childhood Autism Rating Scale<br>
+                CCMD-2, CCMD-2-R — Chinese Classification of Mental Disorders, 2nd edition<br>
+                Clinician diagnosis<br>
+                DAWBA — Development and Well-Being Assessment<br>
+                DISCO — Diagnostic Interview for Social and Communication Disorderss<br>
+                DSM-III, DSM-III-R, DSM-IV, DSM-IV-TR, DSM-5 — editions of the Diagnostic and Statistical Manual of Mental Disorders<br>
+                Gillberg criteria — Christopher Gillberg’s diagnostic description<br>
+                ICD-8, ICD-9, ICD-9-CM, ICD-10 — editions of the International Classification of Diseases<br>
+                INDT-ASD — INCLEN Diagnostic Tool for Autism Spectrum Disorder<br>
+                Parent report<br>
+                Kanner criteria — Leo Kanner’s diagnostic description<br>
+                SCDC — Social and Communication Disorders Checklist<br>
+                SCQ — Social Communication Questionnaire<br>
+                SRS — Social Responsiveness Scale<br>
+                Rating scale<br>
+                RDC — Research Diagnostic Criteria<br>
+                Rutter criteria — &nbsp;Michael Rutter’s diagnostic description</p>
+                <p><b>Study type</b> includes the following options:<br>
+                Epidemiological survey — active case-finding with two-stage screen and case confirmation<br>
+                Registry — analysis of already-identified cases in research databases<br>
+                Administrative database — classifications based on existing documented provision of services<br>
+                General health survey — reported symptoms or diagnoses in a population-based survey sample<br>
+                Research cohort — individuals identified for research projects and followed over time</p>
+                <p><b>Category</b> includes the following options:<br>
+                AD — autistic disorder<br>
+                PDD — pervasive developmental disorder<br>
+                ASD — autism spectrum disorder</p>
+                <div id="3" class="chapter-start"></div>
+                <h2 id="how-to-cite">How to cite the map:</h2>
+                <p>Please include a statement in your article or on your website that indicates that you retrieved the information from <a href="https://autismprevalence.thetransmitter.org/">autismprevalence.thetransmitter.org</a>. And if you refer to it by name, please call it the “global map of autism prevalence by <em>Spectrum</em>.”</p>
+                <div id="4" class="chapter-start"></div>
+                <h2 id="more-info">More information:</h2>
+                <p>Here is a selection of <i>Spectrum</i> articles on autism prevalence.</p>
+                <p><a href="https://www.thetransmitter.org/spectrum/study-quantifies-prevalence-autism-india/">Study quantifies prevalence of autism in India </a><br>
+                <a href="https://www.thetransmitter.org/spectrum/new-report-shows-slight-uptick-autism-prevalence/">New report shows slight uptick in autism prevalence</a><br>
+                <a href="https://www.thetransmitter.org/spectrum/prevalence-autism-u-s-remains-steady-new-data-suggest/">Prevalence of autism in U.S. remains steady, new data suggest</a><br>
+                <a href="https://www.thetransmitter.org/spectrum/school-survey-india-reveals-low-autism-prevalence/">School survey in India reveals low autism prevalence</a><br>
+                <a href="https://www.thetransmitter.org/spectrum/u-s-stats-show-autism-rate-reaching-possible-plateau/">U.S. stats show autism rate reaching possible plateau</a><br>
+                <a href="https://www.thetransmitter.org/spectrum/new-spike-in-autism-numbers-may-reflect-rise-in-awareness/">New spike in autism numbers may reflect rise in awareness</a><br>
+                <a href="https://www.thetransmitter.org/spectrum/prevalence-perturbed/">Prevalence perturbed</a><br>
+                <a href="https://www.thetransmitter.org/spectrum/clinical-research-israeli-study-shows-high-autism-prevalence/">Clinical research: Israeli study shows high autism prevalence</a><br>
+                <a href="https://www.thetransmitter.org/spectrum/rising-rates/">Rising rates</a><br>
+                <a href="https://www.thetransmitter.org/spectrum/study-finds-high-rate-of-autism-in-south-korea/">Study finds high rate of autism in South Korea</a></p>
+                <div id="5" class="chapter-start"></div>
+                <h2 id="team">The team:</h2>
+                <h3><em>Spectrum</em> Team</h3>
+                <div class="bio">
+                    <h4>Apoorva Mandavilli</h4>
+                    <h5>Editor-in-Chief, <i>Spectrum</i></h5>
+                    <p>Apoorva Mandavilli created <i>Spectrum</i> and conceived of the global prevalence map. She oversees the site’s operations.<br>
+                    <a href="https://www.thetransmitter.org/contributor/apoorva-mandavilli/">More</a></p>
+                </div>
+                <div class="bio">
+                    <h4>Nicholette Zeliadt</h4>
+                    <h5>Senior News Writer, <i>Spectrum</i></h5>
+                    <p>Nicholette Zeliadt reports and writes news and features about autism research. She led the map’s build on the editorial side.<br>
+                    <a href="https://www.thetransmitter.org/contributor/nicholette-zeliadt/">More</a></p>
+                </div>
+                <div class="bio">
+                    <h4>Rebecca Horne</h4>
+                    <h5>Multimedia Director, <i>Spectrum</i></h5>
+                    <p>Rebecca Horne oversees and directs all multimedia on <i>Spectrum</i>. She commissioned and oversees the map’s design.<br>
+                    <a href="https://www.thetransmitter.org/contributor/rebecca-horne/">More</a></p>
+                </div>
+                <div class="bio">
+                    <h4>Michael Kranz</h4>
+                    <h5>Lead Web Developer, Simons Foundation</h5>
+                    <p>Michael Kranz manages interactions between <i>Spectrum</i> and the team designing and developing the map site, as well as overseeing the map site’s infrastructure.</p>
+                </div>
+                <div class="bio">
+                    <h4>Ursula Wing</h4>
+                    <h5>Web Developer, Simons Foundation</h5>
+                    <p>Ursula Wing contributes to the development of the map.</p>
+                </div>
+                <div class="bio">
+                    <h4>Hope Vanderberg</h4>
+                    <h5>Copy Chief</h5>
+                    <p>Hope Vanderberg edits articles on <i>Spectrum</i> for grammar and accuracy.<br>
+                    <a href="https://www.thetransmitter.org/contributor/hope-vanderberg/">More</a></p>
+                </div>
+                <h3>Project Advisers</h3>
+                <div class="bio">
+                    <h4>Gauri Divan</h4>
+                    <h5>Director of the child development group, Sangath</h5>
+                    <p>Gauri Divan is director of the child development group at Sangath, a nonprofit organization in Goa, India. She has also been a member of the World Health Organization’s technical consultative group for autism and developmental disorders.<br>
+                    <a href="https://www.thetransmitter.org/contributor/gauri-divan/">More</a></p>
+                </div>
+                <div class="bio">
+                    <h4>Maureen Durkin</h4>
+                    <h5>Professor of population health sciences, University of Wisconsin-Madison</h5>
+                    <p>Maureen Durkin is professor and chair of population health sciences and Waisman Center investigator at the University of Wisconsin-Madison. She is a principal investigator in the Autism and Developmental Disabilities Monitoring Network and other projects related to public health surveillance, epidemiology and care integration of autism and other developmental disabilities.<br>
+                    <a href="https://www.thetransmitter.org/contributor/maureen-durkin/">More</a></p>
+                </div>
+                <div class="bio">
+                    <h4>Mayada Elsabbagh</h4>
+                    <h5>Assistant professor of neurology and neurosurgery, McGill University</h5>
+                    <p>Mayada Elsabbagh is assistant professor of neurology and neurosurgery at McGill University in Montreal, Canada. She is also active in global efforts to improve evidence-based practice in the autism community and capacity-building in low- and middle-income countries.<br>
+                    <a href="https://www.thetransmitter.org/contributor/mayada-elsabbagh/">More</a></p>
+                </div>
+                <div class="bio">
+                    <h4>Eric Fombonne</h4>
+                    <h5>Director of autism research, Oregon Health and Science University</h5>
+                    <p>Eric Fombonne is director of autism research at the Institute on Development and Disability at Oregon Health and Science University. His research on developmental disorders and child and adolescent psychiatric disorders encompasses clinical longitudinal and population-based epidemiological studies, clinical trials and genetic studies.<br>
+                    <a href="https://www.thetransmitter.org/contributor/eric-fombonne/">More</a></p>
+                </div>
+                <div class="bio">
+                    <h4>Catherine Rice</h4>
+                    <h5>Director, Emory Autism Center</h5>
+                    <p>Catherine Rice is director of the Emory Autism Center and professor of psychiatry and behavioral sciences at Emory University in Atlanta, Georgia. Prior to that, she led studies of autism prevalence at the U.S. Centers for Disease Control and Prevention.&nbsp; She continues to provide expert consultation to the agency on determining autism case status and improving developmental and autism screening in the community.<br>
+                    <a href="https://www.thetransmitter.org/contributor/catherine-rice/">More</a></p>
+                </div>
+                <p><strong>Cite this resource:&nbsp;</strong>https://doi.org/10.53053/NDWR8664</p>
                 <div id="end-row"></div>
             </div>
         </div>
@@ -49,5 +181,4 @@
 <!-- Custom JS
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <script src="{% static 'autism_prevalence_map/js/about.js' %}"></script>
-<script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
 {% endblock %}
