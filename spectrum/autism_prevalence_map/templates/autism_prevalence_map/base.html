@@ -20,50 +20,43 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/dist/main.css' %}">
+    {% if environment == 'development' %}
+        <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/dist/main.css' %}">
+    {% else %}
+        <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/dist/main.min.css' %}">
+    {% endif %}
 
     {% block css_block %} {% endblock %}
 
-    <link rel="icon" type="image/png" href="{% static 'autism_prevalence_map/img/favicon.svg' %}">
+    <link rel="icon" type="image/svg+xml" href="{% static 'autism_prevalence_map/img/favicon.svg' %}">
 
     <style>.async-hide { opacity: 0 !important} </style>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BKVX7LHVRB"></script>
+
+    <!-- Google Tag Manager -->
     <script>
-
-    var stagingOptimizeContainer = 'GTM-T96ZVZZ';
-
-    var prodOptimizeContainer = 'GTM-K4R62V8';
-
-    var optimizeContainer = prodOptimizeContainer;
-
-    if (window.location.hostname.indexOf('staging') != -1){
-        optimizeContainer = stagingOptimizeContainer;
-
-        //page hiding snippet for staging
-        (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
-        h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
-        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
-        })(window,document.documentElement,'async-hide','dataLayer',4000,
-        {'GTM-T96ZVZZ':true});
-
-    }else{
-        
+        // Define dataLayer and the gtag function.
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-BKVX7LHVRB');
 
-
-        //page hiding snippet for production
-        (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
-        h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
-        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
-        })(window,document.documentElement,'async-hide','dataLayer',4000,
-        {'GTM-K4R62V8':true});
-
-    }
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied'
+        });
+        gtag('consent', 'default', {
+            'analytics_storage': 'granted',
+            'region': ['US']
+        });
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-TVJ9V6L');
 
     </script>
+    <!-- End Google Tag Manager -->
 
 </head>
 

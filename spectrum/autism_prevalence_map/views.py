@@ -3,10 +3,13 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-import os
 from datetime import date
-import re, csv
+import re, csv, os, environ
 from django.contrib.postgres.search import SearchVector, SearchQuery
+
+root = environ.Path(__file__) - 3
+env = environ.Env(DEBUG=(bool, False),)
+environ.Env.read_env()
 
 #import all apartment models and forms
 from autism_prevalence_map.models import *
@@ -16,6 +19,7 @@ def index(request):
 	"""
 	  Index page/Main Map
 	"""
+	environment = os.environ['ENVIRONMENT']
 	if request.method == 'GET':
 		min_yearpublished = request.GET.get("min_yearpublished", "")
 		max_yearpublished = request.GET.get("max_yearpublished", "")
@@ -49,7 +53,8 @@ def index(request):
                     "timeline_type": timeline_type, 
                     "meanincome": meanincome, 
                     "education": education,
-                    "last_updated_on": last_updated_on}
+                    "last_updated_on": last_updated_on,
+                    'environment': environment}
     
 	return render(request, 'autism_prevalence_map/map.html', context_dict)
 
@@ -58,6 +63,7 @@ def list_view(request):
 	"""
 	  List of studies page
 	"""
+	environment = os.environ['ENVIRONMENT']
 	if request.method == 'GET':
 		min_yearpublished = request.GET.get("min_yearpublished","")
 		max_yearpublished = request.GET.get("max_yearpublished","")
