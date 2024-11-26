@@ -8,15 +8,12 @@
         "watch-css": "tailwindcss -i ./tailwind/tailwind.css --output ./dist/main.css --watch",
         "watch-js": "esbuild ts/main.ts --outfile=dist/main.js --bundle --watch",
         "dev": "concurrently npm:watch-css npm:watch-js",
-        "build": "npm run tailwind && npm run esbuild",
-        "format": "prettier --check './ts'",
+        "build": "npm run tailwind && npm run esbuild"
     },
     "devDependencies": {
         "@types/jquery": "3.5.32",
         "concurrently": "9.1.0",
         "esbuild": "0.24.0",
-        "husky": "9.1.7",
-        "prettier": "3.3.3",
         "tailwindcss": "3.4.15",
         "typescript": "5.7.2"
     }
