@@ -1,9 +1,9 @@
-{% load staticfiles %}
+{% load static %}
+{% load svg %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Basic Page Needs
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
     <meta charset="utf-8">
     <title>{% block title %}{% endblock %}</title>
     <meta name="description" content="">
@@ -18,84 +18,49 @@
     <meta property="og:image" content="https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/PrevalenceMapSG.png" />
     <meta property="og:description" content="The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing." />
 
-    <!-- Mobile Specific Metas
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- CSS libraries
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <!-- <link rel="stylesheet" href="https://use.typekit.net/hjy6pmo.css"> -->
-    <script src="https://use.typekit.net/gnz4dab.js"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/vendor/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-    <!-- Custom site-wide CSS
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/style.css' %}">
+    {% static '' as static_base %}
+    <link rel="stylesheet" type="text/css" href="{{ static_base }}{{ style_sheet }}">
 
     {% block css_block %} {% endblock %}
 
-    <!-- Favicon
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="icon" type="image/png" href="{% static 'autism_prevalence_map/img/favicon.png' %}">
+    <link rel="icon" type="image/svg+xml" href="{% static 'autism_prevalence_map/img/favicon.svg' %}">
 
-    <!-- [Google Analytics/Optimize] -->
-    <style>.async-hide { opacity: 0 !important} </style>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BKVX7LHVRB"></script>
+    <!-- Google Tag Manager -->
     <script>
-
-    var stagingOptimizeContainer = 'GTM-T96ZVZZ';
-
-    var prodOptimizeContainer = 'GTM-K4R62V8';
-
-    var optimizeContainer = prodOptimizeContainer;
-
-    if (window.location.hostname.indexOf('staging') != -1){
-        optimizeContainer = stagingOptimizeContainer;
-
-        //page hiding snippet for staging
-        (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
-        h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
-        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
-        })(window,document.documentElement,'async-hide','dataLayer',4000,
-        {'GTM-T96ZVZZ':true});
-
-    }else{
-        
+        // Define dataLayer and the gtag function.
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-BKVX7LHVRB');
 
-
-        //page hiding snippet for production
-        (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
-        h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
-        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
-        })(window,document.documentElement,'async-hide','dataLayer',4000,
-        {'GTM-K4R62V8':true});
-
-    }
-
-
-    window.smartlook||(function(d) {
-        var o=smartlook=function(){ o.api.push(arguments)},h=d.getElementsByTagName('head')[0];
-        var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
-        c.charset='utf-8';c.src='https://rec.smartlook.com/recorder.js';h.appendChild(c);
-        })(document);
-        smartlook('init', '4628f793b5a08af66717e9398e6a50ca3b8b9d0a');
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied'
+        });
+        gtag('consent', 'default', {
+            'analytics_storage': 'granted',
+            'region': ['US']
+        });
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-TVJ9V6L');
 
     </script>
+    <!-- End Google Tag Manager -->
 
-    <!-- [/Google Analytics, Smartlook, and Optimize] -->
 </head>
 
-<body>
-    <!-- Navbar
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<body class='font-sans'>
+
     <nav class="navbar navbar-expand-xl fixed-top navbar-light spectrum-gradient">
         <div class="left">
             <a class="navbar-brand" href="https://www.thetransmitter.org/">
-                <img src="{% static 'autism_prevalence_map/img/spectrum-logo-white.png' %}" width="auto" height="40" class="d-inline-block" alt="">
+                {% svg 'transmitter-logo' %}
+                <span class='sr-only'>The Transmitter</span>
             </a>
         </div>
         <div class="middle">
@@ -141,12 +106,11 @@
 
     <!-- JS libraries
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <script src="https://use.typekit.net/gnz4dab.js"></script>
-    <script src="{% static 'autism_prevalence_map/vendor/js/jquery-3.3.1.min.js' %}"></script> 
-    <script src="{% static 'autism_prevalence_map/vendor/js/underscore-min.js' %}"></script>  
-    <script src="{% static 'autism_prevalence_map/vendor/js/popper.min.js' %}"></script> 
+    <script src="{% static 'autism_prevalence_map/vendor/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'autism_prevalence_map/vendor/js/popper.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'autism_prevalence_map/vendor/js/d3.v5.min.js' %}"></script>    
+    <script src="{% static 'autism_prevalence_map/vendor/js/d3.v5.min.js' %}"></script>
+    <script src="{{ static_base }}{{ script }}"></script>
 
     {% block js_block %} {% endblock %}
 </body>

@@ -1,65 +1,49 @@
 {% extends 'autism_prevalence_map/base.html' %} 
 
-{% load staticfiles %} 
+{% load static %} 
 
 {% block title %}Spectrum | Global Autism Prevalence Map{% endblock %} 
-
-{% block css_block %}
-<!-- Custom map CSS
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/map.css' %}">
-{% endblock %} 
-
 
 {% block body_block %}
 <!-- Main Container
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<div class="container-fluid">    
-    <div class="row">
-        <div class="col no-padding-col">
-            <!-- Map div
-            –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-            <div id="map"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col no-padding-col">
-            <!-- Timeline div
-            –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-            <div class="timeline-wrapper container-fluid">
-                <div class="row">
-                    <div id="timeline-toggle" class='timeline-toggle col-xl-3'>
-                        <h2>Timeline of studies</h2>
-                        <span class="timeline-switch">
+<div>    
+    <!-- Map div
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <div id="map" class=""></div>
+    <!-- Timeline div
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <div class="timeline-wrapper container-fluid">
+        <div class="row">
+            <div id="timeline-toggle" class='timeline-toggle col-xl-3'>
+                <h2>Timeline of studies</h2>
+                <span class="timeline-switch">
 
-                            <input type="checkbox" id="timeline-switch" name="timeline-switch" {% if timeline_type == "studied" %}checked{% endif %}>
+                    <input type="checkbox" id="timeline-switch" name="timeline-switch" {% if timeline_type == "studied" %}checked{% endif %}>
 
-                            <label for="timeline-switch">
-                                {% if timeline_type == "published" %}
-                                    <strong>Year published</strong>
-                                {% else %}
-                                    Year published
-                                {% endif %}
-                            </label>
-                            <span class="timeline-switch-knob"></span>
-                        </span>
-                        <span>
-                            {% if timeline_type == "studied" %}
-                                <strong>Year(s) studied</strong>
-                            {% else %}
-                                Year(s) studied
-                            {% endif %}
-                        </span>
-                        {% if last_updated_on != "" %}
-                            <div>
-                                Data last updated on {{last_updated_on}}
-                            </div>
+                    <label for="timeline-switch">
+                        {% if timeline_type == "published" %}
+                            <strong>Year published</strong>
+                        {% else %}
+                            Year published
                         {% endif %}
+                    </label>
+                    <span class="timeline-switch-knob"></span>
+                </span>
+                <span>
+                    {% if timeline_type == "studied" %}
+                        <strong>Year(s) studied</strong>
+                    {% else %}
+                        Year(s) studied
+                    {% endif %}
+                </span>
+                {% if last_updated_on != "" %}
+                    <div>
+                        Data last updated on {{last_updated_on}}
                     </div>
-                    <div id="timeline" class='ui-brush timeline col-xl-9'></div>
-                </div>
+                {% endif %}
             </div>
-
+            <div id="timeline" class='ui-brush timeline col-xl-9'></div>
         </div>
     </div>
 </div>
