@@ -20,18 +20,12 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    {% if environment == 'development' %}
-        <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/dist/main.css' %}">
-    {% else %}
-        <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/dist/main.min.css' %}">
-    {% endif %}
+    {% static '' as static_base %}
+    <link rel="stylesheet" type="text/css" href="{{ static_base }}{{ style_sheet }}">
 
     {% block css_block %} {% endblock %}
 
     <link rel="icon" type="image/svg+xml" href="{% static 'autism_prevalence_map/img/favicon.svg' %}">
-
-    <style>.async-hide { opacity: 0 !important} </style>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BKVX7LHVRB"></script>
 
     <!-- Google Tag Manager -->
     <script>
@@ -116,11 +110,7 @@
     <script src="{% static 'autism_prevalence_map/vendor/js/popper.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/d3.v5.min.js' %}"></script>
-    {% if environment == 'development' %}
-        <script src="{% static 'autism_prevalence_map/dist/main.js' %}"></script>
-    {% else %}
-        <script src="{% static 'autism_prevalence_map/dist/main.min.js' %}"></script>
-    {% endif %}
+    <script src="{{ static_base }}{{ script }}"></script>
 
     {% block js_block %} {% endblock %}
 </body>
