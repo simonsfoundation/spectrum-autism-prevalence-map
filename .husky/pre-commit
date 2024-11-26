@@ -1,2 +1,0 @@
-cd ./spectrum/autism_prevalence_map/static/autism_prevalence_map
-npx lint-staged

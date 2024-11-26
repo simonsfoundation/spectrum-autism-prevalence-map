@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from datetime import date
-import re, csv, os, environ
+import re, csv, os
 from django.contrib.postgres.search import SearchVector, SearchQuery
 
 #import all apartment models and forms
@@ -15,7 +15,7 @@ def index(request):
 	"""
 	  Index page/Main Map
 	"""
-	if os.environ["DJANGO_ALLOWED_HOSTS"] == '127.0.0.1' :
+	if os.environ['DJANGO_ALLOWED_HOSTS'] == '127.0.0.1' :
 		style_sheet = 'autism_prevalence_map/dist/main.css'
 		script = 'autism_prevalence_map/dist/main.js'
 	else :
@@ -57,7 +57,7 @@ def index(request):
                     "education": education,
                     "last_updated_on": last_updated_on,
                     'style_sheet': style_sheet,
-					'script': script,}
+                    'script': script,}
     
 	return render(request, 'autism_prevalence_map/map.html', context_dict)
 
@@ -66,7 +66,7 @@ def list_view(request):
 	"""
 	  List of studies page
 	"""
-	if os.environ["DJANGO_ALLOWED_HOSTS"] == '127.0.0.1' :
+	if os.environ['DJANGO_ALLOWED_HOSTS'] == '127.0.0.1' :
 		style_sheet = 'autism_prevalence_map/dist/main.css'
 		script = 'autism_prevalence_map/dist/main.js'
 	else :
@@ -113,7 +113,7 @@ def about(request):
 	"""
 	  About page
 	"""
-	if os.environ["DJANGO_ALLOWED_HOSTS"] == '127.0.0.1' :
+	if os.environ['DJANGO_ALLOWED_HOSTS'] == '127.0.0.1' :
 		style_sheet = 'autism_prevalence_map/dist/main.css'
 		script = 'autism_prevalence_map/dist/main.js'
 	else :
