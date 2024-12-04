@@ -49,6 +49,9 @@ Thumbs.db
 .vscode/*
 env/*
 .ebextensions/ssl.config
+spectrum/autism_prevalence_map/static/autism_prevalence_map/package-lock.json
+spectrum/autism_prevalence_map/static/autism_prevalence_map/node_modules/
+spectrum/autism_prevalence_map/static/autism_prevalence_map/dist/
 
 
 # Elastic Beanstalk Files

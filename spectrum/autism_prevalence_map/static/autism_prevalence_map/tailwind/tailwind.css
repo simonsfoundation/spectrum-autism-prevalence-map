@@ -1,0 +1,365 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Light.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Light.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Light.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 200;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-LightItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-LightItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-LightItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 200;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Regular.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Regular.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-RegularItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-RegularItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-RegularItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Book.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Book.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Book.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-BookItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BookItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BookItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Medium.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Medium.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-MediumItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-MediumItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-MediumItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-SemiBold.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-SemiBold.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-SemiBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-SemiBoldItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-SemiBoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-SemiBoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Bold.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Bold.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-BoldItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-ExtraBold.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-ExtraBold.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-ExtraBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-ExtraBoldItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-ExtraBoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-ExtraBoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Black.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Black.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Black.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-BlackItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BlackItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BlackItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Light.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Light.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 200;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-LightItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-LightItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 200;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Regular.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-RegularItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-RegularItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Book.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Book.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BookItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BookItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Medium.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-MediumItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-MediumItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-SemiBold.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-SemiBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-SemiBoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-SemiBoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Bold.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-ExtraBold.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-ExtraBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-ExtraBoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-ExtraBoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Black.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Black.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BlackItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BlackItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-Regular.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Regular.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-RegularItalic.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-RegularItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-RegularItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-Book.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Book.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Book.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-BookItalic.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-BookItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-BookItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-Medium.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Medium.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-MediumItalic.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-MediumItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-MediumItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-SemiBold.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-SemiBold.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-SemiBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-SemiBoldItalic.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-SemiBoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-SemiBoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-Bold.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Bold.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-BoldItalic.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-BoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-BoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 700;
+}

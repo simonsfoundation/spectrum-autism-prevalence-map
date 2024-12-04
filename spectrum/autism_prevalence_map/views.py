@@ -3,9 +3,8 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-import os
 from datetime import date
-import re, csv
+import re, csv, os
 from django.contrib.postgres.search import SearchVector, SearchQuery
 
 #import all apartment models and forms
@@ -16,6 +15,13 @@ def index(request):
 	"""
 	  Index page/Main Map
 	"""
+	if os.environ['DJANGO_ALLOWED_HOSTS'] == '127.0.0.1' :
+		style_sheet = 'autism_prevalence_map/dist/main.css'
+		script = 'autism_prevalence_map/dist/main.js'
+	else :
+		style_sheet = 'autism_prevalence_map/dist/main.min.css'
+		script = 'autism_prevalence_map/dist/main.min.js'
+
 	if request.method == 'GET':
 		min_yearpublished = request.GET.get("min_yearpublished", "")
 		max_yearpublished = request.GET.get("max_yearpublished", "")
@@ -44,12 +50,14 @@ def index(request):
                     "max_samplesize": max_samplesize,
                     "min_prevalenceper10000": min_prevalenceper10000,
                     "max_prevalenceper10000": max_prevalenceper10000,
-                    "studytype": studytype, 
-                    "keyword": keyword, 
-                    "timeline_type": timeline_type, 
-                    "meanincome": meanincome, 
+                    "studytype": studytype,
+                    "keyword": keyword,
+                    "timeline_type": timeline_type,
+                    "meanincome": meanincome,
                     "education": education,
-                    "last_updated_on": last_updated_on}
+                    "last_updated_on": last_updated_on,
+                    'style_sheet': style_sheet,
+                    'script': script,}
     
 	return render(request, 'autism_prevalence_map/map.html', context_dict)
 
@@ -58,6 +66,13 @@ def list_view(request):
 	"""
 	  List of studies page
 	"""
+	if os.environ['DJANGO_ALLOWED_HOSTS'] == '127.0.0.1' :
+		style_sheet = 'autism_prevalence_map/dist/main.css'
+		script = 'autism_prevalence_map/dist/main.js'
+	else :
+		style_sheet = 'autism_prevalence_map/dist/main.min.css'
+		script = 'autism_prevalence_map/dist/main.min.js'
+
 	if request.method == 'GET':
 		min_yearpublished = request.GET.get("min_yearpublished","")
 		max_yearpublished = request.GET.get("max_yearpublished","")
@@ -73,7 +88,22 @@ def list_view(request):
 		meanincome = request.GET.get("meanincome","")
 		education = request.GET.get("education","")
 
-	context_dict = {"min_yearpublished":min_yearpublished, "max_yearpublished":max_yearpublished,"yearsstudied_number_min":yearsstudied_number_min, "yearsstudied_number_max":yearsstudied_number_max, "min_samplesize":min_samplesize, "max_samplesize":max_samplesize, "min_prevalenceper10000":min_prevalenceper10000, "max_prevalenceper10000":max_prevalenceper10000, "studytype":studytype ,"keyword":keyword, "timeline_type":timeline_type, "meanincome":meanincome, "education":education}
+	context_dict = {
+		"min_yearpublished":min_yearpublished,
+		"max_yearpublished":max_yearpublished,
+		"yearsstudied_number_min":yearsstudied_number_min,
+		"yearsstudied_number_max":yearsstudied_number_max,
+		"min_samplesize":min_samplesize,
+		"max_samplesize":max_samplesize,
+		"min_prevalenceper10000":min_prevalenceper10000,
+		"max_prevalenceper10000":max_prevalenceper10000,
+		"studytype":studytype,
+		"keyword":keyword,
+		"timeline_type":timeline_type,
+		"meanincome":meanincome,
+		"education":education,
+		'style_sheet': style_sheet,
+		'script': script,}
 
 	return render(request, 'autism_prevalence_map/list.html', context_dict)
 
@@ -83,7 +113,17 @@ def about(request):
 	"""
 	  About page
 	"""
-	return render(request, 'autism_prevalence_map/about.html')
+	if os.environ['DJANGO_ALLOWED_HOSTS'] == '127.0.0.1' :
+		style_sheet = 'autism_prevalence_map/dist/main.css'
+		script = 'autism_prevalence_map/dist/main.js'
+	else :
+		style_sheet = 'autism_prevalence_map/dist/main.min.css'
+		script = 'autism_prevalence_map/dist/main.min.js'
+	context_dict = {
+		'style_sheet': style_sheet,
+		'script': script,
+	}
+	return render(request, 'autism_prevalence_map/about.html', context_dict)
 
 
 def studiesApi(request):
