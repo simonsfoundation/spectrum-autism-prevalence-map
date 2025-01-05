@@ -54,51 +54,42 @@
 
 </head>
 
-<body class='font-sans'>
+<body class="font-sans px-4 xl:px-10">
 
-    <nav class="navbar navbar-expand-xl fixed-top navbar-light spectrum-gradient">
-        <div class="left">
-            <a class="navbar-brand" href="https://www.thetransmitter.org/">
-                {% svg 'transmitter-logo' %}
+    <nav class="navbar flex justify-between items-center w-full mx-auto max-w-container py-5">
+        <div class="left flex items-center">
+            <a class="navbar-brand max-w-logo" href="https://www.thetransmitter.org/">
+                {% svg 'transmitter-logo' class='w-full h-auto' %}
                 <span class='sr-only'>The Transmitter</span>
             </a>
-        </div>
-        <div class="middle">
             <a class="navbar-brand centered-title" href="#">
-                <span class="navbar-brand-text">Global Autism Prevalence</span>
+                <span class="navbar-brand-text text-md text-med-navy uppercase">Global Autism Prevalence</span>
             </a>
         </div>
-        <div class="right">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#right-nav-container" aria-controls="right-nav-container" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="right-nav-container">
-                <!-- <span class="mr-auto"></span> -->
-                <ul class="nav nav-tabs mr-4">
-                    <li class="nav-item">
-                        <a id="map-link" class="nav-link {% if request.path == '/' %}active{% endif %} " href="{% url 'index' %}">Map</a>
-                    </li>
-                    <li class="nav-item">
-                        <a id="list-link" class="nav-link {% if request.path == '/list/' %}active{% endif %}" href="{% url 'list_view' %}">List</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">About</a>
-                    </li>
-                </ul>
-                <form class="form-inline">
-                    <div class="input-group">
-                        <input id="search" class="form-control spectrum-form" type="search" placeholder="Filter data by keyword" aria-label="Filter data by keyword">
-                        <div class="input-group-append">
-                            <span class="input-group-text spectrum-append"><i class="fas fa-search"></i></span>
-                        </div>
+        <div class="right flex items-center">
+            <ul class="nav nav-tabs mr-4">
+                <li class="nav-item">
+                    <a id="map-link" class="nav-link {% if request.path == '/' %}active{% endif %} " href="{% url 'index' %}">Map</a>
+                </li>
+                <li class="nav-item">
+                    <a id="list-link" class="nav-link {% if request.path == '/list/' %}active{% endif %}" href="{% url 'list_view' %}">List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">About</a>
+                </li>
+            </ul>
+            <form class="form-inline">
+                <div class="input-group">
+                    <input id="search" class="form-control spectrum-form" type="search" placeholder="Filter data by keyword" aria-label="Filter data by keyword">
+                    <div class="input-group-append">
+                        <span class="input-group-text spectrum-append"><i class="fas fa-search"></i></span>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
         </div>
     </nav>
 
-    <main>
+    <main class="mx-auto max-w-container">
         {% block body_block %} {% endblock %}
     </main>
 

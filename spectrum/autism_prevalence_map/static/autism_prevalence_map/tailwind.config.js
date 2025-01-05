@@ -7,6 +7,10 @@ module.exports = {
     ],
     theme: {
         fontSize: {
+            'md': ['1.438rem', { // 23px
+                lineHeight: '1.70625rem',
+                letterSpacing: '0.06em',
+            }]
         },
         extend: {
             fontFamily: {
@@ -25,6 +29,13 @@ module.exports = {
             screens: {
             },
             spacing: {
+                '10': '2.5rem',
+                '5': '1.25rem',
+                '4': '1rem',
+            },
+            maxWidth: {
+                'container': '91.25rem',
+                'logo': '13.625rem'
             },
             colors: {
                 'red': '#910E1C',
@@ -35,8 +46,7 @@ module.exports = {
                 'tan': '#FEF9EE',
                 'dark-gray': '#2D2D2D',
                 'light-gray': '#F4F5F6 ',
-            },
-
+            }
         }
     },
     plugins: [
