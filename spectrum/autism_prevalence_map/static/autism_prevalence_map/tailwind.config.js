@@ -7,9 +7,17 @@ module.exports = {
     ],
     theme: {
         fontSize: {
-            'md': ['1.438rem', { // 23px
-                lineHeight: '1.70625rem',
+            'lg': ['1.438rem', { // 23px
+                lineHeight: '100%',
                 letterSpacing: '0.06em',
+            }],
+            'sm': ['0.75rem', { // 12px
+                lineHeight: '120%',
+                letterSpacing: '0.16em',
+            }],
+            'sm2': ['0.688rem', { // 11px
+                lineHeight: '120%',
+                letterSpacing: '0.16em',
             }]
         },
         extend: {
@@ -42,10 +50,12 @@ module.exports = {
                 'blue': '#0B6BC3',
                 'navy': '#003049',
                 'med-navy': '#2E5367',
+                'light-navy': '#6c8291',
                 'light-navy-2': '#DFE8EC',
                 'tan': '#FEF9EE',
                 'dark-gray': '#2D2D2D',
-                'light-gray': '#F4F5F6 ',
+                'light-gray': '#F4F5F6',
+                'black': '#000',
             }
         }
     },

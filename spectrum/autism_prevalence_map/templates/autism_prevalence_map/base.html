@@ -1,31 +1,31 @@
 {% load static %}
 {% load svg %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
 
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <title>{% block title %}{% endblock %}</title>
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Global Autism Prevalence Map | The Transmitter">
-    <meta name="twitter:description" content="The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.">
-    <meta name="twitter:image" content="https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/PrevalenceMapSG.png">
-    <meta property="og:title" content="Global Autism Prevalence Map | The Transmitter" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://autismprevalence.thetransmitter.org/" />
-    <meta property="og:image" content="https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/PrevalenceMapSG.png" />
-    <meta property="og:description" content="The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing." />
+    <meta name='description' content=''>
+    <meta name='author' content=''>
+    <meta name='twitter:card' content='summary_large_image'>
+    <meta name='twitter:title' content='Global Autism Prevalence Map | The Transmitter'>
+    <meta name='twitter:description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.'>
+    <meta name='twitter:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/PrevalenceMapSG.png'>
+    <meta property='og:title' content='Global Autism Prevalence Map | The Transmitter' />
+    <meta property='og:type' content='website' />
+    <meta property='og:url' content='https://autismprevalence.thetransmitter.org/' />
+    <meta property='og:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/PrevalenceMapSG.png' />
+    <meta property='og:description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.' />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
 
     {% static '' as static_base %}
-    <link rel="stylesheet" type="text/css" href="{{ static_base }}{{ style_sheet }}">
+    <link rel='stylesheet' type='text/css' href='{{ static_base }}{{ style_sheet }}'>
 
     {% block css_block %} {% endblock %}
 
-    <link rel="icon" type="image/svg+xml" href="{% static 'autism_prevalence_map/img/favicon.svg' %}">
+    <link rel='icon' type='image/svg+xml' href="{% static 'autism_prevalence_map/img/favicon.svg' %}">
 
     <!-- Google Tag Manager -->
     <script>
@@ -54,54 +54,58 @@
 
 </head>
 
-<body class="font-sans px-4 xl:px-10">
+<body class='font-sans'>
 
-    <nav class="navbar flex justify-between items-center w-full mx-auto max-w-container py-5">
-        <div class="left flex items-center">
-            <a class="navbar-brand max-w-logo" href="https://www.thetransmitter.org/">
-                {% svg 'transmitter-logo' class='w-full h-auto' %}
-                <span class='sr-only'>The Transmitter</span>
-            </a>
-            <a class="navbar-brand centered-title" href="#">
-                <span class="navbar-brand-text text-md text-med-navy uppercase">Global Autism Prevalence</span>
-            </a>
-        </div>
-        <div class="right flex items-center">
-            <ul class="nav nav-tabs mr-4">
-                <li class="nav-item">
-                    <a id="map-link" class="nav-link {% if request.path == '/' %}active{% endif %} " href="{% url 'index' %}">Map</a>
-                </li>
-                <li class="nav-item">
-                    <a id="list-link" class="nav-link {% if request.path == '/list/' %}active{% endif %}" href="{% url 'list_view' %}">List</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">About</a>
-                </li>
-            </ul>
-            <form class="form-inline">
-                <div class="input-group">
-                    <input id="search" class="form-control spectrum-form" type="search" placeholder="Filter data by keyword" aria-label="Filter data by keyword">
-                    <div class="input-group-append">
-                        <span class="input-group-text spectrum-append"><i class="fas fa-search"></i></span>
+    <nav class='navbar px-4 xl:px-10 py-5 border-b border-black'>
+        <div class="flex justify-between items-center w-full mx-auto max-w-container">
+            <div class='left flex items-center space-x-4 xl:space-x-8'>
+                <a class='navbar-brand max-w-logo flex items-center' href='https://www.thetransmitter.org/'>
+                    {% svg 'transmitter-logo' %}
+                    <span class='sr-only'>The Transmitter</span>
+                </a>
+                <a class='navbar-brand centered-title flex items-center pt-2' href='#'>
+                    <span class='navbar-brand-text text-lg text-med-navy uppercase leading-none'>Global Autism Prevalence</span>
+                </a>
+            </div>
+            <div class='right flex items-center space-x-8'>
+                <ul class='nav nav-tabs flex items-center gap-4 xl:gap-8'>
+                    <li class='nav-item'>
+                        <a id='map-link' class='nav-link text-sm font-bold text-navy uppercase {% if request.path == "/" %}active{% endif %} ' href="{% url 'index' %}">Map</a>
+                    </li>
+                    <li class='nav-item'>
+                        <a id='list-link' class='nav-link text-sm font-bold text-navy uppercase {% if request.path == "/list/" %}active{% endif %}' href="{% url 'list_view' %}">List</a>
+                    </li>
+                    <li class='nav-item'>
+                        <a class='nav-link text-sm font-bold text-navy uppercase {% if request.path == "/about/" %}active{% endif %}' href="{% url 'about' %}">About</a>
+                    </li>
+                </ul>
+                <form class='form-inline flex items-center w-[15.5rem] border border-navy rounded-[0.875rem] pl-[0.375rem]'>
+                    <div class='input-group-prepend flex items-center justify-center'>
+                        {% svg 'icon-search' %}
                     </div>
-                </div>
-            </form>
+                    <div class='input-group  flex-[0.95_1_0%]'>
+                        <input id='search' class='form-control w-full py-[0.3rem] px-2 text-sm2 text-light-navy font-bold uppercase placeholder-light-navy rounded-[0.875rem] outline-none' type='search' placeholder='Filter data by keyword' aria-label='Filter data by keyword'>
+                    </div>
+                </form>
+            </div>
         </div>
     </nav>
 
-    <main class="mx-auto max-w-container">
-        {% block body_block %} {% endblock %}
+    <main class='px-4 xl:px-10'>
+        <div class="mx-auto max-w-container">
+            {% block body_block %} {% endblock %}
+        </div>
     </main>
 
     {% block modal_block %} {% endblock %}
 
     <!-- JS libraries
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    –––––––––––––––––––––––––––––––––––––––– -->
     <script src="{% static 'autism_prevalence_map/vendor/js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/popper.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/d3.v5.min.js' %}"></script>
-    <script src="{{ static_base }}{{ script }}"></script>
+    <script src='{{ static_base }}{{ script }}'></script>
 
     {% block js_block %} {% endblock %}
 </body>
