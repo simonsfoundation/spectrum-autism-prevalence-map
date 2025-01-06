@@ -7,13 +7,15 @@
 {% block body_block %}
 <!-- Main Container
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<div>    
+<div>
+    {% include "autism_prevalence_map/action_buttons.html" with template="map" %}
+
     <!-- Map div
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div id="map" class=""></div>
+    <div id="map" class="h-[calc(100vh_-_23.875rem)]"></div>
     <!-- Timeline div
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class="timeline-wrapper container-fluid">
+    <div class="timeline-wrapper container-fluid h-[11.75rem]">
         <div class="row">
             <div id="timeline-toggle" class='timeline-toggle col-xl-3'>
                 <h2>Timeline of studies</h2>
@@ -50,16 +52,16 @@
 
 <!-- Zoom buttons
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<!--
 <div id="zoom-buttons" class="zoom-buttons btn-group-vertical">
     <button type="button" id="zoom-in" class="btn zoom-button"><i class="fas fa-plus"></i></button>
     <button type="button" id="zoom-out" class="btn zoom-button"><i class="fas fa-minus"></i></button>
 </div>
-
-{% include "autism_prevalence_map/action_buttons.html" with template="map" %}
-
+-->
 
 <!-- More Information Card
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<!--
 <div id="more-information-card" class="more-information-card col-lg-3 col-md-5 col-sm-6">
     <button type="button" class="close card-close" id="card-close" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -97,10 +99,7 @@
 
     </div>
 </div>
-
-
-
-
+-->
 {% endblock %}
 
 {% block modal_block %} 

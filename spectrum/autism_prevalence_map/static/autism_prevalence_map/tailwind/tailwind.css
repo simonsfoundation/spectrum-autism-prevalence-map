@@ -2,6 +2,25 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+@layer utilities {
+  .tooltip {
+    @apply relative p-[0.4rem_0] text-[12px] opacity-100;
+  }
+  .tooltip .arrow {
+    @apply absolute block w-[0.8rem] h-[0.5rem] border-transparent;
+    top: -0.031rem;
+  }
+  .tooltip .arrow:before {
+    @apply absolute content-[''] bottom-0 z-[2] border-solid border-t-0 border-x-[0.4rem] border-b-[0.4rem] border-transparent border-b-light-gray;
+  }
+  .tooltip .arrow:after {
+    @apply absolute content-[''] bottom-[0.5px] left-[-0.5px] w-[13px] h-[6.5px] z-[1] border-solid border-t-0 border-x-[0.4rem] border-b-[0.4rem] border-transparent border-b-med-gray;
+  }
+  .tooltip-inner {
+    @apply p-[0.6875rem_1rem] bg-[#F4F5F6] border border-[#BFCBD1] rounded-[4px] font-serif tracking-[0.04em] text-[#585248] max-w-[200px] text-center;
+  }
+}
+
 @font-face {
     font-family: 'GothiaSans';
     src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Light.otf') format('opentype'),

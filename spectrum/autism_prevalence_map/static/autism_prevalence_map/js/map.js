@@ -4,7 +4,7 @@ $(document).ready(function (){
     app.map = {};
 
     // globaly scope some variables for the map
-    let studies, clicked, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius, nodes, simulation;
+    let studies, clicked, clickedCircleId, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius, nodes, simulation;
 
     // functions for adding a graticule to the map
     const graticuleOutline = d3.geoGraticule().outline();
@@ -70,7 +70,7 @@ $(document).ready(function (){
 
         // create container for countries
         countriesG = g.append("g")
-            .classed("countries", true);
+            .classed("countries fill-dark-tan", true);
 
         // create container for studies
         studiesG = g.append("g")
@@ -121,17 +121,17 @@ $(document).ready(function (){
     
             countriesG.append("path")
                 .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
-                .classed("country-borders", true)
+                .classed("country-borders stroke-tan", true)
                 .attr("d", path);
 
             graticuleG.append("path")
                 .datum(graticuleOutline)
-                .attr("class", "graticule")
+                .attr("class", "graticule fill-none stroke-dark-tan stroke-[0.5px]")
                 .attr("d", path);
 
             graticuleG.append("path")
                 .datum(graticule)
-                .attr("class", "graticule")
+                .attr("class", "graticule fill-none stroke-dark-tan stroke-[0.5px]")
                 .attr("d", path);  
                 
             app.map.initializeTimeline();
@@ -441,33 +441,33 @@ $(document).ready(function (){
                     if (d.properties.yearsstudied_number_max) {
                         maxdate = new Date(d.properties.yearsstudied_number_max);
                     } else {
-                        return 10;
+                        return 8;
                     }
-                    return (timelineX(maxdate) - timelineX(mindate)) + 10;
+                    return (timelineX(maxdate) - timelineX(mindate)) + 8;
 
                 } else {
-                    return 10;
+                    return 8;
                 }   
             })
             .attr("height", function(d){
                 if(timeline_type == "studied") {
-                    return 5
+                    return 4
                 } else {
-                    return 10
+                    return 8
                 }
             })
             .attr("rx", function(d){
                 if(timeline_type == "studied") {
-                    return 2.5
+                    return 2
                 } else {
-                    return 5
+                    return 4
                 }
             })
             .attr("ry", function(d){
                 if(timeline_type == "studied") {
-                    return 2.5
+                    return 2
                 } else {
-                    return 5
+                    return 4
                 }
             });
 
@@ -539,39 +539,39 @@ $(document).ready(function (){
                     if (d.properties.yearsstudied_number_max) {
                         maxdate = new Date(d.properties.yearsstudied_number_max);
                     } else {
-                        return 10;
+                        return 8;
                     }
-                    return (timelineX(maxdate) - timelineX(mindate)) + 10;
+                    return (timelineX(maxdate) - timelineX(mindate)) + 8;
 
                 } else {
-                    return 10;
+                    return 8;
                 }   
             })
             .attr("height", function(d){
                 if(timeline_type == "studied") {
-                    return 5
+                    return 4
                 } else {
-                    return 10
+                    return 8
                 }
             })
             .attr("rx", function(d){
                 if(timeline_type == "studied") {
-                    return 2.5
+                    return 2
                 } else {
-                    return 5
+                    return 4
                 }
             })
             .attr("ry", function(d){
                 if(timeline_type == "studied") {
-                    return 2.5
+                    return 2
                 } else {
-                    return 5
+                    return 4
                 }
             })
             .style("fill", pointColor)
             .style("fill-opacity", "1")
-            .style("stroke", "#fff")
-            .style("stroke-width", "0")
+            .style("stroke", "#910E1C")
+            .style("stroke-width", "0.2")
             .classed("timeline-circles", true)
             .attr("id", function(d){
                 return "timeline_dot_" + d.properties.pk
@@ -579,7 +579,7 @@ $(document).ready(function (){
             .attr("data-placement", "top")
             .attr("data-html", true)
             .attr("title", function(d, i){
-                const authors = d.properties.authors.replace("et al.", "<em>et al.</em>");
+                const authors = d.properties.authors;
                 return authors + ' ' + d.properties.yearpublished
             })
             .on("click", viewMoreInfo)
@@ -587,15 +587,27 @@ $(document).ready(function (){
                 const sel = d3.select(this);
                 sel.moveToFront();
                 showTimelineTooltip(d);
-                d3.select(this).style("cursor", "pointer");
+                d3.select(this)
+                    .style("fill", "#000")
+                    .style("stroke", "#000")
+                    .style("stroke-width", "0.2")
+                    .style("cursor", "pointer");
                 showDotOnMap(d);
+                $('#map_dot_' + d.properties.pk).tooltip('show');
             })
-            .on("mouseout", function() {
-                d3.select(this).style("cursor", "default");
+            .on("mouseout", function(d) {
+                if (!clicked || d.properties.pk !== clickedCircleId) {
+                    d3.select(this)
+                        .style("fill", pointColor)
+                        .style("stroke", "#910E1C")
+                        .style("stroke-width", "0.2")
+                        .style("cursor", "default");
+                }
                 hideTimelineTooltip();
                 if (!clicked) {
                     hideDotsOnMap();
                 }
+                $('#map_dot_' + d.properties.pk).tooltip('hide');
             });
 
         timelineSelection.exit()
@@ -637,29 +649,54 @@ $(document).ready(function (){
             .append("circle")
             .style("fill", pointColor)
             .style("fill-opacity", "1")
-            .style("stroke", "#fff")
-            .style("stroke-width", "0")
+            .style("stroke", "#910E1C")
+            .style("stroke-width", "0.2")
             .classed("map-circles", true)
             .attr("id", function(d){
                 return "map_dot_" + d.properties.pk
             })
+            .attr("title", function(d){
+                return d.properties.authors + ' ' + d.properties.yearpublished 
+            })
+            .attr("data-toggle", "tooltip")
+            .attr("data-placement", "bottom")
+            .attr("data-html", "false")
             .on("click", viewMoreInfo)
             .on("mouseover", function(d) {
                 const sel = d3.select(this);
                 sel.moveToFront();
                 showTimelineTooltip(d);
-                d3.select(this).style("cursor", "pointer");
+                d3.select(this)
+                    .style("fill", "#000")
+                    .style("stroke", "#000")
+                    .style("stroke-width", "0.2")
+                    .style("cursor", "pointer");
                 showDotOnMap(d);
+                $('#map_dot_' + d.properties.pk).tooltip('show');
             })
-            .on("mouseout", function() {
-                d3.select(this).style("cursor", "default");
+            .on("mouseout", function(d) {
                 hideTimelineTooltip();
                 if (!clicked) {
                     hideDotsOnMap();
                 }
+                if (!clicked || d.properties.pk !== clickedCircleId) {
+                    d3.select(this)
+                        .style("fill", pointColor)
+                        .style("stroke", "#910E1C")
+                        .style("stroke-width", "0.2")
+                        .style("cursor", "default");
+                }
+                $('#map_dot_' + d.properties.pk).tooltip('hide');
             });
             
         mapSelection.exit().remove();
+
+        setTimeout(function() {
+            $('.map-circles, .timeline-circles').tooltip({
+                container: 'body',
+                offset: '-30, 1'
+            });
+        }, 300);
 
         simulation = forceSimulation(nodes).on("tick", ticked);
 
@@ -684,9 +721,9 @@ $(document).ready(function (){
     // point color function
     function pointColor(feature) {
         if (feature.properties.recommended == "yes" || feature.properties.recommended == "Yes") {
-            return "#007095";
+            return "#D14D57";
         } else {
-            return "#03C0FF";
+            return "#D14D57";
         }
     }
 
@@ -701,7 +738,7 @@ $(document).ready(function (){
     function scalePins(k) {
 
         // calculate new radius
-        new_radius = 5/k;
+        new_radius = 4/k;
 
         // select all pins and apply new radius in transition with zoom
         d3.selectAll('.map-circles').transition()
@@ -741,37 +778,50 @@ $(document).ready(function (){
     function showDotOnMap(d) {
         // hide any dots showing up on map
         d3.selectAll(".map-circles")
-            .style("stroke-width", "0");
+            .style("fill", pointColor)
+            .style("stroke", "#910E1C")
+            .style("stroke-width", "0.2");
             
         // show clicked dot on map
         d3.select('#map_dot_' + d.properties.pk)
-            .style("stroke-width", new_radius/2.5);        
+            .style("fill", '#000')
+            .style("stroke", "#000")
+            .style("stroke-width", "0.2");
     }
 
     // remove highlighting from dots on map
     function hideDotsOnMap() {
         d3.selectAll(".map-circles")
-            .style("stroke-width", "0");
+            .style("fill", pointColor)
+            .style("stroke", "#910E1C")
+            .style("stroke-width", "0.2");
     }
 
     // show tooltip on timeline dot
     function showTimelineTooltip(d) {
         // hide any tooltips that are already showing up on the timeline
-        d3.selectAll(".timeline-circles")
-            .style("stroke-width", "0");
+        d3.selectAll("rect.timeline-circles")
+            .style("fill", pointColor)
+            .style("stroke", "#910E1C")
+            .style("stroke-width", "0.2");
         $(".tooltip").tooltip("hide");
 
         // now show the one hovered or clicked on
         d3.select('#timeline_dot_' + d.properties.pk)
-            .style("stroke-width", "2");
+            .style("fill", "#000")
+            .style("stroke", "#000")
+            .style("stroke-width", "0.2");
+
         $('#timeline_dot_' + d.properties.pk).tooltip('show');
     }
 
     // remove all tooltips from timeline
     function hideTimelineTooltip() {
         if (!clicked) {
-            d3.selectAll(".timeline-circles")
-                .style("stroke-width", "0");
+            d3.selectAll("rect.timeline-circles")
+                .style("fill", pointColor)
+                .style("stroke", "#910E1C")
+                .style("stroke-width", "0.2");
             $(".tooltip").tooltip("hide");
         }
     }
@@ -784,11 +834,14 @@ $(document).ready(function (){
         // show clicked dot
         showDotOnMap(d);
 
+        // store clicked ID
+        clickedCircleId = d.properties.pk
+
         // show tooltip on timeline
         showTimelineTooltip(d);
 
         // add data to card
-        const authors = d.properties.authors.replace("et al.", "<em>et al.</em>");
+        const authors = d.properties.authors;
         const card_title = authors + ' ' + d.properties.yearpublished;
         const area = d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
         const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
@@ -843,6 +896,7 @@ $(document).ready(function (){
         $("#more-information-card").css("display", "none");
         // set clicked flag variable to false
         clicked = false;
+        clickedCircleId = null;
         hideDotsOnMap();
         hideTimelineTooltip();
     }
