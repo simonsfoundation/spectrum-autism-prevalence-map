@@ -56,6 +56,7 @@ module.exports = {
                 'dark-gray': '#2D2D2D',
                 'light-gray': '#F4F5F6',
                 'black': '#000',
+                'white': '#FFF'
             }
         }
     },
