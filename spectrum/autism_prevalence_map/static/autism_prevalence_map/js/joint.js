@@ -125,39 +125,13 @@ $(document).ready(function (){
         app.runUpdate();
     });
 
-    /*
-    $("#prevalence").on("change", function(e) {
-        $("#more-information-card").css("display", "none");
-        // update filters
-        const prevalence = $(this).val();
-        switch (prevalence) {
-            case "low":
-                min_prevalenceper10000 = "0";
-                max_prevalenceper10000 = "49.99";
-                break;
-            case "med":
-                min_prevalenceper10000 = "50";
-                max_prevalenceper10000 = "100";
-                break;
-            case "high":
-                min_prevalenceper10000 = "100.01";
-                max_prevalenceper10000 = "";
-                break;
-            default:
-                min_prevalenceper10000 = "";
-                max_prevalenceper10000 = "";
-        }
-        app.runUpdate();
-    });
-    */
-
     // handle the prevalence slider
-    let initialMin = min_prevalenceper10000 ? parseFloat(min_prevalenceper10000) : 0;
+    let initialMin = min_prevalenceper10000 ? parseFloat(min_prevalenceper10000) : 50;
     let initialMax = max_prevalenceper10000 ? parseFloat(max_prevalenceper10000) : 150;
 
     $("#prevalence-slider").slider({
         range: true,
-        min: 0,
+        min: 50,
         max: 150,
         step: 1,
         values: [initialMin, initialMax],
@@ -177,7 +151,7 @@ $(document).ready(function (){
 
     $("#prevalence-min").on("change", function() {
         let newMin = parseFloat($(this).val());
-        if (isNaN(newMin)) newMin = 0;
+        if (isNaN(newMin)) newMin = 50;
         
         // Get current slider max
         let currentMax = $("#prevalence-slider").slider("values", 1);
@@ -287,8 +261,8 @@ $(document).ready(function (){
         $("#min_year").val($("#min_year option:first").val());
         $("#max_year").val($("#max_year option:first").val());
         $("#studytype").val('');
-        $("#prevalence-min").val(0);
-        $("#prevalence-slider").slider("values", 0, 0);
+        $("#prevalence-min").val(50);
+        $("#prevalence-slider").slider("values", 0, 50);
         $("#prevalence-max").val(150);
         $("#prevalence-slider").slider("values", 1, 150);
         $("#samplesize").val('all');
@@ -371,20 +345,6 @@ $(document).ready(function (){
         document.execCommand('copy');
         document.body.removeChild(dummy);
     });
-
-    $("#filters-link").click(function(){
-        if ($('#filter-list').hasClass("invisible")) {
-            $('#filter-list').removeClass("invisible");
-            $('#filter-list').addClass("visible");
-            $(this).tooltip('hide').prop('title', 'Close fliter drawer').attr('data-original-title', 'Close fliter drawer').tooltip('show');
-
-        } else {
-            $('#filter-list').addClass("invisible");
-            $('#filter-list').removeClass("visible");
-            $(this).tooltip('hide').prop('title', 'Open fliter drawer').attr('data-original-title', 'Open fliter drawer').tooltip('show');
-        }
-    });
-
 
     // listen for window resize
     let resize_id;

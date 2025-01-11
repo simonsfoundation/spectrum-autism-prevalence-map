@@ -1,86 +1,79 @@
-<!-- Keyword search and dropdown menu form
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<div id="filter-list">
-    <form class="flex gap-2">
-        <div class="relative border border-med-navy rounded-sm bg-light-gray">
-            <label class="absolute top-1.75 left-3.75 text-xs text-med-navy uppercase" for="studytype">Type of study</label>
-            <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="studytype">
-                <option value="">All</option>
-            </select>
-        </div>
-        <div class="relative border border-med-navy rounded-sm bg-light-gray">
-            <label class="absolute top-0.5 left-14.5 text-xs text-med-navy uppercase" for="prevalence-slider">Prevalence (per 10,000)</label>
+<div class="flex justify-between">
+    <div id="filter-list" class="max-w-207.5">
+        <form class="flex flex-wrap gap-2">
+            <div class="relative border border-med-navy rounded-sm bg-light-gray">
+                <label class="absolute top-1.75 left-3.75 text-xs text-med-navy uppercase" for="studytype">Type of study</label>
+                <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="studytype">
+                    <option value="">All</option>
+                </select>
+            </div>
+            <div class="relative border border-med-navy rounded-sm bg-light-gray">
+                <label class="absolute top-0.5 left-14.5 text-xs text-med-navy uppercase" for="prevalence-slider">Prevalence (per 10,000)</label>
 
-            <div class="flex">
-                <div class="relative">
-                    <label class="absolute top-1.75 left-3 text-xs text-med-navy uppercase" for="prevalence-min">Min</label>
-                    <input type="text" id="prevalence-min" class="w-10.5 pt-5.2 pb-1.25 bg-light-navy-2 rounded-sm-l text-1xs text-center text-med-navy">
-                </div>
-                <div class="relative w-63.75 pt-4.5 pb-4.5 pl-4 pr-4 border-l-0.5 border-r-0.5 border-med-navy">
-                    <div id="prevalence-slider"></div>
-                    <span class="absolute bottom-0.5 text-1xs text-med-navy uppercase">50</span>
-                    <span class="absolute bottom-0.5 right-3.75 text-1xs text-med-navy uppercase">150</span>
-                </div>
-                <div class="relative">
-                    <label class="absolute top-1.75 left-2.75 text-xs text-med-navy uppercase" for="prevalence-max">Max</label>
-                    <input type="text" id="prevalence-max" class="w-10.5 pt-5.2 pb-1.25 bg-light-navy-2 rounded-sm-r text-1xs text-center text-med-navy">
+                <div class="flex">
+                    <div class="relative">
+                        <label class="absolute top-1.75 left-3 text-xs text-med-navy uppercase" for="prevalence-min">Min</label>
+                        <input type="text" id="prevalence-min" class="w-10.5 pt-5.2 pb-1.25 bg-light-navy-2 rounded-sm-l text-1xs text-center text-med-navy">
+                    </div>
+                    <div class="relative w-63.5 pt-4.5 pb-4.5 pl-4 pr-4 border-l-0.5 border-r-0.5 border-med-navy">
+                        <div id="prevalence-slider"></div>
+                        <span class="absolute bottom-0.5 text-1xs text-med-navy uppercase">50</span>
+                        <span class="absolute bottom-0.5 right-3.75 text-1xs text-med-navy uppercase">150</span>
+                    </div>
+                    <div class="relative">
+                        <label class="absolute top-1.75 left-2.75 text-xs text-med-navy uppercase" for="prevalence-max">Max</label>
+                        <input type="text" id="prevalence-max" class="w-10.5 pt-5.2 pb-1.25 bg-light-navy-2 rounded-sm-r text-1xs text-center text-med-navy">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="relative border border-med-navy rounded-sm bg-light-gray">
-            <label class="absolute top-1.75 left-3.75 text-xs text-med-navy uppercase" for="samplesize">Sample size</label>
-            <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="samplesize">
-                <option value="all">All</option>
-                <option value="low">&lt;10,000</option>
-                <option value="med">10,000-100,000</option>
-                <option value="high">&gt;100,000</option>
-            </select>
-        </div>
-        <div class="relative border border-med-navy rounded-sm bg-light-gray">
-            <label class="absolute top-1.75 left-3.75 text-xs text-med-navy uppercase" for="continent">Continent</label>
-            <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="continent">
-                <option value="all">All</option>
-                <option value="Africa">Africa</option>
-                <option value="Asia">Asia</option>
-                <option value="Europe">Europe</option>
-                <option value="North America">North America</option>
-                <option value="South America">South America</option>
-                <option value="Oceania">Oceania</option>
-            </select>
-        </div>
-        <div class="relative border border-med-navy rounded-sm bg-light-gray">
-            <label class="absolute top-1.75 left-3.75 text-xs text-med-navy uppercase" for="country">Country</label>
-            <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="country">
-                <option value="all">All</option>
-            </select>
-        </div>
-        
-        {% if template == "list" %}
-        <div class="relative border border-med-navy rounded-sm bg-light-gray">
-            <label class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" for="min_year" id="earliest-label"></label>
-            <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="min_year">
-                <option value="">Any</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" for="max_year" id="latest-label"></label>
-            <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="max_year">
-                <option value="">Any</option>
-            </select>
-        </div>
-        {% endif %}
+            <div class="relative border border-med-navy rounded-sm bg-light-gray">
+                <label class="absolute top-1.75 left-3.75 text-xs text-med-navy uppercase" for="samplesize">Sample size</label>
+                <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="samplesize">
+                    <option value="all">All</option>
+                    <option value="low">&lt;10,000</option>
+                    <option value="med">10,000-100,000</option>
+                    <option value="high">&gt;100,000</option>
+                </select>
+            </div>
+            <div class="relative border border-med-navy rounded-sm bg-light-gray">
+                <label class="absolute top-1.75 left-3.75 text-xs text-med-navy uppercase" for="continent">Continent</label>
+                <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="continent">
+                    <option value="all">All</option>
+                    <option value="Africa">Africa</option>
+                    <option value="Asia">Asia</option>
+                    <option value="Europe">Europe</option>
+                    <option value="North America">North America</option>
+                    <option value="South America">South America</option>
+                    <option value="Oceania">Oceania</option>
+                </select>
+            </div>
+            <div class="relative border border-med-navy rounded-sm bg-light-gray">
+                <label class="absolute top-1.75 left-3.75 text-xs text-med-navy uppercase" for="country">Country</label>
+                <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="country">
+                    <option value="all">All</option>
+                </select>
+            </div>
+            
+            {% if template == "list" %}
+            <div class="relative border border-med-navy rounded-sm bg-light-gray">
+                <label class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" for="min_year" id="earliest-label"></label>
+                <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="min_year">
+                    <option value="">Any</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" for="max_year" id="latest-label"></label>
+                <select class="appearance-none pt-5.2 pr-8.5 pb-1.25 pl-3.75 rounded-sm bg-inherit text-2xs uppercase text-med-navy bg-select-arrow bg-no-repeat bg-right-4 bg-arrow-sm" id="max_year">
+                    <option value="">Any</option>
+                </select>
+            </div>
+            {% endif %}
 
-        <button type="button" id="clear-filters" class="">Clear</button>
-    </form>
-</div>
+            <button type="button" id="clear-filters" class="inline-block pt-2.5 pb-2.5 pl-5.5 pr-5.5 bg-med-navy rounded-sm text-sm font-bold text-white uppercase">Clear</button>
+        </form>
+    </div>
 
-<!-- Filter, download, help, share buttons
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<!--
-<div id="action-buttons" class="action-buttons btn-group-vertical">
-    <button type="button" id="filters-link" class="btn action-button" data-toggle="tooltip" data-placement="top" title="Close fliter drawer"><i class="fas fa-ellipsis-v"></i></button>
-    <a role="button" id="download-link" class="btn action-button" href="#" data-toggle="tooltip" data-placement="top" title="Download data"><i class="fas fa-download"></i></a>
-    <a role="button" id="help-link" class="btn action-button" href="/about/#how-to-use" data-toggle="tooltip" data-placement="top" title="Help"><i class="fas fa-question-circle"></i></a>
-    <button type="button" id="copy-link" class="btn action-button" data-container="body" data-toggle="popover" data-placement="left" data-content="Link copied to the clipboard."><i class="fas fa-link"></i></button>
+    <div>
+        <a role="button" id="download-link" class="inline-block pt-2.5 pb-2.5 pl-5.5 pr-5.5 bg-med-navy rounded-sm text-sm font-bold text-white uppercase" href="#" data-toggle="tooltip" data-placement="top" title="Download data">Download Data</a>
+    </div>
 </div>
--->

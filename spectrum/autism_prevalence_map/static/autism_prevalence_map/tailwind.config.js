@@ -19,6 +19,10 @@ module.exports = {
                 lineHeight: '0.875rem',
                 letterSpacing: '0.16em',
             }],
+            'sm': ['0.875rem', { // 14px
+                lineHeight: '1.375rem',
+                letterSpacing: '0.16em',
+            }],
         },
         extend: {
             fontFamily: {
@@ -53,10 +57,12 @@ module.exports = {
                 '3.75': '0.938rem', // 15px
                 '4.5': '1.125rem', // 18px
                 '5.2': '1.313rem', // 21px
+                '5.5': '1.375rem', // 22px
                 '8.5': '2.125rem', // 34px
                 '10.5': '2.625rem', // 42px
                 '14.5': '3.625rem', // 58px
-                '63.75': '15.938rem', // 255px
+                '63.5': '15.875rem', // 254px
+                '207.5': '51.875rem', // 830px
             },
             colors: {
                 'red': '#910E1C',
