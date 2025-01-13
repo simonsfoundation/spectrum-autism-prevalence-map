@@ -2,7 +2,9 @@
 
 {% load static %} 
 
-{% block title %}Spectrum | Global Autism Prevalence Map{% endblock %} 
+{% block title %}Spectrum | Global Autism Prevalence Map{% endblock %}
+
+{% block page_name %}map{% endblock %}
 
 {% block body_block %}
 <!-- Main Container
@@ -106,15 +108,6 @@
 {% endblock %} 
 
 {% block js_block %}
-<!-- Mapping JS libraries
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<script src="{% static 'autism_prevalence_map/vendor/js/topojson.js' %}"></script>
-<script src="{% static 'autism_prevalence_map/vendor/js/d3-array.v1.min.js' %}"></script>
-<script src="{% static 'autism_prevalence_map/vendor/js/d3-geo.v1.min.js' %}"></script>
-<script src="{% static 'autism_prevalence_map/vendor/js/d3-geo-projection.v2.min.js' %}"></script>
-
-<!-- Custom JS
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <script>
     let min_yearpublished = "{{ min_yearpublished }}";
     let max_yearpublished = "{{ max_yearpublished }}";
@@ -133,6 +126,4 @@
     let education = "{{ education }}";
     const world_atlas = "{% static 'autism_prevalence_map/vendor/data/110m.json' %}";
 </script>
-<script src="{% static 'autism_prevalence_map/js/joint.js' %}"></script>
-<script src="{% static 'autism_prevalence_map/js/map.js' %}"></script>
 {% endblock %}
