@@ -7,10 +7,6 @@ module.exports = {
     ],
     theme: {
         fontSize: {
-            'lg': ['1.438rem', { // 23px
-                lineHeight: '100%',
-                letterSpacing: '0.06em',
-            }],
             'sm': ['0.75rem', { // 12px
                 lineHeight: '120%',
                 letterSpacing: '0.16em',
@@ -18,6 +14,10 @@ module.exports = {
             'sm2': ['0.688rem', { // 11px
                 lineHeight: '120%',
                 letterSpacing: '0.16em',
+            }],
+            'md1': ['1.438rem', { // 23px
+                lineHeight: '100%',
+                letterSpacing: '0.06em',
             }]
         },
         extend: {
@@ -27,6 +27,7 @@ module.exports = {
                 'serif-text': ['GothiaSerifText', 'serif'],
             },
             borderRadius: {
+                '3.5': '0.875rem', // 14px
             },
             letterSpacing: {
             },
@@ -37,27 +38,36 @@ module.exports = {
             screens: {
             },
             spacing: {
-                '10': '2.5rem',
-                '5': '1.25rem',
-                '4': '1rem',
+                '62' : '15.5rem', // 248px
+                '17.5' : '4.375rem', // 70px
+                '10': '2.5rem', // 40px
+                '4.7': '1.188rem', // 19px
+                '4.5': '1.125rem', // 18px
+                '4': '1rem', // 16px
+                '3.5': '0.875rem', // 14px
+                '1.5': '0.375rem', // 6px
+                '1.2': '0.3rem', // 4.8px
             },
             maxWidth: {
-                'container': '91.25rem',
-                'logo': '13.625rem'
+                'container': '103rem',
+                'logo': '13.55rem'
             },
             colors: {
                 'red': '#910E1C',
                 'blue': '#0B6BC3',
                 'navy': '#003049',
                 'med-navy': '#2E5367',
-                'light-navy': '#6c8291',
+                'light-navy-3': '#6c8291',
                 'light-navy-2': '#DFE8EC',
                 'tan': '#FEF9EE',
                 'dark-gray': '#2D2D2D',
                 'light-gray': '#F4F5F6',
                 'black': '#000',
                 'white': '#FFF'
-            }
+            },
+            flex: {
+                'search': '0.95 1 0%'
+            },
         }
     },
     plugins: [

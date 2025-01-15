@@ -54,44 +54,44 @@
 
 </head>
 
-<body class='font-sans pt-[4.5rem]'>
+<body class='font-sans pt-17.5'>
 
-    <nav class='navbar fixed top-0 w-full px-4 xl:px-10 py-5 border-b border-black bg-white'>
+    <nav class='fixed top-0 w-full px-10 py-4.7 border-b border-black bg-white'>
         <div class="flex justify-between items-center w-full mx-auto max-w-container">
-            <div class='left flex items-center space-x-4 xl:space-x-8'>
-                <a class='navbar-brand max-w-logo flex items-center' href='https://www.thetransmitter.org/'>
+            <div class='flex items-center space-x-8'>
+                <a class='max-w-logo flex items-center' href='https://www.thetransmitter.org/'>
                     {% svg 'transmitter-logo' %}
                     <span class='sr-only'>The Transmitter</span>
                 </a>
-                <a class='navbar-brand centered-title flex items-center pt-2' href='#'>
-                    <span class='navbar-brand-text text-lg text-med-navy uppercase leading-none'>Global Autism Prevalence</span>
+                <a class='flex items-center pt-2' href='#'>
+                    <span class='text-md1 text-med-navy uppercase leading-none'>Global Autism Prevalence</span>
                 </a>
             </div>
-            <div class='right flex items-center space-x-8'>
-                <ul class='nav nav-tabs flex items-center gap-4 xl:gap-8'>
-                    <li class='nav-item'>
-                        <a id='map-link' class='nav-link text-sm font-bold text-navy uppercase {% if request.path == "/" %}active{% endif %} ' href="{% url 'index' %}">Map</a>
+            <div class='flex items-center space-x-8'>
+                <ul class='flex items-center gap-8'>
+                    <li>
+                        <a id='map-link' class='text-sm font-bold text-navy uppercase {% if request.path == "/" %}active{% endif %} ' href="{% url 'index' %}">Map</a>
                     </li>
-                    <li class='nav-item'>
-                        <a id='list-link' class='nav-link text-sm font-bold text-navy uppercase {% if request.path == "/list/" %}active{% endif %}' href="{% url 'list_view' %}">List</a>
+                    <li>
+                        <a id='list-link' class='text-sm font-bold text-navy uppercase {% if request.path == "/list/" %}active{% endif %}' href="{% url 'list_view' %}">List</a>
                     </li>
-                    <li class='nav-item'>
-                        <a class='nav-link text-sm font-bold text-navy uppercase {% if request.path == "/about/" %}active{% endif %}' href="{% url 'about' %}">About</a>
+                    <li>
+                        <a class='text-sm font-bold text-navy uppercase {% if request.path == "/about/" %}active{% endif %}' href="{% url 'about' %}">About</a>
                     </li>
                 </ul>
-                <form class='form-inline flex items-center w-[15.5rem] border border-navy rounded-[0.875rem] pl-[0.375rem]'>
-                    <div class='input-group-prepend flex items-center justify-center'>
+                <form class='flex items-center w-62 border border-navy rounded-3.5 pl-1.5'>
+                    <div class='flex items-center justify-center'>
                         {% svg 'icon-search' %}
                     </div>
-                    <div class='input-group  flex-[0.95_1_0%]'>
-                        <input id='search' class='form-control w-full py-[0.3rem] px-2 text-sm2 text-light-navy font-bold uppercase placeholder-light-navy rounded-[0.875rem] outline-none' type='search' placeholder='Filter data by keyword' aria-label='Filter data by keyword'>
+                    <div class='flex-search'>
+                        <input id='search' class='w-full py-1.2 px-2 text-sm2 text-light-navy-3 font-bold uppercase placeholder-light-navy-3 rounded-3.5 outline-none' type='search' placeholder='Filter data by keyword' aria-label='Filter data by keyword'>
                     </div>
                 </form>
             </div>
         </div>
     </nav>
 
-    <main class='px-4 xl:px-10'>
+    <main class='px-10'>
         <div class="mx-auto max-w-container">
             {% block body_block %} {% endblock %}
         </div>
