@@ -1,7 +1,7 @@
-import { ttInitJoint } from '../js/joint.js';
-import { ttInitMap } from '../js/map.js';
-import { ttInitList } from '../js/list.js';
-import { ttInitAbout } from '../js/about.js';
+import { ttInitJoint } from './joint.ts';
+import { ttInitMap } from './map.ts';
+import { ttInitList } from './list.ts';
+import { ttInitAbout } from './about.ts';
 
 import { ttInitTopo } from '../vendor/js/topojson.js';
 import { ttInitArray } from '../vendor/js/d3-array.v1.min.js';
