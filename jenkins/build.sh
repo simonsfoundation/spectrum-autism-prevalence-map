@@ -47,7 +47,10 @@ if [[ -z "${OUTPUT_ENV}" ]]; then
   exit 1
 fi
 
-npm run dev
+# Build CSS
+cd "spectrum/autism_prevalence_map/static/autism_prevalence_map/"
+npm run build
+cd "${OLDPWD}"
 
 echo "Starting deploy to $OUTPUT_ENV ..."
 eb deploy "${OUTPUT_ENV}" --timeout 30
