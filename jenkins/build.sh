@@ -49,6 +49,7 @@ fi
 
 # Build CSS
 cd "spectrum/autism_prevalence_map/static/autism_prevalence_map/"
+npm install
 npm run build
 cd "${OLDPWD}"
 
