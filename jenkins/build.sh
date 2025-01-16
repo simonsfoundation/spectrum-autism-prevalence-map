@@ -10,11 +10,11 @@ echo "Creating elasticbeanstalk config.yml ..."
 cd "${WORKSPACE}" && mkdir -p ".elasticbeanstalk"
 cat << EOF > .elasticbeanstalk/config.yml
 branch-defaults:
-  master:
+  main:
     environment: prevalencemap-prod
   develop:
     environment: prevalencemap-staging
-  deploypy3:
+  testing:
     environment: prevalencemap-staging
 environment-defaults:
   prevalencemap-staging:
@@ -46,6 +46,8 @@ fi
 if [[ -z "${OUTPUT_ENV}" ]]; then
   exit 1
 fi
+
+npm run dev
 
 echo "Starting deploy to $OUTPUT_ENV ..."
 eb deploy "${OUTPUT_ENV}" --timeout 30
