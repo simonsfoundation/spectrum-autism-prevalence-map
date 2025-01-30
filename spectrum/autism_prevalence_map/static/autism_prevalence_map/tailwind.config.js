@@ -62,17 +62,13 @@ module.exports = {
                 'tan': '#FEF9EE',
                 'dark-tan': '#cac8c1',
                 'dark-gray': '#2D2D2D',
-<<<<<<< HEAD
                 'med-gray': '#CCC',
-                'light-gray': '#F4F5F6 ',
-=======
                 'light-gray': '#F4F5F6',
                 'black': '#000',
                 'white': '#FFF'
             },
             flex: {
                 'search': '0.95 1 0%'
->>>>>>> origin/mike/TTWWW-468
             },
         }
     },
