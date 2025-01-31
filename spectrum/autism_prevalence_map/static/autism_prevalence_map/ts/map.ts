@@ -619,7 +619,6 @@ export function ttInitMap() {
                 .remove();
 
             app.map.updateMapPoints();
-      
         }
 
         app.map.clearTimelineBrush = function() {
@@ -646,13 +645,12 @@ export function ttInitMap() {
             const mapSelection = studiesG.selectAll("circle.map-circles")
                 .data(nodes, function(d){ return d.properties.pk });
 
-
             mapSelection.enter()
                 .append("circle")
                 .style("fill", pointColor)
                 .style("fill-opacity", "1")
                 .style("stroke", "#910E1C")
-                .style("stroke-width", "0.2")
+                .style("stroke-width", "0.5")
                 .classed("map-circles", true)
                 .attr("id", function(d){
                     return "map_dot_" + d.properties.pk
@@ -660,35 +658,34 @@ export function ttInitMap() {
                 .attr("title", function(d){
                     return d.properties.authors + ' ' + d.properties.yearpublished 
                 })
-                .attr("data-toggle", "tooltip")
                 .attr("data-placement", "bottom")
                 .attr("data-html", "false")
                 .on("click", viewMoreInfo)
                 .on("mouseover", function(d) {
+                    // dont apply a hover color or do anything else if this is the active clicked item
+                    if (clicked && d.properties.pk === clickedCircleId) {
+                        return;
+                    }
                     const sel = d3.select(this);
                     sel.moveToFront();
                     showTimelineTooltip(d);
                     d3.select(this)
-                        .style("fill", "#000")
-                        .style("stroke", "#000")
-                        .style("stroke-width", "0.2")
+                        .style("fill", "#0B6BC3")
+                        .style("stroke", "#FFF")
+                        .style("stroke-width", "0.5")
                         .style("cursor", "pointer");
-                    showDotOnMap(d);
                     $('#map_dot_' + d.properties.pk).tooltip('show');
                 })
                 .on("mouseout", function(d) {
                     hideTimelineTooltip();
-                    if (!clicked) {
-                        hideDotsOnMap();
-                    }
                     if (!clicked || d.properties.pk !== clickedCircleId) {
                         d3.select(this)
                             .style("fill", pointColor)
                             .style("stroke", "#910E1C")
-                            .style("stroke-width", "0.2")
+                            .style("stroke-width", "0.5")
                             .style("cursor", "default");
+                        $('#map_dot_' + d.properties.pk).tooltip('hide');
                     }
-                    $('#map_dot_' + d.properties.pk).tooltip('hide');
                 });
                 
             mapSelection.exit().remove();
@@ -696,6 +693,7 @@ export function ttInitMap() {
             setTimeout(function() {
                 $('.map-circles, .timeline-circles').tooltip({
                     container: 'body',
+                    trigger: 'manual',
                     offset: '-30, 1'
                 });
             }, 300);
@@ -782,13 +780,13 @@ export function ttInitMap() {
             d3.selectAll(".map-circles")
                 .style("fill", pointColor)
                 .style("stroke", "#910E1C")
-                .style("stroke-width", "0.2");
+                .style("stroke-width", "0.5");
                 
             // show clicked dot on map
             d3.select('#map_dot_' + d.properties.pk)
                 .style("fill", '#000')
                 .style("stroke", "#000")
-                .style("stroke-width", "0.2");
+                .style("stroke-width", "0.5");
         }
 
         // remove highlighting from dots on map
@@ -796,23 +794,24 @@ export function ttInitMap() {
             d3.selectAll(".map-circles")
                 .style("fill", pointColor)
                 .style("stroke", "#910E1C")
-                .style("stroke-width", "0.2");
+                .style("stroke-width", "0.5");
         }
 
         // show tooltip on timeline dot
         function showTimelineTooltip(d) {
+            $('[id^="timeline_dot_"]').tooltip('hide');
+
             // hide any tooltips that are already showing up on the timeline
             d3.selectAll("rect.timeline-circles")
                 .style("fill", pointColor)
                 .style("stroke", "#910E1C")
-                .style("stroke-width", "0.2");
-            $(".tooltip").tooltip("hide");
+                .style("stroke-width", "0.5");
 
             // now show the one hovered or clicked on
             d3.select('#timeline_dot_' + d.properties.pk)
                 .style("fill", "#000")
                 .style("stroke", "#000")
-                .style("stroke-width", "0.2");
+                .style("stroke-width", "0.5");
 
             $('#timeline_dot_' + d.properties.pk).tooltip('show');
         }
@@ -823,7 +822,7 @@ export function ttInitMap() {
                 d3.selectAll("rect.timeline-circles")
                     .style("fill", pointColor)
                     .style("stroke", "#910E1C")
-                    .style("stroke-width", "0.2");
+                    .style("stroke-width", "0.5");
                 $(".tooltip").tooltip("hide");
             }
         }
@@ -832,6 +831,13 @@ export function ttInitMap() {
         function viewMoreInfo(d) {
             // set clicked flag variable to true
             clicked = true;
+            clickedCircleId = d.properties.pk;
+
+            // hide all tooltips except for this clicked circles tooltip
+            $('[id^="map_dot_"], [id^="timeline_dot_"]')
+                .not('#map_dot_' + d.properties.pk)
+                .not('#timeline_dot_' + d.properties.pk)
+                .tooltip('hide');
 
             // show clicked dot
             showDotOnMap(d);

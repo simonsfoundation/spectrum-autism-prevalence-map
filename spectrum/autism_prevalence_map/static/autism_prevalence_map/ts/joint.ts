@@ -199,7 +199,6 @@ export function ttInitJoint() {
 
             // run update
             app.runUpdate();
-
         });
 
 
