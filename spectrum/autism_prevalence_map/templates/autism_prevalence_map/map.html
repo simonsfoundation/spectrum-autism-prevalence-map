@@ -9,45 +9,45 @@
 {% block body_block %}
 <!-- Main Container
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<div class="mx-auto max-w-container">
-    {% include "autism_prevalence_map/action_buttons.html" with template="map" %}
+<div class='mx-auto max-w-container'>
+    {% include 'autism_prevalence_map/action_buttons.html' with template='map' %}
 
     <!-- Map div
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div id="map" class="h-[calc(100vh_-_23.875rem)]"></div>
+    <div id='map' class='h-map'></div>
     <!-- Timeline div
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class="timeline-wrapper container-fluid h-[11.75rem]">
-        <div class="row">
-            <div id="timeline-toggle" class='timeline-toggle col-xl-3'>
+    <div class='timeline-wrapper container-fluid h-timeline'>
+        <div class='row'>
+            <div id='timeline-toggle' class='timeline-toggle col-xl-3'>
                 <h2>Timeline of studies</h2>
-                <span class="timeline-switch">
+                <span class='timeline-switch'>
 
-                    <input type="checkbox" id="timeline-switch" name="timeline-switch" {% if timeline_type == "studied" %}checked{% endif %}>
+                    <input type='checkbox' id='timeline-switch' name='timeline-switch' {% if timeline_type == 'studied' %}checked{% endif %}>
 
-                    <label for="timeline-switch">
-                        {% if timeline_type == "published" %}
+                    <label for='timeline-switch'>
+                        {% if timeline_type == 'published' %}
                             <strong>Year published</strong>
                         {% else %}
                             Year published
                         {% endif %}
                     </label>
-                    <span class="timeline-switch-knob"></span>
+                    <span class='timeline-switch-knob'></span>
                 </span>
                 <span>
-                    {% if timeline_type == "studied" %}
+                    {% if timeline_type == 'studied' %}
                         <strong>Year(s) studied</strong>
                     {% else %}
                         Year(s) studied
                     {% endif %}
                 </span>
-                {% if last_updated_on != "" %}
+                {% if last_updated_on != '' %}
                     <div>
                         Data last updated on {{last_updated_on}}
                     </div>
                 {% endif %}
             </div>
-            <div id="timeline" class='ui-brush timeline col-xl-9'></div>
+            <div id='timeline' class='ui-brush timeline col-xl-9'></div>
         </div>
     </div>
 </div>
@@ -55,48 +55,48 @@
 <!-- Zoom buttons
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <!--
-<div id="zoom-buttons" class="zoom-buttons btn-group-vertical">
-    <button type="button" id="zoom-in" class="btn zoom-button"><i class="fas fa-plus"></i></button>
-    <button type="button" id="zoom-out" class="btn zoom-button"><i class="fas fa-minus"></i></button>
+<div id='zoom-buttons' class='zoom-buttons btn-group-vertical'>
+    <button type='button' id='zoom-in' class='btn zoom-button'><i class='fas fa-plus'></i></button>
+    <button type='button' id='zoom-out' class='btn zoom-button'><i class='fas fa-minus'></i></button>
 </div>
 -->
 
 <!-- More Information Card
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <!--
-<div id="more-information-card" class="more-information-card col-lg-3 col-md-5 col-sm-6">
-    <button type="button" class="close card-close" id="card-close" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+<div id='more-information-card' class='more-information-card col-lg-3 col-md-5 col-sm-6'>
+    <button type='button' class='close card-close' id='card-close' aria-label='Close'>
+        <span aria-hidden='true'>&times;</span>
     </button>
-    <div class="card card-style">
-        <div class="card-header" id="card-title">
+    <div class='card card-style'>
+        <div class='card-header' id='card-title'>
         </div>
-        <div class="card-body">
-            <h6 class="card-subtitle font-weight-bold">Country</h6>
-            <p class="card-text" id="card-country"></p>
-            <h6 class="card-subtitle font-weight-bold">Area</h6>
-            <p class="card-text" id="card-area"></p>
-            <h6 class="card-subtitle font-weight-bold">Sample size</h6>
-            <p class="card-text" id="card-samplesize"></p>
-            <h6 class="card-subtitle font-weight-bold">Age (years)</h6>
-            <p class="card-text" id="card-age"></p>
-            <h6 class="card-subtitle font-weight-bold">Diagnostic criteria</h6>
-            <p class="card-text" id="card-diagnosticcriteria"></p>
-            <h6 class="card-subtitle font-weight-bold">Diagnostic tools</h6>
-            <p class="card-text" id="card-diagnostictools"></p>
-            <h6 class="card-subtitle font-weight-bold">Percent w/ average IQ</h6>
-            <p class="card-text" id="card-percentwaverageiq"></p>
-            <h6 class="card-subtitle font-weight-bold">Sex ratio (M:F)</h6>
-            <p class="card-text" id="card-sexratiomf"></p>
-            <h6 class="card-subtitle font-weight-bold">Prevalence (per 10,000)</h6>
-            <p class="card-text" id="card-prevalenceper10000"></p>
-            <h6 class="card-subtitle font-weight-bold">95% Confidence interval</h6>
-            <p class="card-text" id="card-confidenceinterval"></p>
-            <h6 class="card-subtitle font-weight-bold">Year(s) studied</h6>
-            <p class="card-text" id="card-yearsstudied"></p>
-            <h6 class="card-subtitle font-weight-bold">Category</h6>
-            <p class="card-text" id="card-categoryadpddorasd"></p>
-            <p class="card-text" id="card-links"></p>
+        <div class='card-body'>
+            <h6 class='card-subtitle font-weight-bold'>Country</h6>
+            <p class='card-text' id='card-country'></p>
+            <h6 class='card-subtitle font-weight-bold'>Area</h6>
+            <p class='card-text' id='card-area'></p>
+            <h6 class='card-subtitle font-weight-bold'>Sample size</h6>
+            <p class='card-text' id='card-samplesize'></p>
+            <h6 class='card-subtitle font-weight-bold'>Age (years)</h6>
+            <p class='card-text' id='card-age'></p>
+            <h6 class='card-subtitle font-weight-bold'>Diagnostic criteria</h6>
+            <p class='card-text' id='card-diagnosticcriteria'></p>
+            <h6 class='card-subtitle font-weight-bold'>Diagnostic tools</h6>
+            <p class='card-text' id='card-diagnostictools'></p>
+            <h6 class='card-subtitle font-weight-bold'>Percent w/ average IQ</h6>
+            <p class='card-text' id='card-percentwaverageiq'></p>
+            <h6 class='card-subtitle font-weight-bold'>Sex ratio (M:F)</h6>
+            <p class='card-text' id='card-sexratiomf'></p>
+            <h6 class='card-subtitle font-weight-bold'>Prevalence (per 10,000)</h6>
+            <p class='card-text' id='card-prevalenceper10000'></p>
+            <h6 class='card-subtitle font-weight-bold'>95% Confidence interval</h6>
+            <p class='card-text' id='card-confidenceinterval'></p>
+            <h6 class='card-subtitle font-weight-bold'>Year(s) studied</h6>
+            <p class='card-text' id='card-yearsstudied'></p>
+            <h6 class='card-subtitle font-weight-bold'>Category</h6>
+            <p class='card-text' id='card-categoryadpddorasd'></p>
+            <p class='card-text' id='card-links'></p>
         </div>
 
     </div>
@@ -109,21 +109,21 @@
 
 {% block js_block %}
 <script>
-    let min_yearpublished = "{{ min_yearpublished }}";
-    let max_yearpublished = "{{ max_yearpublished }}";
-    let yearsstudied_number_min = "{{ yearsstudied_number_min }}";
-    let yearsstudied_number_max = "{{ yearsstudied_number_max }}";
-    let min_samplesize = "{{ min_samplesize }}";
-    let max_samplesize = "{{ max_samplesize }}";
-    let min_prevalenceper10000 = "{{ min_prevalenceper10000 }}";
-    let max_prevalenceper10000 = "{{ max_prevalenceper10000 }}";
-    let meanincomeofparticipants = "{{ meanincomeofparticipants }}";
-    let educationlevelofparticipants = "{{ educationlevelofparticipants }}";
-    let studytype = "{{ studytype }}";
-    let keyword = "{{ keyword }}";
-    let timeline_type = "{{ timeline_type }}";
-    let income = "{{ meanincome }}";
-    let education = "{{ education }}";
+    let min_yearpublished = '{{ min_yearpublished }}';
+    let max_yearpublished = '{{ max_yearpublished }}';
+    let yearsstudied_number_min = '{{ yearsstudied_number_min }}';
+    let yearsstudied_number_max = '{{ yearsstudied_number_max }}';
+    let min_samplesize = '{{ min_samplesize }}';
+    let max_samplesize = '{{ max_samplesize }}';
+    let min_prevalenceper10000 = '{{ min_prevalenceper10000 }}';
+    let max_prevalenceper10000 = '{{ max_prevalenceper10000 }}';
+    let meanincomeofparticipants = '{{ meanincomeofparticipants }}';
+    let educationlevelofparticipants = '{{ educationlevelofparticipants }}';
+    let studytype = '{{ studytype }}';
+    let keyword = '{{ keyword }}';
+    let timeline_type = '{{ timeline_type }}';
+    let income = '{{ meanincome }}';
+    let education = '{{ education }}';
     const world_atlas = "{% static 'autism_prevalence_map/vendor/data/110m.json' %}";
 </script>
 {% endblock %}

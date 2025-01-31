@@ -37,10 +37,17 @@ module.exports = {
             },
             screens: {
             },
+            height: {
+                'main': 'calc(100vh - 4.375rem)', // 100% - 70px
+                'filters': '5.875rem', // 94px
+                'map': 'calc(100vh - 23.875rem)', // 100% - 382px
+                'timeline': '11.75rem', // 188px
+            },
+            width: {
+                'search' : '15.5rem', // 248px
+            },
             spacing: {
-                '62' : '15.5rem', // 248px
                 '17.5' : '4.375rem', // 70px
-                '10': '2.5rem', // 40px
                 '4.7': '1.188rem', // 19px
                 '4.5': '1.125rem', // 18px
                 '3.5': '0.875rem', // 14px
@@ -48,8 +55,8 @@ module.exports = {
                 '1.2': '0.3rem', // 4.8px
             },
             maxWidth: {
-                'container': '103rem',
-                'logo': '13.55rem'
+                'container': '103rem', // 1648px
+                'logo': '13.55rem' // 216.8px
             },
             colors: {
                 'red': '#910E1C',

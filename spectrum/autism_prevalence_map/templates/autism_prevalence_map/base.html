@@ -56,7 +56,7 @@
 
 <body class='font-sans bg-tan' data-page='{% block page_name %}{% endblock %}'>
     <header class='top-0 w-full px-10 py-4.7 border-b border-black bg-white'>
-        <div class="flex justify-between items-center w-full mx-auto max-w-container">
+        <div class='flex justify-between items-center w-full mx-auto max-w-container'>
             <div class='flex items-center space-x-8'>
                 <a class='max-w-logo flex items-center' href='https://www.thetransmitter.org/'>
                     {% svg 'transmitter-logo' %}
@@ -72,7 +72,7 @@
                     <a id='list-link' class='text-sm font-bold text-navy uppercase {% if request.path == "/list/" %}active{% endif %}' href="{% url 'list_view' %}">List</a>
                     <a class='text-sm font-bold text-navy uppercase {% if request.path == "/about/" %}active{% endif %}' href="{% url 'about' %}">About</a>
                 </nav>
-                <form class='flex items-center w-62 border border-navy rounded-3.5 pl-1.5'>
+                <form class='flex items-center w-search border border-navy rounded-3.5 pl-1.5'>
                     <div class='flex items-center justify-center'>
                         {% svg 'icon-search' %}
                     </div>
@@ -84,7 +84,7 @@
         </div>
     </header>
 
-    <main class="h-[calc(100vh_-_4.375rem)] pt-3 pb-4 px-10">
+    <main class='h-main pt-3 pb-4 px-10'>
         {% block body_block %} {% endblock %}
     </main>
 
