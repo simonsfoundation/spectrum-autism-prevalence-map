@@ -16,6 +16,8 @@ $(document).ready(function (){
         const obj = { foo: "bar" };
         app.api_call_param_string = "?min_yearpublished="+min_yearpublished+"&max_yearpublished="+max_yearpublished+"&yearsstudied_number_min="+yearsstudied_number_min+"&yearsstudied_number_max="+yearsstudied_number_max+"&min_samplesize="+min_samplesize+"&max_samplesize="+max_samplesize+"&min_prevalenceper10000="+min_prevalenceper10000+"&max_prevalenceper10000="+max_prevalenceper10000+"&studytype="+encodeURIComponent(studytype)+"&keyword="+encodeURIComponent(keyword)+"&timeline_type="+timeline_type+"&meanincome="+income+"&education="+education+"&country="+country+"&continent="+continent;
 
+        console.log("API call parameters:", app.api_call_param_string);
+
         window.history.pushState(obj, "Updated URL Parameters", app.api_call_param_string);
         // set the links to the map and list to hold the url params
         $('#list-link').attr('href', "/list/" + app.api_call_param_string);
