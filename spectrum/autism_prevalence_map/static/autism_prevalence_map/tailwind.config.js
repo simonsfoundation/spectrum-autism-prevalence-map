@@ -7,16 +7,28 @@ module.exports = {
     ],
     theme: {
         fontSize: {
-            'sm0': ['0.75rem', { // 12px
-                lineHeight: '120%',
-                letterSpacing: '0.04em',
+            'xs': ['0.5rem', { // 8px
+                lineHeight: '0.75rem',
+                letterSpacing: '0.16em',
             }],
-            'sm': ['0.75rem', { // 12px
-                lineHeight: '120%',
+            '1xs': ['0.625rem', { // 10px
+                lineHeight: '0.75rem',
                 letterSpacing: '0.16em',
             }],
             'sm2': ['0.688rem', { // 11px
                 lineHeight: '120%',
+                letterSpacing: '0.16em',
+            }],
+            '2xs': ['0.75rem', { // 12px
+                lineHeight: '0.875rem',
+                letterSpacing: '0.16em',
+            }],
+            'sm0': ['0.75rem', { // 12px
+                lineHeight: '120%',
+                letterSpacing: '0.04em',
+            }],
+            'sm': ['0.875rem', { // 14px
+                lineHeight: '1.375rem',
                 letterSpacing: '0.16em',
             }],
             'md1': ['1.438rem', { // 23px
@@ -32,6 +44,9 @@ module.exports = {
             },
             borderRadius: {
                 '1': '0.25rem', // 4px
+                'sm': '4px',
+                'sm-l': '4px 0 0 4px',
+                'sm-r': '0 4px 4px 0',
                 '3.5': '0.875rem', // 14px
             },
             letterSpacing: {
@@ -41,6 +56,8 @@ module.exports = {
             borderWidth: {
                 '0.1': '0.031rem', // 0.5px
                 '1.5': '0.375rem', // 6px
+                '1': '1px',
+                '0.5': '0.5px',
             },
             screens: {
             },
@@ -60,6 +77,27 @@ module.exports = {
             spacing: {
                 '17.5': '4.375rem', // 70px
                 '6.5': '1.625rem', // 26px
+                '0.25': '0.063rem', // 1px
+                '0.5': '0.125rem', // 2px
+                '0.75': '0.188rem', // 3px
+                '1.25': '0.3125rem', // 5px
+                '1.75': '0.4375rem', // 7px
+                '2.5': '0.625rem', // 10px
+                '2.75': '0.688rem', // 11px
+                '3.5': '0.875rem', // 14px
+                '3.75': '0.938rem', // 15px
+                '4.5': '1.125rem', // 18px
+                '5.2': '1.313rem', // 21px
+                '5.5': '1.375rem', // 22px
+                '6.5': '1.625rem', // 26px
+                '8.5': '2.125rem', // 34px
+                '10.5': '2.625rem', // 42px
+                '14.5': '3.625rem', // 58px
+                '63.5': '15.875rem', // 254px
+                '207.5': '51.875rem', // 830px
+                '62' : '15.5rem', // 248px
+                '17.5' : '4.375rem', // 70px
+                '10': '2.5rem', // 40px
                 '4.7': '1.188rem', // 19px
                 '4.5': '1.125rem', // 18px
                 '3.5': '0.875rem', // 14px
@@ -89,6 +127,15 @@ module.exports = {
                 'black': '#000',
                 'white': '#FFF',
             },
+            backgroundImage: {
+                'select-arrow': "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 14 8%22 fill=%22none%22%3E%3Cpath d=%22M1.707 0.293a1 1 0 00-1.414 1.414L6.293 7.707a1 1 0 001.414 0l6-6A1 1 0 0012.293.293L7 5.586 1.707.293z%22 fill=%22%232E5367%22/%3E%3C/svg%3E')",
+            },
+            backgroundSize: {
+                'arrow-sm': '14px 9px'
+            },
+            backgroundPosition: {
+                'right-4': 'calc(100% - 1rem) center',
+            },
             flex: {
                 'search': '0.95 1 0%',
             },
@@ -117,5 +164,9 @@ module.exports = {
         'stroke-dark-tan',
         'stroke-tan',
         'stroke-[0.5px]',
+        'ui-slider',
+        'ui-slider-handle',
+        'ui-slider-range',
+        'ui-state-focus',
     ],
 }

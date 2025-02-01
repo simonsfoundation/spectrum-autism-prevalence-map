@@ -6,13 +6,6 @@ $(document).ready(function (){
     const mapWidth = $("#width-check").width();
     const table = d3.select("#studies");
 
-    if (width < 567) {
-        // close filter drawers
-        $('#filter-list').addClass("invisible");
-        $('#filter-list').removeClass("visible");
-        $("#filters-link").prop('title', 'Open fliter drawer').attr('data-original-title', 'Open fliter drawer'); 
-    }
-
     // map projection
     const projection = d3.geoKavrayskiy7()
         .scale(250)

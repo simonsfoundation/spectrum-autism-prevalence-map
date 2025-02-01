@@ -28,11 +28,7 @@ export function ttInitMap() {
             timeline_height = $('#timeline').height();
 
             if (width < 567) {
-                scale = 100;
-                // close filter drawers
-                $('#filter-list').addClass('invisible');
-                $('#filter-list').removeClass('visible');
-                $('#filters-link').prop('title', 'Open fliter drawer').attr('data-original-title', 'Open fliter drawer');            
+                scale = 100;          
             } else if (width < 992) {
                 scale = 150;
             } else if (width < 1800) {

@@ -2,14 +2,16 @@ import { app } from './app.js';
 
 export function ttInitJoint() {
     $(document).ready(function (){
+        let continent = '';
+        let country = '';
+
         // api call holder
-        app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education;
+        app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education+'&country='+country+'&continent='+continent;
 
         // function for updating url state
         app.updateURL = function() {
-
             const obj = { foo: 'bar' };
-            app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education;
+            app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education+'&country='+country+'&continent='+continent;
 
             window.history.pushState(obj, 'Updated URL Parameters', app.api_call_param_string);
             // set the links to the map and list to hold the url params
@@ -57,6 +59,25 @@ export function ttInitJoint() {
                 $('#studytype').val(studytype);
             }
 
+            // collect countries from the data
+            let allCountries = [];
+            data.features.forEach(d => {
+                const c = d.properties.country;
+                if (c) {
+                    allCountries.push(c.trim());
+                }
+            });
+
+            // Rremove duplicates
+            allCountries = [...new Set(allCountries)].sort();
+
+            // populate country dropdown
+            const countrySelect = d3.select('#country');
+            allCountries.forEach(c => {
+                countrySelect.append('option')
+                    .attr('value', c)
+                    .text(c);
+            });
         });
 
         function onlyUnique(value, index, self) {
@@ -102,29 +123,63 @@ export function ttInitJoint() {
             app.runUpdate();
         });
 
-        $('#prevalence').on('change', function(e) {
-            $('#more-information-card').css('display', 'none');
-            // update filters
-            const prevalence = $(this).val();
-            switch (prevalence) {
-                case 'low':
-                    min_prevalenceper10000 = '0';
-                    max_prevalenceper10000 = '49.99';
-                    break;
-                case 'med':
-                    min_prevalenceper10000 = '50';
-                    max_prevalenceper10000 = '100';
-                    break;
-                case 'high':
-                    min_prevalenceper10000 = '100.01';
-                    max_prevalenceper10000 = '';
-                    break;
-                default:
-                    min_prevalenceper10000 = '';
-                    max_prevalenceper10000 = '';
+        // handle the prevalence slider
+        let initialMin = min_prevalenceper10000 ? parseFloat(min_prevalenceper10000) : 50;
+        let initialMax = max_prevalenceper10000 ? parseFloat(max_prevalenceper10000) : 150;
+
+        $('#prevalence-slider').slider({
+            range: true,
+            min: 50,
+            max: 150,
+            step: 1,
+            values: [initialMin, initialMax],
+            slide: function(event, ui) {
+                // 'ui.values[0]' is the new min, 'ui.values[1]' is the new max
+                $('#prevalence-min').val(ui.values[0]);
+                $('#prevalence-max').val(ui.values[1]);
+            },
+            change: function(event, ui) {
+                min_prevalenceper10000 = ui.values[0].toString();
+                max_prevalenceper10000 = ui.values[1].toString();
+
+                $('#more-information-card').css('display', 'none');
+                app.runUpdate();
             }
+        });
+
+        $('#prevalence-min').on('change', function() {
+            let newMin = parseFloat($(this).val());
+            if (isNaN(newMin)) newMin = 50;
+
+            // Get current slider max
+            let currentMax = $('#prevalence-slider').slider('values', 1);
+            if (newMin > currentMax) newMin = currentMax;
+
+            // Update the slider’s min handle
+            $('#prevalence-slider').slider('values', 0, newMin);
+
+            min_prevalenceper10000 = newMin.toString();
             app.runUpdate();
         });
+
+        $('#prevalence-max').on('change', function() {
+            let newMax = parseFloat($(this).val());
+            if (isNaN(newMax)) newMax = 150; // fallback
+
+            // Get current slider min
+            let currentMin = $('#prevalence-slider').slider('values', 0);
+            if (newMax < currentMin) newMax = currentMin;
+
+            // Update the slider’s max handle
+            $('#prevalence-slider').slider('values', 1, newMax);
+
+            max_prevalenceper10000 = newMax.toString();
+            app.runUpdate();
+        });
+
+        $('#prevalence-min').val(initialMin);
+        $('#prevalence-max').val(initialMax);
+        // end handling the prevalence slider
 
         $('#samplesize').on('change', function(e) {
             $('#more-information-card').css('display', 'none');
@@ -147,6 +202,20 @@ export function ttInitJoint() {
                     min_samplesize = '';
                     max_samplesize = '';
             }
+            app.runUpdate();
+        });
+
+        $('#continent').on('change', function() {
+            $('#more-information-card').css('display', 'none');
+            continent = $(this).val();
+            if( continent === 'all' ) continent = '';
+            app.runUpdate();
+        });
+
+        $('#country').on('change', function() {
+            $('#more-information-card').css('display', 'none');
+            country = $(this).val();
+            if( country === 'all' ) country = '';
             app.runUpdate();
         });
 
@@ -181,16 +250,23 @@ export function ttInitJoint() {
             keyword = '';
             income = '';
             education = '';
+            continent = '';
+            country = '';
 
             // set dropdown menu values
             $('#search').val('');
             $('#min_year').val($('#min_year option:first').val());
             $('#max_year').val($('#max_year option:first').val());
             $('#studytype').val('');
-            $('#prevalence').val('all');
+            $('#prevalence-min').val(50);
+            $('#prevalence-slider').slider('values', 0, 50);
+            $('#prevalence-max').val(150);
+            $('#prevalence-slider').slider('values', 1, 150);
             $('#samplesize').val('all');
             $('#meanincomeofparticipants').val('all');
             $('#educationlevelofparticipants').val('all');
+            $('#continent').val('all');
+            $('#country').val('all');
 
             // remove brush from timeline
             if ($('#map-link').hasClass('active')) {
@@ -200,7 +276,6 @@ export function ttInitJoint() {
             // run update
             app.runUpdate();
         });
-
 
         // set dropdowns and inputs on page load
         switch (min_prevalenceper10000) {
@@ -239,7 +314,6 @@ export function ttInitJoint() {
             $('#studytype').val(studytype);
         }
 
-
         // initialize
         app.updateURL();
 
@@ -265,20 +339,6 @@ export function ttInitJoint() {
             document.execCommand('copy');
             document.body.removeChild(dummy);
         });
-
-        $('#filters-link').click(function(){
-            if ($('#filter-list').hasClass('invisible')) {
-                $('#filter-list').removeClass('invisible');
-                $('#filter-list').addClass('visible');
-                $(this).tooltip('hide').prop('title', 'Close fliter drawer').attr('data-original-title', 'Close fliter drawer').tooltip('show');
-
-            } else {
-                $('#filter-list').addClass('invisible');
-                $('#filter-list').removeClass('visible');
-                $(this).tooltip('hide').prop('title', 'Open fliter drawer').attr('data-original-title', 'Open fliter drawer').tooltip('show');
-            }
-        });
-
 
         // listen for window resize
         let resize_id;

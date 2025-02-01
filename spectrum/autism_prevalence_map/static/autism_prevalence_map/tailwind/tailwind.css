@@ -381,3 +381,15 @@
     font-style: italic;
     font-weight: 700;
 }
+
+@layer utilities {
+    .ui-slider {
+        @apply relative h-1 bg-light-navy-2 rounded-sm;
+    }
+    .ui-slider-handle {
+        @apply absolute inline-block w-2.5 h-2.5 -top-0.75 rounded-full bg-med-navy;
+    }
+    .ui-slider-range {
+        @apply absolute h-1 bg-med-navy;
+    }
+}
