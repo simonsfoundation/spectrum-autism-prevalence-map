@@ -31,8 +31,8 @@ export function ttInitJoint() {
             }
         }
 
-        // making the combo box options for studytype
         d3.json('/studies-api/').then(function(data) {
+            // adding the options for study type
             let methodsArray = [];
             for (let index = 0; index < data.features.length; index++) {
                 const studytype_array = data.features[index].properties.studytype.replace(/ *([|]) */g, '$1').split('|')
@@ -59,7 +59,7 @@ export function ttInitJoint() {
                 $('#studytype').val(studytype);
             }
 
-            // collect countries from the data
+            // adding the options for country
             let allCountries = [];
             data.features.forEach(d => {
                 const c = d.properties.country;
@@ -68,7 +68,7 @@ export function ttInitJoint() {
                 }
             });
 
-            // remove duplicates
+            // remove duplicate countries
             allCountries = [...new Set(allCountries)].sort();
 
             // populate country dropdown
@@ -78,6 +78,39 @@ export function ttInitJoint() {
                     .attr('value', c)
                     .text(c);
             });
+
+            // making the combo box options for earliest published and latest published
+            const comboBox_min_year = d3.select('#min_year');
+            const comboBox_max_year = d3.select('#max_year');
+
+            const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.yearsstudied_number_min); }).getUTCFullYear();
+            const timeMax = d3.max(data.features, function(d) { return new Date(d.properties.yearpublished); }).getUTCFullYear();
+
+            for (let index = timeMin; index <= timeMax; index++) {
+                comboBox_min_year.append('option')
+                    .attr('value', index)
+                    .text(index);
+
+                comboBox_max_year.append('option')
+                    .attr('value', index)
+                    .text(index);
+            }
+
+            if (min_yearpublished) {
+                $('#min_year').val(min_yearpublished);
+            } else if (yearsstudied_number_min) {
+                $('#min_year').val(yearsstudied_number_min);
+            } else {
+                $('#min_year').val($('#min_year option:first').val());
+            }
+
+            if (max_yearpublished) {
+                $('#max_year').val(max_yearpublished);
+            } else if (yearsstudied_number_max) {
+                $('#max_year').val(yearsstudied_number_max);
+            } else {
+                $('#max_year').val($('#max_year option:first').val());
+            }
         });
 
         function onlyUnique(value, index, self) {

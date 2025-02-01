@@ -62,7 +62,7 @@ module.exports = {
             height: {
                 'main': 'calc(100vh - 4.375rem)', // 100% - 70px
                 'filters': '5.875rem', // 94px
-                'map': 'calc(100vh - 23.875rem)', // 100% - 382px
+                'map': 'calc(100vh - 23.625rem)', // 100% - 378px
                 'timeline': '11.75rem', // 188px
                 'arrow': '0.5rem', // 8px
                 'arrow2': '6.5px', // 6.5px
@@ -97,6 +97,9 @@ module.exports = {
                 '62' : '15.5rem', // 248px
                 '63.5': '15.875rem', // 254px
                 '207.5': '51.875rem', // 830px  
+            },
+            minWidth: {
+                'filter': '10.813rem', // 173px
             },
             maxWidth: {
                 'tooltip': '11.625rem', // 186px
