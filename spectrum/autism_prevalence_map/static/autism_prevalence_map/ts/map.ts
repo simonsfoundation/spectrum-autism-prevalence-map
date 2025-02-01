@@ -666,8 +666,8 @@ export function ttInitMap() {
                     sel.moveToFront();
                     showTimelineTooltip(d);
                     d3.select(this)
-                        .style('fill', '#0B6BC3')
-                        .style('stroke', '#FFF')
+                        .style('fill', '#000')
+                        .style('stroke', '#000')
                         .style('stroke-width', '0.5')
                         .style('cursor', 'pointer');
                     $('#map_dot_' + d.properties.pk).tooltip('show');
@@ -780,8 +780,8 @@ export function ttInitMap() {
                 
             // show clicked dot on map
             d3.select('#map_dot_' + d.properties.pk)
-                .style('fill', '#000')
-                .style('stroke', '#000')
+                .style('fill', '#0B6BC3')
+                .style('stroke', '#FFF')
                 .style('stroke-width', '0.5');
         }
 
