@@ -834,7 +834,7 @@ export function ttInitMap() {
             clickedCircleId = d.properties.pk;
 
             // hide all tooltips except for this clicked circles tooltip
-            $('[id^='map_dot_'], [id^='timeline_dot_']')
+            $('[id^="map_dot_"], [id^="timeline_dot_"]')
                 .not('#map_dot_' + d.properties.pk)
                 .not('#timeline_dot_' + d.properties.pk)
                 .tooltip('hide');
