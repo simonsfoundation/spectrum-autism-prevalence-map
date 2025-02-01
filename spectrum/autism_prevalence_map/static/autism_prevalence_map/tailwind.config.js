@@ -15,7 +15,7 @@ module.exports = {
                 lineHeight: '0.75rem',
                 letterSpacing: '0.16em',
             }],
-            'sm2': ['0.688rem', { // 11px
+            '1xs2': ['0.688rem', { // 11px
                 lineHeight: '120%',
                 letterSpacing: '0.16em',
             }],
@@ -23,7 +23,7 @@ module.exports = {
                 lineHeight: '0.875rem',
                 letterSpacing: '0.16em',
             }],
-            'sm0': ['0.75rem', { // 12px
+            '2xs2': ['0.75rem', { // 12px
                 lineHeight: '120%',
                 letterSpacing: '0.04em',
             }],
@@ -31,7 +31,7 @@ module.exports = {
                 lineHeight: '1.375rem',
                 letterSpacing: '0.16em',
             }],
-            'md1': ['1.438rem', { // 23px
+            '1md': ['1.438rem', { // 23px
                 lineHeight: '100%',
                 letterSpacing: '0.06em',
             }]
@@ -43,21 +43,19 @@ module.exports = {
                 'serif-text': ['GothiaSerifText', 'serif'],
             },
             borderRadius: {
-                '1': '0.25rem', // 4px
-                'sm': '4px',
-                'sm-l': '4px 0 0 4px',
-                'sm-r': '0 4px 4px 0',
-                '3.5': '0.875rem', // 14px
+                'sm': '0.25rem', // 4px
+                'sm-l': '0.25rem 0 0 0.25rem', // 4px
+                'sm-r': '0 0.25rem 0.25rem 0', // 4px
+                'lg': '0.875rem', // 14px
             },
             letterSpacing: {
             },
             lineHeight: {
             },
             borderWidth: {
-                '0.1': '0.031rem', // 0.5px
-                '1.5': '0.375rem', // 6px
-                '1': '1px',
                 '0.5': '0.5px',
+                '1': '1px',
+                '6.5': '0.375rem', // 6px
             },
             screens: {
             },
@@ -75,40 +73,35 @@ module.exports = {
                 'arrow2': '0.813rem', // 13px
             },
             spacing: {
-                '17.5': '4.375rem', // 70px
-                '6.5': '1.625rem', // 26px
                 '0.25': '0.063rem', // 1px
                 '0.5': '0.125rem', // 2px
                 '0.75': '0.188rem', // 3px
+                '1.2': '0.3rem', // 4.8px
                 '1.25': '0.3125rem', // 5px
+                '1.5': '0.375rem', // 6px
                 '1.75': '0.4375rem', // 7px
                 '2.5': '0.625rem', // 10px
                 '2.75': '0.688rem', // 11px
                 '3.5': '0.875rem', // 14px
                 '3.75': '0.938rem', // 15px
                 '4.5': '1.125rem', // 18px
+                '4.7': '1.188rem', // 19px
                 '5.2': '1.313rem', // 21px
                 '5.5': '1.375rem', // 22px
                 '6.5': '1.625rem', // 26px
                 '8.5': '2.125rem', // 34px
+                '10': '2.5rem', // 40px
                 '10.5': '2.625rem', // 42px
                 '14.5': '3.625rem', // 58px
-                '63.5': '15.875rem', // 254px
-                '207.5': '51.875rem', // 830px
+                '17.5': '4.375rem', // 70px
                 '62' : '15.5rem', // 248px
-                '17.5' : '4.375rem', // 70px
-                '10': '2.5rem', // 40px
-                '4.7': '1.188rem', // 19px
-                '4.5': '1.125rem', // 18px
-                '3.5': '0.875rem', // 14px
-                '1.5': '0.375rem', // 6px
-                '1.2': '0.3rem', // 4.8px
-                '0.3': '0.063rem', // 1px
+                '63.5': '15.875rem', // 254px
+                '207.5': '51.875rem', // 830px  
             },
             maxWidth: {
-                'container': '103rem', // 1648px
-                'logo': '13.55rem', // 216.8px
                 'tooltip': '11.625rem', // 186px
+                'logo': '13.55rem', // 216.8px
+                'container': '103rem', // 1648px
             },
             colors: {
                 'red': '#910E1C',

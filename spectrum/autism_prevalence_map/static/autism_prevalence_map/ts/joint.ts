@@ -68,7 +68,7 @@ export function ttInitJoint() {
                 }
             });
 
-            // Rremove duplicates
+            // remove duplicates
             allCountries = [...new Set(allCountries)].sort();
 
             // populate country dropdown

@@ -7,16 +7,16 @@
     @apply relative pt-1.5 opacity-100;
   }
   .tooltip .arrow {
-    @apply absolute block w-arrow h-arrow -top-0.3 border-transparent;
+    @apply absolute block w-arrow h-arrow -top-0.25 border-transparent;
   }
   .tooltip .arrow:before {
-    @apply absolute content-empty bottom-0 z-2 border-solid border-t-0 border-x-1.5 border-b-1.5 border-transparent border-b-light-gray;
+    @apply absolute content-empty bottom-0 z-2 border-solid border-t-0 border-x-6.5 border-b-6.5 border-transparent border-b-light-gray;
   }
   .tooltip .arrow:after {
-    @apply absolute content-empty bottom-[0.5px] left-[-0.5px] w-arrow2 h-arrow2 z-1 border-solid border-t-0 border-x-1.5 border-b-1.5 border-transparent border-b-med-gray;
+    @apply absolute content-empty bottom-[0.5px] left-[-0.5px] w-arrow2 h-arrow2 z-1 border-solid border-t-0 border-x-6.5 border-b-6.5 border-transparent border-b-med-gray;
   }
   .tooltip-inner {
-    @apply py-3 px-6.5 bg-light-gray border-0.1 border-light-gray2 rounded-1 font-serif text-sm0 text-dark-gray2 text-center max-w-tooltip shadow-tooltip;
+    @apply py-3 px-6.5 bg-light-gray border-0.5 border-light-gray2 rounded-sm font-serif text-2xs2 text-dark-gray2 text-center max-w-tooltip shadow-tooltip;
   }
 }
 
