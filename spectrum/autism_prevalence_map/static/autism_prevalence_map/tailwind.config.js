@@ -8,6 +8,7 @@ module.exports = {
     theme: {
         fontSize: {
             'sm0': ['0.75rem', { // 12px
+                lineHeight: '120%',
                 letterSpacing: '0.04em',
             }],
             'sm': ['0.75rem', { // 12px
@@ -38,6 +39,7 @@ module.exports = {
             lineHeight: {
             },
             borderWidth: {
+                '0.1': '0.031rem', // 0.5px
                 '1.5': '0.375rem', // 6px
             },
             screens: {
@@ -61,9 +63,9 @@ module.exports = {
                 '4.7': '1.188rem', // 19px
                 '4.5': '1.125rem', // 18px
                 '3.5': '0.875rem', // 14px
-                '2.8': '0.6875rem', // 11px
                 '1.5': '0.375rem', // 6px
                 '1.2': '0.3rem', // 4.8px
+                '0.3': '0.063rem', // 1px
             },
             maxWidth: {
                 'container': '103rem', // 1648px
@@ -96,7 +98,10 @@ module.exports = {
             zIndex: {
                 '1': '1',
                 '2': '2',
-            }
+            },
+            boxShadow: {
+                'tooltip': '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
+            },
         }
     },
     plugins: [
