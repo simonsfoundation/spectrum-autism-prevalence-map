@@ -1,10 +1,7 @@
 import { app } from './app.js';
 
 export function ttInitJoint() {
-    $(document).ready(function (){
-        let continent = '';
-        let country = '';
-
+    $(document).ready(function () {
         // api call holder
         app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education+'&country='+country+'&continent='+continent;
 
@@ -78,6 +75,14 @@ export function ttInitJoint() {
                     .attr('value', c)
                     .text(c);
             });
+
+            if (country) {
+                $('#country').val(country);
+            }
+
+            if (continent) {
+                $('#continent').val(continent);
+            }
 
             // making the combo box options for earliest published and latest published
             const comboBox_min_year = d3.select('#min_year');
@@ -238,26 +243,30 @@ export function ttInitJoint() {
             app.runUpdate();
         });
 
-        $('#continent').on('change', function() {
+        $('#continent').on('change', function(e) {
             $('#more-information-card').css('display', 'none');
             continent = $(this).val();
             if( continent === 'all' ) continent = '';
 
-            // reset country when continent is selected
-            $('#country').val('all');
-            country = '';
+            // only reset country if this is a user interacting with the filter and not on page load when trying to preserve settings
+            if (e.originalEvent) {
+                $('#country').val('all');
+                country = '';
+            }
 
             app.runUpdate();
         });
 
-        $('#country').on('change', function() {
+        $('#country').on('change', function(e) {
             $('#more-information-card').css('display', 'none');
             country = $(this).val();
             if( country === 'all' ) country = '';
 
-            // reset continent when country is selected
-            $('#continent').val('all');
-            continent = '';
+            // only reset continent if this is a user interacting with the filter and not on page load when trying to preserve settings
+            if (e.originalEvent) {
+                $('#continent').val('all');
+                continent = '';
+            }
 
             app.runUpdate();
         });
