@@ -242,6 +242,11 @@ export function ttInitJoint() {
             $('#more-information-card').css('display', 'none');
             continent = $(this).val();
             if( continent === 'all' ) continent = '';
+
+            // reset country when continent is selected
+            $('#country').val('all');
+            country = '';
+
             app.runUpdate();
         });
 
@@ -249,6 +254,11 @@ export function ttInitJoint() {
             $('#more-information-card').css('display', 'none');
             country = $(this).val();
             if( country === 'all' ) country = '';
+
+            // reset continent when country is selected
+            $('#continent').val('all');
+            continent = '';
+
             app.runUpdate();
         });
 
