@@ -870,16 +870,16 @@ export function ttInitMap() {
             // add links to card
             let links = [];
             if (d.properties.link1title && d.properties.link1url) {
-                links.push('<a href=''+ d.properties.link1url +'' >'+ d.properties.link1title +'</a>') 
+                links.push('<a href="'+ d.properties.link1url +'">'+ d.properties.link1title +'</a>') 
             }
             if (d.properties.link2title && d.properties.link2url) {
-                links.push('<a href=''+ d.properties.link2url +'' >'+ d.properties.link2title +'</a>') 
+                links.push('<a href="'+ d.properties.link2url +'">'+ d.properties.link2title +'</a>') 
             }
             if (d.properties.link3title && d.properties.link3url) {
-                links.push('<a href=''+ d.properties.link3url +'' >'+ d.properties.link3title +'</a>') 
+                links.push('<a href="'+ d.properties.link3url +'">'+ d.properties.link3title +'</a>') 
             }
             if (d.properties.link4title && d.properties.link4url) {
-                links.push('<a href=''+ d.properties.link4url +'' >'+ d.properties.link4title +'</a>') 
+                links.push('<a href="'+ d.properties.link4url +'">'+ d.properties.link4title +'</a>') 
             }
 
             let links_string = links.join('<br />');
