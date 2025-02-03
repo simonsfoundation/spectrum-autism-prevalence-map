@@ -62,7 +62,8 @@ module.exports = {
             height: {
                 'main': 'calc(100vh - 4.375rem)', // 100% - 70px
                 'filters': '5.875rem', // 94px
-                'map': 'calc(100vh - 23.625rem)', // 100% - 378px
+                'mapwrap': 'calc(100vh - 23.625rem)', // 100% - 378px
+                'map': '30.125rem', // 482px
                 'timeline': '11.75rem', // 188px
                 'arrow': '0.5rem', // 8px
                 'arrow2': '6.5px', // 6.5px
@@ -71,6 +72,7 @@ module.exports = {
                 'search': '15.5rem', // 248px
                 'arrow': '0.75rem', // 12px
                 'arrow2': '0.813rem', // 13px
+                'map': '55.75rem', // 892px
             },
             spacing: {
                 '0.25': '0.063rem', // 1px
