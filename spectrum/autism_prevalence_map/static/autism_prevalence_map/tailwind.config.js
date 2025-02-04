@@ -72,6 +72,8 @@ module.exports = {
                 'search': '15.5rem', // 248px
                 'arrow': '0.75rem', // 12px
                 'arrow2': '0.813rem', // 13px
+                'filter': '10.813rem', // 173px
+                'filterwide': '15.375rem', // 246px
                 'map': '55.75rem', // 892px
             },
             spacing: {
@@ -99,9 +101,6 @@ module.exports = {
                 '62' : '15.5rem', // 248px
                 '63.5': '15.875rem', // 254px
                 '207.5': '51.875rem', // 830px  
-            },
-            minWidth: {
-                'filter': '10.813rem', // 173px
             },
             maxWidth: {
                 'tooltip': '11.625rem', // 186px
