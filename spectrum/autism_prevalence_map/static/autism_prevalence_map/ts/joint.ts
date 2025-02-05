@@ -162,13 +162,13 @@ export function ttInitJoint() {
         });
 
         // handle the prevalence slider
-        let initialMin = min_prevalenceper10000 ? parseFloat(min_prevalenceper10000) : 50;
-        let initialMax = max_prevalenceper10000 ? parseFloat(max_prevalenceper10000) : 150;
+        let initialMin = min_prevalenceper10000 ? parseFloat(min_prevalenceper10000) : 0;
+        let initialMax = max_prevalenceper10000 ? parseFloat(max_prevalenceper10000) : 500;
 
         $('#prevalence-slider').slider({
             range: true,
-            min: 50,
-            max: 150,
+            min: 0,
+            max: 500,
             step: 1,
             values: [initialMin, initialMax],
             slide: function(event, ui) {
@@ -187,7 +187,7 @@ export function ttInitJoint() {
 
         $('#prevalence-min').on('change', function() {
             let newMin = parseFloat($(this).val());
-            if (isNaN(newMin)) newMin = 50;
+            if (isNaN(newMin)) newMin = 0;
 
             // Get current slider max
             let currentMax = $('#prevalence-slider').slider('values', 1);
@@ -202,7 +202,7 @@ export function ttInitJoint() {
 
         $('#prevalence-max').on('change', function() {
             let newMax = parseFloat($(this).val());
-            if (isNaN(newMax)) newMax = 150; // fallback
+            if (isNaN(newMax)) newMax = 500; // fallback
 
             // Get current slider min
             let currentMin = $('#prevalence-slider').slider('values', 0);
@@ -310,10 +310,10 @@ export function ttInitJoint() {
             $('#min_year').val($('#min_year option:first').val());
             $('#max_year').val($('#max_year option:first').val());
             $('#studytype').val('');
-            $('#prevalence-min').val(50);
-            $('#prevalence-slider').slider('values', 0, 50);
-            $('#prevalence-max').val(150);
-            $('#prevalence-slider').slider('values', 1, 150);
+            $('#prevalence-min').val(0);
+            $('#prevalence-slider').slider('values', 0, 0);
+            $('#prevalence-max').val(500);
+            $('#prevalence-slider').slider('values', 1, 500);
             $('#samplesize').val('all');
             $('#meanincomeofparticipants').val('all');
             $('#educationlevelofparticipants').val('all');
