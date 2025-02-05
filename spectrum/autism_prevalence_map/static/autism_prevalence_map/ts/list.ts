@@ -6,13 +6,6 @@ $(document).ready(function (){
     const mapWidth = $("#width-check").width();
     const table = d3.select("#studies");
 
-    if (width < 567) {
-        // close filter drawers
-        $('#filter-list').addClass("invisible");
-        $('#filter-list').removeClass("visible");
-        $("#filters-link").prop('title', 'Open fliter drawer').attr('data-original-title', 'Open fliter drawer'); 
-    }
-
     // map projection
     const projection = d3.geoKavrayskiy7()
         .scale(250)
@@ -447,41 +440,6 @@ $(document).ready(function (){
         } else {
             chevron_icon.removeClass('fa-chevron-up');
             chevron_icon.addClass('fa-chevron-down');
-        }
-    });
-
-    // making the combo box options for earliest published and latest published
-    d3.json("/studies-api/").then(function(data) {
-        const comboBox_min_year = d3.select("#min_year");
-        const comboBox_max_year = d3.select("#max_year");
-
-        const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.yearsstudied_number_min); }).getUTCFullYear();
-        const timeMax = d3.max(data.features, function(d) { return new Date(d.properties.yearpublished); }).getUTCFullYear();
-
-        for (let index = timeMin; index <= timeMax; index++) {
-            comboBox_min_year.append("option")
-                .attr("value", index)
-                .text(index);
-
-            comboBox_max_year.append("option")
-                .attr("value", index)
-                .text(index);
-        }
-
-        if (min_yearpublished) {
-            $("#min_year").val(min_yearpublished);
-        } else if (yearsstudied_number_min) {
-            $("#min_year").val(yearsstudied_number_min);
-        } else {
-            $("#min_year").val($("#min_year option:first").val());
-        }
-
-        if (max_yearpublished) {
-            $("#max_year").val(max_yearpublished);
-        } else if (yearsstudied_number_max) {
-            $("#max_year").val(yearsstudied_number_max);
-        } else {
-            $("#max_year").val($("#max_year option:first").val());
         }
     });
 
