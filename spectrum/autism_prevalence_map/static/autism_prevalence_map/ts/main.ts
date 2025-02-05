@@ -1,12 +1,11 @@
-import { ttInitJoint } from './joint.ts';
-import { ttInitMap } from './map.ts';
-import { ttInitList } from './list.ts';
-import { ttInitAbout } from './about.ts';
-
 import { ttInitTopo } from '../vendor/js/topojson.js';
 import { ttInitArray } from '../vendor/js/d3-array.v1.min.js';
 import { ttInitGeo } from '../vendor/js/d3-geo.v1.min.js';
 import { ttInitProjection } from '../vendor/js/d3-geo-projection.v2.min.js';
+
+import { ttInitJoint } from './joint.ts';
+import { ttInitMap } from './map.ts';
+import { ttInitList } from './list.ts';
 
 (function ($): void {
     $(function () {
@@ -27,10 +26,7 @@ import { ttInitProjection } from '../vendor/js/d3-geo-projection.v2.min.js';
                 ttInitGeo();
                 ttInitProjection();
                 ttInitJoint();
-                initList();
-                break;
-            case 'about':
-                initAbout();
+                ttinitList();
                 break;
         }
     });

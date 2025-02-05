@@ -27,14 +27,12 @@ export function ttInitMap() {
             height = $('#map').height();
             timeline_height = $('#timeline').height();
 
-            if (width < 567) {
-                scale = 100;          
-            } else if (width < 992) {
-                scale = 150;
-            } else if (width < 1800) {
-                scale = 190;
+            if (width <= 826) {
+                scale = 144;         
+            } else if (width <= 892) {
+                scale = 153;
             } else {
-                scale = 280;
+                scale = 198;
             }
             
             // data holder
@@ -176,8 +174,6 @@ export function ttInitMap() {
                 .domain([timeMin, timeMax])
                 .nice(d3.timeYear);        
 
-
-
             timelineY = d3.scaleLinear()
                 .range([timelineHeight-30, 10]);
 
@@ -301,7 +297,6 @@ export function ttInitMap() {
 
             }
             
-
             app.map.pullDataAndUpdate();
                         
         }
@@ -357,7 +352,6 @@ export function ttInitMap() {
                 }
             }
 
-
             let timelineSelection;
             if(timeline_type == 'studied') {
                 timelineSelection = timelineG.selectAll('rect.timeline-circles')
@@ -369,7 +363,6 @@ export function ttInitMap() {
                 timelineSelection = timelineG.selectAll('rect.timeline-circles')
                     .data(studies.features, function(d){ return d.properties.pk });
             }
-
 
             timelineSelection
                 .transition()

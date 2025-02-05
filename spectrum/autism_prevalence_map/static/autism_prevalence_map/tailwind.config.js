@@ -60,10 +60,10 @@ module.exports = {
             screens: {
             },
             height: {
-                'main': 'calc(100vh - 4.375rem)', // 100% - 70px
                 'filters': '5.875rem', // 94px
-                'mapwrap': 'calc(100vh - 23.625rem)', // 100% - 378px
-                'map': '30.125rem', // 482px
+                'map': '28.375rem', // 454px
+                'map-lg': '30.125rem',  // 482px
+                'map-xl': '39rem',  // 624px
                 'timeline': '11.75rem', // 188px
                 'arrow': '0.5rem', // 8px
                 'arrow2': '6.5px', // 6.5px
@@ -74,7 +74,9 @@ module.exports = {
                 'arrow2': '0.813rem', // 13px
                 'filter': '10.813rem', // 173px
                 'filterwide': '15.375rem', // 246px
-                'map': '55.75rem', // 892px
+                'map': '51.625rem', // 826px
+                'map-lg': '55.75rem',  // 892px
+                'map-xl': '72.125rem',  // 1154px
             },
             spacing: {
                 '0.25': '0.063rem', // 1px
@@ -145,6 +147,10 @@ module.exports = {
             },
             boxShadow: {
                 'tooltip': '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
+            },
+            screens: {
+                'lg': '1440px',
+                'xl': '1728px',
             },
         }
     },
