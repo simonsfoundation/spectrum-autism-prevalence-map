@@ -117,7 +117,7 @@ module.exports = {
                 'light-navy-3': '#6c8291',
                 'light-navy-2': '#DFE8EC',
                 'tan': '#FEF9EE',
-                'dark-tan': '#cac8c1',
+                'dark-tan': '#CAC6BC',
                 'dark-gray': '#2D2D2D',
                 'dark-gray2': '#585248',
                 'med-gray': '#CCC',

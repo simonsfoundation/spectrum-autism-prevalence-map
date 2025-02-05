@@ -11,21 +11,17 @@ import { ttInitList } from './list.ts';
     $(function () {
         const pageName = document.body.dataset.page || '';
 
+        ttInitTopo();
+        ttInitArray();
+        ttInitGeo();
+        ttInitProjection();
+        ttInitJoint();
+
         switch (pageName) {
             case 'map':
-                ttInitTopo();
-                ttInitArray();
-                ttInitGeo();
-                ttInitProjection();
-                ttInitJoint();
                 ttInitMap();
                 break;
             case 'list':
-                ttInitTopo();
-                ttInitArray();
-                ttInitGeo();
-                ttInitProjection();
-                ttInitJoint();
                 ttinitList();
                 break;
         }
