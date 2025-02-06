@@ -63,35 +63,41 @@
                     {% svg 'transmitter-logo' %}
                     <span class='sr-only'>The Transmitter</span>
                 </a>
-                <a class='flex items-center pt-2' href='#'>
-                    <span class='text-md1 text-med-navy uppercase leading-none'>Global Autism Prevalence</span>
+                <a class='flex items-center pt-2 no-underline' href='#'>
+                    <span class='text-1md text-med-navy uppercase leading-none'>Global Autism Prevalence</span>
                 </a>
             </div>
             <div class='flex items-center space-x-8'>
                 <nav class='flex items-center gap-8'>
-                    <a id='map-link' class='text-sm font-bold text-navy uppercase {% if request.path == "/" %}active{% endif %} ' href="{% url 'index' %}">Map</a>
-                    <a id='list-link' class='text-sm font-bold text-navy uppercase {% if request.path == "/list/" %}active{% endif %}' href="{% url 'list_view' %}">List</a>
-                    <a class='text-sm font-bold text-navy uppercase {% if request.path == "/about/" %}active{% endif %}' href="{% url 'about' %}">About</a>
+                    <a id='map-link' class='text-2xs font-bold text-navy uppercase no-underline {% if request.path == "/" %}active{% endif %} ' href="{% url 'index' %}">Map</a>
+                    <a id='list-link' class='text-2xs font-bold text-navy uppercase no-underline {% if request.path == "/list/" %}active{% endif %}' href="{% url 'list_view' %}">List</a>
+                    <a class='text-2xs font-bold text-navy uppercase no-underline {% if request.path == "/about/" %}active{% endif %}' href="{% url 'about' %}">About</a>
                 </nav>
-                <form class='flex items-center w-62 border border-navy rounded-3.5 pl-1.5'>
-                    <div class='flex items-center justify-center'>
-                        {% svg 'icon-search' %}
-                    </div>
-                    <div class='flex-search'>
-                        <input id='search' class='w-full py-1.2 px-2 text-sm2 text-med-navy font-bold uppercase placeholder-light-navy-3 rounded-3.5 outline-none' type='search' placeholder='Filter data by keyword' aria-label='Filter data by keyword'>
-                    </div>
-                </form>
+                {% if request.path != "/about/" %}
+                    <form class='flex items-center w-62 border border-navy rounded-3.5 pl-1.5'>
+                        <div class='flex items-center justify-center'>
+                            {% svg 'icon-search' %}
+                        </div>
+                        <div class='flex-search'>
+                            <input id='search' class='w-full py-1.2 px-2 text-1xs text-med-navy font-bold uppercase placeholder-light-navy-3 rounded-3.5 outline-none' type='search' placeholder='Filter data by keyword' aria-label='Filter data by keyword'>
+                        </div>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </header>
 
-    <main class='px-10'>
-        <div class="mx-auto max-w-container">
+    <main>
+        <div class="mx-auto max-w-full">
             {% block body_block %} {% endblock %}
         </div>
     </main>
 
     {% block modal_block %} {% endblock %}
+
+    {% if request.path == "/about/" %}
+        {% include "autism_prevalence_map/footer.html" %}
+    {% endif %}
 
     <script src="{% static 'autism_prevalence_map/vendor/js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/popper.min.js' %}"></script>
@@ -100,6 +106,7 @@
     <script src='{{ static_base }}{{ script }}'></script>
 
     {% block js_block %} {% endblock %}
+
 </body>
 
 </html>

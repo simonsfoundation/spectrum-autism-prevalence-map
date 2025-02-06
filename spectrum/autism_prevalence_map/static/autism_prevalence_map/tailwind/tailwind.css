@@ -2,6 +2,28 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+@layer base {
+    a {
+        @apply text-blue underline;
+    }
+
+    b {
+        @apply font-bold;
+    }
+
+    article p {
+        @apply mb-3 font-serif font-light text-1sm text-dark-brown tracking-normal-lg lg:mb-7 lg:tracking-wide lg:text-3sm lg:leading-8;
+    }
+
+    article ul {
+        @apply pl-8 mb-8 list-disc marker:text-red;
+    }
+
+    footer section a {
+        @apply no-underline text-light-navy-2 hover:text-light-red;
+    }
+}
+
 @font-face {
     font-family: 'GothiaSans';
     src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Light.otf') format('opentype'),
