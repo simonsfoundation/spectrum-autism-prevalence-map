@@ -68,9 +68,9 @@
             </div>
             <div class='flex items-center space-x-8'>
                 <nav class='flex items-center gap-8'>
-                    <a id='map-link' class='text-2xs font-bold text-navy uppercase no-underline hover:underline {% if request.path == "/" %}active{% endif %} ' href="{% url 'index' %}">Map</a>
-                    <a id='list-link' class='text-2xs font-bold text-navy uppercase no-underline hover:underline {% if request.path == "/list/" %}active{% endif %}' href="{% url 'list_view' %}">List</a>
-                    <a class='text-2xs font-bold text-navy uppercase no-underline hover:underline {% if request.path == "/about/" %}active{% endif %}' href="{% url 'about' %}">About</a>
+                    <a id='map-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/" %}text-red{% endif %}' href="{% url 'index' %}">Map</a>
+                    <a id='list-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/list/" %}text-red{% endif %}' href="{% url 'list_view' %}">List</a>
+                    <a class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/about/" %}text-red{% endif %}' href="{% url 'about' %}">About</a>
                 </nav>
                 {% if request.path != "/about/" %}
                     <form class='flex items-center w-search border border-navy rounded-lg pl-1.5'>
