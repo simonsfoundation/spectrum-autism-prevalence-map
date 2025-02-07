@@ -2,47 +2,52 @@
 
 {% load static %} 
 
-{% block title %}Spectrum | Global Autism Prevalence Map{% endblock %} 
+{% block title %}Spectrum | Global Autism Prevalence Map{% endblock %}
+
+{% block page_name %}list{% endblock %}
 
 {% block body_block %}
 <!-- Main Container
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<div class="container-fluid">    
-    <div class="row">
-        <div class="col-11">
-            <!-- list 
-            –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-            <div id="list" class="table-responsive spectrum-table">
-                <table id="studies" class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col">YEAR</th>
-                            <th scope="col">AUTHOR</th>
-                            <th scope="col">COUNTRY</th>
-                            <th scope="col">AREA</th>
-                            <th scope="col">SAMPLE SIZE</th>
-                            <th scope="col">PREVALENCE (PER 10,000)</th>
-                            <th scope="col">95% CONFIDENCE INTERVAL</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="container-fluid">    
-    <div class="row">
-        <div class="col-11">
-            <div class="container-fluid">    
-                <div class="row">
-                    <div id="width-check" class="col-4">
+<div class="pt-3 pb-4 mx-auto max-w-container">
+    <div class="container-fluid">    
+        <div class="row">
+            <div class="col-11">
+                <!-- list 
+                –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+                <div id="list" class="table-responsive spectrum-table">
+                    <table id="studies" class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">YEAR</th>
+                                <th scope="col">AUTHOR</th>
+                                <th scope="col">COUNTRY</th>
+                                <th scope="col">AREA</th>
+                                <th scope="col">SAMPLE SIZE</th>
+                                <th scope="col">PREVALENCE (PER 10,000)</th>
+                                <th scope="col">95% CONFIDENCE INTERVAL</th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-</div>           
+
+    <div class="container-fluid">    
+        <div class="row">
+            <div class="col-11">
+                <div class="container-fluid">    
+                    <div class="row">
+                        <div id="width-check" class="col-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>         
 
 {% include "autism_prevalence_map/action_buttons.html" with template="list" %}
 
@@ -52,15 +57,6 @@
 {% endblock %} 
 
 {% block js_block %}
-<!-- Mapping JS libraries
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<script src="{% static 'autism_prevalence_map/vendor/js/topojson.js' %}"></script>
-<script src="{% static 'autism_prevalence_map/vendor/js/d3-array.v1.min.js' %}"></script>
-<script src="{% static 'autism_prevalence_map/vendor/js/d3-geo.v1.min.js' %}"></script>
-<script src="{% static 'autism_prevalence_map/vendor/js/d3-geo-projection.v2.min.js' %}"></script>
-
-<!-- Custom JS
-–––––––––––––––––––––––––––––––––––––––––––––––––– -->  
 <script>
     let min_yearpublished = "{{ min_yearpublished }}";
     let max_yearpublished = "{{ max_yearpublished }}";
@@ -78,7 +74,5 @@
     let income = "{{ meanincome }}";
     let education = "{{ education }}";
     const world_atlas = "{% static 'autism_prevalence_map/vendor/data/110m.json' %}";
-</script>  
-<script src="{% static 'autism_prevalence_map/js/joint.js' %}"></script>
-<script src="{% static 'autism_prevalence_map/js/list.js' %}"></script>
+</script>
 {% endblock %}

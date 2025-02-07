@@ -12,7 +12,7 @@
     }
 
     article p {
-        @apply mb-3 font-serif font-light text-1sm text-dark-brown tracking-normal-lg lg:mb-7 lg:tracking-wide lg:text-3sm lg:leading-8;
+        @apply mb-3 font-serif font-light text-1sm text-dark-gray2 tracking-normal-lg lg:mb-7 lg:tracking-wide lg:text-3sm lg:leading-8;
     }
 
     article ul {
@@ -384,4 +384,34 @@
         url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-BoldItalic.woff2') format('woff2');
     font-style: italic;
     font-weight: 700;
+}
+
+@layer utilities {
+    input[type="search"]::-webkit-search-cancel-button {
+        @apply hidden;
+    }
+    .ui-slider {
+        @apply relative h-1 bg-light-navy-2 rounded-sm;
+    }
+    .ui-slider-handle {
+        @apply absolute inline-block w-2.5 h-2.5 -top-0.75 rounded-full bg-med-navy;
+    }
+    .ui-slider-range {
+        @apply absolute h-1 bg-med-navy;
+    }
+    .tooltip {
+        @apply relative pt-1.5 opacity-100;
+    }
+    .tooltip .arrow {
+        @apply absolute block w-arrow h-arrow -top-0.25 border-transparent;
+    }
+    .tooltip .arrow:before {
+        @apply absolute content-empty bottom-0 z-2 border-solid border-t-0 border-x-6.5 border-b-6.5 border-transparent border-b-light-gray;
+    }
+    .tooltip .arrow:after {
+        @apply absolute content-empty bottom-[0.5px] left-[-0.5px] w-arrow2 h-arrow2 z-1 border-solid border-t-0 border-x-6.5 border-b-6.5 border-transparent border-b-med-gray;
+    }
+    .tooltip-inner {
+        @apply py-3 px-6.5 bg-light-gray border-0.5 border-light-gray2 rounded-sm font-serif text-2xs2 text-dark-gray2 text-center max-w-tooltip shadow-tooltip;
+    }
 }
