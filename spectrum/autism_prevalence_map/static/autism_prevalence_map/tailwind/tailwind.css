@@ -392,4 +392,13 @@
     .tooltip-inner {
         @apply py-3 px-6.5 bg-light-gray border-0.5 border-light-gray2 rounded-sm font-serif text-2xs2 text-dark-gray2 text-center max-w-tooltip shadow-tooltip;
     }
+    /*hide the number control spinner for input type number*/
+    .no-spinner {
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+            margin: 0;
+        }
+        -moz-appearance: textfield;
+    }
 }
