@@ -6,7 +6,7 @@ export function ttInitMap() {
         app.map = {};
 
         // globaly scope some variables for the map
-        let studies, clicked, clickedCircleId, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius, nodes, simulation;
+        let studies, pinnedDot, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius, nodes, simulation;
 
         // functions for adding a graticule to the map
         const graticuleOutline = d3.geoGraticule().outline();
@@ -39,7 +39,7 @@ export function ttInitMap() {
             studies = null;
 
             // have any points been clicked?
-            clicked = false;
+            pinnedDot = null;
 
             // map projection
             projection = d3.geoKavrayskiy7()
@@ -90,7 +90,6 @@ export function ttInitMap() {
                 scalePins(d3.event.transform.k);
                 
             };
-            
 
             // create container for timeline
             timelineDiv = d3.select('#timeline'),
@@ -302,7 +301,6 @@ export function ttInitMap() {
         }
 
         app.map.updateTimeline = function() {
-
             if(timeline_type == 'studied') {
                 // count the years in which each study was operative for calculating the max domain
                 studiesByYear = [];
@@ -573,32 +571,21 @@ export function ttInitMap() {
                     const authors = d.properties.authors;
                     return authors + ' ' + d.properties.yearpublished
                 })
-                .on('click', viewMoreInfo)
                 .on('mouseover', function(d) {
-                    const sel = d3.select(this);
-                    sel.moveToFront();
-                    showTimelineTooltip(d);
-                    d3.select(this)
-                        .style('fill', '#000')
-                        .style('stroke', '#000')
-                        .style('stroke-width', '0.2')
-                        .style('cursor', 'pointer');
-                    showDotOnMap(d);
-                    $('#map_dot_' + d.properties.pk).tooltip('show');
+                    // only show hover if not pinned
+                    if (pinnedDot !== d.properties.pk) {
+                        showHover(d.properties.pk);
+                    }
                 })
                 .on('mouseout', function(d) {
-                    if (!clicked || d.properties.pk !== clickedCircleId) {
-                        d3.select(this)
-                            .style('fill', pointColor)
-                            .style('stroke', '#910E1C')
-                            .style('stroke-width', '0.2')
-                            .style('cursor', 'default');
+                    // only hide hover if not pinned
+                    if (pinnedDot !== d.properties.pk) {
+                        hideHover(d.properties.pk);
                     }
-                    hideTimelineTooltip();
-                    if (!clicked) {
-                        hideDotsOnMap();
-                    }
-                    $('#map_dot_' + d.properties.pk).tooltip('hide');
+                })
+                .on('click', function(d) {
+                    // pin or unpin
+                    viewMoreInfo(d);
                 });
 
             timelineSelection.exit()
@@ -618,7 +605,6 @@ export function ttInitMap() {
 
         // add overlay dataset
         app.map.updateMapPoints = function() {   
-
             nodes = studies.features.map(function(n) {
                 const pos = projection(n.geometry.coordinates);
                 return {
@@ -649,32 +635,21 @@ export function ttInitMap() {
                 })
                 .attr('data-placement', 'bottom')
                 .attr('data-html', 'false')
-                .on('click', viewMoreInfo)
                 .on('mouseover', function(d) {
-                    // dont apply a hover color or do anything else if this is the active clicked item
-                    if (clicked && d.properties.pk === clickedCircleId) {
-                        return;
+                    // if not pinned, show hover
+                    if (pinnedDot !== d.properties.pk) {
+                        showHover(d.properties.pk);
                     }
-                    const sel = d3.select(this);
-                    sel.moveToFront();
-                    showTimelineTooltip(d);
-                    d3.select(this)
-                        .style('fill', '#000')
-                        .style('stroke', '#000')
-                        .style('stroke-width', '0.5')
-                        .style('cursor', 'pointer');
-                    $('#map_dot_' + d.properties.pk).tooltip('show');
                 })
                 .on('mouseout', function(d) {
-                    hideTimelineTooltip();
-                    if (!clicked || d.properties.pk !== clickedCircleId) {
-                        d3.select(this)
-                            .style('fill', pointColor)
-                            .style('stroke', '#910E1C')
-                            .style('stroke-width', '0.5')
-                            .style('cursor', 'default');
-                        $('#map_dot_' + d.properties.pk).tooltip('hide');
+                    // if not pinned, hide hover
+                    if (pinnedDot !== d.properties.pk) {
+                        hideHover(d.properties.pk);
                     }
+                })
+                .on('click', function(d) {
+                    // pin or unpin
+                    viewMoreInfo(d);
                 });
                 
             mapSelection.exit().remove();
@@ -725,7 +700,6 @@ export function ttInitMap() {
 
         // define the radius change for points as we zoom in and out
         function scalePins(k) {
-
             // calculate new radius
             new_radius = 4/k;
 
@@ -742,7 +716,6 @@ export function ttInitMap() {
             simulation.force('charge').radius(new_radius);
 
             simulation.alpha(1).restart();
-
         }
 
         // set up listeners for zoom
@@ -763,81 +736,82 @@ export function ttInitMap() {
             }
         });
 
-        // highlight dot on map
-        function showDotOnMap(d) {
-            // hide any dots showing up on map
-            d3.selectAll('.map-circles')
-                .style('fill', pointColor)
-                .style('stroke', '#910E1C')
-                .style('stroke-width', '0.5');
-                
-            // show clicked dot on map
-            d3.select('#map_dot_' + d.properties.pk)
-                .style('fill', '#0B6BC3')
-                .style('stroke', '#FFF')
-                .style('stroke-width', '0.5');
-        }
+        function showHover(pk) {
+            // show the same tooltip on the map and timeline
+            $('#map_dot_' + pk).tooltip('show');
+            $('#timeline_dot_' + pk).tooltip('show');
 
-        // remove highlighting from dots on map
-        function hideDotsOnMap() {
-            d3.selectAll('.map-circles')
-                .style('fill', pointColor)
-                .style('stroke', '#910E1C')
-                .style('stroke-width', '0.5');
-        }
-
-        // show tooltip on timeline dot
-        function showTimelineTooltip(d) {
-            $('[id^="timeline_dot_"]').tooltip('hide');
-
-            // hide any tooltips that are already showing up on the timeline
-            d3.selectAll('rect.timeline-circles')
-                .style('fill', pointColor)
-                .style('stroke', '#910E1C')
-                .style('stroke-width', '0.5');
-
-            // now show the one hovered or clicked on
-            d3.select('#timeline_dot_' + d.properties.pk)
+            // black hover state
+            d3.select('#map_dot_' + pk)
                 .style('fill', '#000')
-                .style('stroke', '#000')
-                .style('stroke-width', '0.5');
+                .style('stroke', '#000');
 
-            $('#timeline_dot_' + d.properties.pk).tooltip('show');
+            d3.select('#timeline_dot_' + pk)
+                .style('fill', '#000')
+                .style('stroke', '#000');
         }
 
-        // remove all tooltips from timeline
-        function hideTimelineTooltip() {
-            if (!clicked) {
-                d3.selectAll('rect.timeline-circles')
-                    .style('fill', pointColor)
-                    .style('stroke', '#910E1C')
-                    .style('stroke-width', '0.5');
-                $('.tooltip').tooltip('hide');
-            }
+        function hideHover(pk) {
+            // hide on map and timeline
+            $('#map_dot_' + pk).tooltip('hide');
+            $('#timeline_dot_' + pk).tooltip('hide');
+
+            // revert to default color
+            d3.select('#map_dot_' + pk)
+                .style('fill', pointColor)
+                .style('stroke', '#910E1C');
+            d3.select('#timeline_dot_' + pk)
+                .style('fill', pointColor)
+                .style('stroke', '#910E1C');
         }
 
-        // function for launching more information card
-        function viewMoreInfo(d) {
-            // set clicked flag variable to true
-            clicked = true;
-            clickedCircleId = d.properties.pk;
+        // pin a dot and tooltip
+        function pinDot(d) {
+            let pk = d.properties.pk;
 
-            // hide all tooltips except for this clicked circles tooltip
-            $('[id^="map_dot_"], [id^="timeline_dot_"]')
-                .not('#map_dot_' + d.properties.pk)
-                .not('#timeline_dot_' + d.properties.pk)
-                .tooltip('hide');
+            // mark as pinned
+            pinnedDot = pk;
 
-            // show clicked dot
-            showDotOnMap(d);
+            // show tooltips on map and timeline
+            $('#map_dot_' + pk).tooltip('show');
+            $('#timeline_dot_' + pk).tooltip('show');
 
-            // store clicked ID
-            clickedCircleId = d.properties.pk
+            // pinned state is blue with white border
+            d3.select('#map_dot_' + pk)
+                .style('fill', '#0B6BC3')
+                .style('stroke', '#FFF');
+            d3.select('#timeline_dot_' + pk)
+                .style('fill', '#0B6BC3')
+                .style('stroke', '#FFF');
 
-            // show tooltip on timeline
-            showTimelineTooltip(d);
+            // populate and show info card
+            populateCard(d);
+        }
 
-            // add data to card
+        // unpin a dot and tooltip
+        function unpinDot(pk) {
+            pinnedDot = null;
+            clicked = false;
+            clickedCircleId = null;
+
+            // hide tooltips on map and timeline
+            $('#map_dot_' + pk).tooltip('hide');
+            $('#timeline_dot_' + pk).tooltip('hide');
+
+            // revert to default color
+            d3.select('#map_dot_' + pk)
+                .style('fill', pointColor)
+                .style('stroke', '#910E1C');
+            d3.select('#timeline_dot_' + pk)
+                .style('fill', pointColor)
+                .style('stroke', '#910E1C');
+
+            // hide the info card
+            hideCard();
+        }
+
+        // populate the info card when a map or timline dot is clicked
+        function populateCard(d) {
             const authors = d.properties.authors;
             const card_title = authors + ' ' + d.properties.yearpublished;
             const area = d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
@@ -863,16 +837,16 @@ export function ttInitMap() {
             // add links to card
             let links = [];
             if (d.properties.link1title && d.properties.link1url) {
-                links.push('<a href="'+ d.properties.link1url +'">'+ d.properties.link1title +'</a>') 
+                links.push('<a href="'+ d.properties.link1url +'">'+ d.properties.link1title +'</a>');
             }
             if (d.properties.link2title && d.properties.link2url) {
-                links.push('<a href="'+ d.properties.link2url +'">'+ d.properties.link2title +'</a>') 
+                links.push('<a href="'+ d.properties.link2url +'">'+ d.properties.link2title +'</a>');
             }
             if (d.properties.link3title && d.properties.link3url) {
-                links.push('<a href="'+ d.properties.link3url +'">'+ d.properties.link3title +'</a>') 
+                links.push('<a href="'+ d.properties.link3url +'">'+ d.properties.link3title +'</a>');
             }
             if (d.properties.link4title && d.properties.link4url) {
-                links.push('<a href="'+ d.properties.link4url +'">'+ d.properties.link4title +'</a>') 
+                links.push('<a href="'+ d.properties.link4url +'">'+ d.properties.link4title +'</a>');
             }
 
             let links_string = links.join('<br />');
@@ -884,19 +858,32 @@ export function ttInitMap() {
             $('#more-information-card').css('display', 'block');
         }
 
-        // listener to close card
-        $('#card-close').click(function(){
-            hideCard();
-        });
-
+        // hide the info card
         function hideCard() {
             $('#more-information-card').css('display', 'none');
-            // set clicked flag variable to false
-            clicked = false;
-            clickedCircleId = null;
-            hideDotsOnMap();
-            hideTimelineTooltip();
         }
+
+        function viewMoreInfo(d) {
+            const pk = d.properties.pk;
+            // if we clicked the same dot again, unpin
+            if (pinnedDot === pk) {
+                unpinDot(pk);
+                return;
+            }
+
+            // if some other dot was pinned, unpin that first
+            if (pinnedDot && pinnedDot !== pk) {
+                unpinDot(pinnedDot);
+            }
+
+            // pin the new dot
+            pinDot(d);
+        }
+
+        // listener to close card
+        $('#card-close').click(function () {
+            hideCard();
+        });
 
         // listen for state change in the timeline switch
         $('#timeline-switch').change(function() {
