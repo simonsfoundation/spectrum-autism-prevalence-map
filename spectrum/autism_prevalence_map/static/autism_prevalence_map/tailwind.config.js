@@ -15,7 +15,11 @@ module.exports = {
                 lineHeight: '0.75rem',
                 letterSpacing: '0.16em',
             }],
-            '1xs2': ['0.688rem', { // 11px
+            '1xs2': ['0.625rem', { // 10px
+                lineHeight: '100%',
+                letterSpacing: '0.01em',
+            }],
+            '1xs3': ['0.688rem', { // 11px
                 lineHeight: '120%',
                 letterSpacing: '0.16em',
             }],
@@ -31,9 +35,20 @@ module.exports = {
                 lineHeight: '1.375rem',
                 letterSpacing: '0.16em',
             }],
+            'sm2': ['0.875rem', { // 14px
+                lineHeight: '100%',
+                letterSpacing: '0.01em',
+            }],
+            'sm3': ['0.938rem', { // 15px
+                lineHeight: '100%',
+                letterSpacing: '0.01em',
+            }],
             '1md': ['1.438rem', { // 23px
                 lineHeight: '100%',
                 letterSpacing: '0.06em',
+            }],
+            'lg': ['1.938rem', { // 31px
+                lineHeight: '100%',
             }]
         },
         extend: {
@@ -46,7 +61,8 @@ module.exports = {
                 'sm': '0.25rem', // 4px
                 'sm-l': '0.25rem 0 0 0.25rem', // 4px
                 'sm-r': '0 0.25rem 0.25rem 0', // 4px
-                'lg': '0.875rem', // 14px
+                'md': '0.75rem', // 12px
+                'circle': '50%',
             },
             letterSpacing: {
             },
@@ -65,6 +81,9 @@ module.exports = {
                 'map-lg': '30.125rem',  // 482px
                 'map-xl': '39rem',  // 624px
                 'timeline': '11.75rem', // 188px
+                'brush': '11.313rem', // 181px
+                'switchout': '1.5rem', // 24px
+                'switchin': '0.875rem', // 14px
                 'arrow': '0.5rem', // 8px
                 'arrow2': '6.5px', // 6.5px
             },
@@ -72,8 +91,14 @@ module.exports = {
                 'search': '15.5rem', // 248px
                 'arrow': '0.75rem', // 12px
                 'arrow2': '0.813rem', // 13px
+                'switchin': '0.875rem', // 14px
+                'switchout': '2.75rem', // 44px
                 'filter': '10.813rem', // 173px
                 'filterwide': '15.375rem', // 246px
+                'help': '27.625rem', // 442px
+                'timeline': '48.125rem', // 770px
+                'timeline-lg': '57.188rem', // 915px
+                'timeline-xl': '77.25rem', // 1236px
                 'map': '51.625rem', // 826px
                 'map-lg': '55.75rem',  // 892px
                 'map-xl': '72.125rem',  // 1154px
@@ -86,21 +111,33 @@ module.exports = {
                 '1.25': '0.3125rem', // 5px
                 '1.5': '0.375rem', // 6px
                 '1.75': '0.4375rem', // 7px
+                '2': '0.5rem', // 8px
+                '2.25': '0.563rem', // 9px
                 '2.5': '0.625rem', // 10px
                 '2.75': '0.688rem', // 11px
+                '3.25': '0.813rem', // 13px
                 '3.5': '0.875rem', // 14px
                 '3.75': '0.938rem', // 15px
                 '4.5': '1.125rem', // 18px
                 '4.7': '1.188rem', // 19px
+                '5': '1.25rem', // 20px
                 '5.2': '1.313rem', // 21px
                 '5.5': '1.375rem', // 22px
+                '5.75': '1.438rem', // 23px
+                '6': '1.5rem', // 24px
                 '6.5': '1.625rem', // 26px
                 '8.5': '2.125rem', // 34px
+                '8.75': '2.188rem', // 35px
                 '10': '2.5rem', // 40px
                 '10.5': '2.625rem', // 42px
+                '11.5': '2.875rem', // 46px
+                '13': '3.25rem', // 52px
                 '14.5': '3.625rem', // 58px
+                '15': '3.75rem', // 60px
+                '16': '4rem', // 64px
                 '17.5': '4.375rem', // 70px
-                '62' : '15.5rem', // 248px
+                '23': '5.75rem', // 92px
+                '62': '15.5rem', // 248px
                 '63.5': '15.875rem', // 254px
                 '207.5': '51.875rem', // 830px  
             },
@@ -111,6 +148,7 @@ module.exports = {
             },
             colors: {
                 'red': '#910E1C',
+                'light-red': '#D14D57',
                 'blue': '#0B6BC3',
                 'navy': '#003049',
                 'med-navy': '#2E5367',
@@ -123,6 +161,7 @@ module.exports = {
                 'med-gray': '#CCC',
                 'light-gray': '#F4F5F6',
                 'light-gray2': '#BFCBD1',
+                'light-gray3': '#4D4C49',
                 'black': '#000',
                 'white': '#FFF',
             },
@@ -139,7 +178,7 @@ module.exports = {
                 'search': '0.95 1 0%',
             },
             content: {
-                'empty': '""', 
+                'empty': '""',
             },
             zIndex: {
                 '1': '1',
@@ -148,13 +187,30 @@ module.exports = {
             boxShadow: {
                 'tooltip': '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
             },
+            translate: {
+                'neg2': '-0.125rem',
+                '20': '1.25rem',
+            },
+            rotate: {
+                '180': '180deg',
+            },
+            strokeDash: {
+                '5': '5',
+            },
             screens: {
-                'lg': '1440px',
-                'xl': '1728px',
+                'lg': '90rem',
+                'xl': '108rem',
             },
         }
     },
     plugins: [
+        function ({ addUtilities }) {
+            addUtilities({
+                '.stroke-dash-5': {
+                    'stroke-dasharray': '5',
+                },
+            });
+        },
     ],
     safelist: [
         'tooltip',

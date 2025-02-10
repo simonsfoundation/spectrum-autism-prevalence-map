@@ -378,10 +378,22 @@
         @apply absolute h-1 bg-med-navy;
     }
     .tooltip {
-        @apply relative pt-1.5 opacity-100;
+        @apply relative opacity-100;
+    }
+    .tooltip.bs-tooltip-bottom {
+        @apply pt-1.5;
+    }
+    .tooltip.bs-tooltip-top {
+        @apply pb-1.5 -mt-0.75 -mr-0.25;
     }
     .tooltip .arrow {
-        @apply absolute block w-arrow h-arrow -top-0.25 border-transparent;
+        @apply absolute block w-arrow h-arrow border-transparent;
+    }
+    .bs-tooltip-bottom .arrow {
+        @apply -top-0.25;
+    }
+    .bs-tooltip-top .arrow {
+        @apply -bottom-0.25 rotate-180;
     }
     .tooltip .arrow:before {
         @apply absolute content-empty bottom-0 z-2 border-solid border-t-0 border-x-6.5 border-b-6.5 border-transparent border-b-light-gray;
@@ -392,6 +404,12 @@
     .tooltip-inner {
         @apply py-3 px-6.5 bg-light-gray border-0.5 border-light-gray2 rounded-sm font-serif text-2xs2 text-dark-gray2 text-center max-w-tooltip shadow-tooltip;
     }
+    .tooltip.help {
+        @apply -ml-5 -mt-23;
+    }
+    .tooltip.help .tooltip-inner {
+        @apply w-help max-w-none text-left pr-11.5 pl-5.2;
+    }
     .map-circles {
         @apply cursor-pointer;
     }
@@ -399,9 +417,53 @@
     .no-spinner {
         &::-webkit-inner-spin-button,
         &::-webkit-outer-spin-button {
-        -webkit-appearance: none;
+            -webkit-appearance: none;
             margin: 0;
         }
         -moz-appearance: textfield;
+    }
+
+    .timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob,
+    .timeline-switch > [type="checkbox"]:not(:checked) + label + .timeline-switch-knob {
+        @apply absolute inline-block w-switchin h-switchin top-0.75 rounded-circle cursor-pointer pointer-events-none transition-all duration-100 ease-in;
+    }
+
+    .timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob {
+        @apply right-3.25;
+    }
+
+    .timeline-switch > [type="checkbox"]:not(:checked) + label + .timeline-switch-knob {
+        @apply right-8.75;
+    }
+
+    .timeline-switch > [type="checkbox"]:checked + label,
+    .timeline-switch > [type="checkbox"]:not(:checked) + label {
+        @apply inline-block mr-1.75 py-1.25 pr-13 cursor-pointer;
+    }
+
+    .timeline-switch > [type="checkbox"]:checked + label:after,
+    .timeline-switch > [type="checkbox"]:not(:checked) + label:after {
+        @apply content-empty absolute -top-0.5 right-2.25 w-switchout h-switchout rounded-md bg-light-navy-2 border-0.5 border-med-navy;
+    }
+
+    .timeline-switch > [type="checkbox"]:checked,
+    .timeline-switch > [type="checkbox"]:not(:checked) {
+        @apply hidden;
+    }
+
+    #timeline svg {
+        @apply overflow-visible;
+    }
+
+    .brush .selection {
+        @apply stroke-light-red fill-light-gray3 stroke-dash-5;
+    }
+
+    .timeline-axis {
+        @apply text-white text-1xs2;
+    }
+
+    .timeline-circles {
+       @apply translate-y-20;
     }
 }

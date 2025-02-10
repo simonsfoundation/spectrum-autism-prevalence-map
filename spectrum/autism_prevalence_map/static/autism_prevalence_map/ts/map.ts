@@ -93,13 +93,22 @@ export function ttInitMap() {
 
             // create container for timeline
             timelineDiv = d3.select('#timeline'),
-                timelineWidth = timelineDiv.node().offsetWidth - 45,
+                timelineWidth = timelineDiv.node().offsetWidth,
                 timelineHeight = timeline_height; 
         
             timelineSVG = timelineDiv.append('svg')
                 .attr('id', 'timeline-svg')
                 .attr('width', timelineWidth)
                 .attr('height', timelineHeight);
+
+            // enable timeline help tooltip
+            $('#help').tooltip({
+                container: 'body',
+                trigger: 'click',
+                placement: 'right',
+                template: '<div class="tooltip help" role="tooltip"><div class="tooltip-inner"></div></div>',
+                title: 'You can use the timeline of studies to filter by the years in which studies were conducted or published. Simply drag the cursor horizontally across the timeline to view data.',
+            });
 
             d3.json(world_atlas).then(function(world) {
                 countriesG.selectAll('path')
@@ -154,10 +163,9 @@ export function ttInitMap() {
         app.map.addTimeline = function() {
             timeMin = d3.min(studies.features, function(d) { return new Date(d.properties.yearsstudied_number_min); });
             timeMax = d3.max(studies.features, function(d) { return new Date(d.properties.yearpublished); });
-            timeMax.setUTCFullYear(timeMax.getUTCFullYear() + 1);
             // add the x brush
             brush = d3.brushX()
-                .extent([[50, 0], [timelineWidth-50, timelineHeight-20]])
+                .extent([[0, 0], [timelineWidth, timelineHeight-33]])
                 .on('end', brushed)
                 .on('start brush', moveHandles);
                 
@@ -169,30 +177,29 @@ export function ttInitMap() {
                 .attr('class', 'timeline-circles');
                
             timelineX = d3.scaleTime()
-                .range([50, timelineWidth-50])
-                .domain([timeMin, timeMax])
-                .nice(d3.timeYear);        
+                .range([0, timelineWidth])
+                .domain([timeMin, timeMax]);       
 
             timelineY = d3.scaleLinear()
-                .range([timelineHeight-30, 10]);
+                .range([timelineHeight - 83, 0]);
 
             // Add the x axis
-            const axisHeight = timelineHeight - 20;
+            const axisHeight = timelineHeight - 33;
             timelineSVG.append('g')
                 .attr('transform', 'translate(0,' + axisHeight + ')')
                 .classed('timeline-axis', true)
-                .call(d3.axisBottom(timelineX).ticks(5).tickSize(6).tickPadding(3));
+                .call(d3.axisBottom(timelineX).ticks(5).tickSize(15).tickPadding(9));
             
 
             handle = brushG.selectAll('.handle--custom')
                 .data([{type: 'w'}, {type: 'e'}])
                 .enter().append('circle')
                     .classed('handle--custom', true)
-                    .attr('r', 2)
-                    .attr('fill', '#fff')
-                    .attr('fill-opacity', 0.8)
+                    .attr('r', 3)
+                    .attr('fill', '#D14D57')
+                    .attr('fill-opacity', 1)
                     .attr('stroke', '#fff')
-                    .attr('stroke-width', 1.5)
+                    .attr('stroke-width', 0)
                     .attr('cursor', 'ew-resize')
                     .attr('display', 'none');
 
@@ -201,10 +208,10 @@ export function ttInitMap() {
                 .data([{type: 'w'}, {type: 'e'}])
                 .enter().append('text')
                 .classed('handle--text', true)
-                .attr('y', timelineHeight / 2.2)
-                .attr('dy', '.35em')
-                .attr('fill', '#fff')
-                .attr('font-size', '12px')
+                .attr('y', timelineHeight / 2.45)
+                .attr('dy', '.3em')
+                .attr('fill', '#FFF')
+                .attr('font-size', '10px')
                 .attr('text-anchor', 'start')
                 .attr('display', 'none');
 
@@ -250,16 +257,16 @@ export function ttInitMap() {
                     handle
                         .attr('display', null)
                         .attr('transform', function(d, i) { 
-                            return 'translate(' + s[i] + ',' + timelineHeight / 2.2 + ')'; 
+                            return 'translate(' + s[i] + ',' + timelineHeight / 2.45 + ')'; 
                         });
         
                     handleText
                         .attr('display', null)
                         .attr('x', function(d, i) {
                             if (i === 0) {
-                                return s[i] - 32;
+                                return s[i] - 28;
                             } else {
-                                return s[i] + 4;
+                                return s[i] + 8;
                             }
                         })
                         .text(function(d, i) { 
@@ -368,10 +375,10 @@ export function ttInitMap() {
                 .attr('x', function(d){
                     if(timeline_type == 'studied') {
                         let date = new Date(d.properties.yearsstudied_number_min);
-                        return timelineX(date);
+                        return timelineX(date) - 4;
                     } else {
                         let date = new Date(d.properties.yearpublished)
-                        return timelineX(date);
+                        return timelineX(date) - 4;
                     }
                 })
                 .attr('y', function(d){
@@ -465,11 +472,10 @@ export function ttInitMap() {
                 .attr('x', function(d){
                     if(timeline_type == 'studied') {
                         let date = new Date(d.properties.yearsstudied_number_min);
-                        return timelineX(date);
-                        //return d.x;
+                        return timelineX(date) - 4;
                     } else {
                         let date = new Date(d.properties.yearpublished)
-                        return timelineX(date);
+                        return timelineX(date) - 4;
                     }
                 })
                 .attr('y', function(d){
@@ -655,10 +661,15 @@ export function ttInitMap() {
             mapSelection.exit().remove();
 
             setTimeout(function() {
-                $('.map-circles, .timeline-circles').tooltip({
+                $('.map-circles').tooltip({
                     container: 'body',
                     trigger: 'manual',
-                    offset: '-30, 1'
+                    offset: '-60, 1'
+                });
+                $('.timeline-circles').tooltip({
+                    container: 'body',
+                    trigger: 'manual',
+                    offset: '60, 1'
                 });
             }, 300);
 
@@ -747,8 +758,8 @@ export function ttInitMap() {
                 .style('stroke', '#000');
 
             d3.select('#timeline_dot_' + pk)
-                .style('fill', '#000')
-                .style('stroke', '#000');
+                .style('fill', '#FFF')
+                .style('stroke', '#FFF');
         }
 
         function hideHover(pk) {
