@@ -27,14 +27,34 @@ module.exports = {
                 lineHeight: '120%',
                 letterSpacing: '0.04em',
             }],
+            '3xs': ['0.8125rem', { // 13px
+                lineHeight: '0.975rem',
+                letterSpacing: '0.02em',
+            }],
             'sm': ['0.875rem', { // 14px
                 lineHeight: '1.375rem',
                 letterSpacing: '0.16em',
             }],
+            '1sm': ['1rem', { // 16px
+                lineHeight: '1.6rem',
+                letterSpacing: '0.01em',
+            }],
+            '3sm': ['1.25rem', { // 20px
+                lineHeight: '1.5rem',
+                letterSpacing: '0.01em',
+            }],
             '1md': ['1.438rem', { // 23px
                 lineHeight: '100%',
                 letterSpacing: '0.06em',
-            }]
+            }],
+            '4md': ['1.813rem', { // 29px
+                lineHeight: '1.813rem',
+                letterSpacing: '0em'
+            }],
+            '3lg': ['2.4375rem', { // 39px
+                lineHeight: '100%',
+                letterSpacing: '0em',
+            }],
         },
         extend: {
             fontFamily: {
@@ -49,9 +69,9 @@ module.exports = {
                 'lg': '0.875rem', // 14px
             },
             letterSpacing: {
+                'widest-sm': '0.14em', // 1.92px
             },
-            lineHeight: {
-            },
+            lineHeight: {},
             borderWidth: {
                 '0.5': '0.5px',
                 '1': '1px',
