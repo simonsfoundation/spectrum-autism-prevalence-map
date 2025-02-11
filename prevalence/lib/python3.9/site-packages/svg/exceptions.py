@@ -1,4 +1,0 @@
-
-
-class SVGNotFound(Exception):
-    pass
