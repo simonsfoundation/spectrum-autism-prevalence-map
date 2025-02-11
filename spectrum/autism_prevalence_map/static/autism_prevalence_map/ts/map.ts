@@ -809,7 +809,7 @@ export function ttInitMap() {
                 .style('fill', pointColor)
                 .style('stroke', '#910E1C');
 
-            // hide the info card
+            // show the welcome card
             showWelcomeCard();
         }
 
@@ -861,7 +861,7 @@ export function ttInitMap() {
             $('#more-information-card').css('display', 'block');
         }
 
-        // hide the info card
+        // show the welcome card
         function showWelcomeCard() {
             // placeholder for future functionlaity to revert back to welcome card
         }
