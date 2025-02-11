@@ -22,7 +22,7 @@ import { ttInitList } from './list.ts';
                 ttInitMap();
                 break;
             case 'list':
-                ttinitList();
+                ttInitList();
                 break;
         }
     });

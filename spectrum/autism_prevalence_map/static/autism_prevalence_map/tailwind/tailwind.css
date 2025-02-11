@@ -395,13 +395,4 @@
     .map-circles {
         @apply cursor-pointer;
     }
-    /*hide the number control spinner for input type number*/
-    .no-spinner {
-        &::-webkit-inner-spin-button,
-        &::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-            margin: 0;
-        }
-        -moz-appearance: textfield;
-    }
 }
