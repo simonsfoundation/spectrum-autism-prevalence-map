@@ -403,7 +403,7 @@ export function ttInitJoint() {
         });
 
         // make the min and max prevalence inputs accept numerical values only to account for Firefox allowing non-numeric values in a number input
-        $('input.preva-input').on('input', function() {
+        $('input[data-group="prevalence"]').on('input', function() {
             // Get the current value of the input
             let val = $(this).val();
             
