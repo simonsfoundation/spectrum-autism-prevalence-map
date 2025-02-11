@@ -1,0 +1,12 @@
+LICENSE
+MANIFEST.in
+README.rst
+setup.cfg
+setup.py
+admin_ip_restrictor/__init__.py
+admin_ip_restrictor/middleware.py
+django_admin_ip_restrictor.egg-info/PKG-INFO
+django_admin_ip_restrictor.egg-info/SOURCES.txt
+django_admin_ip_restrictor.egg-info/dependency_links.txt
+django_admin_ip_restrictor.egg-info/requires.txt
+django_admin_ip_restrictor.egg-info/top_level.txt

@@ -1,0 +1,13 @@
+README.rst
+setup.cfg
+setup.py
+django_inline_svg.egg-info/PKG-INFO
+django_inline_svg.egg-info/SOURCES.txt
+django_inline_svg.egg-info/dependency_links.txt
+django_inline_svg.egg-info/requires.txt
+django_inline_svg.egg-info/top_level.txt
+svg/__init__.py
+svg/exceptions.py
+svg/tests.py
+svg/templatetags/__init__.py
+svg/templatetags/svg.py

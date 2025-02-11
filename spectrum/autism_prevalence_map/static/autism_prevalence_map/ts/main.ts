@@ -5,6 +5,7 @@ import { ttInitProjection } from '../vendor/js/d3-geo-projection.v2.min.js';
 
 import { ttInitJoint } from './joint.ts';
 import { ttInitMap } from './map.ts';
+import { ttInitMobilePopup } from './mobile-popup.ts';
 import { ttInitList } from './list.ts';
 
 (function ($): void {
@@ -16,6 +17,7 @@ import { ttInitList } from './list.ts';
         ttInitGeo();
         ttInitProjection();
         ttInitJoint();
+        ttInitMobilePopup();
 
         switch (pageName) {
             case 'map':
