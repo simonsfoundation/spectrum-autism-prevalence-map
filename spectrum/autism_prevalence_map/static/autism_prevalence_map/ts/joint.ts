@@ -401,5 +401,19 @@ export function ttInitJoint() {
                 resize_id = setTimeout(app.map.initializeMap(), 500);
             }
         });
+
+        // make the min and max prevalence inputs accept numerical values only to account for Firefox allowing non-numeric values in a number input
+        $('input.preva-input').on('input', function() {
+            // Get the current value of the input
+            let val = $(this).val();
+            
+            // Remove any characters that are not digits
+            let cleaned = val.replace(/[^0-9]/g, '');
+            
+            // Update the value if it has been cleaned
+            if (cleaned !== val) {
+                $(this).val(cleaned);
+            }
+        });
     });
 }

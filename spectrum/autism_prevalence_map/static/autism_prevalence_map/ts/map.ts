@@ -241,7 +241,7 @@ export function ttInitMap() {
 
                 d3.select('.selection').attr('display', null);
 
-                hideCard();
+                showWelcomeCard();
             
                 const s = d3.event.selection, 
                     d0 = d3.event.selection.map(timelineX.invert),
@@ -591,7 +591,7 @@ export function ttInitMap() {
                 })
                 .on('click', function(d) {
                     // pin or unpin
-                    viewMoreInfo(d);
+                    togglePin(d);
                 });
 
             timelineSelection.exit()
@@ -655,7 +655,7 @@ export function ttInitMap() {
                 })
                 .on('click', function(d) {
                     // pin or unpin
-                    viewMoreInfo(d);
+                    togglePin(d);
                 });
                 
             mapSelection.exit().remove();
@@ -692,14 +692,18 @@ export function ttInitMap() {
                 .attr('cy', function (d) { return d.y; });
         }  
 
-
         // point color function
         function pointColor(feature) {
+            return '#D14D57';
+            /*
+            this functionality is no longer used, commenting out for now and to be removed later if not needed
+
             if (feature.properties.recommended == 'yes' || feature.properties.recommended == 'Yes') {
                 return '#D14D57';
             } else {
                 return '#D14D57';
             }
+            */
         }
 
         // define function zoom transiton 
@@ -815,8 +819,8 @@ export function ttInitMap() {
                 .style('fill', pointColor)
                 .style('stroke', '#910E1C');
 
-            // hide the info card
-            hideCard();
+            // show the welcome card
+            showWelcomeCard();
         }
 
         // populate the info card when a map or timline dot is clicked
@@ -867,12 +871,12 @@ export function ttInitMap() {
             $('#more-information-card').css('display', 'block');
         }
 
-        // hide the info card
-        function hideCard() {
+        // show the welcome card
+        function showWelcomeCard() {
             $('#more-information-card').css('display', 'none');
         }
 
-        function viewMoreInfo(d) {
+        function togglePin(d) {
             const pk = d.properties.pk;
             // if we clicked the same dot again, unpin
             if (pinnedDot === pk) {
@@ -888,11 +892,6 @@ export function ttInitMap() {
             // pin the new dot
             pinDot(d);
         }
-
-        // listener to close card
-        $('#card-close').click(function () {
-            hideCard();
-        });
 
         // listen for state change in the timeline switch
         $('#timeline-switch').change(function() {
