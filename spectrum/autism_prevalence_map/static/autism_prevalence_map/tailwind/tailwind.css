@@ -413,56 +413,37 @@
     .map-circles {
         @apply cursor-pointer;
     }
-    /*hide the number control spinner for input type number*/
-    .no-spinner {
-        &::-webkit-inner-spin-button,
-        &::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        -moz-appearance: textfield;
-    }
-
     .timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob,
     .timeline-switch > [type="checkbox"]:not(:checked) + label + .timeline-switch-knob {
         @apply absolute inline-block w-switchin h-switchin top-0.75 rounded-circle cursor-pointer pointer-events-none transition-all duration-100 ease-in;
     }
-
     .timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob {
         @apply right-3.25;
     }
-
     .timeline-switch > [type="checkbox"]:not(:checked) + label + .timeline-switch-knob {
         @apply right-8.75;
     }
-
     .timeline-switch > [type="checkbox"]:checked + label,
     .timeline-switch > [type="checkbox"]:not(:checked) + label {
         @apply inline-block mr-1.75 py-1.25 pr-13 cursor-pointer;
     }
-
     .timeline-switch > [type="checkbox"]:checked + label:after,
     .timeline-switch > [type="checkbox"]:not(:checked) + label:after {
         @apply content-empty absolute -top-0.5 right-2.25 w-switchout h-switchout rounded-md bg-light-navy-2 border-0.5 border-med-navy;
     }
-
     .timeline-switch > [type="checkbox"]:checked,
     .timeline-switch > [type="checkbox"]:not(:checked) {
         @apply hidden;
     }
-
     #timeline svg {
         @apply overflow-visible;
     }
-
     .brush .selection {
         @apply stroke-light-red fill-light-gray3 stroke-dash-5;
     }
-
     .timeline-axis {
         @apply text-white text-1xs2;
     }
-
     .timeline-circles {
        @apply translate-y-20;
     }

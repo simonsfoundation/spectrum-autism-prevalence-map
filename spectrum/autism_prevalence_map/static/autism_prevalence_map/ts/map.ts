@@ -802,8 +802,6 @@ export function ttInitMap() {
         // unpin a dot and tooltip
         function unpinDot(pk) {
             pinnedDot = null;
-            clicked = false;
-            clickedCircleId = null;
 
             // hide tooltips on map and timeline
             $('#map_dot_' + pk).tooltip('hide');

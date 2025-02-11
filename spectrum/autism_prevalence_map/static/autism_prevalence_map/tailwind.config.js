@@ -62,6 +62,7 @@ module.exports = {
                 'sm-l': '0.25rem 0 0 0.25rem', // 4px
                 'sm-r': '0 0.25rem 0.25rem 0', // 4px
                 'md': '0.75rem', // 12px
+                'lg': '0.875rem', // 14px
                 'circle': '50%',
             },
             letterSpacing: {
