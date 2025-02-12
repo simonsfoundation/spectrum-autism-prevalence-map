@@ -215,6 +215,7 @@ module.exports = {
         'arrow:after',
         'fill-dark-tan',
         'fill-none',
+        'fill-navy',
         'stroke-dark-tan',
         'stroke-tan',
         'stroke-[0.5px]',
