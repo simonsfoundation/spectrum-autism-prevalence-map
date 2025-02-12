@@ -414,4 +414,7 @@
     .tooltip-inner {
         @apply py-3 px-6.5 bg-light-gray border-0.5 border-light-gray2 rounded-sm font-serif text-2xs2 text-dark-gray2 text-center max-w-tooltip shadow-tooltip;
     }
+    .map-circles {
+        @apply cursor-pointer;
+    }
 }
