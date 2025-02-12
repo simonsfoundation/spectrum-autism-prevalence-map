@@ -51,7 +51,7 @@ module.exports = {
                 lineHeight: '100%',
                 letterSpacing: '0.06em',
             }],
-            '1.5md': ['1.4375rem', { // 24px
+            '1.5md': ['1.5rem', { // 24px
                 lineHeight: '1.725rem',
                 letterSpacing: '0.03em',
             }],
