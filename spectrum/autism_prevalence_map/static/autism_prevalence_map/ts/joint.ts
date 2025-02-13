@@ -403,16 +403,26 @@ export function ttInitJoint() {
         });
 
         // make the min and max prevalence inputs accept numerical values only to account for Firefox allowing non-numeric values in a number input
-        $('input.preva-input').on('input', function() {
-            // Get the current value of the input
+        $('input[data-group="prevalence"]').on('input', function() {
+            // get the current value of the input
             let val = $(this).val();
             
-            // Remove any characters that are not digits
+            // remove any characters that are not digits
             let cleaned = val.replace(/[^0-9]/g, '');
             
-            // Update the value if it has been cleaned
+            // update the value if it has been cleaned
             if (cleaned !== val) {
                 $(this).val(cleaned);
+            }
+
+            // keep the value between 0 and 500
+            if (cleaned !== '') {
+                let num = parseInt(cleaned, 10);
+                if (num < 0) {
+                    $(this).val('0');
+                } else if (num > 500) {
+                    $(this).val('500');
+                }
             }
         });
     });

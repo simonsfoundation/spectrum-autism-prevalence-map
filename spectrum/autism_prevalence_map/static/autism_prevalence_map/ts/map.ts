@@ -873,7 +873,7 @@ export function ttInitMap() {
 
         // show the welcome card
         function showWelcomeCard() {
-            $('#more-information-card').css('display', 'none');
+            // placeholder for future functionlaity to revert back to welcome card
         }
 
         function togglePin(d) {
