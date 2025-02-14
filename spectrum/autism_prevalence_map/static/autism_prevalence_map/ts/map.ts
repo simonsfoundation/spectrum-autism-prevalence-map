@@ -813,57 +813,60 @@ export function ttInitMap() {
             showWelcomeCard();
         }
 
-        // populate the info card when a map or timline dot is clicked
+        // Store the default (welcome) content of the info card
+        var defaultCardContent = 
+            '<h1>Welcome to the Global Autism Prevalence Map</h1>' +
+            '<p>Study data will appear on the side panel. Click any dot on the map to see more details.</p>' +
+            '<a href="/about/" class="inline-block">Learn More</a>';
+
+        // On page load, set the info card to the welcome content
+        $(document).ready(function () {
+            $('#info-card').html(defaultCardContent);
+        });
+
+        // Populate the info card when a map or timeline dot is clicked
         function populateCard(d) {
-            const authors = d.properties.authors;
-            const card_title = authors + ' ' + d.properties.yearpublished;
-            const area = d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
-            const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
-            const diagnosticcriteria = d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
-            const diagnostictools = d.properties.diagnostictools.replace(/ *([|]) */g, '$1').split('|').join(', ');
-            const prevalenceper10000 = d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
-            const confidenceinterval = d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', ');
-            $('#card-title').html(card_title);
-            $('#card-country').text(d.properties.country);
-            $('#card-area').text(area);
-            $('#card-samplesize').text(d.properties.samplesize);
-            $('#card-age').text(age);
-            $('#card-diagnosticcriteria').text(diagnosticcriteria);
-            $('#card-diagnostictools').text(diagnostictools);
-            $('#card-percentwaverageiq').text(d.properties.percentwaverageiq);
-            $('#card-sexratiomf').text(d.properties.sexratiomf);
-            $('#card-prevalenceper10000').text(prevalenceper10000);
-            $('#card-confidenceinterval').text(confidenceinterval);
-            $('#card-yearsstudied').text(d.properties.yearsstudied);
-            $('#card-categoryadpddorasd').text(d.properties.categoryadpddorasd);
+            var authors = d.properties.authors;
+            var card_title = authors + ' ' + d.properties.yearpublished;
+            var area = d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
+            var age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
+            var diagnosticcriteria = d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
+            var diagnostictools = d.properties.diagnostictools.replace(/ *([|]) */g, '$1').split('|').join(', ');
+            var prevalenceper10000 = d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
+            var confidenceinterval = d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', ');
 
-            // add links to card
-            let links = [];
+            // Build the HTML content for the info card (excluding the links)
+            var cardHTML = 
+                '<h2>' + card_title + '</h2>' +
+                '<p><strong class="block">Country:</strong> ' + d.properties.country + '</p>' +
+                '<p><strong class="block">Area:</strong> ' + area + '</p>' +
+                '<p><strong class="block">Sample Size:</strong> ' + d.properties.samplesize + '</p>' +
+                '<p><strong class="block">Age:</strong> ' + age + '</p>' +
+                '<p><strong class="block">Diagnostic Criteria:</strong> ' + diagnosticcriteria + '</p>' +
+                '<p><strong class="block">Diagnostic Tools:</strong> ' + diagnostictools + '</p>' +
+                '<p><strong class="block">Percent with Average IQ:</strong> ' + d.properties.percentwaverageiq + '</p>' +
+                '<p><strong class="block">Sex Ratio (M:F):</strong> ' + d.properties.sexratiomf + '</p>' +
+                '<p><strong class="block">Prevalence per 10,000:</strong> ' + prevalenceper10000 + '</p>' +
+                '<p><strong class="block">Confidence Interval:</strong> ' + confidenceinterval + '</p>' +
+                '<p><strong class="block">Years Studied:</strong> ' + d.properties.yearsstudied + '</p>' +
+                '<p><strong class="block">Category:</strong> ' + d.properties.categoryadpddorasd + '</p>';
+
+            // Update the info card content
+            $('#info-card').html(cardHTML);
+
+            // Remove any previously injected links container from the parent
+            $('#publication-button').remove();
+
             if (d.properties.link1title && d.properties.link1url) {
-                links.push('<a href="'+ d.properties.link1url +'">'+ d.properties.link1title +'</a>');
+                var linkHTML = '<a href="' + d.properties.link1url + '" id="publication-button" class="absolute bottom-0 left-0 w-full text-center bg-white" target="_blank">' + d.properties.link1title + '</a>';
+                $('#info-card-container').append(linkHTML);
             }
-            if (d.properties.link2title && d.properties.link2url) {
-                links.push('<a href="'+ d.properties.link2url +'">'+ d.properties.link2title +'</a>');
-            }
-            if (d.properties.link3title && d.properties.link3url) {
-                links.push('<a href="'+ d.properties.link3url +'">'+ d.properties.link3title +'</a>');
-            }
-            if (d.properties.link4title && d.properties.link4url) {
-                links.push('<a href="'+ d.properties.link4url +'">'+ d.properties.link4title +'</a>');
-            }
-
-            let links_string = links.join('<br />');
-            links_string = links_string.replace('>Spectrum', '><em>Spectrum</em>');
-
-            $('#card-links').html(links_string);
-
-            // show card
-            $('#more-information-card').css('display', 'block');
         }
 
-        // show the welcome card
+        // Show the welcome card (reset to default content)
         function showWelcomeCard() {
-            // placeholder for future functionlaity to revert back to welcome card
+            $('#publication-button').remove();
+            $('#info-card').html(defaultCardContent);
         }
 
         function togglePin(d) {

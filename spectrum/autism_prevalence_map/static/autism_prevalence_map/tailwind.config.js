@@ -46,6 +46,7 @@ module.exports = {
                 'sm': '0.25rem', // 4px
                 'sm-l': '0.25rem 0 0 0.25rem', // 4px
                 'sm-r': '0 0.25rem 0.25rem 0', // 4px
+                'md': '0.5rem', // 9px
                 'lg': '0.875rem', // 14px
             },
             letterSpacing: {
@@ -74,9 +75,18 @@ module.exports = {
                 'arrow2': '0.813rem', // 13px
                 'filter': '10.813rem', // 173px
                 'filterwide': '15.375rem', // 246px
+                'info': '18rem', // 288px
                 'map': '51.625rem', // 826px
                 'map-lg': '55.75rem',  // 892px
                 'map-xl': '72.125rem',  // 1154px
+            },
+            maxHeight: {
+                'info': 'calc(100% - 40px)', // height of the info card minus the sticky button at the bottom
+            },
+            maxWidth: {
+                'tooltip': '11.625rem', // 186px
+                'logo': '13.55rem', // 216.8px
+                'container': '103rem', // 1648px
             },
             spacing: {
                 '0.25': '0.063rem', // 1px
@@ -104,11 +114,6 @@ module.exports = {
                 '63.5': '15.875rem', // 254px
                 '207.5': '51.875rem', // 830px  
             },
-            maxWidth: {
-                'tooltip': '11.625rem', // 186px
-                'logo': '13.55rem', // 216.8px
-                'container': '103rem', // 1648px
-            },
             colors: {
                 'red': '#910E1C',
                 'blue': '#0B6BC3',
@@ -123,6 +128,7 @@ module.exports = {
                 'med-gray': '#CCC',
                 'light-gray': '#F4F5F6',
                 'light-gray2': '#BFCBD1',
+                'light-gray3': '#D7DFE4',
                 'black': '#000',
                 'white': '#FFF',
             },
@@ -147,6 +153,7 @@ module.exports = {
             },
             boxShadow: {
                 'tooltip': '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
+                'info': '0px 0px 4px 0px rgba(97, 97, 97, 0.25)'
             },
             screens: {
                 'lg': '1440px',

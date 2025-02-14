@@ -14,7 +14,16 @@
 
     <!-- Map div
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div id='map' class='h-map w-map lg:h-map-lg lg:w-map-lg xl:h-map-xl xl:w-map-xl'></div>
+    <div class="flex">
+        <div id="info-card-container" class="relative h-map lg:h-map-lg xl:h-map-xl w-info bg-white border-0.5 border-light-gray3 rounded-md shadow-info">
+            <div id="info-card" class="relative max-h-info overflow-y-scroll">
+                <h1>Welcome to the Global Autism Prevalence Map</h1>
+                <p>Study data will appear on the side panel. Click any dot on the map to see more details.</p>
+                <a href="/about/" class="inline-block">Learn More</a>
+            </div>
+        </div>
+        <div id='map' class='h-map w-map lg:h-map-lg lg:w-map-lg xl:h-map-xl xl:w-map-xl'></div>
+    </div>
     <!-- Timeline div
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <div class='timeline-wrapper container-fluid h-timeline'>
