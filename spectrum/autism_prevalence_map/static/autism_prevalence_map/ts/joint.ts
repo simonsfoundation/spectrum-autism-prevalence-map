@@ -469,5 +469,66 @@ export function ttInitJoint() {
         // get the citation URL from the #citation-url element
         const citationURL = $('#citation-url').text();
         getCitationCount(citationURL);
+
+        // build the tooltip for the calculate mean button
+        $('#calculate-mean').tooltip({
+            container: 'body',
+            trigger: 'click',
+            placement: 'bottom',
+            html: true,
+            template: '<div class="tooltip copy" role="tooltip"><div class="tooltip-inner"></div></div>',
+            title: 'Calculated Mean'
+        });
+
+        // calculate the mean for the current filtered items
+        $('#calculate-mean').on('click', function () {
+            // build the API url
+            const apiURL = '/studies-api/' + app.api_call_param_string;
+
+            // fetch the filtered studies data
+            d3.json(apiURL).then(function (data) {
+                // ensure data.features exists and is an array
+                if (!data.features || !data.features.length) {
+                    return;
+                }
+
+                // extract and convert prevalence values
+                const prevalenceValues = data.features
+                    .map(d => parseFloat(d.properties.prevalenceper10000))
+                    .filter(val => !isNaN(val));
+
+                if (prevalenceValues.length === 0) {
+                    return;
+                }
+
+                // calculate the mean prevalence
+                const sum = prevalenceValues.reduce((acc, val) => acc + val, 0);
+                const mean = sum / prevalenceValues.length;
+                const meanFormatted = mean.toFixed(2);
+
+                // copy the mean value to the clipboard
+                var dummy = document.createElement('input');
+                dummy.value = meanFormatted;
+                document.body.appendChild(dummy);
+                dummy.select();
+                document.execCommand('copy');
+                document.body.removeChild(dummy);
+
+                // build the tooltip message
+                const tooltipMessage =
+                    'Calculated Mean: ' + meanFormatted + '<br><br>' +
+                    'Note: This button calculates the mean prevalence of all studies currently included within the filter range but does not account for a weighted average of the effect estimates from the different studies.';
+
+                $('#calculate-mean')
+                    .attr('data-html', 'true')
+                    .attr('data-original-title', tooltipMessage)
+                    .tooltip('show');
+
+                // Hide the tooltip after 5 seconds
+                setTimeout(function () {
+                    $('#calculate-mean').tooltip('hide');
+                }, 3000);
+            });
+        });
     });
 }
