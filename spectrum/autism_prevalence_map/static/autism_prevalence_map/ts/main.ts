@@ -7,6 +7,7 @@ import { ttInitJoint } from './joint.ts';
 import { ttInitMap } from './map.ts';
 import { ttInitMobilePopup } from './mobile-popup.ts';
 import { ttInitList } from './list.ts';
+import { ttInitMean } from './mean.ts';
 
 (function ($): void {
     $(function () {
@@ -18,6 +19,7 @@ import { ttInitList } from './list.ts';
         ttInitProjection();
         ttInitJoint();
         ttInitMobilePopup();
+        ttInitMean();
 
         switch (pageName) {
             case 'map':
