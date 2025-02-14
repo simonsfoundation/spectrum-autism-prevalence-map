@@ -813,18 +813,13 @@ export function ttInitMap() {
             showWelcomeCard();
         }
 
-        // Store the default (welcome) content of the info card
+        // welcome card content to reset to
         var defaultCardContent = 
             '<h1>Welcome to the Global Autism Prevalence Map</h1>' +
             '<p>Study data will appear on the side panel. Click any dot on the map to see more details.</p>' +
             '<a href="/about/" class="inline-block">Learn More</a>';
 
-        // On page load, set the info card to the welcome content
-        $(document).ready(function () {
-            $('#info-card').html(defaultCardContent);
-        });
-
-        // Populate the info card when a map or timeline dot is clicked
+        // populate the info card when a map or timeline dot is clicked
         function populateCard(d) {
             var authors = d.properties.authors;
             var card_title = authors + ' ' + d.properties.yearpublished;
@@ -835,7 +830,7 @@ export function ttInitMap() {
             var prevalenceper10000 = d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
             var confidenceinterval = d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', ');
 
-            // Build the HTML content for the info card (excluding the links)
+            // build the HTML content to add to the card
             var cardHTML = 
                 '<h2>' + card_title + '</h2>' +
                 '<p><strong class="block">Country:</strong> ' + d.properties.country + '</p>' +
@@ -851,19 +846,20 @@ export function ttInitMap() {
                 '<p><strong class="block">Years Studied:</strong> ' + d.properties.yearsstudied + '</p>' +
                 '<p><strong class="block">Category:</strong> ' + d.properties.categoryadpddorasd + '</p>';
 
-            // Update the info card content
-            $('#info-card').html(cardHTML);
-
-            // Remove any previously injected links container from the parent
+            // remove any previously injected publication link
             $('#publication-button').remove();
 
+            // update the info card content
+            $('#info-card').html(cardHTML);
+
+            // add the publication link that is absolutely positioned at the bottom of the parent while the main #info-card has overflow: scroll
             if (d.properties.link1title && d.properties.link1url) {
                 var linkHTML = '<a href="' + d.properties.link1url + '" id="publication-button" class="absolute bottom-0 left-0 w-full text-center bg-white" target="_blank">' + d.properties.link1title + '</a>';
                 $('#info-card-container').append(linkHTML);
             }
         }
 
-        // Show the welcome card (reset to default content)
+        // reset to welcome card content
         function showWelcomeCard() {
             $('#publication-button').remove();
             $('#info-card').html(defaultCardContent);
