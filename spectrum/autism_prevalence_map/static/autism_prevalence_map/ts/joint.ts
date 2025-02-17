@@ -21,7 +21,7 @@ export function ttInitJoint() {
         app.runUpdate = function() {
             // run update
             app.updateURL();
-            if ($('#map-link').hasClass('active')) {
+            if ($('#map-link').hasClass('text-red')) {
                 app.map.pullDataAndUpdate();
             } else {
                 app.list.addRows();
