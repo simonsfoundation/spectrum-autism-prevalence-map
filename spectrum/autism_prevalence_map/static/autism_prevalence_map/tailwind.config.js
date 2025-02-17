@@ -75,6 +75,7 @@ module.exports = {
                 'filter': '10.813rem', // 173px
                 'button': '12rem', // 192px
                 'filterwide': '15.375rem', // 246px
+                'buttons': '25rem', // 400px
                 'map': '51.625rem', // 826px
                 'map-lg': '55.75rem',  // 892px
                 'map-xl': '72.125rem',  // 1154px
@@ -110,7 +111,6 @@ module.exports = {
             maxWidth: {
                 'tooltip': '11.625rem', // 186px
                 'logo': '13.55rem', // 216.8px
-                'buttons': '25rem', // 400px
                 'container': '103rem', // 1648px
             },
             colors: {

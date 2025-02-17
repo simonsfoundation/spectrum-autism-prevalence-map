@@ -1,6 +1,6 @@
 {% load static %} 
 
-<div class='flex justify-between mb-4'>
+<div class='relative flex justify-between mb-4'>
     <div id='filter-list' class='max-w-207.5'>
         <form class='flex flex-wrap gap-2'>
             <div class='relative border border-med-navy rounded-sm bg-light-gray'>
@@ -73,14 +73,14 @@
         </form>
     </div>
 
-    <div class="flex items-start flex-wrap justify-end max-w-buttons">
+    <div class="absolute right-0 flex items-start flex-wrap justify-end w-buttons">
         <a role='button' id='calculate-mean' class='inline-block w-button pt-2.4 pb-2.4 mr-4 box-border bg-light-gray border-0.5 border-navy rounded-sm text-sm font-bold text-med-navy uppercase text-center' href='#'>Calculate Mean</a>
 
         <a role='button' id='download-link' class='inline-block w-button pt-2.5 pb-2.5 bg-med-navy rounded-sm text-sm font-bold text-white uppercase text-center' href='#'>Download Data</a>
 
         <button type='button' id='copy-link' class='mt-4 text-2xs text-navy hover:text-red font-bold uppercase text-left'>
             <img src="{% static 'autism_prevalence_map/img/icon-link.svg' %}" alt='link icon' class='inline-block pr-1.5 translate-y-neg1'>Cite The Map (<span id='citation-count'>0</span>)
-            <span id='citation-url' class='block pt-0.75 text-xs text-med-navy'>https://DOI.org/n234.03/994de4</span>
+            <span id='citation-url' class='block pt-0.75 text-xs text-med-navy'>https://doi.org/10.53053/NDWR8664</span>
         </button>
     </div>
 </div>
