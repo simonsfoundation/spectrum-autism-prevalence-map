@@ -382,16 +382,6 @@ export function ttInitJoint() {
             }, 3000);
         });
 
-        $('#copy-link').click(function(){
-            var dummy = document.createElement('input'),
-                text = window.location.href;
-            document.body.appendChild(dummy);
-            dummy.value = text;
-            dummy.select();
-            document.execCommand('copy');
-            document.body.removeChild(dummy);
-        });
-
         // listen for window resize
         let resize_id;
         $(window).resize(function () { 
@@ -425,5 +415,59 @@ export function ttInitJoint() {
                 }
             }
         });
+
+        // copy citation link to clipboard
+        $('#copy-link').click(function () {
+            var dummy = document.createElement('input'),
+                text = citationURL;
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+        });
+
+        // build the tooltip for the copy citation button
+        $('#copy-link').tooltip({
+            container: 'body',
+            trigger: 'click',
+            placement: 'bottom',
+            template: '<div class="tooltip copy" role="tooltip"><div class="tooltip-inner"></div></div>',
+            title: 'Copied to clipboard',
+        }).on('shown.bs.tooltip', function () {
+            var $tooltip = $('.tooltip.copy');
+            // get the current left position
+            var currentLeft = parseInt($tooltip.css('left'), 10) || 0;
+            // push 18px to the right
+            $tooltip.css('left', (currentLeft + 18) + 'px');
+
+            // hide this tooltip after 3 seconds
+            var that = $(this);
+            setTimeout(function() {
+                that.tooltip('hide');
+            }, 3000);
+        });
+
+        // get the citation count from crossref
+        function getCitationCount(doi: string) {
+            // build the Crossref API URL
+            const url = 'https://api.crossref.org/works/' + encodeURIComponent(doi);
+
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    if (data && data.message && typeof data.message['is-referenced-by-count'] !== 'undefined') {
+                        // citation count is in 'is-referenced-by-count'
+                        const citationCount = data.message['is-referenced-by-count'];
+                        $('#citation-count').text(citationCount);
+                    }
+                }
+            });
+        }
+
+        // get the citation URL from the #citation-url element
+        const citationURL = $('#citation-url').text();
+        getCitationCount(citationURL);
     });
 }

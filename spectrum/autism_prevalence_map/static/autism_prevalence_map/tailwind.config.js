@@ -102,8 +102,6 @@ module.exports = {
                 '1': '1px',
                 '6.5': '0.375rem', // 6px
             },
-            screens: {
-            },
             height: {
                 'filters': '5.875rem', // 94px
                 'map': '28.375rem', // 454px
@@ -118,7 +116,9 @@ module.exports = {
                 'arrow': '0.75rem', // 12px
                 'arrow2': '0.813rem', // 13px
                 'filter': '10.813rem', // 173px
+                'button': '12rem', // 192px
                 'filterwide': '15.375rem', // 246px
+                'buttons': '25rem', // 400px
                 'map': '51.625rem', // 826px
                 'map-lg': '55.75rem',  // 892px
                 'map-xl': '72.125rem',  // 1154px
@@ -131,6 +131,7 @@ module.exports = {
                 '1.25': '0.3125rem', // 5px
                 '1.5': '0.375rem', // 6px
                 '1.75': '0.4375rem', // 7px
+                '2.4': '0.594rem', // 9.5px
                 '2.5': '0.625rem', // 10px
                 '2.75': '0.688rem', // 11px
                 '3.5': '0.875rem', // 14px
@@ -198,6 +199,9 @@ module.exports = {
             },
             boxShadow: {
                 'tooltip': '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
+            },
+            translate: {
+                'neg1': '-0.063rem',
             },
             screens: {
                 'lg': '1440px',
