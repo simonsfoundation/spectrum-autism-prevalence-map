@@ -57,8 +57,6 @@ module.exports = {
                 '1': '1px',
                 '6.5': '0.375rem', // 6px
             },
-            screens: {
-            },
             height: {
                 'filters': '5.875rem', // 94px
                 'map': '28.375rem', // 454px
