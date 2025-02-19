@@ -19,9 +19,12 @@ export function ttInitJoint() {
 
         // function for updating content based on filters
         app.runUpdate = function() {
+            // clear anything pinned on the map or timeline
+            app.map.clearPinned();
+            
             // run update
             app.updateURL();
-            if ($('#map-link').hasClass('text-red')) {
+            if ($('#map-link').hasClass('text-red') || $('#map-link').hasClass('active')) {
                 app.map.pullDataAndUpdate();
             } else {
                 app.list.addRows();
@@ -324,6 +327,9 @@ export function ttInitJoint() {
             if ($('#map-link').hasClass('active')) {
                 app.map.clearTimelineBrush();
             }
+
+            // clear anything pinned on the map or timeline
+            app.map.clearPinned();
 
             // run update
             app.runUpdate();
