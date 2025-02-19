@@ -21,7 +21,7 @@ export function ttInitJoint() {
         app.runUpdate = function() {
             // clear anything pinned on the map or timeline
             app.map.clearPinned();
-            
+
             // run update
             app.updateURL();
             if ($('#map-link').hasClass('text-red') || $('#map-link').hasClass('active')) {
@@ -117,7 +117,7 @@ export function ttInitJoint() {
             } else if (yearsstudied_number_max) {
                 $('#max_year').val(yearsstudied_number_max);
             } else {
-                $('#max_year').val($('#max_year option:first').val());
+                $('#max_year').val($('#max_year option:last').val());
             }
         });
 
