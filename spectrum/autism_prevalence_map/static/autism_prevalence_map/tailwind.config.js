@@ -31,10 +31,18 @@ module.exports = {
                 lineHeight: '1.375rem',
                 letterSpacing: '0.16em',
             }],
+            'sm3': ['0.938rem', { // 15px
+                lineHeight: '100%',
+                letterSpacing: '0.01em',
+            }],
             '1md': ['1.438rem', { // 23px
                 lineHeight: '100%',
                 letterSpacing: '0.06em',
-            }]
+            }],
+            '2md': ['1.625rem', { // 26px
+                lineHeight: '1.95rem',
+                letterSpacing: '0.01em',
+            }],
         },
         extend: {
             fontFamily: {
@@ -52,6 +60,8 @@ module.exports = {
             letterSpacing: {
             },
             lineHeight: {
+                '4.5': '1.125rem', // 18px
+                '7.2': '1.788rem' // 28.6px
             },
             borderWidth: {
                 '0.5': '0.5px',
@@ -73,6 +83,7 @@ module.exports = {
                 'search': '15.5rem', // 248px
                 'arrow': '0.75rem', // 12px
                 'arrow2': '0.813rem', // 13px
+                'learn': '8.75rem', // 140px
                 'filter': '10.813rem', // 173px
                 'filterwide': '15.375rem', // 246px
                 'info': '18rem', // 288px
@@ -85,6 +96,7 @@ module.exports = {
             },
             maxWidth: {
                 'tooltip': '11.625rem', // 186px
+                'welcome': '12.5rem', // 200px
                 'logo': '13.55rem', // 216.8px
                 'container': '103rem', // 1648px
             },
@@ -106,6 +118,7 @@ module.exports = {
                 '5.5': '1.375rem', // 22px
                 '6.5': '1.625rem', // 26px
                 '8.5': '2.125rem', // 34px
+                '9': '2.25rem', // 36px
                 '10': '2.5rem', // 40px
                 '10.5': '2.625rem', // 42px
                 '12.5': '3.125rem', // 50px
