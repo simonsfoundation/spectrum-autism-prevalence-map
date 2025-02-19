@@ -3,19 +3,18 @@
 <!DOCTYPE html>
 <html lang='en'>
 <head>
-
     <meta charset='utf-8'>
-    <title>{% block title %}{% endblock %}</title>
-    <meta name='description' content=''>
+    <title>{% block title %}Global Autism Prevalence Map | The Transmitter{% endblock %}</title>
+    <meta name='description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.'>
     <meta name='author' content=''>
     <meta name='twitter:card' content='summary_large_image'>
     <meta name='twitter:title' content='Global Autism Prevalence Map | The Transmitter'>
     <meta name='twitter:description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.'>
-    <meta name='twitter:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/PrevalenceMapSG.png'>
+    <meta name='twitter:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/global-ausitm-prevalence-map-social.png'>
     <meta property='og:title' content='Global Autism Prevalence Map | The Transmitter' />
     <meta property='og:type' content='website' />
     <meta property='og:url' content='https://autismprevalence.thetransmitter.org/' />
-    <meta property='og:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/PrevalenceMapSG.png' />
+    <meta property='og:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/global-ausitm-prevalence-map-social.png' />
     <meta property='og:description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.' />
 
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
@@ -62,33 +61,41 @@
                     {% svg 'transmitter-logo' %}
                     <span class='sr-only'>The Transmitter</span>
                 </a>
-                <a class='flex items-center pt-2' href='#'>
+                <a class='flex items-center pt-2 no-underline' href='#'>
                     <span class='text-1md text-med-navy uppercase leading-none'>Global Autism Prevalence</span>
                 </a>
             </div>
             <div class='flex items-center space-x-8'>
                 <nav class='flex items-center gap-8'>
-                    <a id='map-link' class='text-2xs font-bold text-navy uppercase {% if request.path == "/" %}active{% endif %} ' href="{% url 'index' %}">Map</a>
-                    <a id='list-link' class='text-2xs font-bold text-navy uppercase {% if request.path == "/list/" %}active{% endif %}' href="{% url 'list_view' %}">List</a>
-                    <a class='text-2xs font-bold text-navy uppercase {% if request.path == "/about/" %}active{% endif %}' href="{% url 'about' %}">About</a>
+                    <a id='map-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/" %}text-red{% endif %}' href="{% url 'index' %}">Map</a>
+                    <a id='list-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/list/" %}text-red{% endif %}' href="{% url 'list_view' %}">List</a>
+                    <a class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/about/" %}text-red{% endif %}' href="{% url 'about' %}">About</a>
                 </nav>
-                <form class='flex items-center w-search border border-navy rounded-lg pl-1.5'>
-                    <div class='flex items-center justify-center'>
-                        {% svg 'icon-search' %}
-                    </div>
-                    <div class='flex-search'>
-                        <input id='search' class='w-full py-1.2 px-2 text-1xs2 text-med-navy font-bold uppercase placeholder-light-navy-3 rounded-lg outline-none' type='search' placeholder='Filter data by keyword' aria-label='Filter data by keyword'>
-                    </div>
-                </form>
+                {% if request.path != "/about/" %}
+                    <form class='flex items-center w-search border border-navy rounded-lg pl-1.5'>
+                        <div class='flex items-center justify-center'>
+                            {% svg 'icon-search' %}
+                        </div>
+                        <div class='flex-search'>
+                            <input id='search' class='w-full py-1.2 px-2 text-1xs2 text-med-navy font-bold uppercase placeholder-light-navy-3 rounded-lg outline-none' type='search' placeholder='Filter data by keyword' aria-label='Filter data by keyword'>
+                        </div>
+                    </form>
+                {% endif %}
             </div>
         </div>
     </header>
 
-    <main class='pt-3 pb-4 px-10'>
+
+    <main>
         {% block body_block %} {% endblock %}
+        {% include 'autism_prevalence_map/mobile_popup.html' %}
     </main>
 
     {% block modal_block %} {% endblock %}
+
+    {% if request.path == "/about/" %}
+        {% include "autism_prevalence_map/footer.html" %}
+    {% endif %}
 
     <script src="{% static 'autism_prevalence_map/vendor/js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/jquery-ui.js' %}"></script> 
@@ -98,6 +105,7 @@
     <script src='{{ static_base }}{{ script }}'></script>
 
     {% block js_block %} {% endblock %}
+
 </body>
 
 </html>
