@@ -437,7 +437,7 @@ export function ttInitJoint() {
             // get the current left position
             var currentLeft = parseInt($tooltip.css('left'), 10) || 0;
             // push 18px to the right
-            $tooltip.css('left', (currentLeft + 18) + 'px');
+            $tooltip.css('left', (currentLeft + 21) + 'px');
 
             // hide this tooltip after 3 seconds
             var that = $(this);
