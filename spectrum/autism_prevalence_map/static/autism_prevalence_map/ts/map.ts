@@ -815,9 +815,9 @@ export function ttInitMap() {
 
         // welcome card content to reset to
         var defaultCardContent = 
-            '<h1>Welcome to the Global Autism Prevalence Map</h1>' +
-            '<p>Study data will appear on the side panel. Click any dot on the map to see more details.</p>' +
-            '<a href="/about/" class="inline-block">Learn More</a>';
+            '<h1 class="mt-26.75 xl:mt-49 mb-3.75 max-w-welcome font-serif text-2md font-bold leading-7.2 text-med-navy">Welcome to the Global Autism Prevalence Map</h1>' +
+            '<p class="mb-9 max-w-welcome font-serif text-sm3 leading-4.5 text-dark-gray2">Data studies will be displayed in this side panel. Click any dot on the map to view detailed information.</p>' +
+            '<a href="/about/" class="inline-block w-learn py-1.75 lg:py-2.5 bg-med-navy rounded-sm text-sm0 lg:text-sm font-bold text-light-navy-2 uppercase text-center no-underline">Learn More</a>';
 
         // populate the info card when a map or timeline dot is clicked
         function populateCard(d) {

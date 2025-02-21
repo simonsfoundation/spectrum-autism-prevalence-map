@@ -27,6 +27,10 @@ module.exports = {
                 lineHeight: '120%',
                 letterSpacing: '0.04em',
             }],
+            'sm0': ['0.813rem', { // 13px
+                lineHeight: '1.375rem',
+                letterSpacing: '0.16em',
+            }],
             'sm': ['0.875rem', { // 14px
                 lineHeight: '1.375rem',
                 letterSpacing: '0.16em',
@@ -75,6 +79,7 @@ module.exports = {
                 'map': '28.375rem', // 454px
                 'map-lg': '30.125rem',  // 482px
                 'map-xl': '39rem',  // 624px
+                'card-xl': '42.25rem', // 676px
                 'timeline': '11.75rem', // 188px
                 'arrow': '0.5rem', // 8px
                 'arrow2': '6.5px', // 6.5px
@@ -110,6 +115,7 @@ module.exports = {
                 '1.75': '0.4375rem', // 7px
                 '2.5': '0.625rem', // 10px
                 '2.75': '0.688rem', // 11px
+                '3.25': '0.813rem', // 13px
                 '3.5': '0.875rem', // 14px
                 '3.75': '0.938rem', // 15px
                 '4.5': '1.125rem', // 18px
@@ -124,7 +130,8 @@ module.exports = {
                 '12.5': '3.125rem', // 50px
                 '14.5': '3.625rem', // 58px
                 '17.5': '4.375rem', // 70px
-                '30' : '7.5rem', // 120px
+                '22.75' : '5.688rem', // 91px
+                '45' : '11.25rem', // 180px
                 '62' : '15.5rem', // 248px
                 '63.5': '15.875rem', // 254px
                 '207.5': '51.875rem', // 830px  
