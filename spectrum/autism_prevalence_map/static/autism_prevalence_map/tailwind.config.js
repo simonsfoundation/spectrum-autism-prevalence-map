@@ -45,6 +45,7 @@ module.exports = {
             }],
             'sm3': ['0.938rem', { // 15px
                 lineHeight: '100%',
+            }],
             '1sm': ['1rem', { // 16px
                 lineHeight: '1.6rem',
                 letterSpacing: '0.01em',
@@ -76,6 +77,9 @@ module.exports = {
             'lg': ['1.9375rem', { // 31px
                 lineHeight: '120%',
                 letterSpacing: '0.116em',
+            }],
+            'lg2': ['1.9375rem', { // 31px
+                lineHeight: '100%',
             }],
             '3lg': ['2.4375rem', { // 39px
                 lineHeight: '100%',

@@ -18,7 +18,7 @@
     <div class='h-timeline bg-dark-gray border-0.5 border-dark-gray2 rounded-md pl-4 pb-1.5'>
         <div class='row'>
             <div id='timeline-toggle' class='inline-block align-top mr-16 pt-10.5'>
-                <h2 class='mb-2.75 font-serif text-lg text-tan'>Timeline of studies</h2>
+                <h2 class='mb-2.75 font-serif text-lg2 text-tan'>Timeline of studies</h2>
                 <span class='timeline-switch relative'>
                     <input type='checkbox' id='timeline-switch' name='timeline-switch' {% if timeline_type == 'studied' %}checked{% endif %}>
                     <label for='timeline-switch' class='font-serif text-sm3 text-tan'>Year published</label>
@@ -26,7 +26,7 @@
                 </span>
                 <span class='font-serif text-sm3 text-tan'>Year(s) studied</span>
                 {% if last_updated_on != '' %}
-                    <div class='pt-6 font-serif text-sm2 text-tan italic'>Data last updated on {{last_updated_on}}</div>
+                    <div class='pt-5.75 font-serif text-sm2 text-tan italic font-light'>Data last updated on {{last_updated_on}}</div>
                 {% endif %}
             </div>
             <div class='relative inline-block align-top'>
