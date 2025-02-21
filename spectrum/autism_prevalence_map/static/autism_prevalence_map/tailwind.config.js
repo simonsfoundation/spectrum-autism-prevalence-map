@@ -49,6 +49,10 @@ module.exports = {
                 lineHeight: '1.6rem',
                 letterSpacing: '0.01em',
             }],
+            '2sm': ['1.125rem', { // 18px
+                lineHeight: '1.8rem',
+                letterSpacing: '0.02em',
+            }],
             '3sm': ['1.25rem', { // 20px
                 lineHeight: '1.5rem',
                 letterSpacing: '0.01em',
@@ -57,14 +61,27 @@ module.exports = {
                 lineHeight: '100%',
                 letterSpacing: '0.06em',
             }],
+            '1.5md': ['1.5rem', { // 24px
+                lineHeight: '1.725rem',
+                letterSpacing: '0.03em',
+            }],
+            '2md': ['1.625rem', { // 26px
+                lineHeight: '1.95rem',
+                letterSpacing: '0.01em',
+            }],
             '4md': ['1.813rem', { // 29px
                 lineHeight: '1.813rem',
                 letterSpacing: '0em'
             }],
-            'lg': ['1.938rem', { // 31px
-                lineHeight: '100%',
+            'lg': ['1.9375rem', { // 31px
+                lineHeight: '120%',
+                letterSpacing: '0.116em',
             }],
             '3lg': ['2.4375rem', { // 39px
+                lineHeight: '100%',
+                letterSpacing: '0em',
+            }],
+            'xl': ['3rem', { // 48px
                 lineHeight: '100%',
                 letterSpacing: '0em',
             }],
@@ -84,15 +101,18 @@ module.exports = {
                 'circle': '50%',
             },
             letterSpacing: {
+                'normal-md': '0.016em', // 0.26px
+                'normal-lg': '0.02em', // 0.32px
                 'widest-sm': '0.14em', // 1.92px
+                'extra-wide': '0.16em', // 2.56px
             },
-            lineHeight: {},
+            lineHeight: {
+                '5.5': '1.375rem',
+            },
             borderWidth: {
                 '0.5': '0.5px',
                 '1': '1px',
                 '6.5': '0.375rem', // 6px
-            },
-            screens: {
             },
             height: {
                 'filters': '5.875rem', // 94px
@@ -113,11 +133,14 @@ module.exports = {
                 'switchin': '0.875rem', // 14px
                 'switchout': '2.75rem', // 44px
                 'filter': '10.813rem', // 173px
+                'button': '12rem', // 192px
                 'filterwide': '15.375rem', // 246px
                 'help': '27.625rem', // 442px
                 'timeline': '48.125rem', // 770px
                 'timeline-lg': '57.188rem', // 915px
                 'timeline-xl': '77.25rem', // 1236px
+                'mean-popup': '23.6875rem', //379px
+                'buttons': '25rem', // 400px
                 'map': '51.625rem', // 826px
                 'map-lg': '55.75rem',  // 892px
                 'map-xl': '72.125rem',  // 1154px
@@ -132,11 +155,13 @@ module.exports = {
                 '1.75': '0.4375rem', // 7px
                 '2': '0.5rem', // 8px
                 '2.25': '0.563rem', // 9px
+                '2.4': '0.594rem', // 9.5px
                 '2.5': '0.625rem', // 10px
                 '2.75': '0.688rem', // 11px
                 '3.25': '0.813rem', // 13px
                 '3.5': '0.875rem', // 14px
                 '3.75': '0.938rem', // 15px
+                '4': '1rem', // 16px
                 '4.5': '1.125rem', // 18px
                 '4.7': '1.188rem', // 19px
                 '5': '1.25rem', // 20px
@@ -145,6 +170,7 @@ module.exports = {
                 '5.75': '1.438rem', // 23px
                 '6': '1.5rem', // 24px
                 '6.5': '1.625rem', // 26px
+                '7.5': '1.875rem', // 30px
                 '8.5': '2.125rem', // 34px
                 '8.75': '2.188rem', // 35px
                 '10': '2.5rem', // 40px
@@ -158,7 +184,10 @@ module.exports = {
                 '23': '5.75rem', // 92px
                 '62': '15.5rem', // 248px
                 '63.5': '15.875rem', // 254px
-                '207.5': '51.875rem', // 830px  
+                '73': '18.25rem', // 292px
+                '159': '39.75rem', // 636px
+                '207.5': '51.875rem', // 830px
+                '400': '100rem', // 1600px 
             },
             maxWidth: {
                 'tooltip': '11.625rem', // 186px
@@ -183,6 +212,8 @@ module.exports = {
                 'light-gray3': '#4D4C49',
                 'black': '#000',
                 'white': '#FFF',
+                'light-red': '#E0888F',
+                'light-red2': '#D14D57',
             },
             backgroundImage: {
                 'select-arrow': "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 14 8%22 fill=%22none%22%3E%3Cpath d=%22M1.707 0.293a1 1 0 00-1.414 1.414L6.293 7.707a1 1 0 001.414 0l6-6A1 1 0 0012.293.293L7 5.586 1.707.293z%22 fill=%22%232E5367%22/%3E%3C/svg%3E')",
@@ -205,6 +236,10 @@ module.exports = {
             },
             boxShadow: {
                 'tooltip': '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
+                'mean-popup': '0px 2px 4px 0px rgba(88, 82, 72, 0.20)',
+            },
+            translate: {
+                'neg1': '-0.063rem',
             },
             translate: {
                 'neg2': '-0.125rem',
@@ -239,6 +274,7 @@ module.exports = {
         'arrow:after',
         'fill-dark-tan',
         'fill-none',
+        'fill-navy',
         'stroke-dark-tan',
         'stroke-tan',
         'stroke-[0.5px]',

@@ -147,7 +147,8 @@ export function ttInitMap() {
         app.map.pullDataAndUpdate = function() {
             app.updateURL();
             d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
-                studies = data;   
+                studies = data;
+                $('[data-mean]').attr('data-mean', data.mean);
                 app.map.updateTimeline();
             });
         }
@@ -230,7 +231,7 @@ export function ttInitMap() {
                     yearsstudied_number_max = d1[1].getUTCFullYear();
                 } else {
                     min_yearpublished = d1[0].getUTCFullYear();
-                    max_yearpublished = d1[1].getUTCFullYear();    
+                    max_yearpublished = d1[1].getUTCFullYear() + 1;    
                 }
 
                 app.map.pullDataAndUpdate();
@@ -787,10 +788,6 @@ export function ttInitMap() {
             // mark as pinned
             pinnedDot = pk;
 
-            // show tooltips on map and timeline
-            $('#map_dot_' + pk).tooltip('show');
-            $('#timeline_dot_' + pk).tooltip('show');
-
             // pinned state is blue with white border
             d3.select('#map_dot_' + pk)
                 .style('fill', '#0B6BC3')
@@ -807,10 +804,6 @@ export function ttInitMap() {
         function unpinDot(pk) {
             pinnedDot = null;
 
-            // hide tooltips on map and timeline
-            $('#map_dot_' + pk).tooltip('hide');
-            $('#timeline_dot_' + pk).tooltip('hide');
-
             // revert to default color
             d3.select('#map_dot_' + pk)
                 .style('fill', pointColor)
@@ -822,6 +815,17 @@ export function ttInitMap() {
             // show the welcome card
             showWelcomeCard();
         }
+
+        // function to clear pinned dot when the clear filters button is clicked, or filters are changed.
+        function clearPinned() {
+            if (pinnedDot) {
+                unpinDot(pinnedDot);
+                pinnedDot = null;
+            }
+        }
+
+        // make this clearPinned function available to call from joint.ts
+        app.map.clearPinned = clearPinned;
 
         // populate the info card when a map or timline dot is clicked
         function populateCard(d) {
@@ -878,6 +882,10 @@ export function ttInitMap() {
 
         function togglePin(d) {
             const pk = d.properties.pk;
+
+            $('#map_dot_' + pk).tooltip('hide');
+            $('#timeline_dot_' + pk).tooltip('hide');
+
             // if we clicked the same dot again, unpin
             if (pinnedDot === pk) {
                 unpinDot(pk);

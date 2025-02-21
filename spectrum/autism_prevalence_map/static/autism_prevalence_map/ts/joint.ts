@@ -19,9 +19,12 @@ export function ttInitJoint() {
 
         // function for updating content based on filters
         app.runUpdate = function() {
+            // clear anything pinned on the map or timeline
+            app.map.clearPinned();
+
             // run update
             app.updateURL();
-            if ($('#map-link').hasClass('active')) {
+            if ($('#map-link').hasClass('text-red') || $('#map-link').hasClass('active')) {
                 app.map.pullDataAndUpdate();
             } else {
                 app.list.addRows();
@@ -114,7 +117,7 @@ export function ttInitJoint() {
             } else if (yearsstudied_number_max) {
                 $('#max_year').val(yearsstudied_number_max);
             } else {
-                $('#max_year').val($('#max_year option:first').val());
+                $('#max_year').val($('#max_year option:last').val());
             }
         });
 
@@ -308,7 +311,7 @@ export function ttInitJoint() {
             // set dropdown menu values
             $('#search').val('');
             $('#min_year').val($('#min_year option:first').val());
-            $('#max_year').val($('#max_year option:first').val());
+            $('#max_year').val($('#max_year option:last').val());
             $('#studytype').val('');
             $('#prevalence-min').val(0);
             $('#prevalence-slider').slider('values', 0, 0);
@@ -324,6 +327,9 @@ export function ttInitJoint() {
             if ($('#map-link').hasClass('active')) {
                 app.map.clearTimelineBrush();
             }
+
+            // clear anything pinned on the map or timeline
+            app.map.clearPinned();
 
             // run update
             app.runUpdate();
@@ -382,16 +388,6 @@ export function ttInitJoint() {
             }, 3000);
         });
 
-        $('#copy-link').click(function(){
-            var dummy = document.createElement('input'),
-                text = window.location.href;
-            document.body.appendChild(dummy);
-            dummy.value = text;
-            dummy.select();
-            document.execCommand('copy');
-            document.body.removeChild(dummy);
-        });
-
         // listen for window resize
         let resize_id;
         $(window).resize(function () { 
@@ -424,6 +420,86 @@ export function ttInitJoint() {
                     $(this).val('500');
                 }
             }
+        });
+
+        // get the citation URL from the #citation-url element
+        const citationURL = $('#citation-url').text();
+        var citationHideTimeout;
+        
+        // copy citation link to clipboard
+        $('#copy-link').click(function () {
+            navigator.clipboard.writeText(citationURL);
+        });
+
+        // build the tooltip for the copy citation button
+        $('#copy-link').tooltip({
+            container: 'body',
+            trigger: 'click',
+            placement: 'bottom',
+            template: '<div class="tooltip copy" role="tooltip"><div class="tooltip-inner"></div></div>',
+            title: 'Copied to clipboard',
+        }).on('shown.bs.tooltip', function () {
+            var $tooltip = $('.tooltip.copy');
+            // get the current left position
+            var currentLeft = parseInt($tooltip.css('left'), 10) || 0;
+            // push 18px to the right
+            $tooltip.css('left', (currentLeft + 21) + 'px');
+
+            // hide this tooltip after 3 seconds
+            var that = $(this);
+
+            // add a timeout that we clear to hide the popup
+            clearTimeout(citationHideTimeout);
+
+            citationHideTimeout = setTimeout(function() {
+                that.tooltip('hide');
+            }, 3000);
+        });
+
+        // get the citation count from crossref
+        function getCitationCount(doi: string) {
+            // build the Crossref API URL
+            const url = 'https://api.crossref.org/works/' + encodeURIComponent(doi);
+
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    if (data && data.message && typeof data.message['is-referenced-by-count'] !== 'undefined') {
+                        // citation count is in 'is-referenced-by-count'
+                        const citationCount = data.message['is-referenced-by-count'];
+                        $('#citation-count').text(citationCount);
+                    }
+                }
+            });
+        }
+
+        // calculate the citation count
+        getCitationCount(citationURL);
+
+        // show the calculate mean popup and handle the copy to clipboard when the calculate mean button is clicked
+        var $meanButton = $('[data-mean]');
+        var $meanPopup = $('#mean-popup');
+        var $popupText = $meanPopup.find('[data-id="mean-popup-text"]');
+        var popupTextTemplate = 'PREVALENCE MEAN ({value}) IS COPIED TO CLIPBOARD';
+        var meanHideTimeout;
+
+        $meanButton.on('click', function () {
+            var meanValue = $meanButton.attr('data-mean');
+            $popupText.text(popupTextTemplate.replace('{value}', meanValue || ''));
+
+            // show the popup
+            $meanPopup.removeClass('hidden').attr('aria-hidden', 'false');
+
+            // copy value to clipboard
+            navigator.clipboard.writeText(meanValue);
+
+            // add a timeout that we clear to hide the popup
+            clearTimeout(meanHideTimeout);
+
+            meanHideTimeout = setTimeout(function () {
+                $meanPopup.addClass('hidden').attr('aria-hidden', 'true');
+            }, 5000);
         });
     });
 }
