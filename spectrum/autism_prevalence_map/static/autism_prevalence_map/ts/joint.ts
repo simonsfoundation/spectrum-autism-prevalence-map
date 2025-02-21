@@ -311,7 +311,7 @@ export function ttInitJoint() {
             // set dropdown menu values
             $('#search').val('');
             $('#min_year').val($('#min_year option:first').val());
-            $('#max_year').val($('#max_year option:first').val());
+            $('#max_year').val($('#max_year option:last').val());
             $('#studytype').val('');
             $('#prevalence-min').val(0);
             $('#prevalence-slider').slider('values', 0, 0);
