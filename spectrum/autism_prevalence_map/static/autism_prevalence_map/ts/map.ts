@@ -224,7 +224,7 @@ export function ttInitMap() {
                     yearsstudied_number_max = d1[1].getUTCFullYear();
                 } else {
                     min_yearpublished = d1[0].getUTCFullYear();
-                    max_yearpublished = d1[1].getUTCFullYear();    
+                    max_yearpublished = d1[1].getUTCFullYear() + 1;    
                 }
 
                 app.map.pullDataAndUpdate();
