@@ -27,16 +27,16 @@ module.exports = {
                 lineHeight: '120%',
                 letterSpacing: '0.04em',
             }],
-            'sm0': ['0.813rem', { // 13px
-                lineHeight: '1.375rem',
-                letterSpacing: '0.16em',
-            }],
             'sm': ['0.875rem', { // 14px
                 lineHeight: '1.375rem',
                 letterSpacing: '0.16em',
             }],
-            'sm3': ['0.938rem', { // 15px
+            'sm1': ['0.938rem', { // 15px
                 lineHeight: '100%',
+                letterSpacing: '0.01em',
+            }],
+            '3sm': ['1.25rem', { // 20px
+                lineHeight: '1.5rem',
                 letterSpacing: '0.01em',
             }],
             '1md': ['1.438rem', { // 23px
@@ -101,7 +101,7 @@ module.exports = {
             },
             maxWidth: {
                 'tooltip': '11.625rem', // 186px
-                'welcome': '12.5rem', // 200px
+                'welcome': '16.5rem', // 264px
                 'logo': '13.55rem', // 216.8px
                 'container': '103rem', // 1648px
             },
@@ -130,8 +130,9 @@ module.exports = {
                 '12.5': '3.125rem', // 50px
                 '14.5': '3.625rem', // 58px
                 '17.5': '4.375rem', // 70px
-                '22.75' : '5.688rem', // 91px
-                '45' : '11.25rem', // 180px
+                '24' : '6rem', // 96px
+                '25.5' : '6.375rem', // 102px
+                '46.5' : '11.625rem', // 186px
                 '62' : '15.5rem', // 248px
                 '63.5': '15.875rem', // 254px
                 '207.5': '51.875rem', // 830px  
