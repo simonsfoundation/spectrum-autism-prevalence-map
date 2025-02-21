@@ -422,15 +422,13 @@ export function ttInitJoint() {
             }
         });
 
+        // get the citation URL from the #citation-url element
+        const citationURL = $('#citation-url').text();
+        var citationHideTimeout;
+        
         // copy citation link to clipboard
         $('#copy-link').click(function () {
-            var dummy = document.createElement('input'),
-                text = citationURL;
-            document.body.appendChild(dummy);
-            dummy.value = text;
-            dummy.select();
-            document.execCommand('copy');
-            document.body.removeChild(dummy);
+            navigator.clipboard.writeText(citationURL);
         });
 
         // build the tooltip for the copy citation button
@@ -445,11 +443,15 @@ export function ttInitJoint() {
             // get the current left position
             var currentLeft = parseInt($tooltip.css('left'), 10) || 0;
             // push 18px to the right
-            $tooltip.css('left', (currentLeft + 18) + 'px');
+            $tooltip.css('left', (currentLeft + 21) + 'px');
 
             // hide this tooltip after 3 seconds
             var that = $(this);
-            setTimeout(function() {
+
+            // add a timeout that we clear to hide the popup
+            clearTimeout(citationHideTimeout);
+
+            citationHideTimeout = setTimeout(function() {
                 that.tooltip('hide');
             }, 3000);
         });
@@ -472,8 +474,32 @@ export function ttInitJoint() {
             });
         }
 
-        // get the citation URL from the #citation-url element
-        const citationURL = $('#citation-url').text();
+        // calculate the citation count
         getCitationCount(citationURL);
+
+        // show the calculate mean popup and handle the copy to clipboard when the calculate mean button is clicked
+        var $meanButton = $('[data-mean]');
+        var $meanPopup = $('#mean-popup');
+        var $popupText = $meanPopup.find('[data-id="mean-popup-text"]');
+        var popupTextTemplate = 'PREVALENCE MEAN ({value}) IS COPIED TO CLIPBOARD';
+        var meanHideTimeout;
+
+        $meanButton.on('click', function () {
+            var meanValue = $meanButton.attr('data-mean');
+            $popupText.text(popupTextTemplate.replace('{value}', meanValue || ''));
+
+            // show the popup
+            $meanPopup.removeClass('hidden').attr('aria-hidden', 'false');
+
+            // copy value to clipboard
+            navigator.clipboard.writeText(meanValue);
+
+            // add a timeout that we clear to hide the popup
+            clearTimeout(meanHideTimeout);
+
+            meanHideTimeout = setTimeout(function () {
+                $meanPopup.addClass('hidden').attr('aria-hidden', 'true');
+            }, 5000);
+        });
     });
 }

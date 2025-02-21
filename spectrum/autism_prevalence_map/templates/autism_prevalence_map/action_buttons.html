@@ -1,4 +1,5 @@
-{% load static %} 
+{% load static %}
+{% load svg %}
 
 <div class='relative flex justify-between mb-4'>
     <div id='filter-list' class='max-w-207.5'>
@@ -70,7 +71,7 @@
     </div>
 
     <div class="absolute right-0 flex items-start flex-wrap justify-end w-buttons">
-        <a role='button' id='calculate-mean' class='inline-block w-button pt-2.4 pb-2.4 mr-4 box-border bg-light-gray border-0.5 border-navy rounded-sm text-sm font-bold text-med-navy uppercase text-center no-underline' href='#'>Calculate Mean</a>
+        <button role='button' data-mean class='inline-block w-button mr-4 pt-2.4 pb-2.4 bg-light-gray border-0.5 border-navy rounded-sm text-sm font-bold text-med-navy uppercase hover:text-light-red2 no-underline' aria-haspopup='true' aria-controls='mean-popup'>Calculate mean</button>
 
         <a role='button' id='download-link' class='inline-block w-button pt-2.5 pb-2.5 bg-med-navy rounded-sm text-sm font-bold text-light-navy-2 uppercase text-center no-underline' href='#'>Download Data</a>
 
@@ -78,5 +79,10 @@
             <img src="{% static 'autism_prevalence_map/img/icon-link.svg' %}" alt='link icon' class='inline-block pr-1.5 translate-y-neg1'>Cite The Map (<span id='citation-count'>0</span>)
             <span id='citation-url' class='block pt-0.75 text-xs text-med-navy'>https://doi.org/10.53053/NDWR8664</span>
         </button>
+
+        <div id='mean-popup' class='absolute top-11.5 right-52 hidden bg-light-gray shadow-mean-popup rounded-md p-4 border-0.5 border-light-gray2 w-mean-popup font-serif text-2xs2 text-dark-gray2' role='dialog' aria-hidden='true'>
+            <span class='flex items-center gap-2'>{% svg 'icon-copy' %} <span data-id='mean-popup-text' class='uppercase'></span></span>
+            <span class='block mt-2 text-2xs tracking-normal-md'>Note: This button calculates the mean prevalence of all studies currently included within the filter range but does not account for a weighted average of the effect estimates from the different studies.</span>
+        </div>
     </div>
 </div>

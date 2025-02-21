@@ -6,6 +6,8 @@ from django.http import JsonResponse, HttpResponse
 from datetime import date
 import re, csv, os
 from django.contrib.postgres.search import SearchVector, SearchQuery
+from django.db.models import Avg, FloatField
+from django.db.models.functions import Cast
 
 #import all apartment models and forms
 from autism_prevalence_map.models import *
@@ -264,7 +266,6 @@ def index(request):
     
     return render(request, 'autism_prevalence_map/map.html', context_dict)
 
-
 def list_view(request):
     """
       List of studies page
@@ -472,6 +473,14 @@ def studiesApi(request):
             pulled_studies = studies.objects.annotate(search=vector).filter(search=keyword).filter(**kwargs)
         else:
             pulled_studies = studies.objects.filter(**kwargs)
+
+        # calculate the mean on page load, and after filtering, and include that value in the JSON response
+        mean_agg = pulled_studies.aggregate(mean=Avg(Cast('prevalenceper10000_number', FloatField())))
+        mean_value = mean_agg.get('mean')
+        if mean_value is None:
+            mean_value = 0
+        mean_formatted = f"{mean_value:.2f}"
+        response['mean'] = mean_formatted
 
         for study in pulled_studies:
             data = {}
