@@ -861,7 +861,7 @@ export function ttInitMap() {
 
             // add the publication link that is absolutely positioned at the bottom of the parent while the main #info-card has overflow: scroll
             if (d.properties.link1title && d.properties.link1url) {
-                var linkHTML = '<a href="' + d.properties.link1url + '" id="publication-button" class="absolute bottom-0 left-0 w-full pl-4 py-1.75 bg-white border-t-light-gray2 border-t-0.5 rounded-sm2-b text-4 text-blue tracking-2 leading-6.25" target="_blank">' + d.properties.link1title + '</a>';
+                var linkHTML = '<a href="' + d.properties.link1url + '" id="publication-button" class="absolute bottom-0 left-0 w-full pl-4 py-1.75 bg-white border-t-light-gray2 border-t-0.5 rounded-sm2-b text-4 text-blue tracking-2 leading-6.25 no-underline" target="_blank">' + d.properties.link1title + '</a>';
                 $('#info-card-container').append(linkHTML);
             }
         }
