@@ -47,6 +47,9 @@ module.exports = {
                 lineHeight: '1.95rem',
                 letterSpacing: '0.01em',
             }],
+            '3.5': '0.875rem', // 14px
+            '4': '1rem', // 16px
+            '5': '1.25rem', // 20px
         },
         extend: {
             fontFamily: {
@@ -58,21 +61,24 @@ module.exports = {
                 'sm': '0.25rem', // 4px
                 'sm-l': '0.25rem 0 0 0.25rem', // 4px
                 'sm-r': '0 0.25rem 0.25rem 0', // 4px
+                'sm2-b': '0 0 0.5rem 0.5rem', // 8px
                 'md': '0.5rem', // 9px
                 'lg': '0.875rem', // 14px
             },
             letterSpacing: {
+                '1': '0.01em', // 1%
+                '2': '0.02em', // 2%
             },
             lineHeight: {
                 '4.5': '1.125rem', // 18px
-                '7.2': '1.788rem' // 28.6px
+                '6.25': '1.563rem', // 25px
+                '7.2': '1.788rem', // 28.6px
+                '100': '100%', // 100%
             },
             borderWidth: {
                 '0.5': '0.5px',
                 '1': '1px',
                 '6.5': '0.375rem', // 6px
-            },
-            screens: {
             },
             height: {
                 'filters': '5.875rem', // 94px
@@ -113,6 +119,7 @@ module.exports = {
                 '1.25': '0.3125rem', // 5px
                 '1.5': '0.375rem', // 6px
                 '1.75': '0.4375rem', // 7px
+                '2': '0.5rem', // 8px
                 '2.5': '0.625rem', // 10px
                 '2.75': '0.688rem', // 11px
                 '3.25': '0.813rem', // 13px

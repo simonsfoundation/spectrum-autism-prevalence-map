@@ -830,21 +830,24 @@ export function ttInitMap() {
             var prevalenceper10000 = d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
             var confidenceinterval = d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', ');
 
+            var resultCSS1 = 'mb-2.5 text-sans text-3.5 text-med-navy tracking-2 leading-100';
+            var resultCSS2 = 'block text-sans text-3.5 text-med-navy tracking-2 leading-6.25 font-semibold';
+
             // build the HTML content to add to the card
             var cardHTML = 
-                '<h2>' + card_title + '</h2>' +
-                '<p><strong class="block">Country:</strong> ' + d.properties.country + '</p>' +
-                '<p><strong class="block">Area:</strong> ' + area + '</p>' +
-                '<p><strong class="block">Sample Size:</strong> ' + d.properties.samplesize + '</p>' +
-                '<p><strong class="block">Age:</strong> ' + age + '</p>' +
-                '<p><strong class="block">Diagnostic Criteria:</strong> ' + diagnosticcriteria + '</p>' +
-                '<p><strong class="block">Diagnostic Tools:</strong> ' + diagnostictools + '</p>' +
-                '<p><strong class="block">Percent with Average IQ:</strong> ' + d.properties.percentwaverageiq + '</p>' +
-                '<p><strong class="block">Sex Ratio (M:F):</strong> ' + d.properties.sexratiomf + '</p>' +
-                '<p><strong class="block">Prevalence per 10,000:</strong> ' + prevalenceper10000 + '</p>' +
-                '<p><strong class="block">Confidence Interval:</strong> ' + confidenceinterval + '</p>' +
-                '<p><strong class="block">Years Studied:</strong> ' + d.properties.yearsstudied + '</p>' +
-                '<p><strong class="block">Category:</strong> ' + d.properties.categoryadpddorasd + '</p>';
+                '<h2 class="mb-2 mt-0.75 text-sans text-5 text-med-navy tracking-2 leading-100">' + card_title + '</h2>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Country:</strong> ' + d.properties.country + '</p>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Area:</strong> ' + area + '</p>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Sample Size:</strong> ' + d.properties.samplesize + '</p>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Age:</strong> ' + age + '</p>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Diagnostic Criteria:</strong> ' + diagnosticcriteria + '</p>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Diagnostic Tools:</strong> ' + diagnostictools + '</p>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Percent with Average IQ:</strong> ' + d.properties.percentwaverageiq + '</p>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Sex Ratio (M:F):</strong> ' + d.properties.sexratiomf + '</p>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Prevalence per 10,000:</strong> ' + prevalenceper10000 + '</p>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Confidence Interval:</strong> ' + confidenceinterval + '</p>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Years Studied:</strong> ' + d.properties.yearsstudied + '</p>' +
+                '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Category:</strong> ' + d.properties.categoryadpddorasd + '</p>';
 
             // remove any previously injected publication link
             $('#publication-button').remove();
@@ -854,7 +857,7 @@ export function ttInitMap() {
 
             // add the publication link that is absolutely positioned at the bottom of the parent while the main #info-card has overflow: scroll
             if (d.properties.link1title && d.properties.link1url) {
-                var linkHTML = '<a href="' + d.properties.link1url + '" id="publication-button" class="absolute bottom-0 left-0 w-full text-center bg-white" target="_blank">' + d.properties.link1title + '</a>';
+                var linkHTML = '<a href="' + d.properties.link1url + '" id="publication-button" class="absolute bottom-0 left-0 w-full pl-4 py-1.75 bg-white border-t-light-gray2 border-t-0.5 rounded-sm2-b text-4 text-blue tracking-2 leading-6.25" target="_blank">' + d.properties.link1title + '</a>';
                 $('#info-card-container').append(linkHTML);
             }
         }
