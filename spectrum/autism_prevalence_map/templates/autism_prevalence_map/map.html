@@ -2,14 +2,12 @@
 
 {% load static %} 
 
-{% block title %}Spectrum | Global Autism Prevalence Map{% endblock %}
-
 {% block page_name %}map{% endblock %}
 
 {% block body_block %}
 <!-- Main Container
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<div class='mx-auto max-w-container'>
+<div class='relative mx-auto max-w-container'>
     {% include 'autism_prevalence_map/action_buttons.html' with template='map' %}
 
     <!-- Map div
