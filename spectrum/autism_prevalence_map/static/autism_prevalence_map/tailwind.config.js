@@ -232,7 +232,7 @@ module.exports = {
             },
             boxShadow: {
                 'tooltip': '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
-                'info': '0px 0px 4px 0px rgba(97, 97, 97, 0.25)'
+                'info': '0px 0px 4px 0px rgba(97, 97, 97, 0.25)',
                 'mean-popup': '0px 2px 4px 0px rgba(88, 82, 72, 0.20)',
             },
             translate: {
