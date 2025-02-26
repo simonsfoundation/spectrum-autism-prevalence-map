@@ -35,6 +35,10 @@ module.exports = {
                 lineHeight: '1.375rem',
                 letterSpacing: '0.16em',
             }],
+            'sm1': ['0.938rem', { // 15px
+                lineHeight: '100%',
+                letterSpacing: '0.01em',
+            }],
             '1sm': ['1rem', { // 16px
                 lineHeight: '1.6rem',
                 letterSpacing: '0.01em',
@@ -75,6 +79,9 @@ module.exports = {
                 lineHeight: '100%',
                 letterSpacing: '0em',
             }],
+            '3.5': '0.875rem', // 14px
+            '4': '1rem', // 16px
+            '5': '1.25rem', // 20px
         },
         extend: {
             fontFamily: {
@@ -86,16 +93,24 @@ module.exports = {
                 'sm': '0.25rem', // 4px
                 'sm-l': '0.25rem 0 0 0.25rem', // 4px
                 'sm-r': '0 0.25rem 0.25rem 0', // 4px
+                'sm2-b': '0 0 0.5rem 0.5rem', // 8px
+                'md': '0.5rem', // 9px
                 'lg': '0.875rem', // 14px
             },
             letterSpacing: {
+                '1': '0.01em', // 1%
+                '2': '0.02em', // 2%
                 'normal-md': '0.016em', // 0.26px
                 'normal-lg': '0.02em', // 0.32px
                 'widest-sm': '0.14em', // 1.92px
                 'extra-wide': '0.16em', // 2.56px
             },
             lineHeight: {
-                '5.5': '1.375rem',
+                '4.5': '1.125rem', // 18px
+                '5.5': '1.375rem', // 22px
+                '6.25': '1.563rem', // 25px
+                '7.2': '1.788rem', // 28.6px
+                '100': '100%', // 100%
             },
             borderWidth: {
                 '0.5': '0.5px',
@@ -107,6 +122,7 @@ module.exports = {
                 'map': '28.375rem', // 454px
                 'map-lg': '30.125rem',  // 482px
                 'map-xl': '39rem',  // 624px
+                'card-xl': '42.25rem', // 676px
                 'timeline': '11.75rem', // 188px
                 'arrow': '0.5rem', // 8px
                 'arrow2': '6.5px', // 6.5px
@@ -115,14 +131,25 @@ module.exports = {
                 'search': '15.5rem', // 248px
                 'arrow': '0.75rem', // 12px
                 'arrow2': '0.813rem', // 13px
+                'learn': '8.75rem', // 140px
                 'filter': '10.813rem', // 173px
                 'button': '12rem', // 192px
                 'filterwide': '15.375rem', // 246px
+                'info': '18rem', // 288px
                 'mean-popup': '23.6875rem', //379px
                 'buttons': '25rem', // 400px
                 'map': '51.625rem', // 826px
                 'map-lg': '55.75rem',  // 892px
                 'map-xl': '72.125rem',  // 1154px
+            },
+            maxHeight: {
+                'info': 'calc(100% - 40px)', // height of the info card minus the sticky button at the bottom
+            },
+            maxWidth: {
+                'tooltip': '11.625rem', // 186px
+                'welcome': '16.5rem', // 264px
+                'logo': '13.55rem', // 216.8px
+                'container': '103rem', // 1648px
             },
             spacing: {
                 '0.25': '0.063rem', // 1px
@@ -132,9 +159,11 @@ module.exports = {
                 '1.25': '0.3125rem', // 5px
                 '1.5': '0.375rem', // 6px
                 '1.75': '0.4375rem', // 7px
+                '2': '0.5rem', // 8px
                 '2.4': '0.594rem', // 9.5px
                 '2.5': '0.625rem', // 10px
                 '2.75': '0.688rem', // 11px
+                '3.25': '0.813rem', // 13px
                 '3.5': '0.875rem', // 14px
                 '3.75': '0.938rem', // 15px
                 '4': '1rem', // 16px
@@ -145,22 +174,22 @@ module.exports = {
                 '6.5': '1.625rem', // 26px
                 '7.5': '1.875rem', // 30px
                 '8.5': '2.125rem', // 34px
+                '9': '2.25rem', // 36px
                 '10': '2.5rem', // 40px
                 '10.5': '2.625rem', // 42px
                 '11.5': '2.875rem', // 46px
+                '12.5': '3.125rem', // 50px
                 '14.5': '3.625rem', // 58px
                 '17.5': '4.375rem', // 70px
+                '24' : '6rem', // 96px
+                '25.5' : '6.375rem', // 102px
+                '46.5' : '11.625rem', // 186px
                 '62' : '15.5rem', // 248px
                 '63.5': '15.875rem', // 254px
                 '73': '18.25rem', // 292px
                 '159': '39.75rem', // 636px
                 '207.5': '51.875rem', // 830px
                 '400': '100rem', // 1600px 
-            },
-            maxWidth: {
-                'tooltip': '11.625rem', // 186px
-                'logo': '13.55rem', // 216.8px
-                'container': '103rem', // 1648px
             },
             colors: {
                 'red': '#910E1C',
@@ -176,6 +205,7 @@ module.exports = {
                 'med-gray': '#CCC',
                 'light-gray': '#F4F5F6',
                 'light-gray2': '#BFCBD1',
+                'light-gray3': '#D7DFE4',
                 'black': '#000',
                 'white': '#FFF',
                 'light-red': '#E0888F',
@@ -202,6 +232,7 @@ module.exports = {
             },
             boxShadow: {
                 'tooltip': '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
+                'info': '0px 0px 4px 0px rgba(97, 97, 97, 0.25)',
                 'mean-popup': '0px 2px 4px 0px rgba(88, 82, 72, 0.20)',
             },
             translate: {
