@@ -231,8 +231,12 @@ export function ttInitMap() {
                     yearsstudied_number_max = d1[1].getUTCFullYear();
                 } else {
                     min_yearpublished = d1[0].getUTCFullYear();
-                    max_yearpublished = d1[1].getUTCFullYear() + 1;    
+                    max_yearpublished = d1[1].getUTCFullYear();    
                 }
+
+                // Update the select filters in the UI.
+                $('#min_year').val(d1[0].getUTCFullYear());
+                $('#max_year').val(d1[1].getUTCFullYear());
 
                 app.map.pullDataAndUpdate();
             } 
@@ -282,8 +286,8 @@ export function ttInitMap() {
                 min_year = yearsstudied_number_min;
                 max_year = yearsstudied_number_max;
             } else {
-                min_year = min_yearpublished
-                max_year = max_yearpublished    
+                min_year = min_yearpublished;
+                max_year = max_yearpublished;  
             }
 
 
@@ -296,7 +300,7 @@ export function ttInitMap() {
                 }
 
                 if (max_year) {
-                    brush_max = new Date(max_year);
+                    brush_max = new Date(parseInt(max_year), 11, 31, 23, 59, 59);
                 } else {
                     brush_max = timeMax;
                 }
