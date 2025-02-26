@@ -324,7 +324,7 @@ export function ttInitJoint() {
             $('#country').val('all');
 
             // remove brush from timeline
-            if ($('#map-link').hasClass('active')) {
+            if ($('#map-link').hasClass('text-red') || $('#map-link').hasClass('active')) {
                 app.map.clearTimelineBrush();
             }
 
