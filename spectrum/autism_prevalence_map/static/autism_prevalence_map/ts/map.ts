@@ -787,7 +787,7 @@ export function ttInitMap() {
                 .style('stroke', '#FFF');
 
             // populate and show info card
-            populateCard(d);
+            populateInfoCard(d);
         }
 
         // unpin a dot and tooltip
@@ -807,7 +807,7 @@ export function ttInitMap() {
         }
 
         // welcome card content to reset to
-        var defaultCardContent = 
+        const welcomeCardContent = 
             '<h1 class="mt-24 lg:mt-25.5 xl:mt-46.5 mb-3.25 max-w-welcome font-serif text-2md font-bold leading-7.2 text-med-navy">Welcome to the Global Autism Prevalence Map</h1>' +
             '<p class="mb-9 max-w-welcome font-serif text-sm3 leading-4.5 text-dark-gray2">Data studies will be displayed in this side panel. Click any dot on the map to view detailed information.</p>' +
             '<a href="/about/" class="inline-block w-learn py-2.5 bg-med-navy rounded-sm text-sm font-bold text-light-navy-2 uppercase text-center no-underline">Learn More</a>';
@@ -824,21 +824,21 @@ export function ttInitMap() {
         app.map.clearPinned = clearPinned;
 
         // populate the info card when a map or timline dot is clicked
-        function populateCard(d) {
-            var authors = d.properties.authors;
-            var card_title = authors + ' ' + d.properties.yearpublished;
-            var area = d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
-            var age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
-            var diagnosticcriteria = d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
-            var diagnostictools = d.properties.diagnostictools.replace(/ *([|]) */g, '$1').split('|').join(', ');
-            var prevalenceper10000 = d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
-            var confidenceinterval = d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', ');
+        function populateInfoCard(d) {
+            const authors = d.properties.authors;
+            const card_title = authors + ' ' + d.properties.yearpublished;
+            const area = d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
+            const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
+            const diagnosticcriteria = d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
+            const diagnostictools = d.properties.diagnostictools.replace(/ *([|]) */g, '$1').split('|').join(', ');
+            const prevalenceper10000 = d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
+            const confidenceinterval = d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', ');
 
-            var resultCSS1 = 'mb-2.5 text-sans text-3.5 text-med-navy tracking-2 leading-100';
-            var resultCSS2 = 'block text-sans text-3.5 text-med-navy tracking-2 leading-6.25 font-semibold';
+            const resultCSS1 = 'mb-2.5 text-sans text-3.5 text-med-navy tracking-2 leading-100';
+            const resultCSS2 = 'block text-sans text-3.5 text-med-navy tracking-2 leading-6.25 font-semibold';
 
             // build the HTML content to add to the card
-            var cardHTML = 
+            const cardHTML = 
                 '<h2 class="mb-2 mt-0.75 text-sans text-5 text-med-navy tracking-2 leading-100">' + card_title + '</h2>' +
                 '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Country:</strong> ' + d.properties.country + '</p>' +
                 '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Area:</strong> ' + area + '</p>' +
@@ -859,9 +859,29 @@ export function ttInitMap() {
             // update the info card content
             $('#info-card').html(cardHTML);
 
+            /*
+            Leaving this for post launch to address
+            let links = [];
+            if (d.properties.link1title && d.properties.link1url) {
+                links.push('<a href="'+ d.properties.link1url +'">'+ d.properties.link1title +'</a>');
+            }
+            if (d.properties.link2title && d.properties.link2url) {
+                links.push('<a href="'+ d.properties.link2url +'">'+ d.properties.link2title +'</a>');
+            }
+            if (d.properties.link3title && d.properties.link3url) {
+                links.push('<a href="'+ d.properties.link3url +'">'+ d.properties.link3title +'</a>');
+            }
+            if (d.properties.link4title && d.properties.link4url) {
+                links.push('<a href="'+ d.properties.link4url +'">'+ d.properties.link4title +'</a>');
+            }
+
+            let links_string = links.join('<br />');
+            links_string = links_string.replace('>Spectrum', '><em>Spectrum</em>');
+            */
+
             // add the publication link that is absolutely positioned at the bottom of the parent while the main #info-card has overflow: scroll
             if (d.properties.link1title && d.properties.link1url) {
-                var linkHTML = '<a href="' + d.properties.link1url + '" id="publication-button" class="absolute bottom-0 left-0 w-full pl-4 py-1.75 bg-white border-t-light-gray2 border-t-0.5 rounded-sm2-b text-4 text-blue tracking-2 leading-6.25 no-underline" target="_blank">' + d.properties.link1title + '</a>';
+                const linkHTML = '<a href="' + d.properties.link1url + '" id="publication-button" class="absolute bottom-0 left-0 w-full pl-4 py-1.75 bg-white border-t-light-gray2 border-t-0.5 rounded-sm2-b text-4 text-blue tracking-2 leading-6.25 no-underline" target="_blank">' + d.properties.link1title + '</a>';
                 $('#info-card-container').append(linkHTML);
             }
         }
@@ -869,7 +889,7 @@ export function ttInitMap() {
         // reset to welcome card content
         function showWelcomeCard() {
             $('#publication-button').remove();
-            $('#info-card').html(defaultCardContent);
+            $('#info-card').html(welcomeCardContent);
         }
 
         function togglePin(d) {
