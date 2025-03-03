@@ -86,7 +86,7 @@
         </div>
     </header>
 
-    <main class="pt-3 pb-4 px-10">
+    <main {% if request.path != '/about/' %}class='pt-3 pb-4 px-10'{% endif %}>
         {% block body_block %} {% endblock %}
         {% include 'autism_prevalence_map/mobile_popup.html' %}
     </main>
