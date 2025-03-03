@@ -824,7 +824,7 @@ export function ttInitMap() {
                 .style('fill', '#0B6BC3')
                 .style('stroke', '#FFF');
             d3.select('#timeline_dot_' + pk)
-                .style('fill', '#0B6BC3')
+                .style('fill', '#FEF9EE')
                 .style('stroke', '#FFF');
 
             // populate and show info card
