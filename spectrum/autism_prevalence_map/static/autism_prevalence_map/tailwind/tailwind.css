@@ -457,7 +457,7 @@
     }
     .timeline-switch > [type="checkbox"]:checked + label:after,
     .timeline-switch > [type="checkbox"]:not(:checked) + label:after {
-        @apply content-empty absolute -top-0.5 right-2.25 w-switchout h-switchout rounded-md bg-light-navy-2 border-0.5 border-med-navy;
+        @apply content-empty absolute -top-0.5 right-2.25 w-switchout h-switchout rounded-lg bg-light-navy-2 border-0.5 border-med-navy;
     }
     .timeline-switch > [type="checkbox"]:checked,
     .timeline-switch > [type="checkbox"]:not(:checked) {
