@@ -848,7 +848,7 @@ export function ttInitMap() {
         }
 
         // welcome card content to reset to
-        const welcomeCardContent = $('#info-card.welcome-content').html();
+        const welcomeCardContent = $('#info-card[data-content="welcome"').html();
 
         // function to clear pinned dot when the clear filters button is clicked, or filters are changed.
         function clearPinned() {
@@ -895,7 +895,7 @@ export function ttInitMap() {
             $('#publication-button').remove();
 
             // update the info card content
-            $('#info-card').removeClass('welcome-content').html(cardHTML);
+            $('#info-card').attr('data-content','').html(cardHTML);
 
             /*
             Leaving this for post launch to address
@@ -927,7 +927,7 @@ export function ttInitMap() {
         // reset to welcome card content
         function showWelcomeCard() {
             $('#publication-button').remove();
-            $('#info-card').addClass('welcome-content').html(welcomeCardContent);
+            $('#info-card').html(welcomeCardContent).attr('data-content', 'welcome');
         }
 
         function togglePin(d) {
