@@ -467,7 +467,7 @@
         @apply overflow-visible;
     }
     .brush .selection {
-        @apply stroke-light-red fill-light-gray3 stroke-dash-5;
+        @apply stroke-light-red fill-light-gray4 stroke-dash-5;
     }
     .timeline-axis {
         @apply text-white text-1xs2;
