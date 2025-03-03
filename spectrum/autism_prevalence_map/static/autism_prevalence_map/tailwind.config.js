@@ -15,7 +15,11 @@ module.exports = {
                 lineHeight: '0.75rem',
                 letterSpacing: '0.16em',
             }],
-            '1xs2': ['0.688rem', { // 11px
+            '1xs2': ['0.625rem', { // 10px
+                lineHeight: '100%',
+                letterSpacing: '0.01em',
+            }],
+            '1xs3': ['0.688rem', { // 11px
                 lineHeight: '120%',
                 letterSpacing: '0.16em',
             }],
@@ -38,6 +42,13 @@ module.exports = {
             'sm1': ['0.938rem', { // 15px
                 lineHeight: '100%',
                 letterSpacing: '0.01em',
+            }],
+            'sm2': ['0.875rem', { // 14px
+                lineHeight: '100%',
+                letterSpacing: '0.01em',
+            }],
+            'sm3': ['0.938rem', { // 15px
+                lineHeight: '100%',
             }],
             '1sm': ['1rem', { // 16px
                 lineHeight: '1.6rem',
@@ -71,6 +82,9 @@ module.exports = {
                 lineHeight: '120%',
                 letterSpacing: '0.116em',
             }],
+            'lg2': ['1.9375rem', { // 31px
+                lineHeight: '100%',
+            }],
             '3lg': ['2.4375rem', { // 39px
                 lineHeight: '100%',
                 letterSpacing: '0em',
@@ -95,7 +109,9 @@ module.exports = {
                 'sm-r': '0 0.25rem 0.25rem 0', // 4px
                 'sm2-b': '0 0 0.5rem 0.5rem', // 8px
                 'md': '0.5rem', // 9px
-                'lg': '0.875rem', // 14px
+                'lg': '0.75rem', // 12px
+                'xl': '0.875rem', // 14px
+                'circle': '50%',
             },
             letterSpacing: {
                 '1': '0.01em', // 1%
@@ -124,6 +140,9 @@ module.exports = {
                 'map-xl': '39rem',  // 624px
                 'card-xl': '42.25rem', // 676px
                 'timeline': '11.75rem', // 188px
+                'brush': '11.313rem', // 181px
+                'switchout': '1.5rem', // 24px
+                'switchin': '0.875rem', // 14px
                 'arrow': '0.5rem', // 8px
                 'arrow2': '6.5px', // 6.5px
             },
@@ -131,6 +150,15 @@ module.exports = {
                 'search': '15.5rem', // 248px
                 'arrow': '0.75rem', // 12px
                 'arrow2': '0.813rem', // 13px
+                'switchin': '0.875rem', // 14px
+                'switchout': '2.75rem', // 44px
+                'filter': '10.813rem', // 173px
+                'button': '12rem', // 192px
+                'filterwide': '15.375rem', // 246px
+                'help': '27.625rem', // 442px
+                'timeline': '48.125rem', // 770px
+                'timeline-lg': '57.188rem', // 915px
+                'timeline-xl': '77.25rem', // 1236px
                 'learn': '8.75rem', // 140px
                 'filter': '10.813rem', // 173px
                 'button': '12rem', // 192px
@@ -160,6 +188,7 @@ module.exports = {
                 '1.5': '0.375rem', // 6px
                 '1.75': '0.4375rem', // 7px
                 '2': '0.5rem', // 8px
+                '2.25': '0.563rem', // 9px
                 '2.4': '0.594rem', // 9.5px
                 '2.5': '0.625rem', // 10px
                 '2.75': '0.688rem', // 11px
@@ -169,18 +198,26 @@ module.exports = {
                 '4': '1rem', // 16px
                 '4.5': '1.125rem', // 18px
                 '4.7': '1.188rem', // 19px
+                '5': '1.25rem', // 20px
                 '5.2': '1.313rem', // 21px
                 '5.5': '1.375rem', // 22px
+                '5.75': '1.438rem', // 23px
+                '6': '1.5rem', // 24px
                 '6.5': '1.625rem', // 26px
                 '7.5': '1.875rem', // 30px
                 '8.5': '2.125rem', // 34px
+                '8.75': '2.188rem', // 35px
                 '9': '2.25rem', // 36px
                 '10': '2.5rem', // 40px
                 '10.5': '2.625rem', // 42px
                 '11.5': '2.875rem', // 46px
                 '12.5': '3.125rem', // 50px
+                '13': '3.25rem', // 52px
                 '14.5': '3.625rem', // 58px
+                '15': '3.75rem', // 60px
+                '16': '4rem', // 64px
                 '17.5': '4.375rem', // 70px
+                '23': '5.75rem', // 92px
                 '24' : '6rem', // 96px
                 '25.5' : '6.375rem', // 102px
                 '46.5' : '11.625rem', // 186px
@@ -193,6 +230,7 @@ module.exports = {
             },
             colors: {
                 'red': '#910E1C',
+                'light-red': '#D14D57',
                 'blue': '#0B6BC3',
                 'navy': '#003049',
                 'med-navy': '#2E5367',
@@ -206,6 +244,7 @@ module.exports = {
                 'light-gray': '#F4F5F6',
                 'light-gray2': '#BFCBD1',
                 'light-gray3': '#D7DFE4',
+                'light-gray4': '#4D4C49',
                 'black': '#000',
                 'white': '#FFF',
                 'light-red': '#E0888F',
@@ -224,7 +263,7 @@ module.exports = {
                 'search': '0.95 1 0%',
             },
             content: {
-                'empty': '""', 
+                'empty': '""',
             },
             zIndex: {
                 '1': '1',
@@ -238,13 +277,30 @@ module.exports = {
             translate: {
                 'neg1': '-0.063rem',
             },
+            translate: {
+                'neg2': '-0.125rem',
+                '20': '1.25rem',
+            },
+            rotate: {
+                '180': '180deg',
+            },
+            strokeDash: {
+                '5': '5',
+            },
             screens: {
-                'lg': '1440px',
-                'xl': '1728px',
+                'lg': '90rem',
+                'xl': '108rem',
             },
         }
     },
     plugins: [
+        function ({ addUtilities }) {
+            addUtilities({
+                '.stroke-dash-5': {
+                    'stroke-dasharray': '5',
+                },
+            });
+        },
     ],
     safelist: [
         'tooltip',

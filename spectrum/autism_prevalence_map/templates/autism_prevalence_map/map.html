@@ -12,7 +12,7 @@
 
     <!-- Map div
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class='flex'>
+    <div class='flex mb-6 xl:mb-10'>
         <div id='info-card-container' class='relative h-map lg:h-map-lg xl:h-card-xl w-info lg:mr-10.5 xl:mr-12 pt-4 bg-white border-0.5 border-light-gray3 rounded-md shadow-info'>
             <div id='info-card' class='welcome-content relative max-h-info overflow-y-scroll px-4 pb-0.75'>
                 <h1 class='mt-24 lg:mt-25.5 xl:mt-46.5 mb-3.25 max-w-welcome font-serif text-2md font-bold leading-7.2 text-med-navy'>Welcome to the Global Autism Prevalence Map.</h1>
@@ -24,37 +24,24 @@
     </div>
     <!-- Timeline div
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class='timeline-wrapper container-fluid h-timeline'>
+    <div class='h-timeline bg-dark-gray border-0.5 border-dark-gray2 rounded-lg pl-4 pb-1.5'>
         <div class='row'>
-            <div id='timeline-toggle' class='timeline-toggle col-xl-3'>
-                <h2>Timeline of studies</h2>
-                <span class='timeline-switch'>
-
+            <div id='timeline-toggle' class='inline-block align-top mr-16 pt-10.5'>
+                <h2 class='mb-2.75 font-serif text-lg2 text-tan'>Timeline of studies</h2>
+                <span class='timeline-switch relative'>
                     <input type='checkbox' id='timeline-switch' name='timeline-switch' {% if timeline_type == 'studied' %}checked{% endif %}>
-
-                    <label for='timeline-switch'>
-                        {% if timeline_type == 'published' %}
-                            <strong>Year published</strong>
-                        {% else %}
-                            Year published
-                        {% endif %}
-                    </label>
-                    <span class='timeline-switch-knob'></span>
+                    <label for='timeline-switch' class='font-serif text-sm3 text-tan'>Year published</label>
+                    <span class='timeline-switch-knob bg-med-navy'></span>
                 </span>
-                <span>
-                    {% if timeline_type == 'studied' %}
-                        <strong>Year(s) studied</strong>
-                    {% else %}
-                        Year(s) studied
-                    {% endif %}
-                </span>
+                <span class='font-serif text-sm3 text-tan'>Year(s) studied</span>
                 {% if last_updated_on != '' %}
-                    <div>
-                        Data last updated on {{last_updated_on}}
-                    </div>
+                    <div class='pt-5.75 font-serif text-sm2 text-tan italic font-light'>Data last updated on {{last_updated_on}}</div>
                 {% endif %}
             </div>
-            <div id='timeline' class='ui-brush timeline col-xl-9'></div>
+            <div class='relative inline-block align-top'>
+                <span class='absolute top-5 font-serif text-sm2 text-tan italic'>*Drag the cursor horizontally across the timeline to view data <img src="{% static 'autism_prevalence_map/img/icon-question.svg' %}" alt='question icon' class='inline-block pl-1.75 translate-y-neg2 cursor-pointer' id='help'></span>
+                <div id='timeline' class='timeline block h-brush w-timeline lg:w-timeline-lg xl:w-timeline-xl'></div>
+            </div>
         </div>
     </div>
 </div>

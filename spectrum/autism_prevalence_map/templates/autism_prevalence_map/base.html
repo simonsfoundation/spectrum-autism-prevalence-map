@@ -71,13 +71,14 @@
                     <a id='list-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/list/" %}text-red{% endif %}' href="{% url 'list_view' %}">List</a>
                     <a class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/about/" %}text-red{% endif %}' href="{% url 'about' %}">About</a>
                 </nav>
+
                 {% if request.path != "/about/" %}
-                    <form class='flex items-center w-search border border-navy rounded-lg pl-1.5'>
+                    <form class='flex items-center w-search border border-navy rounded-xl pl-1.5'>
                         <div class='flex items-center justify-center'>
                             {% svg 'icon-search' %}
                         </div>
                         <div class='flex-search'>
-                            <input id='search' class='w-full py-1.2 px-2 text-1xs2 text-med-navy font-bold uppercase placeholder-light-navy-3 rounded-lg outline-none' type='search' placeholder='Filter data by keyword' aria-label='Filter data by keyword'>
+                            <input id='search' class='w-full py-1.2 px-2 text-1xs3 text-med-navy font-bold uppercase placeholder-light-navy-3 rounded-xl outline-none' type='search' placeholder='Filter data by keyword' aria-label='Filter data by keyword'>
                         </div>
                     </form>
                 {% endif %}
