@@ -614,6 +614,33 @@ export function ttInitMap() {
             handleText.attr('display', 'none');
         }
 
+        app.map.updateTimelineBrushFromFilters = function() {
+            // only if we have a valid brush and timeline
+            if (!brush || !timelineX) return;
+            
+            // only update if the selection is already being used
+            if (d3.select('.selection').attr('display') === 'none' || d3.select('.selection').empty()) {
+                return;
+            }
+            
+            let minYear, maxYear;
+            
+            if (timeline_type == 'studied') {
+                minYear = yearsstudied_number_min || $('#min_year').val();
+                maxYear = yearsstudied_number_max || $('#max_year').val();
+            } else {
+                minYear = min_yearpublished || $('#min_year').val();
+                maxYear = max_yearpublished || $('#max_year').val();
+            }
+        
+            const minDate = new Date(parseInt(minYear, 10), 0, 1);
+            const maxDate = new Date(parseInt(maxYear, 10), 11, 31, 23, 59, 59);
+            
+            if (brushG && minYear && maxYear) {
+                brushG.call(brush.move, [minDate, maxDate].map(timelineX));
+            }
+        };
+
         // add overlay dataset
         app.map.updateMapPoints = function() {   
             nodes = studies.features.map(function(n) {

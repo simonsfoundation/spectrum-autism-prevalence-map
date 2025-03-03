@@ -143,6 +143,10 @@ export function ttInitJoint() {
             } else {
                 min_yearpublished = $(this).val();
             }
+            // update the timeline when selection is actively in use
+            if (d3.select('.selection').attr('display') !== 'none' && !d3.select('.selection').empty()) {
+                app.map.updateTimelineBrushFromFilters();
+            }
             app.runUpdate();
         });
 
@@ -153,6 +157,10 @@ export function ttInitJoint() {
                 yearsstudied_number_max = $(this).val();
             } else {
                 max_yearpublished = $(this).val();
+            }
+            // update the timeline when selection is actively in use
+            if (d3.select('.selection').attr('display') !== 'none' && !d3.select('.selection').empty()) {
+                app.map.updateTimelineBrushFromFilters();
             }
             app.runUpdate();
         });
