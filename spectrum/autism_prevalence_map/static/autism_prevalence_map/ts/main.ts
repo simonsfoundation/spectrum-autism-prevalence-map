@@ -7,6 +7,7 @@ import { ttInitJoint } from './joint.ts';
 import { ttInitMap } from './map.ts';
 import { ttInitMobilePopup } from './mobile-popup.ts';
 import { ttInitList } from './list.ts';
+import { ttInitKeywordsSearchInput } from './keywords-search-input.ts';
 
 (function ($): void {
     $(function () {
@@ -22,9 +23,11 @@ import { ttInitList } from './list.ts';
         switch (pageName) {
             case 'map':
                 ttInitMap();
+                ttInitKeywordsSearchInput();
                 break;
             case 'list':
                 ttInitList();
+                ttInitKeywordsSearchInput();
                 break;
         }
     });
