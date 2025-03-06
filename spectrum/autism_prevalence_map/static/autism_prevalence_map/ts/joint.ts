@@ -2,13 +2,16 @@ import { app } from './app.js';
 
 export function ttInitJoint() {
     $(document).ready(function () {
+        if (typeof country === 'object') country = '';
+        if (typeof continent === 'object') continent = '';
+
         // api call holder
-        app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education+'&country='+country+'&continent='+continent;
+        app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education+'&country='+(typeof country === 'object' && country ? '' : country)+'&continent='+(typeof continent === 'object' && continent ? '' : continent);
 
         // function for updating url state
         app.updateURL = function() {
             const obj = { foo: 'bar' };
-            app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education+'&country='+country+'&continent='+continent;
+            app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education+'&country='+(typeof country === 'object' && country ? '' : country)+'&continent='+(typeof continent === 'object' && continent ? '' : continent);
 
             window.history.pushState(obj, 'Updated URL Parameters', app.api_call_param_string);
             // set the links to the map and list to hold the url params
@@ -19,8 +22,10 @@ export function ttInitJoint() {
 
         // function for updating content based on filters
         app.runUpdate = function() {
-            // clear anything pinned on the map or timeline
-            app.map.clearPinned();
+            // clear anything pinned on the map or timeline if we are in the map view
+            if (app.map && typeof app.map.clearPinned === 'function') {
+                app.map.clearPinned();
+            }
 
             // run update
             app.updateURL();
