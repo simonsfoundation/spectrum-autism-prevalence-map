@@ -101,6 +101,8 @@ export function ttInitMap() {
                 .attr('width', timelineWidth)
                 .attr('height', timelineHeight);
 
+            let helpTooltipTimeout;
+
             // enable timeline help tooltip
             $('#help').tooltip({
                 container: 'body',
@@ -108,6 +110,11 @@ export function ttInitMap() {
                 placement: 'right',
                 template: '<div class="tooltip help" role="tooltip"><div class="tooltip-inner"></div></div>',
                 title: 'You can use the timeline of studies to filter by the years in which studies were conducted or published. Simply drag the cursor horizontally across the timeline to select years.',
+            }).on('shown.bs.tooltip', function () {
+                clearTimeout(helpTooltipTimeout);
+                helpTooltipTimeout = setTimeout(() => {
+                    $(this).tooltip('hide');
+                }, 3000);
             });
 
             d3.json(world_atlas).then(function(world) {
