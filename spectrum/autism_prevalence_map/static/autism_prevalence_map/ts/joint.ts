@@ -23,7 +23,7 @@ export function ttInitJoint() {
         // function for updating content based on filters
         app.runUpdate = function() {
             // clear anything pinned on the map or timeline if we are in the map view
-            if (app.map && typeof app.map.clearPinned === 'function') {
+            if ($('#map-link').hasClass('text-red') || $('#map-link').hasClass('active')) {
                 app.map.clearPinned();
             }
 
@@ -149,7 +149,8 @@ export function ttInitJoint() {
                 min_yearpublished = $(this).val();
             }
             // update the timeline when selection is actively in use
-            if (d3.select('.selection').attr('display') !== 'none' && !d3.select('.selection').empty()) {
+            let selection = d3.select('.selection');
+            if (!selection.empty() && selection.attr('display') !== 'none') {
                 app.map.updateTimelineBrushFromFilters();
             }
             app.runUpdate();
@@ -164,7 +165,8 @@ export function ttInitJoint() {
                 max_yearpublished = $(this).val();
             }
             // update the timeline when selection is actively in use
-            if (d3.select('.selection').attr('display') !== 'none' && !d3.select('.selection').empty()) {
+            let selection = d3.select('.selection');
+            if (!selection.empty() && selection.attr('display') !== 'none') {
                 app.map.updateTimelineBrushFromFilters();
             }
             app.runUpdate();
@@ -338,11 +340,10 @@ export function ttInitJoint() {
 
             // remove brush from timeline
             if ($('#map-link').hasClass('text-red') || $('#map-link').hasClass('active')) {
+                // clear anything pinned on the map or timeline
                 app.map.clearTimelineBrush();
+                app.map.clearPinned();
             }
-
-            // clear anything pinned on the map or timeline
-            app.map.clearPinned();
 
             // run update
             app.runUpdate();

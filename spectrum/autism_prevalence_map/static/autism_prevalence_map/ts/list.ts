@@ -29,7 +29,7 @@ export function ttInitList() {
 
 
         app.list.addRows = function() {
-            d3.select("#studies_tbody").remove();      
+            $("#studies tbody").remove();     
             d3.json("/studies-api/" + app.api_call_param_string).then(function(data) {
                 studies = data;
                 let enter_selection = table.append("tbody")
