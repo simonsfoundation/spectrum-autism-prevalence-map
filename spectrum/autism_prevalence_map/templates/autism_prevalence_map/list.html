@@ -7,47 +7,28 @@
 {% block body_block %}
 <!-- Main Container
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+<div class='relative mx-auto max-w-container'>
+    {% include "autism_prevalence_map/action_buttons.html" with template="list" %}
 
-<div class="pt-3 pb-4 mx-auto max-w-container">
-    <div class="container-fluid">    
-        <div class="row">
-            <div class="col-11">
-                <!-- list 
-                –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-                <div id="list" class="table-responsive spectrum-table">
-                    <table id="studies" class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th scope="col"></th>
-                                <th scope="col">YEAR</th>
-                                <th scope="col">AUTHOR</th>
-                                <th scope="col">COUNTRY</th>
-                                <th scope="col">AREA</th>
-                                <th scope="col">SAMPLE SIZE</th>
-                                <th scope="col">PREVALENCE (PER 10,000)</th>
-                                <th scope="col">95% CONFIDENCE INTERVAL</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
+    <div class="pt-4 pb-4 mx-auto max-w-container">
+        <div id="list">
+            <table id="studies">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">YEAR</th>
+                        <th scope="col">AUTHOR</th>
+                        <th scope="col">COUNTRY</th>
+                        <th scope="col">AREA</th>
+                        <th scope="col">SAMPLE SIZE</th>
+                        <th scope="col">PREVALENCE (PER 10,000)</th>
+                        <th scope="col">95% CONFIDENCE INTERVAL</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
-
-    <div class="container-fluid">    
-        <div class="row">
-            <div class="col-11">
-                <div class="container-fluid">    
-                    <div class="row">
-                        <div id="width-check" class="col-4">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>         
-
-{% include "autism_prevalence_map/action_buttons.html" with template="list" %}
+</div>     
 
 {% endblock %}
 

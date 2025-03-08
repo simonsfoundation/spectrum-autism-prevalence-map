@@ -6,7 +6,7 @@ export function ttInitList() {
         app.list = {};
 
         const width = $("body").width();
-        const mapWidth = $("#width-check").width();
+        const mapWidth = $("#list").width();
         const table = d3.select("#studies");
 
         // map projection
