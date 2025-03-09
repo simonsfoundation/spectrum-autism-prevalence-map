@@ -496,7 +496,4 @@
     #studies .show a {
         @apply no-underline;
     }
-    .country-borders {
-        stroke-width: 2px;
-    }
 }
