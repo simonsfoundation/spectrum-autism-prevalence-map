@@ -5,14 +5,18 @@ export function ttInitList() {
         // app.list scope
         app.list = {};
 
-        const width = $('body').width();
-        const mapWidth = $('#list').width();
+        // mapWidth only needed if we bring back the confidence interval functionality
+        // const width = $('body').width();
+        // const mapWidth = $('#list').width();
         const table = d3.select('#studies');
 
         // map projection
+        const fixedWidth = 509;
+        const fixedHeight = 323;
+
         const projection = d3.geoKavrayskiy7()
             .scale(250)
-            .translate([mapWidth / 2, mapWidth / 1.8]);
+            .translate([fixedWidth / 2, fixedHeight / 2]);
 
         // function to create paths from map projection
         const path = d3.geoPath().projection(projection);
@@ -32,6 +36,10 @@ export function ttInitList() {
             $('#studies tbody').remove();     
             d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
                 studies = data;
+
+                // update the results count
+                document.getElementById('results-count').textContent = studies.features.length;
+
                 let enter_selection = table.append('tbody')
                     .attr('id', 'studies_tbody')
                     .selectAll('tr')
@@ -49,12 +57,14 @@ export function ttInitList() {
                     .attr('aria-controls', function (d) { 
                         return d.properties.pk; 
                     })
-                    .classed('study_row', true);
+                    .classed('border-light-gray2 border-b-1.25', true);
 
-                row1.append('td')
+                const toggletd = row1.append('td')
                     .attr('scope', 'row')
-                    .append('img')
-                    .attr('src', '{% static "autism_prevalence_map/img/icon-chevron-down.svg" %}')
+                    .classed('p-0 pl-3.75 w-toggle', true);
+
+                toggletd.append('img')
+                    .attr('src', chevron_down)
                     .attr('alt', 'chevron down icon')
                     .classed('chevron-down', true);
                 
@@ -62,43 +72,46 @@ export function ttInitList() {
                     .text(function (d) { 
                         return d.properties.yearpublished; 
                     })
+                    .classed('w-td1', true);
 
                 row1.append('td')
                     .html(function (d) { 
                         const authors = d.properties.authors.replace('et al.', '<em>et al.</em>');
                         return authors; 
                     })
+                    .classed('w-td2 pr-8', true);
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.country; 
                     })
+                    .classed('w-td3', true);
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
                     })
+                    .classed('w-td4 pr-8', true);
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.samplesize; 
                     })
+                    .classed('w-td5', true);
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
-                        ; 
                     })
+                    .classed('w-td6', true);
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', '); 
                     })
 
-
                 let row2 = enter_selection.insert('tr')
-                    .classed('collapse', true)
-                    .classed('list-more-information', true)
+                    .classed('collapse bg-tan', true)
     		        .attr('id', function (d) { 
                         return 'accordion_menu_' + d.properties.pk; 
                     });
@@ -106,12 +119,10 @@ export function ttInitList() {
                 let card_div = row2.append('td')
                     .attr('colspan', '9')
                     .append('div')
-                    .classed('container-fluid', true)
-                    .append('div')
-                    .classed('row', true);
+                    .classed('flex', true)
 
                 let textBlock = card_div.append('div')
-                    .classed('col-4', true)
+                    .classed('w-listcard pl-13.75 pr-8', true)
                     .append('p')
                     .html(function (d) { 
                         const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
@@ -133,26 +144,33 @@ export function ttInitList() {
                             links.push('<a href="'+ d.properties.link4url +'">'+ d.properties.link4title +'</a>') 
                         }
 
-                        let links_string = links.join('<br />');
-                        links_string = links_string.replace('>Spectrum', '><em>Spectrum</em>');
+                        let links_string = '';
+                        if (links.length > 0) {
+                            links_string = links
+                                .map(link => `<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25">${link}</div>`)
+                                .join('');
+                            links_string = links_string.replace('>Spectrum', '><em>Spectrum</em>');
+                        }
 
-                        return '<b>Age (years):</b> ' + age + '<br />' +
-                        '<b>Individuals with autism:</b> ' + d.properties.individualswithautism + '<br />' +
-                        '<b>Diagnostic criteria:</b> ' + diagnosticcriteria + '<br />' +
-                        '<b>Diagnostic tools:</b> ' + diagnostictools + '<br />' +
-                        '<b>Percent w/ average IQ:</b> ' + d.properties.percentwaverageiq + '<br />' +
-                        '<b>Sex ratio (M:F):</b> ' + d.properties.sexratiomf + '<br />' +
-                        '<b>Year(s) studied:</b> ' + d.properties.yearsstudied + '<br />' +
-                        '<b>Category:</b> ' + d.properties.categoryadpddorasd + '<br />' +
+                        return '<div class="text-4 text-med-navy tracking-2 leading-6.25"><strong>Age (Years):</strong> ' + age + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Individuals with autism:</strong> ' + d.properties.individualswithautism + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Diagnostic criteria:</strong> ' + diagnosticcriteria + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Diagnostic tools:</strong> ' + diagnostictools + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Percent w/average IQ:</strong> ' + d.properties.percentwaverageiq + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Sex ratio (M:F):</strong> ' + d.properties.sexratiomf + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Year(s) studied:</strong> ' + d.properties.yearsstudied + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Category:</strong> ' + d.properties.categoryadpddorasd + '</div>' +
                         links_string;
                     });
 
                 let mapBlock = card_div.append('div')
-                    .classed('col-4', true);
+                    .classed('test2', true);
 
                 let mapSVG = mapBlock.append('svg')
-                    .style('width', '100%')
-                    .style('height', '100%')
+                    .attr('width', '509px')
+                    .attr('height', '323px')
+                    .attr('viewBox', '0 0 509 323')
+                    .classed('bg-white border-white border-4', true)
                     .attr('id', function (d) { 
                         return 'map_svg_' + d.properties.pk;
                     });
@@ -172,12 +190,18 @@ export function ttInitList() {
                         }
                     }))
                     .enter().append('path')
-                    .attr('d', path);
+                    .attr('d', path)
+                    .attr('fill', '#ccc');
 
                 mapG.append('path')
                     .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
                     .classed('country-borders', true)
-                    .attr('d', path);
+                    .attr('d', path)
+                    .attr('fill', 'none')
+                    .attr('stroke', '#FFF')
+                    .each(function() {
+                        this.style.setProperty('stroke-width', '1px');
+                    });
 
                 // add this study to the map
                 const studiesG = mapG.append('g')
@@ -190,11 +214,9 @@ export function ttInitList() {
                     .attr('cy', function (d) { 
                         return projection(d.geometry.coordinates)[1]; 
                     })
-                    .attr('r', 5)
+                    .attr('r', 8)
                     .style('fill', pointColor)
                     .style('fill-opacity', '1')
-                    .style('stroke', '#fff')
-                    .style('stroke-width', '0')
                     .classed('map-circles', true)
                     .attr('id', function(d){
                         return 'map_dot_' + d.properties.pk
@@ -203,14 +225,16 @@ export function ttInitList() {
                 thisMapSVG.each(function(d) {
                     let zoom = d3.zoom()
                         .on('zoom', function() {
-                            d3.select('#map_svg_g_' + d.properties.pk).attr('transform', d3.event.transform);
+                            d3.select('#map_svg_g_' + d.properties.pk)
+                              .attr('transform', d3.event.transform);
                         });
                     d3.select('#map_svg_' + d.properties.pk)
-                        .call(zoom.scaleTo, 2)
-                        .call(zoom.translateTo, projection(d.geometry.coordinates)[0] - (mapWidth/4), projection(d.geometry.coordinates)[1] - (mapWidth/6));
-                })
+                      .call(zoom.scaleTo, 1)
+                      .call(zoom.translateTo, projection(d.geometry.coordinates)[0] - 30, projection(d.geometry.coordinates)[1] + 75);
+                });
 
                 // add confidence interval graphic
+                /*
                 let ciBlock = card_div.append('div')
                     .classed('col-4', true); 
                  
@@ -413,6 +437,7 @@ export function ttInitList() {
                     .attr('fill-opacity', 1)
                     .style('stroke', '#fff')
                     .style('stroke-width', '0');
+                */
 
                 d3.select('#studies_tbody').selectAll('tr').sort(function(a, b){ 
                     return a.properties.pk - b.properties.pk; 
@@ -428,36 +453,31 @@ export function ttInitList() {
         // point color function
         function pointColor(feature) {
             if (feature.properties.recommended == 'yes' || feature.properties.recommended == 'Yes') {
-                return '#03C0FF';
+                // standard darker red
+                return '#910E1C';
             } else {
-                return '#007095';
+                // light red
+                return '#D14D57';
             }
         }
 
         // listener to toggle arrows on click
         $(document).on('click', '.study_row', function(){
-            const chevron_icon = $(this).find('.fas');
-            if (chevron_icon.hasClass('fa-chevron-down')) {
-                chevron_icon.removeClass('fa-chevron-down');
-                chevron_icon.addClass('fa-chevron-up');
-            } else {
-                chevron_icon.removeClass('fa-chevron-up');
-                chevron_icon.addClass('fa-chevron-down');
-            }
+            $(this).find('.chevron-down').toggleClass('open');
         });
 
-    // initialize
-    app.list.loadWorldMap();
+        // initialize
+        app.list.loadWorldMap();
 
-    /*
-    if (timeline_type == 'studied') {
-        $('#earliest-label').text('Earliest year studied');
-        $('#latest-label').text('Latest year studied');
-    } else {
-        $('#earliest-label').text('Earliest publication date');
-        $('#latest-label').text('Latest publication date');
-    }
-    */
+        /*
+        if (timeline_type == 'studied') {
+            $('#earliest-label').text('Earliest year studied');
+            $('#latest-label').text('Latest year studied');
+        } else {
+            $('#earliest-label').text('Earliest publication date');
+            $('#latest-label').text('Latest publication date');
+        }
+        */
 
     });
 }

@@ -122,6 +122,7 @@ module.exports = {
                 'extra-wide': '0.16em', // 2.56px
             },
             lineHeight: {
+                '4.25': '1.063rem', // 17px
                 '4.5': '1.125rem', // 18px
                 '5.5': '1.375rem', // 22px
                 '6.25': '1.563rem', // 25px
@@ -131,7 +132,10 @@ module.exports = {
             borderWidth: {
                 '0.5': '0.5px',
                 '1': '1px',
+                '1.25': '1.25px',
+                '4': '0.25rem',
                 '6.5': '0.375rem', // 6px
+                '12': '0.75rem', // 12px
             },
             height: {
                 'filters': '5.875rem', // 94px
@@ -152,6 +156,7 @@ module.exports = {
                 'arrow2': '0.813rem', // 13px
                 'switchin': '0.875rem', // 14px
                 'switchout': '2.75rem', // 44px
+                'toggle': '3.438rem', // 55px
                 'filter': '10.813rem', // 173px
                 'button': '12rem', // 192px
                 'filterwide': '15.375rem', // 246px
@@ -166,9 +171,16 @@ module.exports = {
                 'info': '18rem', // 288px
                 'mean-popup': '23.6875rem', //379px
                 'buttons': '25rem', // 400px
+                'listcard': '25.5rem', // 408px
                 'map': '51.625rem', // 826px
                 'map-lg': '55.75rem',  // 892px
                 'map-xl': '72.125rem',  // 1154px
+                'td1': '6.25rem', // 100px
+                'td2': '12.375rem', // 198px
+                'td3': '8.375rem', // 134px
+                'td4': '17.625rem', // 282px
+                'td5': '10.375rem', // 166px
+                'td6': '17.5rem', // 280px
             },
             maxHeight: {
                 'info': 'calc(100% - 40px)', // height of the info card minus the sticky button at the bottom
@@ -178,6 +190,7 @@ module.exports = {
                 'welcome': '16.5rem', // 264px
                 'logo': '13.55rem', // 216.8px
                 'container': '103rem', // 1648px
+                
             },
             spacing: {
                 '0.25': '0.063rem', // 1px
@@ -192,6 +205,7 @@ module.exports = {
                 '2.4': '0.594rem', // 9.5px
                 '2.5': '0.625rem', // 10px
                 '2.75': '0.688rem', // 11px
+                '3': '0.75rem', // 12px
                 '3.25': '0.813rem', // 13px
                 '3.5': '0.875rem', // 14px
                 '3.75': '0.938rem', // 15px
@@ -205,6 +219,8 @@ module.exports = {
                 '6': '1.5rem', // 24px
                 '6.5': '1.625rem', // 26px
                 '7.5': '1.875rem', // 30px
+                '8': '2rem', // 32px
+                '8.25': '2.063rem', // 33px
                 '8.5': '2.125rem', // 34px
                 '8.75': '2.188rem', // 35px
                 '9': '2.25rem', // 36px
@@ -213,6 +229,7 @@ module.exports = {
                 '11.5': '2.875rem', // 46px
                 '12.5': '3.125rem', // 50px
                 '13': '3.25rem', // 52px
+                '13.75': '3.438rem', // 55px
                 '14.5': '3.625rem', // 58px
                 '15': '3.75rem', // 60px
                 '16': '4rem', // 64px
@@ -247,8 +264,7 @@ module.exports = {
                 'light-gray4': '#4D4C49',
                 'black': '#000',
                 'white': '#FFF',
-                'light-red': '#E0888F',
-                'light-red2': '#D14D57',
+                'white2': '#FFFDF9',                
             },
             backgroundImage: {
                 'select-arrow': "url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 14 8%22 fill=%22none%22%3E%3Cpath d=%22M1.707 0.293a1 1 0 00-1.414 1.414L6.293 7.707a1 1 0 001.414 0l6-6A1 1 0 0012.293.293L7 5.586 1.707.293z%22 fill=%22%232E5367%22/%3E%3C/svg%3E')",

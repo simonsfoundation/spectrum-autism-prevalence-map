@@ -10,21 +10,21 @@
 <div class='relative mx-auto max-w-container'>
     {% include "autism_prevalence_map/action_buttons.html" with template="list" %}
 
-    <div class="pt-3.25 pb-4 mx-auto max-w-container">
-        <div id="list">
-            <div class="text-2xs uppercase text-med-navy">32 results</div>
+    <div class='pt-3.25 pb-4 mx-auto max-w-container'>
+        <div id='list'>
+            <div class='pb-3.25 text-2xs uppercase text-med-navy'><span id='results-count'>0</span> results</div>
 
-            <table id="studies">
-                <thead>
+            <table id='studies' class='w-full'>
+                <thead class='bg-dark-gray border-b-12 border-tan'>
                     <tr>
-                        <th scope="col"></th>
-                        <th scope="col">YEAR</th>
-                        <th scope="col">AUTHOR</th>
-                        <th scope="col">COUNTRY</th>
-                        <th scope="col">AREA</th>
-                        <th scope="col">SAMPLE SIZE</th>
-                        <th scope="col">PREVALENCE (PER 10,000)</th>
-                        <th scope="col">95% CONFIDENCE INTERVAL</th>
+                        <th scope='col' class='w-toggle'></th>
+                        <th scope='col'>YEAR</th>
+                        <th scope='col'>AUTHOR</th>
+                        <th scope='col'>COUNTRY</th>
+                        <th scope='col'>AREA</th>
+                        <th scope='col'>SAMPLE SIZE</th>
+                        <th scope='col'>PREVALENCE (PER 10,000)</th>
+                        <th scope='col' class='pr-6'>95% CONFIDENCE INTERVAL</th>
                     </tr>
                 </thead>
             </table>
@@ -39,21 +39,22 @@
 
 {% block js_block %}
 <script>
-    let min_yearpublished = "{{ min_yearpublished }}";
-    let max_yearpublished = "{{ max_yearpublished }}";
-    let yearsstudied_number_min = "{{ yearsstudied_number_min }}";
-    let yearsstudied_number_max = "{{ yearsstudied_number_max }}";
-    let min_samplesize = "{{ min_samplesize }}";
-    let max_samplesize = "{{ max_samplesize }}";
-    let min_prevalenceper10000 = "{{ min_prevalenceper10000 }}";
-    let max_prevalenceper10000 = "{{ max_prevalenceper10000 }}";
-    let meanincomeofparticipants = "{{ meanincomeofparticipants }}";
-    let educationlevelofparticipants = "{{ educationlevelofparticipants }}";
-    let studytype = "{{ studytype }}";
-    let keyword = "{{ keyword }}";
-    let timeline_type = "{{ timeline_type }}";
-    let income = "{{ meanincome }}";
-    let education = "{{ education }}";
-    const world_atlas = "{% static 'autism_prevalence_map/vendor/data/110m.json' %}";
+    let min_yearpublished = '{{ min_yearpublished }}';
+    let max_yearpublished = '{{ max_yearpublished }}';
+    let yearsstudied_number_min = '{{ yearsstudied_number_min }}';
+    let yearsstudied_number_max = '{{ yearsstudied_number_max }}';
+    let min_samplesize = '{{ min_samplesize }}';
+    let max_samplesize = '{{ max_samplesize }}';
+    let min_prevalenceper10000 = '{{ min_prevalenceper10000 }}';
+    let max_prevalenceper10000 = '{{ max_prevalenceper10000 }}';
+    let meanincomeofparticipants = '{{ meanincomeofparticipants }}';
+    let educationlevelofparticipants = '{{ educationlevelofparticipants }}';
+    let studytype = '{{ studytype }}';
+    let keyword = '{{ keyword }}';
+    let timeline_type = '{{ timeline_type }}';
+    let income = '{{ meanincome }}';
+    let education = '{{ education }}';
+    const world_atlas = '{% static "autism_prevalence_map/vendor/data/110m.json" %}';
+    const chevron_down = '{% static "autism_prevalence_map/img/icon-chevron-down.svg" %}';
 </script>
 {% endblock %}

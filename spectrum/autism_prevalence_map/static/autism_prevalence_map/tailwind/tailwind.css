@@ -475,4 +475,28 @@
     .timeline-circles {
        @apply translate-y-20;
     }
+    #studies th {
+        @apply align-bottom pt-8.25 pb-4 text-left text-3.5 text-tan font-bold tracking-extra-wide leading-4.25;
+    }
+    #studies td {
+        @apply py-4 text-4 text-med-navy tracking-normal-lg;
+    }
+    #studies_tbody tr:not(.collapsed):not(.bg-tan) {
+        @apply bg-white2 border-med-navy;
+    }
+    #studies_tbody tr.show {
+        @apply border-light-gray2 border-b-1.25;
+    }
+    #studies_tbody tr.show td {
+        @apply pt-6 pb-10.5;
+    }
+    #studies .show {
+        @apply visible;
+    }
+    #studies .show a {
+        @apply no-underline;
+    }
+    .country-borders {
+        stroke-width: 2px;
+    }
 }
