@@ -484,6 +484,9 @@
     #studies_tbody tr:not(.collapsed):not(.bg-tan) {
         @apply bg-white2 border-med-navy;
     }
+    #studies_tbody tr:not(.collapsed):not(.bg-tan) .chevron-down {
+        @apply rotate-180;
+    }
     #studies_tbody tr.show {
         @apply border-light-gray2 border-b-1.25;
     }

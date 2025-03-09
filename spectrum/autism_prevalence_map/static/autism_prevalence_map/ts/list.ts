@@ -66,7 +66,7 @@ export function ttInitList() {
                 toggletd.append('img')
                     .attr('src', chevron_down)
                     .attr('alt', 'chevron down icon')
-                    .classed('chevron-down', true);
+                    .classed('chevron-down cursor-pointer', true);
                 
                 row1.append('td')
                     .text(function (d) { 
