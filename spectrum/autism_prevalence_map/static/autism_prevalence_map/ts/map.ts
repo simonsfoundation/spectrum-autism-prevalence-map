@@ -899,41 +899,40 @@ export function ttInitMap() {
                 '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Category:</strong> ' + d.properties.categoryadpddorasd + '</p>';
 
             // remove any previously injected publication link
-            $('#publication-button').remove();
+            $('#publication-button-wrap').remove();
 
             // update the info card content
             $('#info-card').attr('data-content','').html(cardHTML);
 
-            /*
-            Leaving this for post launch to address
+            // Build an array of publication link HTML strings
             let links = [];
+            let linkClasses = 'block pl-4 text-4 text-blue tracking-2 leading-6.25 no-underline rounded-sm2-b';
+
             if (d.properties.link1title && d.properties.link1url) {
-                links.push('<a href="'+ d.properties.link1url +'">'+ d.properties.link1title +'</a>');
+                links.push('<a href="' + d.properties.link1url + '" target="_blank" class="' + linkClasses + '">' + d.properties.link1title + '</a>');
             }
             if (d.properties.link2title && d.properties.link2url) {
-                links.push('<a href="'+ d.properties.link2url +'">'+ d.properties.link2title +'</a>');
+                links.push('<a href="' + d.properties.link2url + '" target="_blank" class="' + linkClasses + '">' + d.properties.link2title + '</a>');
             }
             if (d.properties.link3title && d.properties.link3url) {
-                links.push('<a href="'+ d.properties.link3url +'">'+ d.properties.link3title +'</a>');
+                links.push('<a href="' + d.properties.link3url + '" target="_blank" class="' + linkClasses + '">' + d.properties.link3title + '</a>');
             }
             if (d.properties.link4title && d.properties.link4url) {
-                links.push('<a href="'+ d.properties.link4url +'">'+ d.properties.link4title +'</a>');
+                links.push('<a href="' + d.properties.link4url + '" target="_blank" class="' + linkClasses + '">' + d.properties.link4title + '</a>');
             }
 
-            let links_string = links.join('<br />');
-            links_string = links_string.replace('>Spectrum', '><em>Spectrum</em>');
-            */
-
-            // add the publication link that is absolutely positioned at the bottom of the parent while the main #info-card has overflow: scroll
-            if (d.properties.link1title && d.properties.link1url) {
-                const linkHTML = '<a href="' + d.properties.link1url + '" id="publication-button" class="absolute bottom-0 left-0 w-full pl-4 py-1.75 bg-white border-t-light-gray2 border-t-0.5 rounded-sm2-b text-4 text-blue tracking-2 leading-6.25 no-underline" target="_blank">' + d.properties.link1title + '</a>';
-                $('#info-card-container').append(linkHTML);
+            // add the publication links into an absolutely positioned div at the bottom of the parent while the main #info-card has overflow: scroll
+            if (links.length > 0) {
+                let linksHTML = links.join('');
+                linksHTML = linksHTML.replace('>Spectrum', '><em>Spectrum</em>');
+                const containerHTML = '<div id="publication-button-wrap" class="absolute bottom-0 left-0 w-full py-1.75 bg-white border-t-light-gray2 border-t-0.5 rounded-sm2-b">' + linksHTML + '</div>';
+                $('#info-card-container').append(containerHTML);
             }
         }
 
         // reset to welcome card content
         function showWelcomeCard() {
-            $('#publication-button').remove();
+            $('#publication-button-wrap').remove();
             $('#info-card').html(welcomeCardContent).attr('data-content', 'welcome');
         }
 
