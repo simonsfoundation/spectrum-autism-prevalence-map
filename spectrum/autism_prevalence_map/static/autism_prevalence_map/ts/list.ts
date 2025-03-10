@@ -163,8 +163,7 @@ export function ttInitList() {
                         links_string;
                     });
 
-                let mapBlock = card_div.append('div')
-                    .classed('test2', true);
+                let mapBlock = card_div.append('div');
 
                 let mapSVG = mapBlock.append('svg')
                     .attr('width', '509px')
