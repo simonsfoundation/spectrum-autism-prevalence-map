@@ -12,11 +12,13 @@ import { ttInitList } from './list.ts';
     $(function () {
         const pageName = document.body.dataset.page || '';
 
-        ttInitTopo();
-        ttInitArray();
-        ttInitGeo();
-        ttInitProjection();
-        ttInitJoint();
+        if (pageName !== 'about') {
+            ttInitTopo();
+            ttInitArray();
+            ttInitGeo();
+            ttInitProjection();
+            ttInitJoint();
+        }
         ttInitMobilePopup();
 
         switch (pageName) {
