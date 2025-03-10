@@ -339,6 +339,9 @@ export function ttInitJoint() {
             // clear anything pinned on the map or timeline
             app.map.clearPinned();
 
+            // remove the search input close X
+             $('[data-id="keyword-filter-x-btn"]').addClass('hidden');
+
             // run update
             app.runUpdate();
         });
@@ -508,6 +511,31 @@ export function ttInitJoint() {
             meanHideTimeout = setTimeout(function () {
                 $meanPopup.addClass('hidden').attr('aria-hidden', 'true');
             }, 5000);
+        });
+
+        // for the search field, handle the 'X' functionality and clearing keyword from URL
+        const searchInput = document.querySelector('[data-id="keyword-filter-input"]') as HTMLInputElement;
+        const xButton = document.querySelector('[data-id="keyword-filter-x-btn"]') as HTMLButtonElement;
+
+        function toggleXButton() {
+            if (searchInput.value.trim().length > 0) {
+                xButton.classList.remove('hidden');
+            } else {
+                xButton.classList.add('hidden');
+            }
+        }
+
+        searchInput.addEventListener('input', toggleXButton);
+        toggleXButton();
+
+        // when the X button is clicked, clear the search, remove the keyword
+        xButton.addEventListener('click', function () {
+            searchInput.value = '';
+            // reset the global 'keyword' variable so it's removed from URL params
+            keyword = '';
+            toggleXButton();
+            searchInput.focus();
+            app.runUpdate();
         });
     });
 }
