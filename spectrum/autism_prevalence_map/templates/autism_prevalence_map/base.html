@@ -20,8 +20,9 @@
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
 
     {% static '' as static_base %}
+    <link rel='stylesheet' type='text/css' href='{% static "autism_prevalence_map/vendor/css/sf-privacy-consent.css" %}'>
     <link rel='stylesheet' type='text/css' href='{{ static_base }}{{ style_sheet }}'>
-
+   
     {% block css_block %} {% endblock %}
 
     <link rel='icon' type='image/svg+xml' href="{% static 'autism_prevalence_map/img/favicon.svg' %}">
@@ -105,10 +106,21 @@
     <script src="{% static 'autism_prevalence_map/vendor/js/popper.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/d3.v5.min.js' %}"></script>
+    <script src="{% static 'autism_prevalence_map/vendor/js/sf-privacy-consent.js' %}"></script>
     <script src='{{ static_base }}{{ script }}'></script>
 
     {% block js_block %} {% endblock %}
 
+    <div role='banner' class='sf-top sf-fixed-bar'>
+        <div class='sf-fixed-bar-container'>
+            <div class='sf-fixed-bar-text-wrapper'>
+                <span class='sf-notice-text'>We care about your data, and we’d like to use cookies to give you a smooth browsing experience. Please agree and read more about our <a href='https://www.thetransmitter.org/privacy-policy'>privacy policy</a>.
+                </span>
+                <a href='#' data-cookie-value='true' data-function='sf-set-consent' class='sf-button'>AGREE</a>
+                <a href='#' data-cookie-value='revoke' data-function='sf-set-consent' class='sf-button'>DISMISS</a>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

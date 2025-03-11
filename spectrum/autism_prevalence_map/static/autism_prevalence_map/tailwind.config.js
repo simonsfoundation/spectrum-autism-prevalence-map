@@ -123,6 +123,7 @@ module.exports = {
             },
             lineHeight: {
                 '4.5': '1.125rem', // 18px
+                '4.8': '1.2rem',
                 '5.5': '1.375rem', // 22px
                 '6.25': '1.563rem', // 25px
                 '7.2': '1.788rem', // 28.6px
@@ -217,6 +218,7 @@ module.exports = {
                 '15': '3.75rem', // 60px
                 '16': '4rem', // 64px
                 '17.5': '4.375rem', // 70px
+                '17.7': '4.625rem', //74px
                 '23': '5.75rem', // 92px
                 '24' : '6rem', // 96px
                 '25.5' : '6.375rem', // 102px
@@ -226,11 +228,12 @@ module.exports = {
                 '73': '18.25rem', // 292px
                 '159': '39.75rem', // 636px
                 '207.5': '51.875rem', // 830px
-                '400': '100rem', // 1600px 
+                '400': '100rem', // 1600px
+                '12/25': '48%',
             },
             colors: {
                 'red': '#910E1C',
-                'light-red': '#D14D57',
+                'med-red': '#D14D57',
                 'blue': '#0B6BC3',
                 'navy': '#003049',
                 'med-navy': '#2E5367',
@@ -318,5 +321,10 @@ module.exports = {
         'ui-slider-handle',
         'ui-slider-range',
         'ui-state-focus',
+        'sf-fixed-bar',
+        'sf-fixed-bar-container',
+        'sf-fixed-bar-text-wrapper',
+        'sf-notice-text',
+        'sf-button',
     ],
 }
