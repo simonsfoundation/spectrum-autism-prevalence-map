@@ -2,6 +2,18 @@ import { app } from './app.js';
 
 export function ttInitJoint() {
     $(document).ready(function () {
+        $(document).on('click', '[data-function="sf-set-consent"]', function (e) {
+            e.preventDefault();
+            let cookieValue = $(this).data('cookie-value');
+            setCookie(cookieValue);
+            if (cookieValue === true) {
+                grantGTMConsent();
+            } else {
+                setGTMDefault();
+            }
+            $('.sf-fixed-bar').hideBanner(0);
+        });
+
         function setCookie(cookieValue) {
             let date = new Date(),
                 later_date = new Date();
@@ -589,19 +601,6 @@ export function ttInitJoint() {
             toggleXButton();
             searchInput.focus();
             app.runUpdate();
-        });
-    
-        $(document).on('click', '[data-function="sf-set-consent"]', function (e) {
-            e.preventDefault();
-            let cookieValue = $(this).data('cookie-value');
-            setCookie(cookieValue);
-            if (cookieValue === true) {
-                grantGTMConsent();
-            } else {
-                setGTMDefault();
-            }
-            $('.sf-fixed-bar').hideBanner(0);
-            $('body').removeClass($('body').attr('class').trim().split(' ').pop());
         });
     });
 }
