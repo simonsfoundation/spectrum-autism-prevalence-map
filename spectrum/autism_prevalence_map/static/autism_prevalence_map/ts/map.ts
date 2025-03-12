@@ -950,16 +950,14 @@ export function ttInitMap() {
                 $('#info-card-container').append(containerHTML);
 
                 // adjust info-card height based on number of links
-                let heightClass = links.length > 1 ? 'max-h-info' + (links.length) : '';
+                let heightClass =  'max-h-info' + (links.length);
 
                 // remove existing height classes before adding a new one
                 infoCard.removeClass(function(index, className) {
                     return (className.match(/max-h-info\d+/g) || []).join(' ');
                 });
 
-                if (heightClass) {
-                    $('#info-card').addClass(heightClass);
-                }
+                $('#info-card').addClass(heightClass);
             }
         }
 

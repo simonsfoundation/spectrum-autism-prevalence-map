@@ -171,7 +171,7 @@ module.exports = {
                 'map-xl': '72.125rem',  // 1154px
             },
             maxHeight: {
-                'info': 'calc(100% - 52px)', // height of the info card minus the sticky button wrapper at the bottom with 1 link
+                'info1': 'calc(100% - 52px)', // height of the info card minus the sticky button wrapper at the bottom with 1 link
                 'info2': 'calc(100% - 79px)', // height of the info card minus the sticky button wrapper at the bottom with 2 links
                 'info3': 'calc(100% - 106px)', // height of the info card minus the sticky button wrapper at the bottom with 3 links
                 'info4': 'calc(100% - 133px)', // height of the info card minus the sticky button wrapper at the bottom with 4 links
@@ -321,6 +321,7 @@ module.exports = {
         'ui-slider-handle',
         'ui-slider-range',
         'ui-state-focus',
+        'max-h-info1',
         'max-h-info2',
         'max-h-info3',
         'max-h-info4',
