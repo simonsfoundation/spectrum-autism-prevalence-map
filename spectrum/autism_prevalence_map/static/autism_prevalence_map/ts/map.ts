@@ -15,6 +15,7 @@ export function ttInitMap() {
         // globaly scope some variables for the timeline
         let timeline_height, brush, brushG, timelineDiv, timelineSVG, timelineG, timelineX, timelineY, max_Y_domain, studiesByYear, handle, handleText, timeMin, timeMax;
 
+        let originalHeight, originalScale;
 
         // add map data to the world map g container
         app.map.initializeMap = function() {
@@ -34,6 +35,9 @@ export function ttInitMap() {
             } else {
                 scale = 198;
             }
+
+            originalHeight = height;
+            originalScale = scale;
             
             // data holder
             studies = null;
@@ -977,6 +981,52 @@ export function ttInitMap() {
                 yearsstudied_number_max = '';
                 app.map.pullDataAndUpdate();
             }
+        });
+
+        // when expanding we need to update the size of the map
+        function updateMapDimensions() {
+            // Get the new container dimensions
+            const newWidth = $('#map').width();
+            const newHeight = $('#map').height();
+            
+            // new ratio relative to the original height
+            const heightRatio = newHeight / originalHeight;
+            
+            // new adjusted scale
+            scale = originalScale * heightRatio * 0.92;
+            
+            projection
+              .scale(scale)
+              .translate([newWidth / 2, newHeight / 2]);
+            
+            // udpate the main SVG
+            svg.attr('width', newWidth)
+               .attr('height', newHeight);
+            
+            // update the <g> inside the SVG
+            g.selectAll('path').attr('d', path);
+            
+            // reset zoom
+            svg_zoom.call(zoom.transform, d3.zoomIdentity);
+        }
+
+        // handle the expand button functionality
+        $('#expand').on('click', function(){
+            // toggle the visibility of the header
+            $('header').slideToggle(300);
+
+            // toggle these classes to expand the map and info card to fill the space that the header was taking
+            $('#info-card-container').toggleClass('h-map-expand lg:h-map-lg-expand xl:h-card-xl-expand');
+            $('#map').toggleClass('h-map-expand lg:h-map-lg-expand xl:h-map-xl-expand');
+
+            // toggle the correct SVG in the expand button
+            $(this).find('#icon-expand').toggleClass('hidden');
+            $(this).find('#icon-minimize').toggleClass('hidden');
+
+            // reinitialize the map after the resize transition
+            setTimeout(function(){
+                updateMapDimensions();
+            }, 300);
         });
 
         // move to the front prototype

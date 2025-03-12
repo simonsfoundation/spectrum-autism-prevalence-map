@@ -14,7 +14,7 @@
     <!-- Map div
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <div class='relative flex mb-6 xl:mb-10'>
-        <div id='info-card-container' class='relative h-map lg:h-map-lg xl:h-card-xl w-info lg:mr-10.5 xl:mr-12 pt-4 bg-white border-0.5 border-light-gray3 rounded-md shadow-info'>
+        <div id='info-card-container' class='relative h-map lg:h-map-lg xl:h-card-xl w-info lg:mr-10.5 xl:mr-12 pt-4 bg-white border-0.5 border-light-gray3 rounded-md shadow-info transition-all duration-300 ease-in-out'>
             <div id='info-card' data-content='welcome' class='relative max-h-info overflow-y-scroll px-4 pb-0.75'>
                 <h1 class='mt-24 lg:mt-25.5 xl:mt-46.5 mb-3.25 max-w-welcome font-serif text-2md font-bold leading-7.2 text-med-navy'>Welcome to the Global Autism Prevalence Map.</h1>
                 <p class='mb-9 max-w-welcome font-serif text-sm3 leading-4.5 text-dark-gray2'>Click on any dot on the map to view detailed information about a study. Data from that study will be displayed in this panel.</p>
@@ -22,20 +22,21 @@
             </div>
         </div>
 
-        <div id='map' class='h-map w-map lg:h-map-lg lg:w-map-lg xl:h-map-xl xl:w-map-xl xl:mt-6.5'></div>
+        <div id='map' class='h-map w-map lg:h-map-lg lg:w-map-lg xl:h-map-xl xl:w-map-xl xl:mt-6.5 transition-all duration-300 ease-in-out'></div>
 
         <div id='zoom-buttons' class='absolute bottom-0 right-0 flex flex-col items-end gap-6'>
-            <button type='button' id='expand' class='border-0.5 border-med-navy rounded-sm bg-light-gray cursor-pointer'>
-                {% svg 'icon-expand' %}
-                <span class='sr-only'>Expand</span>
+            <button type='button' id='expand' class='flex items-center justify-center w-zoomcontrol h-expand border-0.5 border-med-navy rounded-sm bg-light-gray cursor-pointer'>
+                <span id='icon-expand'>{% svg 'icon-expand' %}</span>
+                <span id='icon-minimize' class='hidden'>{% svg 'icon-minimize' %}</span>
+                <span class='sr-only'>Expand or Minimize</span>
             </button>
 
             <div class='flex flex-col'>
-                <button type='button' id='zoom-in' class='border-0.5 border-med-navy rounded-sm bg-light-gray cursor-pointer'>
+                <button type='button' id='zoom-in' class='flex items-center justify-center w-zoomcontrol h-zoom border-0.5 border-b-0 border-med-navy rounded-sm-t bg-light-gray cursor-pointer'>
                     {% svg 'icon-plus' %}
                     <span class='sr-only'>Zoom In</span>
                 </button>
-                <button type='button' id='zoom-out' class='border-0.5 border-med-navy rounded-sm bg-light-gray cursor-pointer'>
+                <button type='button' id='zoom-out' class='flex items-center justify-center w-zoomcontrol h-zoom border-0.5 border-med-navy rounded-sm-b bg-light-gray cursor-pointer'>
                     {% svg 'icon-minus' %}
                     <span class='sr-only'>Zoom Out</span>
                 </button>
