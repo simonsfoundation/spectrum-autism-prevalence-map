@@ -479,7 +479,7 @@
         @apply top-0;
     }
     .sf-fixed-bar {
-        @apply fixed left-0 z-50 min-w-full border-dark-gray2 border-t-0.5 text-center bg-none bg-dark-gray/95 h-fit md:h-17.7;
+        @apply invisible fixed left-0 z-50 min-w-full border-dark-gray2 border-t-0.5 text-center bg-none bg-dark-gray/95 h-fit md:h-17.7;
     }
     .sf-fixed-bar-container {
         @apply flex bg-transparent h-full text-tan p-4 justify-center w-full relative lg:px-5;
