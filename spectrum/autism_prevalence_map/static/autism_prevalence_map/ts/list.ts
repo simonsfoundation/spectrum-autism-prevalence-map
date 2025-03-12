@@ -31,6 +31,65 @@ export function ttInitList() {
             });
         }
 
+        // function to render mini SVG map
+        app.list.renderMiniMap = function(studyData, placeholderId) {
+            const placeholder = d3.select('#' + placeholderId);
+            let mapSVG = placeholder.append('svg')
+                .attr('width', '509px')
+                .attr('height', '323px')
+                .attr('viewBox', '0 0 509 323')
+                .classed('bg-white border-white border-4', true)
+                .attr('id', 'map_svg_' + studyData.properties.pk);
+
+            let mapG = mapSVG.append('g')
+                .classed('countries', true)
+                .attr('id', 'map_svg_g_' + studyData.properties.pk);
+
+            mapG.selectAll('path')
+                .data(topojson.feature(world, world.objects.countries).features.filter(function(d){
+                    return d.id !== '010';
+                }))
+                .enter().append('path')
+                .attr('d', path)
+                .attr('fill', '#ccc');
+
+            mapG.append('path')
+                .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
+                .classed('country-borders', true)
+                .attr('d', path)
+                .attr('fill', 'none')
+                .attr('stroke', '#FFF')
+                .each(function() {
+                    this.style.setProperty('stroke-width', '1px');
+                });
+
+            const studiesG = mapG.append('g')
+                .attr('id', 'studies');
+
+            studiesG.append('circle')
+                .attr('cx', function() { 
+                    return projection(studyData.geometry.coordinates)[0]; 
+                })
+                .attr('cy', function() { 
+                    return projection(studyData.geometry.coordinates)[1]; 
+                })
+                .attr('r', 8)
+                .style('fill', pointColor(studyData))
+                .style('fill-opacity', '1')
+                .classed('map-circles', true)
+                .attr('id', 'map_dot_' + studyData.properties.pk);
+
+            mapSVG.each(function() {
+                let zoom = d3.zoom()
+                    .on('zoom', function() {
+                        d3.select('#map_svg_g_' + studyData.properties.pk)
+                          .attr('transform', d3.event.transform);
+                    });
+                d3.select('#map_svg_' + studyData.properties.pk)
+                  .call(zoom.scaleTo, 1)
+                  .call(zoom.translateTo, projection(studyData.geometry.coordinates)[0] - 30, projection(studyData.geometry.coordinates)[1] + 75);
+            });
+        };
 
         app.list.addRows = function() {
             $('#studies tbody').remove();     
@@ -40,6 +99,12 @@ export function ttInitList() {
                 // update the results count
                 document.getElementById('results-count').textContent = studies.features.length;
 
+                // map from study primary key to its data for later lookup
+                app.list.studiesByPk = {};
+                studies.features.forEach(function(d) {
+                    app.list.studiesByPk[d.properties.pk] = d;
+                });
+
                 let enter_selection = table.append('tbody')
                     .attr('id', 'studies_tbody')
                     .selectAll('tr')
@@ -48,7 +113,7 @@ export function ttInitList() {
                 
                 let row1 = enter_selection.append('tr')
                     .attr('data-toggle', 'collapse')
-    		        .attr('href', function (d) { 
+                    .attr('href', function (d) { 
                         return '#accordion_menu_' + d.properties.pk; 
                     })
 
@@ -112,7 +177,7 @@ export function ttInitList() {
 
                 let row2 = enter_selection.insert('tr')
                     .classed('collapse bg-tan', true)
-    		        .attr('id', function (d) { 
+                    .attr('id', function (d) { 
                         return 'accordion_menu_' + d.properties.pk; 
                     });
 
@@ -163,74 +228,10 @@ export function ttInitList() {
                         links_string;
                     });
 
-                let mapBlock = card_div.append('div');
-
-                let mapSVG = mapBlock.append('svg')
-                    .attr('width', '509px')
-                    .attr('height', '323px')
-                    .attr('viewBox', '0 0 509 323')
-                    .classed('bg-white border-white border-4', true)
-                    .attr('id', function (d) { 
-                        return 'map_svg_' + d.properties.pk;
-                    });
-
-                thisMapSVG = mapSVG;
-
-                let mapG = mapSVG.append('g')
-                    .classed('countries', true)
-                    .attr('id', function (d) { 
-                        return 'map_svg_g_' + d.properties.pk;
-                    });
-
-                mapG.selectAll('path')
-                    .data(topojson.feature(world, world.objects.countries).features.filter(function(d){
-                        if (d.id !== '010') {
-                            return d;
-                        }
-                    }))
-                    .enter().append('path')
-                    .attr('d', path)
-                    .attr('fill', '#ccc');
-
-                mapG.append('path')
-                    .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
-                    .classed('country-borders', true)
-                    .attr('d', path)
-                    .attr('fill', 'none')
-                    .attr('stroke', '#FFF')
-                    .each(function() {
-                        this.style.setProperty('stroke-width', '1px');
-                    });
-
-                // add this study to the map
-                const studiesG = mapG.append('g')
-                    .attr('id', 'studies');
-
-                const mapSelection = studiesG.append('circle')
-                    .attr('cx', function (d) { 
-                        return projection(d.geometry.coordinates)[0]; 
-                    })
-                    .attr('cy', function (d) { 
-                        return projection(d.geometry.coordinates)[1]; 
-                    })
-                    .attr('r', 8)
-                    .style('fill', pointColor)
-                    .style('fill-opacity', '1')
-                    .classed('map-circles', true)
-                    .attr('id', function(d){
-                        return 'map_dot_' + d.properties.pk
-                    });
-
-                thisMapSVG.each(function(d) {
-                    let zoom = d3.zoom()
-                        .on('zoom', function() {
-                            d3.select('#map_svg_g_' + d.properties.pk)
-                              .attr('transform', d3.event.transform);
-                        });
-                    d3.select('#map_svg_' + d.properties.pk)
-                      .call(zoom.scaleTo, 1)
-                      .call(zoom.translateTo, projection(d.geometry.coordinates)[0] - 30, projection(d.geometry.coordinates)[1] + 75);
-                });
+                // add placeholder that we will add map to when expanded
+                card_div.append('div')
+                    .attr('id', function(d) { return 'map_placeholder_' + d.properties.pk; })
+                    .classed('map-placeholder', true);
 
                 // add confidence interval graphic
                 /*
@@ -445,7 +446,16 @@ export function ttInitList() {
                 $('.collapse').collapse({
                     toggle: false
                 });
-     
+
+                $('.collapse').on('shown.bs.collapse', function() {
+                    var collapseId = $(this).attr('id'); // e.g., "accordion_menu_123"
+                    var pk = collapseId.replace('accordion_menu_', '');
+                    var placeholder = $('#map_placeholder_' + pk);
+                    if (placeholder.children().length === 0) {
+                        var studyData = app.list.studiesByPk[pk];
+                        app.list.renderMiniMap(studyData, 'map_placeholder_' + pk);
+                    }
+                });
             });
         }
         
