@@ -985,12 +985,12 @@ export function ttInitMap() {
         });
 
         // function to update the map dimensions when the expand button is clicked
-        function updateMapDimensions() {
-            // new container dimensions
+        function resizeMap() {
+            // new container dimensions after it is resized
             const containerWidth  = $('#map').width();
             const containerHeight = $('#map').height();
 
-            // calculate the correct new scale
+            // calculate the correct new scale based on our original scale
             const scaleFactor = containerWidth / originalWidth;
             scale = originalScale * scaleFactor;
 
@@ -1005,6 +1005,28 @@ export function ttInitMap() {
 
             // redraw the map paths
             g.selectAll('path').attr('d', path);
+
+            // update the position of the map dots
+            if (nodes && nodes.length) {
+                if (simulation) simulation.stop();
+
+                nodes.forEach(function(d) {
+                    const pos = projection(d.geometry.coordinates);
+                    d.x = pos[0];
+                    d.y = pos[1];
+                    d.originalX = pos[0];
+                    d.originalY = pos[1];
+                });
+
+                if (simulation) {
+                    simulation.nodes(nodes);
+                    simulation.alpha(1).restart();
+                }
+
+                studiesG.selectAll('circle.map-circles')
+                    .attr('cx', function(d) { return d.x; })
+                    .attr('cy', function(d) { return d.y; });
+            }
 
             // reset zoom
             svg_zoom.call(zoom.transform, d3.zoomIdentity);
@@ -1025,7 +1047,7 @@ export function ttInitMap() {
 
             // reinitialize the map after the resize transition
             setTimeout(function(){
-                updateMapDimensions();
+                resizeMap();
             }, 300);
         });
 
