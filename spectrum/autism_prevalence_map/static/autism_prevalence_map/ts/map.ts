@@ -15,7 +15,7 @@ export function ttInitMap() {
         // globaly scope some variables for the timeline
         let timeline_height, brush, brushG, timelineDiv, timelineSVG, timelineG, timelineX, timelineY, max_Y_domain, studiesByYear, handle, handleText, timeMin, timeMax;
 
-        let originalHeight, originalScale;
+        let originalWidth, originalScale;
 
         // add map data to the world map g container
         app.map.initializeMap = function() {
@@ -36,7 +36,8 @@ export function ttInitMap() {
                 scale = 198;
             }
 
-            originalHeight = height;
+            // store these for use when the expand button is clicked
+            originalWidth = width;
             originalScale = scale;
             
             // data holder
@@ -983,29 +984,28 @@ export function ttInitMap() {
             }
         });
 
-        // when expanding we need to update the size of the map
+        // function to update the map dimensions when the expand button is clicked
         function updateMapDimensions() {
-            // Get the new container dimensions
-            const newWidth = $('#map').width();
-            const newHeight = $('#map').height();
-            
-            // new ratio relative to the original height
-            const heightRatio = newHeight / originalHeight;
-            
-            // new adjusted scale
-            scale = originalScale * heightRatio * 0.92;
-            
+            // new container dimensions
+            const containerWidth  = $('#map').width();
+            const containerHeight = $('#map').height();
+
+            // calculate the correct new scale
+            const scaleFactor = containerWidth / originalWidth;
+            scale = originalScale * scaleFactor;
+
+            // resize the SVG
+            svg.attr('width', containerWidth)
+               .attr('height', containerHeight);
+
+            // center the map
             projection
-              .scale(scale)
-              .translate([newWidth / 2, newHeight / 2]);
-            
-            // udpate the main SVG
-            svg.attr('width', newWidth)
-               .attr('height', newHeight);
-            
-            // update the <g> inside the SVG
+                .scale(scale)
+                .translate([containerWidth / 2, containerHeight / 2]);
+
+            // redraw the map paths
             g.selectAll('path').attr('d', path);
-            
+
             // reset zoom
             svg_zoom.call(zoom.transform, d3.zoomIdentity);
         }
@@ -1016,8 +1016,8 @@ export function ttInitMap() {
             $('header').slideToggle(300);
 
             // toggle these classes to expand the map and info card to fill the space that the header was taking
-            $('#info-card-container').toggleClass('h-map-expand lg:h-map-lg-expand xl:h-card-xl-expand');
-            $('#map').toggleClass('h-map-expand lg:h-map-lg-expand xl:h-map-xl-expand');
+            $('#info-card-container').toggleClass('h-map-expand lg:h-map-lg-expand xl:h-card-xl-expand lg:mr-0 xl:mr-0');
+            $('#map').toggleClass('h-map-expand lg:h-map-lg-expand xl:h-map-xl-expand w-map-expand lg:w-map-lg-expand xl:w-map-xl-expand');
 
             // toggle the correct SVG in the expand button
             $(this).find('#icon-expand').toggleClass('hidden');

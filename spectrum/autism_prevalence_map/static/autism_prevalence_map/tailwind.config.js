@@ -178,6 +178,9 @@ module.exports = {
                 'map': '51.625rem', // 826px
                 'map-lg': '55.75rem',  // 892px
                 'map-xl': '72.125rem',  // 1154px
+                'map-expand': '61.188rem', // 979px
+                'map-lg-expand': '64.438rem',  // 1031px
+                'map-xl-expand': '80.875rem',  // 1294px
             },
             maxHeight: {
                 'info': 'calc(100% - 40px)', // height of the info card minus the sticky button at the bottom
