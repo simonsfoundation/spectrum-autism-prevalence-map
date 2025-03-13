@@ -875,6 +875,7 @@ export function ttInitMap() {
 
         // populate the info card when a map or timline dot is clicked
         function populateInfoCard(d) {
+            const infoCard = $('#info-card');
             const authors = d.properties.authors;
             const card_title = authors + ' ' + d.properties.yearpublished;
             const area = d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
@@ -903,42 +904,71 @@ export function ttInitMap() {
                 '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Years Studied:</strong> ' + d.properties.yearsstudied + '</p>' +
                 '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Category:</strong> ' + d.properties.categoryadpddorasd + '</p>';
 
+            // check if a string is a valid URL
+            function isValidURL(url) {
+                try {
+                    new URL(url);
+                    return true;
+                } catch (_) {
+                    return false;
+                }
+            }
+
             // remove any previously injected publication link
-            $('#publication-button').remove();
+            $('#publication-button-wrap').remove();
 
             // update the info card content
-            $('#info-card').attr('data-content','').html(cardHTML);
+            infoCard.attr('data-content','').html(cardHTML);
 
-            /*
-            Leaving this for post launch to address
+            // build an array of publication link HTML strings
             let links = [];
-            if (d.properties.link1title && d.properties.link1url) {
-                links.push('<a href="'+ d.properties.link1url +'">'+ d.properties.link1title +'</a>');
-            }
-            if (d.properties.link2title && d.properties.link2url) {
-                links.push('<a href="'+ d.properties.link2url +'">'+ d.properties.link2title +'</a>');
-            }
-            if (d.properties.link3title && d.properties.link3url) {
-                links.push('<a href="'+ d.properties.link3url +'">'+ d.properties.link3title +'</a>');
-            }
-            if (d.properties.link4title && d.properties.link4url) {
-                links.push('<a href="'+ d.properties.link4url +'">'+ d.properties.link4title +'</a>');
+            let itemClasses = 'block pl-4 text-4 text-blue font-semibold tracking-2 leading-6.25 no-underline rounded-sm2-b';
+
+            const publications = [
+                { title: d.properties.link1title, url: d.properties.link1url },
+                { title: d.properties.link2title, url: d.properties.link2url },
+                { title: d.properties.link3title, url: d.properties.link3url },
+                { title: d.properties.link4title, url: d.properties.link4url }
+            ];
+
+            for (let i = 0; i < publications.length; i++) {
+                const publication = publications[i];
+                if (publication.title && publication.url) {
+                    let item;
+                    if (isValidURL(publication.url)) {
+                        // use an anchor tag if we have a valid URL
+                        item = '<a href="' + publication.url + '" target="_blank" class="' + itemClasses + (i > 0 ? ' mt-0.5' : '') + '">' + publication.title + '</a>';
+                    } else {
+                        // use a span if we don't have a valid URL
+                        item = '<span class="' + itemClasses + (i > 0 ? ' mt-0.5' : '') + '">' + publication.title + '</span>';
+                    }
+                    links.push(item);
+                }
             }
 
-            let links_string = links.join('<br />');
-            links_string = links_string.replace('>Spectrum', '><em>Spectrum</em>');
-            */
+            // add the publication links into an absolutely positioned div at the bottom of the parent while the main #info-card has overflow: scroll
+            if (links.length > 0) {
+                let linksHTML = links.join('');
+                linksHTML = linksHTML.replace('>Spectrum', '><em>Spectrum</em>');
 
-            // add the publication link that is absolutely positioned at the bottom of the parent while the main #info-card has overflow: scroll
-            if (d.properties.link1title && d.properties.link1url) {
-                const linkHTML = '<a href="' + d.properties.link1url + '" id="publication-button" class="absolute bottom-0 left-0 w-full pl-4 py-1.75 bg-white border-t-light-gray2 border-t-0.5 rounded-sm2-b text-4 text-blue tracking-2 leading-6.25 no-underline" target="_blank">' + d.properties.link1title + '</a>';
-                $('#info-card-container').append(linkHTML);
+                const containerHTML = '<div id="publication-button-wrap" class="absolute bottom-0 left-0 w-full py-3.25 bg-white border-t-light-gray2 border-t-0.5 rounded-sm2-b">' + linksHTML + '</div>';
+                $('#info-card-container').append(containerHTML);
+
+                // adjust info-card height based on number of links
+                let heightClass =  'max-h-info' + (links.length);
+
+                // remove existing height classes before adding a new one
+                infoCard.removeClass(function(index, className) {
+                    return (className.match(/max-h-info\d+/g) || []).join(' ');
+                });
+
+                $('#info-card').addClass(heightClass);
             }
         }
 
         // reset to welcome card content
         function showWelcomeCard() {
-            $('#publication-button').remove();
+            $('#publication-button-wrap').remove();
             $('#info-card').html(welcomeCardContent).attr('data-content', 'welcome');
         }
 
