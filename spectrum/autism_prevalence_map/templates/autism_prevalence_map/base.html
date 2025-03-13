@@ -109,13 +109,13 @@
 
     {% block js_block %} {% endblock %}
 
-    <div role='banner' class='sf-top sf-fixed-bar'>
-        <div class='sf-fixed-bar-container'>
-            <div class='sf-fixed-bar-text-wrapper'>
-                <span class='sf-notice-text'>We care about your data, and we’d like to use cookies to give you a smooth browsing experience. Please agree and read more about our <a href='https://www.thetransmitter.org/privacy-policy'>privacy policy</a>.
+    <div role='banner' data-id='cookie-consent-banner' class='top-0 invisible fixed left-0 z-50 min-w-full border-dark-gray2 border-t-0.5 text-center bg-none bg-dark-gray/95 h-fit md:h-17.7'>
+        <div class='flex bg-transparent h-full text-tan p-4 justify-center w-full relative lg:px-5'>
+            <div class='block m-0 text-left justify-evenly items-center mx-auto md:flex md:justify-center'>
+                <span class='block font-serif text-sm text-left tracking-normal-lg leading-4 mb-2.5 md:mb-0 md:text-1sm md:leading-4.8'>We care about your data, and we’d like to use cookies to give you a smooth browsing experience. Please agree and read more about our <a class='text-tan' href='https://www.thetransmitter.org/privacy-policy'>privacy policy</a>.
                 </span>
-                <a href='#' data-cookie-value='true' data-function='sf-set-consent' class='sf-button'>AGREE</a>
-                <a href='#' data-cookie-value='revoke' data-function='sf-set-consent' class='sf-button'>DISMISS</a>
+                <a href='#' data-cookie-value='true' data-function='cookie-banner-set-consent' class='bg-med-red float-left inline-block rounded font-extrabold text-sm text-center tracking-extra-wide h-10 w-12/25 px-10 py-2 no-underline text-light-navy-2 m-0 hover:underline md:flex md:items-center md:justify-center md:ml-2.5 md:h-11.5 md:w-32 lg:w-auto lg:py-4 lg:px-10'>AGREE</a>
+                <a href='#' data-cookie-value='revoke' data-function='cookie-banner-set-consent' class='bg-transparent border-light-gray2 border-0.5 float-right inline-block rounded font-extrabold text-sm text-center tracking-extra-wide h-10 w-12/25 px-10 py-2 no-underline text-light-navy-2 m-0 hover:underline md:flex md:items-center md:justify-center md:ml-2.5 md:h-11.5 md:w-32 lg:w-auto lg:py-4 lg:px-10'>DISMISS</a>
             </div>
         </div>
     </div>

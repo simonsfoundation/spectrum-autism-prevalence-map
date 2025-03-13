@@ -2,16 +2,11 @@ import { app } from './app.js';
 
 export function ttInitJoint() {
     $(document).ready(function () {
-        $(document).on('click', '[data-function="sf-set-consent"]', function (e) {
+        $(document).on('click', '[data-function="cookie-banner-set-consent"]', function (e) {
             e.preventDefault();
             let cookieValue = $(this).data('cookie-value');
             setCookie(cookieValue);
-            if (cookieValue === true) {
-                grantGTMConsent();
-            } else {
-                setGTMDefault();
-            }
-            $('.sf-fixed-bar').hideBanner(0);
+            $("[data-id='cookie-consent-banner']").hideBanner(0);
         });
 
         function setCookie(cookieValue) {
@@ -24,30 +19,11 @@ export function ttInitJoint() {
         function getCookie() {
             let value = "; " + document.cookie,
                 parts = value.split('; privacy-consent-given=');
-            if (parts.length === 2)
+            if (parts.length === 2) {
                 return parts.pop().split(';').shift();
-            else
+            } else {
                 return 'cookie-not-set';
-        }
-    
-        function grantGTMConsent(){
-            gtag('consent', 'update', {
-                'ad_storage': 'granted',
-                'analytics_storage': 'granted'
-            });
-        }
-    
-        function setGTMDefault() {
-            gtag('consent', 'default', {
-                'ad_storage': 'denied',
-                'ad_user_data': 'denied',
-                'ad_personalization': 'denied',
-                'analytics_storage': 'denied'
-            });
-            gtag('consent', 'default', {
-                'analytics_storage': 'granted',
-                'region': ['US']
-            });
+            }
         }
     
         $.fn.showBanner = function() {
@@ -60,11 +36,7 @@ export function ttInitJoint() {
         
         let consentCookie = getCookie();
         if (consentCookie === 'cookie-not-set') {
-            $('.sf-fixed-bar').showBanner();
-        } else if (consentCookie === 'revoke') {
-            setGTMDefault();
-        } else if (consentCookie === 'true') {
-            grantGTMConsent();
+            $("[data-id='cookie-consent-banner']").showBanner();
         }
 
         // api call holder

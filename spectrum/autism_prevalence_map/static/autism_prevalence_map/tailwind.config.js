@@ -321,10 +321,5 @@ module.exports = {
         'ui-slider-handle',
         'ui-slider-range',
         'ui-state-focus',
-        'sf-fixed-bar',
-        'sf-fixed-bar-container',
-        'sf-fixed-bar-text-wrapper',
-        'sf-notice-text',
-        'sf-button',
     ],
 }
