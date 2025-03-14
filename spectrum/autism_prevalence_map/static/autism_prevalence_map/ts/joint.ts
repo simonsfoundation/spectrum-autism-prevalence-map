@@ -6,7 +6,12 @@ export function ttInitJoint() {
             e.preventDefault();
             let cookieValue = $(this).data('cookie-value');
             setCookie(cookieValue);
-            $("[data-id='cookie-consent-banner']").hideBanner(0);
+            if (cookieValue === true) {
+                grantGTMConsent();
+            } else {
+                denyGTMConsent();
+            }
+            $("[data-id='cookie-consent-banner']").hideBanner();
         });
 
         function setCookie(cookieValue) {
@@ -25,6 +30,26 @@ export function ttInitJoint() {
                 return 'cookie-not-set';
             }
         }
+
+        function grantGTMConsent(){
+            gtag('consent', 'update', {
+                'ad_storage': 'granted',
+                'analytics_storage': 'granted'
+            });
+        }
+    
+        function denyGTMConsent() {
+            gtag('consent', 'update', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied'
+            });
+            gtag('consent', 'update', {
+                'analytics_storage': 'granted',
+                'region': ['US']
+            });
+        }
     
         $.fn.showBanner = function() {
             this.css({'visibility': 'visible', 'display': 'none'}).fadeIn(400);
@@ -37,6 +62,8 @@ export function ttInitJoint() {
         let consentCookie = getCookie();
         if (consentCookie === 'cookie-not-set') {
             $("[data-id='cookie-consent-banner']").showBanner();
+        } else if (consentCookie === 'true') {
+            grantGTMConsent();
         }
 
         // api call holder
