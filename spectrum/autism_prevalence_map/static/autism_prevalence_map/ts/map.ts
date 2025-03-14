@@ -778,21 +778,23 @@ export function ttInitMap() {
         }
 
         // set up listeners for zoom
+        let currentZoom = 1;
+        const zoomInFactor = 1.6;
+        // exact inverse of 1.6
+        const zoomOutFactor = 0.625;
+        const center = [width / 2, height / 2];
+
         d3.selectAll('button').on('click', function() {
-            // zoom in 0.5 each time
             if (this.id === 'zoom-in') {
-                zoom_transition(1.75); 
+                // if we are already below the base zoom level, reset to the base zoom level, otherwise zoom in
+                currentZoom = currentZoom < 1 ? 1 : currentZoom * zoomInFactor;
+            } else if (this.id === 'zoom-out') {
+                // only allow zooming out one level from the base zoom level
+            currentZoom = currentZoom <= 1 ? zoomOutFactor : Math.max(zoomOutFactor, currentZoom * zoomOutFactor);
             }
-            // zoom out 0.5 each time
-            if (this.id === 'zoom-out') {
-                zoom_transition(0.575);
-            }
-            // return to initial state
-            if (this.id === 'zoom_init') {
-                svg_zoom.transition()
-                    .duration(500)
-                    .call(zoom.scaleTo, 1); 
-            }
+
+            svg_zoom.transition()
+                .call(zoom.scaleTo, currentZoom, center);
         });
 
         function showHover(pk) {
@@ -1016,30 +1018,38 @@ export function ttInitMap() {
 
         // function to update the map dimensions when the expand button is clicked
         function resizeMap() {
-            // new container dimensions after it is resized
+            // Get the old dimensions (before resize)
+            const oldWidth = +svg.attr('width');
+            const oldHeight = +svg.attr('height');
+
+            // New container dimensions after resize
             const containerWidth  = $('#map').width();
             const containerHeight = $('#map').height();
 
-            // calculate the correct new scale based on our original scale
+            // Save the current zoom transform (user’s pan/zoom)
+            const currentTransform = d3.zoomTransform(svg.node());
+
+            // Calculate the new base projection scale so the map fills the container.
+            // (This is based solely on container width.)
             const scaleFactor = containerWidth / originalWidth;
             scale = originalScale * scaleFactor;
 
-            // resize the SVG
+            // Resize the SVG element
             svg.attr('width', containerWidth)
                .attr('height', containerHeight);
 
-            // center the map
+            // Update the projection to "fill" the new container:
+            // Set its translate to the new container’s center.
             projection
                 .scale(scale)
                 .translate([containerWidth / 2, containerHeight / 2]);
 
-            // redraw the map paths
+            // Redraw the map paths with the updated projection
             g.selectAll('path').attr('d', path);
 
-            // update the position of the map dots
+            // Update positions of map nodes (if you’re using a force simulation)
             if (nodes && nodes.length) {
                 if (simulation) simulation.stop();
-
                 nodes.forEach(function(d) {
                     const pos = projection(d.geometry.coordinates);
                     d.x = pos[0];
@@ -1047,19 +1057,28 @@ export function ttInitMap() {
                     d.originalX = pos[0];
                     d.originalY = pos[1];
                 });
-
                 if (simulation) {
                     simulation.nodes(nodes);
                     simulation.alpha(1).restart();
                 }
-
                 studiesG.selectAll('circle.map-circles')
                     .attr('cx', function(d) { return d.x; })
                     .attr('cy', function(d) { return d.y; });
             }
 
-            // reset zoom
-            svg_zoom.call(zoom.transform, d3.zoomIdentity);
+            // Adjust the user’s pan offset proportionally to the new container size.
+            // For example, if the container width doubles, the x translation doubles.
+            const newTx = currentTransform.x * (containerWidth / oldWidth);
+            const newTy = currentTransform.y * (containerHeight / oldHeight);
+
+            // Build a new transform with the adjusted translation and the same scale factor.
+            const newTransform = d3.zoomIdentity
+                 .translate(newTx, newTy)
+                 .scale(currentTransform.k);
+
+            // Apply the new transform so that the user's panned state is preserved.
+            svg_zoom.transition()
+                 .call(zoom.transform, newTransform);
         }
 
         // handle the expand button functionality
