@@ -107,6 +107,8 @@ module.exports = {
                 'sm': '0.25rem', // 4px
                 'sm-l': '0.25rem 0 0 0.25rem', // 4px
                 'sm-r': '0 0.25rem 0.25rem 0', // 4px
+                'sm-t': '0.25rem 0.25rem 0 0', // 4px
+                'sm-b': '0 0 0.25rem 0.25rem', // 4px
                 'sm2-b': '0 0 0.5rem 0.5rem', // 8px
                 'md': '0.5rem', // 9px
                 'lg': '0.75rem', // 12px
@@ -140,18 +142,25 @@ module.exports = {
                 'map-lg': '30.125rem',  // 482px
                 'map-xl': '39rem',  // 624px
                 'card-xl': '42.25rem', // 676px
+                'map-expand': '33.063rem', // 529px
+                'map-lg-expand': '34.813rem',  // 557px
+                'map-xl-expand': '43.688rem',  // 699px
+                'card-xl-expand': '46.938rem', // 751px
                 'timeline': '11.75rem', // 188px
                 'brush': '11.313rem', // 181px
                 'switchout': '1.5rem', // 24px
                 'switchin': '0.875rem', // 14px
                 'arrow': '0.5rem', // 8px
                 'arrow2': '6.5px', // 6.5px
+                'expand': '2.25rem', // 36px
+                'zoom': '2.375rem', // 38px
             },
             width: {
                 'search': '15.5rem', // 248px
                 'arrow': '0.75rem', // 12px
                 'arrow2': '0.813rem', // 13px
                 'switchin': '0.875rem', // 14px
+                'zoomcontrol': '2.25rem', // 36px
                 'switchout': '2.75rem', // 44px
                 'filter': '10.813rem', // 173px
                 'button': '12rem', // 192px
@@ -170,6 +179,9 @@ module.exports = {
                 'map': '51.625rem', // 826px
                 'map-lg': '55.75rem',  // 892px
                 'map-xl': '72.125rem',  // 1154px
+                'map-expand': '61.188rem', // 979px
+                'map-lg-expand': '64.438rem',  // 1031px
+                'map-xl-expand': '80.875rem',  // 1294px
             },
             maxHeight: {
                 'info1': 'calc(100% - 52px)', // height of the info card minus the sticky button wrapper at the bottom with 1 link

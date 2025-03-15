@@ -15,6 +15,7 @@ export function ttInitMap() {
         // globaly scope some variables for the timeline
         let timeline_height, brush, brushG, timelineDiv, timelineSVG, timelineG, timelineX, timelineY, max_Y_domain, studiesByYear, handle, handleText, timeMin, timeMax;
 
+        let originalWidth, originalScale;
 
         // add map data to the world map g container
         app.map.initializeMap = function() {
@@ -34,6 +35,10 @@ export function ttInitMap() {
             } else {
                 scale = 198;
             }
+
+            // store these for use when the expand button is clicked
+            originalWidth = width;
+            originalScale = scale;
             
             // data holder
             studies = null;
@@ -77,19 +82,18 @@ export function ttInitMap() {
             svg_zoom = d3.select('#map-svg');
 
             zoom = d3.zoom()
-                .scaleExtent([0.75, 5])
+                .scaleExtent([0.75, 6.5536])
                 .on('zoom', zoomed);
 
             svg_zoom.call(zoom);
 
             // define zooming function for zooming map
             function zoomed() {
-                //g_zoom.style('stroke-width', 1.5 / d3.event.scale + 'px');
-                g_zoom.attr('transform', `translate(${d3.event.transform.x},  ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
-                // set pin sizes based on zoom level
+                // store the zoom level in currentZoom
+                currentZoom = d3.event.transform.k;
+                g_zoom.attr('transform', `translate(${d3.event.transform.x}, ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
                 scalePins(d3.event.transform.k);
-                
-            };
+            }
 
             // create container for timeline
             timelineDiv = d3.select('#timeline'),
@@ -147,7 +151,7 @@ export function ttInitMap() {
                     
                 app.map.initializeTimeline();
 
-            });        
+            });       
         }
 
         // pull data and update timeline function
@@ -315,8 +319,7 @@ export function ttInitMap() {
 
             }
             
-            app.map.pullDataAndUpdate();
-                        
+            app.map.pullDataAndUpdate();             
         }
 
         app.map.updateTimeline = function() {
@@ -714,8 +717,7 @@ export function ttInitMap() {
 
             simulation = forceSimulation(nodes).on('tick', ticked);
 
-            zoom_transition(1); 
-
+            zoom_transition(1);
         }
 
         function forceSimulation(nodes) {
@@ -773,21 +775,25 @@ export function ttInitMap() {
         }
 
         // set up listeners for zoom
+        let currentZoom = 1;
+        const zoomInFactor = 1.6;
+        // exact inverse of 1.6
+        const zoomOutFactor = 0.625;
+        const center = [width / 2, height / 2];
+
         d3.selectAll('button').on('click', function() {
-            // zoom in 0.5 each time
             if (this.id === 'zoom-in') {
-                zoom_transition(1.75); 
+                // allow 4 zoom in levels
+                if (currentZoom >= 6.5536) return;
+                // if we are already below the base zoom level, reset to the base zoom level, otherwise zoom in
+                currentZoom = currentZoom < 1 ? 1 : currentZoom * zoomInFactor;
+            } else if (this.id === 'zoom-out') {
+                // only allow zooming out one level from the base zoom level
+                currentZoom = currentZoom <= 1 ? zoomOutFactor : Math.max(zoomOutFactor, currentZoom * zoomOutFactor);
             }
-            // zoom out 0.5 each time
-            if (this.id === 'zoom-out') {
-                zoom_transition(0.575);
-            }
-            // return to initial state
-            if (this.id === 'zoom_init') {
-                svg_zoom.transition()
-                    .duration(500)
-                    .call(zoom.scaleTo, 1); 
-            }
+
+            svg_zoom.transition()
+                .call(zoom.scaleTo, currentZoom, center);
         });
 
         function showHover(pk) {
@@ -1007,6 +1013,117 @@ export function ttInitMap() {
                 yearsstudied_number_max = '';
                 app.map.pullDataAndUpdate();
             }
+        });
+
+        // function to update the map dimensions when the expand button is clicked
+        function resizeMap(savedTransform) {
+            // map dimensions before resize
+            const oldWidth = +svg.attr('width');
+            const oldHeight = +svg.attr('height');
+
+            // map dimensions after resize
+            const containerWidth = $('#map').width();
+            const containerHeight = $('#map').height();
+
+            // use saved transform if we have it
+            const transformData = savedTransform || { k: 1, x: 0, y: 0 };
+            
+            // new projection scale
+            const scaleFactor = containerWidth / originalWidth;
+            scale = originalScale * scaleFactor;
+
+            svg.attr('width', containerWidth)
+               .attr('height', containerHeight);
+
+            // update the projection
+            projection
+                .scale(scale)
+                .translate([containerWidth / 2, containerHeight / 2]);
+
+            // redraw the map paths with the updated projection
+            g.selectAll('path').attr('d', path);
+
+            // update positions of map nodes
+            if (nodes && nodes.length) {
+                if (simulation) {
+                    simulation.stop();
+                }
+                
+                nodes.forEach(function(d) {
+                    const pos = projection(d.geometry.coordinates);
+                    d.x = pos[0];
+                    d.y = pos[1];
+                    d.originalX = pos[0];
+                    d.originalY = pos[1];
+                });
+                
+                if (simulation) {
+                    simulation.nodes(nodes);
+                    simulation.alpha(1).restart();
+                }
+                
+                studiesG.selectAll('circle.map-circles')
+                    .attr('cx', function(d) { return d.x; })
+                    .attr('cy', function(d) { return d.y; });
+            }
+
+            // calculate the center point before and after resize
+            const oldCenterX = oldWidth / 2;
+            const oldCenterY = oldHeight / 2;
+            const newCenterX = containerWidth / 2;
+            const newCenterY = containerHeight / 2;
+            
+            const distanceFromCenterX = (transformData.x - oldCenterX) / transformData.k;
+            const distanceFromCenterY = (transformData.y - oldCenterY) / transformData.k;
+            
+            const newX = newCenterX + (distanceFromCenterX * transformData.k);
+            const newY = newCenterY + (distanceFromCenterY * transformData.k);
+            
+            const widthRatio = containerWidth / oldWidth;
+            const heightRatio = containerHeight / oldHeight;
+            
+            const adjustedX = transformData.x * widthRatio;
+            const adjustedY = transformData.y * heightRatio;
+            
+            // create and apply the new transform
+            const newTransform = d3.zoomIdentity
+                .translate(adjustedX, adjustedY)
+                .scale(transformData.k);
+            
+            svg_zoom.call(zoom.transform, newTransform);
+            
+            scalePins(transformData.k);
+        }
+
+        // handle the expand button functionality
+        $('#expand').on('click', function() {
+            const savedZoomLevel = currentZoom;
+            
+            // get the current position information
+            const currentTransform = g_zoom.attr('transform');
+            let transformData = { k: savedZoomLevel, x: 0, y: 0 };
+            
+            if (currentTransform) {
+                const translateMatch = currentTransform.match(/translate\(([^,]+),\s*([^)]+)\)/);
+                if (translateMatch && translateMatch.length >= 3) {
+                    transformData.x = parseFloat(translateMatch[1]);
+                    transformData.y = parseFloat(translateMatch[2]);
+                }
+            }
+
+            $('#map').data('savedTransform', transformData);
+            
+            // toggle classes to expand the map and info-card, hide the header, and modify the expand button
+            $('header').slideToggle(300);
+            $('#info-card-container').toggleClass('h-map-expand lg:h-map-lg-expand xl:h-card-xl-expand lg:mr-0 xl:mr-0');
+            $('#map').toggleClass('h-map-expand lg:h-map-lg-expand xl:h-map-xl-expand w-map-expand lg:w-map-lg-expand xl:w-map-xl-expand');
+            $(this).find('#icon-expand').toggleClass('hidden');
+            $(this).find('#icon-minimize').toggleClass('hidden');
+
+            // resize the SVG and its parts after animation completes
+            setTimeout(function(){
+                resizeMap($('#map').data('savedTransform'));
+            }, 300);
         });
 
         // move to the front prototype
