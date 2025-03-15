@@ -82,7 +82,7 @@ export function ttInitMap() {
             svg_zoom = d3.select('#map-svg');
 
             zoom = d3.zoom()
-                .scaleExtent([0.75, 5])
+                .scaleExtent([0.75, 6.5536])
                 .on('zoom', zoomed);
 
             svg_zoom.call(zoom);
@@ -319,8 +319,7 @@ export function ttInitMap() {
 
             }
             
-            app.map.pullDataAndUpdate();
-                        
+            app.map.pullDataAndUpdate();             
         }
 
         app.map.updateTimeline = function() {
@@ -718,8 +717,7 @@ export function ttInitMap() {
 
             simulation = forceSimulation(nodes).on('tick', ticked);
 
-            zoom_transition(1); 
-
+            zoom_transition(1);
         }
 
         function forceSimulation(nodes) {
@@ -785,11 +783,13 @@ export function ttInitMap() {
 
         d3.selectAll('button').on('click', function() {
             if (this.id === 'zoom-in') {
+                // allow 4 zoom in levels
+                if (currentZoom >= 6.5536) return;
                 // if we are already below the base zoom level, reset to the base zoom level, otherwise zoom in
                 currentZoom = currentZoom < 1 ? 1 : currentZoom * zoomInFactor;
             } else if (this.id === 'zoom-out') {
                 // only allow zooming out one level from the base zoom level
-            currentZoom = currentZoom <= 1 ? zoomOutFactor : Math.max(zoomOutFactor, currentZoom * zoomOutFactor);
+                currentZoom = currentZoom <= 1 ? zoomOutFactor : Math.max(zoomOutFactor, currentZoom * zoomOutFactor);
             }
 
             svg_zoom.transition()
