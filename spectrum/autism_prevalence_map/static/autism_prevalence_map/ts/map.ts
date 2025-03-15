@@ -1045,7 +1045,10 @@ export function ttInitMap() {
 
             // update positions of map nodes
             if (nodes && nodes.length) {
-                if (simulation) simulation.stop();
+                if (simulation) {
+                    simulation.stop();
+                }
+                
                 nodes.forEach(function(d) {
                     const pos = projection(d.geometry.coordinates);
                     d.x = pos[0];
