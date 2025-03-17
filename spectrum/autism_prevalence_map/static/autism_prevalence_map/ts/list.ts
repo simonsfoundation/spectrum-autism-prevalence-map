@@ -4,7 +4,7 @@ export function ttInitList() {
     $(document).ready(function (){
         // app.list scope
         app.list = {};
-        
+
         const table = d3.select('#studies-table');
 
         // map projection
@@ -33,7 +33,7 @@ export function ttInitList() {
                 .attr('width', '509px')
                 .attr('height', '323px')
                 .attr('viewBox', '0 0 509 323')
-                .classed('bg-white border-white border-4', true)
+                .classed('bg-white border-white border-1', true)
                 .attr('id', 'map_svg_' + studyData.properties.pk);
 
             let mapG = mapSVG.append('g')
@@ -115,7 +115,7 @@ export function ttInitList() {
                     .attr('aria-controls', function (d) { 
                         return '#accordion_menu_' + d.properties.pk;
                     })
-                    .classed('border-light-gray2 border-b-1.25', true);
+                    .classed('border-light-gray2 border-b-0.3125', true);
 
                 const toggletd = row1.append('th')
                     .attr('scope', 'row')
