@@ -19,6 +19,15 @@ export function ttInitList() {
 
         let world = null;
 
+        function isValidURL(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
         app.list.loadWorldMap = function() {
             d3.json(world_atlas).then(function(data) {
                 world = data;
@@ -190,17 +199,26 @@ export function ttInitList() {
                         const diagnostictools = d.properties.diagnostictools.replace(/ *([|]) */g, '$1').split('|').join(', ');
 
                         let links = [];
-                        if (d.properties.link1title && d.properties.link1url) {
-                            links.push('<a href="'+ d.properties.link1url +'">'+ d.properties.link1title +'</a>') 
-                        }
-                        if (d.properties.link2title && d.properties.link2url) {
-                            links.push('<a href="'+ d.properties.link2url +'">'+ d.properties.link2title +'</a>') 
-                        }
-                        if (d.properties.link3title && d.properties.link3url) {
-                            links.push('<a href="'+ d.properties.link3url +'">'+ d.properties.link3title +'</a>') 
-                        }
-                        if (d.properties.link4title && d.properties.link4url) {
-                            links.push('<a href="'+ d.properties.link4url +'">'+ d.properties.link4title +'</a>') 
+                        const publications = [
+                            { title: d.properties.link1title, url: d.properties.link1url },
+                            { title: d.properties.link2title, url: d.properties.link2url },
+                            { title: d.properties.link3title, url: d.properties.link3url },
+                            { title: d.properties.link4title, url: d.properties.link4url }
+                        ];
+
+                        for (let i = 0; i < publications.length; i++) {
+                            const publication = publications[i];
+                            if (publication.title && publication.url) {
+                                let item;
+                                if (isValidURL(publication.url)) {
+                                    // use an anchor tag if we have a valid URL
+                                    item = "<a href=\"" + publication.url + "\" target=\"_blank\">" + publication.title + "</a>";
+                                } else {
+                                    // use a span if we don't have a valid URL
+                                    item = "<span>" + publication.title + "</span>";
+                                }
+                                links.push(item);
+                            }
                         }
 
                         let links_string = '';
