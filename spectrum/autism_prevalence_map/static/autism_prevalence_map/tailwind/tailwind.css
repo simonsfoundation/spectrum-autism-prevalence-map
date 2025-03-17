@@ -20,7 +20,7 @@
     }
 
     footer section a {
-        @apply no-underline text-light-navy-2 hover:text-light-red;
+        @apply no-underline text-light-navy-2 hover:text-med-red;
     }
 }
 
@@ -467,7 +467,7 @@
         @apply overflow-visible;
     }
     .brush .selection {
-        @apply stroke-light-red fill-light-gray4 stroke-dash-5;
+        @apply stroke-med-red fill-light-gray4 stroke-dash-5;
     }
     .timeline-axis {
         @apply text-white text-1xs2;
