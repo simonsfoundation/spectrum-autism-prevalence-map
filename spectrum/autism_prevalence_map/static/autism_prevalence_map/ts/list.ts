@@ -8,21 +8,19 @@ export function ttInitList() {
         // mapWidth only needed if we bring back the confidence interval functionality
         // const width = $('body').width();
         // const mapWidth = $('#list').width();
-        const table = d3.select('#studies');
+        const table = d3.select('#studies-table');
 
         // map projection
         const fixedWidth = 509;
         const fixedHeight = 323;
 
         const projection = d3.geoKavrayskiy7()
-            .scale(250)
-            .translate([fixedWidth / 2, fixedHeight / 2]);
+            .scale(250);
 
         // function to create paths from map projection
         const path = d3.geoPath().projection(projection);
 
         let world = null;
-        let thisMapSVG = null;
 
         app.list.loadWorldMap = function() {
             d3.json(world_atlas).then(function(data) {
@@ -60,11 +58,10 @@ export function ttInitList() {
                 .attr('fill', 'none')
                 .attr('stroke', '#FFF')
                 .each(function() {
-                    this.style.setProperty('stroke-width', '1px');
+                    d3.select(this).attr('stroke-width', '1px');
                 });
 
-            const studiesG = mapG.append('g')
-                .attr('id', 'studies');
+            const studiesG = mapG.append('g');
 
             studiesG.append('circle')
                 .attr('cx', function() { 
@@ -76,7 +73,6 @@ export function ttInitList() {
                 .attr('r', 8)
                 .style('fill', pointColor(studyData))
                 .style('fill-opacity', '1')
-                .classed('map-circles', true)
                 .attr('id', 'map_dot_' + studyData.properties.pk);
 
             mapSVG.each(function() {
@@ -92,7 +88,7 @@ export function ttInitList() {
         };
 
         app.list.addRows = function() {
-            $('#studies tbody').remove();     
+            $('#studies-table tbody').remove();     
             d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
                 studies = data;
 
@@ -106,7 +102,7 @@ export function ttInitList() {
                 });
 
                 let enter_selection = table.append('tbody')
-                    .attr('id', 'studies_tbody')
+                    .attr('id', 'studies-table_tbody')
                     .selectAll('tr')
                     .data(studies.features)
                     .enter();
@@ -120,11 +116,11 @@ export function ttInitList() {
                     .attr('role', 'button')
                     .attr('aria-expanded', 'false')
                     .attr('aria-controls', function (d) { 
-                        return d.properties.pk; 
+                        return '#accordion_menu_' + d.properties.pk;
                     })
                     .classed('border-light-gray2 border-b-1.25', true);
 
-                const toggletd = row1.append('td')
+                const toggletd = row1.append('th')
                     .attr('scope', 'row')
                     .classed('p-0 pl-3.75 w-toggle', true);
 
@@ -179,14 +175,15 @@ export function ttInitList() {
                     .classed('collapse bg-tan', true)
                     .attr('id', function (d) { 
                         return 'accordion_menu_' + d.properties.pk; 
-                    });
+                    })
+                    .attr('data-collapse-target', 'true');
 
                 let card_div = row2.append('td')
                     .attr('colspan', '9')
                     .append('div')
                     .classed('flex', true)
 
-                let textBlock = card_div.append('div')
+                card_div.append('div')
                     .classed('w-listcard pl-13.75 pr-8', true)
                     .append('p')
                     .html(function (d) { 
@@ -230,8 +227,7 @@ export function ttInitList() {
 
                 // add placeholder that we will add map to when expanded
                 card_div.append('div')
-                    .attr('id', function(d) { return 'map_placeholder_' + d.properties.pk; })
-                    .classed('map-placeholder', true);
+                    .attr('id', function(d) { return 'map_placeholder_' + d.properties.pk; });
 
                 // add confidence interval graphic
                 /*
@@ -439,15 +435,15 @@ export function ttInitList() {
                     .style('stroke-width', '0');
                 */
 
-                d3.select('#studies_tbody').selectAll('tr').sort(function(a, b){ 
+                d3.select('#studies-table_tbody').selectAll('tr').sort(function(a, b){ 
                     return a.properties.pk - b.properties.pk; 
                 });
 
-                $('.collapse').collapse({
+                $('[data-collapse-target]').collapse({
                     toggle: false
                 });
 
-                $('.collapse').on('shown.bs.collapse', function() {
+                $('[data-collapse-target]').on('shown.bs.collapse', function() {
                     var collapseId = $(this).attr('id'); // e.g., "accordion_menu_123"
                     var pk = collapseId.replace('accordion_menu_', '');
                     var placeholder = $('#map_placeholder_' + pk);
@@ -461,6 +457,9 @@ export function ttInitList() {
         
         // point color function
         function pointColor(feature) {
+            return '#D14D57';
+            /*
+            this functionality is no longer used, commenting out for now and to be removed later if not needed
             if (feature.properties.recommended == 'yes' || feature.properties.recommended == 'Yes') {
                 // standard darker red
                 return '#910E1C';
@@ -468,6 +467,7 @@ export function ttInitList() {
                 // light red
                 return '#D14D57';
             }
+            */
         }
 
         // listener to toggle arrows on click
@@ -477,16 +477,5 @@ export function ttInitList() {
 
         // initialize
         app.list.loadWorldMap();
-
-        /*
-        if (timeline_type == 'studied') {
-            $('#earliest-label').text('Earliest year studied');
-            $('#latest-label').text('Latest year studied');
-        } else {
-            $('#earliest-label').text('Earliest publication date');
-            $('#latest-label').text('Latest publication date');
-        }
-        */
-
     });
 }

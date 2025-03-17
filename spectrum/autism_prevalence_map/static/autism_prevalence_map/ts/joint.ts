@@ -540,5 +540,14 @@ export function ttInitJoint() {
             searchInput.focus();
             app.runUpdate();
         });
+
+        // update min and max year labels based on the timeline study type
+        if (timeline_type == 'studied') {
+            $('#earliest-label').text('Earliest year studied');
+            $('#latest-label').text('Latest year studied');
+        } else {
+            $('#earliest-label').text('Earliest year published');
+            $('#latest-label').text('Latest year published');
+        }
     });
 }

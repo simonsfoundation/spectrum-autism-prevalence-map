@@ -967,6 +967,8 @@ export function ttInitMap() {
                 yearsstudied_number_max = max_yearpublished; 
                 min_yearpublished = '';
                 max_yearpublished = '';
+                $('#earliest-label').text('Earliest year studied');
+                $('#latest-label').text('Latest year studied');
                 app.map.pullDataAndUpdate();
             } else {
                 // switch visualization to year published
@@ -975,6 +977,8 @@ export function ttInitMap() {
                 max_yearpublished = yearsstudied_number_max;
                 yearsstudied_number_min = ''; 
                 yearsstudied_number_max = '';
+                $('#earliest-label').text('Earliest year published');
+                $('#latest-label').text('Latest year published');
                 app.map.pullDataAndUpdate();
             }
         });

@@ -475,28 +475,30 @@
     .timeline-circles {
        @apply translate-y-20;
     }
-    #studies th {
+    #studies-table th:not(.w-toggle) {
         @apply align-bottom pt-8.25 pb-4 text-left text-3.5 text-tan font-bold tracking-extra-wide leading-4.25;
     }
-    #studies td {
-        @apply py-4 text-4 text-med-navy tracking-normal-lg;
+    #studies-table td,
+    #studies-table .w-toggle {
+        @apply py-4 align-top text-4 text-med-navy tracking-normal-lg;
     }
-    #studies_tbody tr:not(.collapsed):not(.bg-tan) {
+    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) {
         @apply bg-white2 border-med-navy;
     }
-    #studies_tbody tr:not(.collapsed):not(.bg-tan) .chevron-down {
+    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) .chevron-down {
         @apply rotate-180;
     }
-    #studies_tbody tr.show {
+    #studies-table_tbody tr.show {
         @apply border-light-gray2 border-b-1.25;
     }
-    #studies_tbody tr.show td {
+    #studies-table_tbody tr.show td,
+    #studies-table_tbody tr.show .w-toggle {
         @apply pt-6 pb-10.5;
     }
-    #studies .show {
+    #studies-table .show {
         @apply visible;
     }
-    #studies .show a {
+    #studies-table .show a {
         @apply no-underline;
     }
 }
