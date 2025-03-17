@@ -107,6 +107,8 @@ module.exports = {
                 'sm': '0.25rem', // 4px
                 'sm-l': '0.25rem 0 0 0.25rem', // 4px
                 'sm-r': '0 0.25rem 0.25rem 0', // 4px
+                'sm-t': '0.25rem 0.25rem 0 0', // 4px
+                'sm-b': '0 0 0.25rem 0.25rem', // 4px
                 'sm2-b': '0 0 0.5rem 0.5rem', // 8px
                 'md': '0.5rem', // 9px
                 'lg': '0.75rem', // 12px
@@ -124,6 +126,7 @@ module.exports = {
             lineHeight: {
                 '4.25': '1.063rem', // 17px
                 '4.5': '1.125rem', // 18px
+                '4.8': '1.2rem',
                 '5.5': '1.375rem', // 22px
                 '6.25': '1.563rem', // 25px
                 '7.2': '1.788rem', // 28.6px
@@ -142,18 +145,25 @@ module.exports = {
                 'map-lg': '30.125rem',  // 482px
                 'map-xl': '39rem',  // 624px
                 'card-xl': '42.25rem', // 676px
+                'map-expand': '33.063rem', // 529px
+                'map-lg-expand': '34.813rem',  // 557px
+                'map-xl-expand': '43.688rem',  // 699px
+                'card-xl-expand': '46.938rem', // 751px
                 'timeline': '11.75rem', // 188px
                 'brush': '11.313rem', // 181px
                 'switchout': '1.5rem', // 24px
                 'switchin': '0.875rem', // 14px
                 'arrow': '0.5rem', // 8px
                 'arrow2': '6.5px', // 6.5px
+                'expand': '2.25rem', // 36px
+                'zoom': '2.375rem', // 38px
             },
             width: {
                 'search': '15.5rem', // 248px
                 'arrow': '0.75rem', // 12px
                 'arrow2': '0.813rem', // 13px
                 'switchin': '0.875rem', // 14px
+                'zoomcontrol': '2.25rem', // 36px
                 'switchout': '2.75rem', // 44px
                 'toggle': '3.438rem', // 55px
                 'filter': '10.813rem', // 173px
@@ -174,6 +184,9 @@ module.exports = {
                 'map': '51.625rem', // 826px
                 'map-lg': '55.75rem',  // 892px
                 'map-xl': '72.125rem',  // 1154px
+                'map-expand': '61.188rem', // 979px
+                'map-lg-expand': '64.438rem',  // 1031px
+                'map-xl-expand': '80.875rem',  // 1294px
                 'td1': '6.25rem', // 100px
                 'td2': '12.375rem', // 198px
                 'td3': '8.375rem', // 134px
@@ -182,7 +195,10 @@ module.exports = {
                 'td6': '17.5rem', // 280px
             },
             maxHeight: {
-                'info': 'calc(100% - 40px)', // height of the info card minus the sticky button at the bottom
+                'info1': 'calc(100% - 52px)', // height of the info card minus the sticky button wrapper at the bottom with 1 link
+                'info2': 'calc(100% - 79px)', // height of the info card minus the sticky button wrapper at the bottom with 2 links
+                'info3': 'calc(100% - 106px)', // height of the info card minus the sticky button wrapper at the bottom with 3 links
+                'info4': 'calc(100% - 133px)', // height of the info card minus the sticky button wrapper at the bottom with 4 links
             },
             maxWidth: {
                 'tooltip': '11.625rem', // 186px
@@ -233,6 +249,7 @@ module.exports = {
                 '15': '3.75rem', // 60px
                 '16': '4rem', // 64px
                 '17.5': '4.375rem', // 70px
+                '17.7': '4.625rem', //74px
                 '23': '5.75rem', // 92px
                 '24' : '6rem', // 96px
                 '25.5' : '6.375rem', // 102px
@@ -242,11 +259,12 @@ module.exports = {
                 '73': '18.25rem', // 292px
                 '159': '39.75rem', // 636px
                 '207.5': '51.875rem', // 830px
-                '400': '100rem', // 1600px 
+                '400': '100rem', // 1600px
+                '12/25': '48%',
             },
             colors: {
                 'red': '#910E1C',
-                'light-red': '#D14D57',
+                'med-red': '#D14D57',
                 'blue': '#0B6BC3',
                 'navy': '#003049',
                 'med-navy': '#2E5367',
@@ -333,5 +351,9 @@ module.exports = {
         'ui-slider-handle',
         'ui-slider-range',
         'ui-state-focus',
+        'max-h-info1',
+        'max-h-info2',
+        'max-h-info3',
+        'max-h-info4',
     ],
 }

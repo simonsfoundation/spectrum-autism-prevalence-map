@@ -15,6 +15,7 @@ export function ttInitMap() {
         // globaly scope some variables for the timeline
         let timeline_height, brush, brushG, timelineDiv, timelineSVG, timelineG, timelineX, timelineY, max_Y_domain, studiesByYear, handle, handleText, timeMin, timeMax;
 
+        let originalWidth, originalScale;
 
         // add map data to the world map g container
         app.map.initializeMap = function() {
@@ -34,6 +35,10 @@ export function ttInitMap() {
             } else {
                 scale = 198;
             }
+
+            // store these for use when the expand button is clicked
+            originalWidth = width;
+            originalScale = scale;
             
             // data holder
             studies = null;
@@ -77,19 +82,18 @@ export function ttInitMap() {
             svg_zoom = d3.select('#map-svg');
 
             zoom = d3.zoom()
-                .scaleExtent([0.75, 5])
+                .scaleExtent([0.75, 6.5536])
                 .on('zoom', zoomed);
 
             svg_zoom.call(zoom);
 
             // define zooming function for zooming map
             function zoomed() {
-                //g_zoom.style('stroke-width', 1.5 / d3.event.scale + 'px');
-                g_zoom.attr('transform', `translate(${d3.event.transform.x},  ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
-                // set pin sizes based on zoom level
+                // store the zoom level in currentZoom
+                currentZoom = d3.event.transform.k;
+                g_zoom.attr('transform', `translate(${d3.event.transform.x}, ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
                 scalePins(d3.event.transform.k);
-                
-            };
+            }
 
             // create container for timeline
             timelineDiv = d3.select('#timeline'),
@@ -147,7 +151,7 @@ export function ttInitMap() {
                     
                 app.map.initializeTimeline();
 
-            });        
+            });       
         }
 
         // pull data and update timeline function
@@ -315,8 +319,7 @@ export function ttInitMap() {
 
             }
             
-            app.map.pullDataAndUpdate();
-                        
+            app.map.pullDataAndUpdate();             
         }
 
         app.map.updateTimeline = function() {
@@ -714,8 +717,7 @@ export function ttInitMap() {
 
             simulation = forceSimulation(nodes).on('tick', ticked);
 
-            zoom_transition(1); 
-
+            zoom_transition(1);
         }
 
         function forceSimulation(nodes) {
@@ -773,21 +775,25 @@ export function ttInitMap() {
         }
 
         // set up listeners for zoom
+        let currentZoom = 1;
+        const zoomInFactor = 1.6;
+        // exact inverse of 1.6
+        const zoomOutFactor = 0.625;
+        const center = [width / 2, height / 2];
+
         d3.selectAll('button').on('click', function() {
-            // zoom in 0.5 each time
             if (this.id === 'zoom-in') {
-                zoom_transition(1.75); 
+                // allow 4 zoom in levels
+                if (currentZoom >= 6.5536) return;
+                // if we are already below the base zoom level, reset to the base zoom level, otherwise zoom in
+                currentZoom = currentZoom < 1 ? 1 : currentZoom * zoomInFactor;
+            } else if (this.id === 'zoom-out') {
+                // only allow zooming out one level from the base zoom level
+                currentZoom = currentZoom <= 1 ? zoomOutFactor : Math.max(zoomOutFactor, currentZoom * zoomOutFactor);
             }
-            // zoom out 0.5 each time
-            if (this.id === 'zoom-out') {
-                zoom_transition(0.575);
-            }
-            // return to initial state
-            if (this.id === 'zoom_init') {
-                svg_zoom.transition()
-                    .duration(500)
-                    .call(zoom.scaleTo, 1); 
-            }
+
+            svg_zoom.transition()
+                .call(zoom.scaleTo, currentZoom, center);
         });
 
         function showHover(pk) {
@@ -870,6 +876,7 @@ export function ttInitMap() {
 
         // populate the info card when a map or timline dot is clicked
         function populateInfoCard(d) {
+            const infoCard = $('#info-card');
             const authors = d.properties.authors;
             const card_title = authors + ' ' + d.properties.yearpublished;
             const area = d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
@@ -898,42 +905,71 @@ export function ttInitMap() {
                 '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Years Studied:</strong> ' + d.properties.yearsstudied + '</p>' +
                 '<p class="' + resultCSS1 + '"><strong class="' + resultCSS2 + '">Category:</strong> ' + d.properties.categoryadpddorasd + '</p>';
 
+            // check if a string is a valid URL
+            function isValidURL(url) {
+                try {
+                    new URL(url);
+                    return true;
+                } catch (_) {
+                    return false;
+                }
+            }
+
             // remove any previously injected publication link
-            $('#publication-button').remove();
+            $('#publication-button-wrap').remove();
 
             // update the info card content
-            $('#info-card').attr('data-content','').html(cardHTML);
+            infoCard.attr('data-content','').html(cardHTML);
 
-            /*
-            Leaving this for post launch to address
+            // build an array of publication link HTML strings
             let links = [];
-            if (d.properties.link1title && d.properties.link1url) {
-                links.push('<a href="'+ d.properties.link1url +'">'+ d.properties.link1title +'</a>');
-            }
-            if (d.properties.link2title && d.properties.link2url) {
-                links.push('<a href="'+ d.properties.link2url +'">'+ d.properties.link2title +'</a>');
-            }
-            if (d.properties.link3title && d.properties.link3url) {
-                links.push('<a href="'+ d.properties.link3url +'">'+ d.properties.link3title +'</a>');
-            }
-            if (d.properties.link4title && d.properties.link4url) {
-                links.push('<a href="'+ d.properties.link4url +'">'+ d.properties.link4title +'</a>');
+            let itemClasses = 'block pl-4 text-4 text-blue font-semibold tracking-2 leading-6.25 no-underline rounded-sm2-b';
+
+            const publications = [
+                { title: d.properties.link1title, url: d.properties.link1url },
+                { title: d.properties.link2title, url: d.properties.link2url },
+                { title: d.properties.link3title, url: d.properties.link3url },
+                { title: d.properties.link4title, url: d.properties.link4url }
+            ];
+
+            for (let i = 0; i < publications.length; i++) {
+                const publication = publications[i];
+                if (publication.title && publication.url) {
+                    let item;
+                    if (isValidURL(publication.url)) {
+                        // use an anchor tag if we have a valid URL
+                        item = '<a href="' + publication.url + '" target="_blank" class="' + itemClasses + (i > 0 ? ' mt-0.5' : '') + '">' + publication.title + '</a>';
+                    } else {
+                        // use a span if we don't have a valid URL
+                        item = '<span class="' + itemClasses + (i > 0 ? ' mt-0.5' : '') + '">' + publication.title + '</span>';
+                    }
+                    links.push(item);
+                }
             }
 
-            let links_string = links.join('<br />');
-            links_string = links_string.replace('>Spectrum', '><em>Spectrum</em>');
-            */
+            // add the publication links into an absolutely positioned div at the bottom of the parent while the main #info-card has overflow: scroll
+            if (links.length > 0) {
+                let linksHTML = links.join('');
+                linksHTML = linksHTML.replace('>Spectrum', '><em>Spectrum</em>');
 
-            // add the publication link that is absolutely positioned at the bottom of the parent while the main #info-card has overflow: scroll
-            if (d.properties.link1title && d.properties.link1url) {
-                const linkHTML = '<a href="' + d.properties.link1url + '" id="publication-button" class="absolute bottom-0 left-0 w-full pl-4 py-1.75 bg-white border-t-light-gray2 border-t-0.125 rounded-sm2-b text-4 text-blue tracking-2 leading-6.25 no-underline" target="_blank">' + d.properties.link1title + '</a>';
-                $('#info-card-container').append(linkHTML);
+                const containerHTML = '<div id="publication-button-wrap" class="absolute bottom-0 left-0 w-full py-3.25 bg-white border-t-light-gray2 border-t-0.5 rounded-sm2-b">' + linksHTML + '</div>';
+                $('#info-card-container').append(containerHTML);
+
+                // adjust info-card height based on number of links
+                let heightClass =  'max-h-info' + (links.length);
+
+                // remove existing height classes before adding a new one
+                infoCard.removeClass(function(index, className) {
+                    return (className.match(/max-h-info\d+/g) || []).join(' ');
+                });
+
+                $('#info-card').addClass(heightClass);
             }
         }
 
         // reset to welcome card content
         function showWelcomeCard() {
-            $('#publication-button').remove();
+            $('#publication-button-wrap').remove();
             $('#info-card').html(welcomeCardContent).attr('data-content', 'welcome');
         }
 
@@ -981,6 +1017,117 @@ export function ttInitMap() {
                 $('#latest-label').text('Latest year published');
                 app.map.pullDataAndUpdate();
             }
+        });
+
+        // function to update the map dimensions when the expand button is clicked
+        function resizeMap(savedTransform) {
+            // map dimensions before resize
+            const oldWidth = +svg.attr('width');
+            const oldHeight = +svg.attr('height');
+
+            // map dimensions after resize
+            const containerWidth = $('#map').width();
+            const containerHeight = $('#map').height();
+
+            // use saved transform if we have it
+            const transformData = savedTransform || { k: 1, x: 0, y: 0 };
+            
+            // new projection scale
+            const scaleFactor = containerWidth / originalWidth;
+            scale = originalScale * scaleFactor;
+
+            svg.attr('width', containerWidth)
+               .attr('height', containerHeight);
+
+            // update the projection
+            projection
+                .scale(scale)
+                .translate([containerWidth / 2, containerHeight / 2]);
+
+            // redraw the map paths with the updated projection
+            g.selectAll('path').attr('d', path);
+
+            // update positions of map nodes
+            if (nodes && nodes.length) {
+                if (simulation) {
+                    simulation.stop();
+                }
+                
+                nodes.forEach(function(d) {
+                    const pos = projection(d.geometry.coordinates);
+                    d.x = pos[0];
+                    d.y = pos[1];
+                    d.originalX = pos[0];
+                    d.originalY = pos[1];
+                });
+                
+                if (simulation) {
+                    simulation.nodes(nodes);
+                    simulation.alpha(1).restart();
+                }
+                
+                studiesG.selectAll('circle.map-circles')
+                    .attr('cx', function(d) { return d.x; })
+                    .attr('cy', function(d) { return d.y; });
+            }
+
+            // calculate the center point before and after resize
+            const oldCenterX = oldWidth / 2;
+            const oldCenterY = oldHeight / 2;
+            const newCenterX = containerWidth / 2;
+            const newCenterY = containerHeight / 2;
+            
+            const distanceFromCenterX = (transformData.x - oldCenterX) / transformData.k;
+            const distanceFromCenterY = (transformData.y - oldCenterY) / transformData.k;
+            
+            const newX = newCenterX + (distanceFromCenterX * transformData.k);
+            const newY = newCenterY + (distanceFromCenterY * transformData.k);
+            
+            const widthRatio = containerWidth / oldWidth;
+            const heightRatio = containerHeight / oldHeight;
+            
+            const adjustedX = transformData.x * widthRatio;
+            const adjustedY = transformData.y * heightRatio;
+            
+            // create and apply the new transform
+            const newTransform = d3.zoomIdentity
+                .translate(adjustedX, adjustedY)
+                .scale(transformData.k);
+            
+            svg_zoom.call(zoom.transform, newTransform);
+            
+            scalePins(transformData.k);
+        }
+
+        // handle the expand button functionality
+        $('#expand').on('click', function() {
+            const savedZoomLevel = currentZoom;
+            
+            // get the current position information
+            const currentTransform = g_zoom.attr('transform');
+            let transformData = { k: savedZoomLevel, x: 0, y: 0 };
+            
+            if (currentTransform) {
+                const translateMatch = currentTransform.match(/translate\(([^,]+),\s*([^)]+)\)/);
+                if (translateMatch && translateMatch.length >= 3) {
+                    transformData.x = parseFloat(translateMatch[1]);
+                    transformData.y = parseFloat(translateMatch[2]);
+                }
+            }
+
+            $('#map').data('savedTransform', transformData);
+            
+            // toggle classes to expand the map and info-card, hide the header, and modify the expand button
+            $('header').slideToggle(300);
+            $('#info-card-container').toggleClass('h-map-expand lg:h-map-lg-expand xl:h-card-xl-expand lg:mr-0 xl:mr-0');
+            $('#map').toggleClass('h-map-expand lg:h-map-lg-expand xl:h-map-xl-expand w-map-expand lg:w-map-lg-expand xl:w-map-xl-expand');
+            $(this).find('#icon-expand').toggleClass('hidden');
+            $(this).find('#icon-minimize').toggleClass('hidden');
+
+            // resize the SVG and its parts after animation completes
+            setTimeout(function(){
+                resizeMap($('#map').data('savedTransform'));
+            }, 300);
         });
 
         // move to the front prototype

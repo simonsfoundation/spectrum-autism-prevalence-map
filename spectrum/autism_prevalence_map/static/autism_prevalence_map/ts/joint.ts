@@ -2,6 +2,70 @@ import { app } from './app.js';
 
 export function ttInitJoint() {
     $(document).ready(function () {
+        $(document).on('click', '[data-function="cookie-banner-set-consent"]', function (e) {
+            e.preventDefault();
+            let cookieValue = $(this).data('cookie-value');
+            setCookie(cookieValue);
+            if (cookieValue === true) {
+                grantGTMConsent();
+            } else {
+                denyGTMConsent();
+            }
+            $("[data-id='cookie-consent-banner']").hideBanner();
+        });
+
+        function setCookie(cookieValue) {
+            let date = new Date(),
+                later_date = new Date();
+            later_date.setTime(parseInt(date.getTime()) + 2592000 * 1000);
+            document.cookie = 'privacy-consent-given=' + cookieValue + ';path=/;expires=' + later_date.toUTCString() + ';secure;';
+        };
+    
+        function getCookie() {
+            let value = "; " + document.cookie,
+                parts = value.split('; privacy-consent-given=');
+            if (parts.length === 2) {
+                return parts.pop().split(';').shift();
+            } else {
+                return 'cookie-not-set';
+            }
+        }
+
+        function grantGTMConsent(){
+            gtag('consent', 'update', {
+                'ad_storage': 'granted',
+                'analytics_storage': 'granted'
+            });
+        }
+    
+        function denyGTMConsent() {
+            gtag('consent', 'update', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied'
+            });
+            gtag('consent', 'update', {
+                'analytics_storage': 'granted',
+                'region': ['US']
+            });
+        }
+    
+        $.fn.showBanner = function() {
+            this.css({'visibility': 'visible', 'display': 'none'}).fadeIn(400);
+        }
+    
+        $.fn.hideBanner = function () {
+            this.fadeOut(400);
+        }
+        
+        let consentCookie = getCookie();
+        if (consentCookie === 'cookie-not-set') {
+            $("[data-id='cookie-consent-banner']").showBanner();
+        } else if (consentCookie === 'true') {
+            grantGTMConsent();
+        }
+
         // api call holder
         app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education+'&country='+country+'&continent='+continent;
 
