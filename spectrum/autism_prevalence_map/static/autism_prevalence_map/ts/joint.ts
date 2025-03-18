@@ -83,8 +83,10 @@ export function ttInitJoint() {
 
         // function for updating content based on filters
         app.runUpdate = function() {
-            // clear anything pinned on the map or timeline
-            app.map.clearPinned();
+            // clear anything pinned on the map or timeline if we are in the map view
+            if ($('#map-link').hasClass('text-red') || $('#map-link').hasClass('active')) {
+                app.map.clearPinned();
+            }
 
             // run update
             app.updateURL();
@@ -208,7 +210,8 @@ export function ttInitJoint() {
                 min_yearpublished = $(this).val();
             }
             // update the timeline when selection is actively in use
-            if (d3.select('.selection').attr('display') !== 'none' && !d3.select('.selection').empty()) {
+            let selection = d3.select('.selection');
+            if (!selection.empty() && selection.attr('display') !== 'none') {
                 app.map.updateTimelineBrushFromFilters();
             }
             app.runUpdate();
@@ -223,7 +226,8 @@ export function ttInitJoint() {
                 max_yearpublished = $(this).val();
             }
             // update the timeline when selection is actively in use
-            if (d3.select('.selection').attr('display') !== 'none' && !d3.select('.selection').empty()) {
+            let selection = d3.select('.selection');
+            if (!selection.empty() && selection.attr('display') !== 'none') {
                 app.map.updateTimelineBrushFromFilters();
             }
             app.runUpdate();
@@ -397,15 +401,14 @@ export function ttInitJoint() {
 
             // remove brush from timeline
             if ($('#map-link').hasClass('text-red') || $('#map-link').hasClass('active')) {
+                // clear anything pinned on the map or timeline
                 app.map.clearTimelineBrush();
+                app.map.clearPinned();
             }
-
-            // clear anything pinned on the map or timeline
-            app.map.clearPinned();
 
             // remove the search input close X
              $('[data-id="keyword-filter-x-btn"]').addClass('hidden');
-
+          
             // run update
             app.runUpdate();
         });
@@ -601,5 +604,14 @@ export function ttInitJoint() {
             searchInput.focus();
             app.runUpdate();
         });
+
+        // update min and max year labels based on the timeline study type
+        if (timeline_type == 'studied') {
+            $('#earliest-label').text('Earliest year studied');
+            $('#latest-label').text('Latest year studied');
+        } else {
+            $('#earliest-label').text('Earliest year published');
+            $('#latest-label').text('Latest year published');
+        }
     });
 }

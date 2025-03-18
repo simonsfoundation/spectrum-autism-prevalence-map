@@ -5,20 +5,28 @@ export function ttInitList() {
         // app.list scope
         app.list = {};
 
-        const width = $("body").width();
-        const mapWidth = $("#width-check").width();
-        const table = d3.select("#studies");
+        const table = d3.select('#studies-table');
 
         // map projection
+        const fixedWidth = 509;
+        const fixedHeight = 323;
+
         const projection = d3.geoKavrayskiy7()
-            .scale(250)
-            .translate([mapWidth / 2, mapWidth / 1.8]);
+            .scale(250);
 
         // function to create paths from map projection
         const path = d3.geoPath().projection(projection);
 
         let world = null;
-        let thisMapSVG = null;
+
+        function isValidURL(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
 
         app.list.loadWorldMap = function() {
             d3.json(world_atlas).then(function(data) {
@@ -27,92 +35,163 @@ export function ttInitList() {
             });
         }
 
+        // function to render mini SVG map
+        app.list.renderMiniMap = function(studyData, placeholderId) {
+            const placeholder = d3.select('#' + placeholderId);
+            let mapSVG = placeholder.append('svg')
+                .attr('width', '509px')
+                .attr('height', '323px')
+                .attr('viewBox', '0 0 509 323')
+                .classed('bg-white border-white border-1', true)
+                .attr('id', 'map_svg_' + studyData.properties.pk);
+
+            let mapG = mapSVG.append('g')
+                .classed('countries', true)
+                .attr('id', 'map_svg_g_' + studyData.properties.pk);
+
+            mapG.selectAll('path')
+                .data(topojson.feature(world, world.objects.countries).features.filter(function(d){
+                    return d.id !== '010';
+                }))
+                .enter().append('path')
+                .attr('d', path)
+                .attr('fill', '#ccc');
+
+            mapG.append('path')
+                .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
+                .classed('country-borders', true)
+                .attr('d', path)
+                .attr('fill', 'none')
+                .attr('stroke', '#FFF')
+                .each(function() {
+                    d3.select(this).attr('stroke-width', '1px');
+                });
+
+            const studiesG = mapG.append('g');
+
+            studiesG.append('circle')
+                .attr('cx', function() { 
+                    return projection(studyData.geometry.coordinates)[0]; 
+                })
+                .attr('cy', function() { 
+                    return projection(studyData.geometry.coordinates)[1]; 
+                })
+                .attr('r', 8)
+                .style('fill', pointColor(studyData))
+                .style('fill-opacity', '1')
+                .attr('id', 'map_dot_' + studyData.properties.pk);
+
+            mapSVG.each(function() {
+                let zoom = d3.zoom()
+                    .on('zoom', function() {
+                        d3.select('#map_svg_g_' + studyData.properties.pk)
+                          .attr('transform', d3.event.transform);
+                    });
+                d3.select('#map_svg_' + studyData.properties.pk)
+                  .call(zoom.scaleTo, 1)
+                  .call(zoom.translateTo, projection(studyData.geometry.coordinates)[0] - 30, projection(studyData.geometry.coordinates)[1] + 75);
+            });
+        };
 
         app.list.addRows = function() {
-            d3.select("#studies_tbody").remove();      
-            d3.json("/studies-api/" + app.api_call_param_string).then(function(data) {
+            $('#studies-table tbody').remove();     
+            d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
                 studies = data;
-                let enter_selection = table.append("tbody")
-                    .attr("id", "studies_tbody")
-                    .selectAll("tr")
+
+                // update the results count
+                document.getElementById('results-count').textContent = studies.features.length;
+
+                // map from study primary key to its data for later lookup
+                app.list.studiesByPk = {};
+                studies.features.forEach(function(d) {
+                    app.list.studiesByPk[d.properties.pk] = d;
+                });
+
+                let enter_selection = table.append('tbody')
+                    .attr('id', 'studies-table_tbody')
+                    .selectAll('tr')
                     .data(studies.features)
                     .enter();
                 
-                let row1 = enter_selection.append("tr")
-                    .attr("data-toggle", "collapse")
-    		        .attr("href", function (d) { 
-                        return "#accordion_menu_" + d.properties.pk; 
+                let row1 = enter_selection.append('tr')
+                    .attr('data-toggle', 'collapse')
+                    .attr('href', function (d) { 
+                        return '#accordion_menu_' + d.properties.pk; 
                     })
 
-                    .attr("role", "button")
-                    .attr("aria-expanded", "false")
-                    .attr("aria-controls", function (d) { 
-                        return d.properties.pk; 
+                    .attr('role', 'button')
+                    .attr('aria-expanded', 'false')
+                    .attr('aria-controls', function (d) { 
+                        return '#accordion_menu_' + d.properties.pk;
                     })
-                    .classed("study_row", true);
+                    .classed('border-light-gray2 border-b-0.3125', true);
 
-                row1.append("td")
-                    .attr("scope", "row")
-                    .append("i")
-                    .classed("fas", true)
-                    .classed("fa-chevron-down", true)
-                    .classed("fas-red", true)
+                const toggletd = row1.append('th')
+                    .attr('scope', 'row')
+                    .classed('p-0 pl-3.75 w-toggle', true);
+
+                toggletd.append('img')
+                    .attr('src', chevron_down)
+                    .attr('alt', 'chevron down icon')
+                    .classed('chevron-down cursor-pointer', true);
                 
-                row1.append("td")
+                row1.append('td')
                     .text(function (d) { 
                         return d.properties.yearpublished; 
                     })
+                    .classed('w-td1', true);
 
-                row1.append("td")
+                row1.append('td')
                     .html(function (d) { 
-                        const authors = d.properties.authors.replace("et al.", "<em>et al.</em>");
+                        const authors = d.properties.authors.replace('et al.', '<em>et al.</em>');
                         return authors; 
                     })
+                    .classed('w-td2 pr-8', true);
 
-                row1.append("td")
+                row1.append('td')
                     .text(function (d) { 
                         return d.properties.country; 
                     })
+                    .classed('w-td3', true);
 
-                row1.append("td")
+                row1.append('td')
                     .text(function (d) { 
                         return d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
                     })
+                    .classed('w-td4 pr-8', true);
 
-                row1.append("td")
+                row1.append('td')
                     .text(function (d) { 
                         return d.properties.samplesize; 
                     })
+                    .classed('w-td5', true);
 
-                row1.append("td")
+                row1.append('td')
                     .text(function (d) { 
                         return d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
-                        ; 
                     })
+                    .classed('w-td6', true);
 
-                row1.append("td")
+                row1.append('td')
                     .text(function (d) { 
                         return d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', '); 
                     })
 
+                let row2 = enter_selection.insert('tr')
+                    .classed('collapse bg-tan', true)
+                    .attr('id', function (d) { 
+                        return 'accordion_menu_' + d.properties.pk; 
+                    })
+                    .attr('data-collapse-target', 'true');
 
-                let row2 = enter_selection.insert("tr")
-                    .classed("collapse", true)
-                    .classed("list-more-information", true)
-    		        .attr("id", function (d) { 
-                        return "accordion_menu_" + d.properties.pk; 
-                    });
+                let card_div = row2.append('td')
+                    .attr('colspan', '9')
+                    .append('div')
+                    .classed('flex', true)
 
-                let card_div = row2.append("td")
-                    .attr("colspan", "9")
-                    .append("div")
-                    .classed("container-fluid", true)
-                    .append("div")
-                    .classed("row", true);
-
-                let textBlock = card_div.append("div")
-                    .classed("col-4", true)
-                    .append("p")
+                card_div.append('div')
+                    .classed('w-listcard pl-13.75 pr-8', true)
+                    .append('p')
                     .html(function (d) { 
                         const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
                         const diagnosticcriteria = d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
@@ -120,342 +199,92 @@ export function ttInitList() {
                         const diagnostictools = d.properties.diagnostictools.replace(/ *([|]) */g, '$1').split('|').join(', ');
 
                         let links = [];
-                        if (d.properties.link1title && d.properties.link1url) {
-                            links.push('<a href="'+ d.properties.link1url +'" >'+ d.properties.link1title +'</a>') 
-                        }
-                        if (d.properties.link2title && d.properties.link2url) {
-                            links.push('<a href="'+ d.properties.link2url +'" >'+ d.properties.link2title +'</a>') 
-                        }
-                        if (d.properties.link3title && d.properties.link3url) {
-                            links.push('<a href="'+ d.properties.link3url +'" >'+ d.properties.link3title +'</a>') 
-                        }
-                        if (d.properties.link4title && d.properties.link4url) {
-                            links.push('<a href="'+ d.properties.link4url +'" >'+ d.properties.link4title +'</a>') 
+                        const publications = [
+                            { title: d.properties.link1title, url: d.properties.link1url },
+                            { title: d.properties.link2title, url: d.properties.link2url },
+                            { title: d.properties.link3title, url: d.properties.link3url },
+                            { title: d.properties.link4title, url: d.properties.link4url }
+                        ];
+
+                        for (let i = 0; i < publications.length; i++) {
+                            const publication = publications[i];
+                            if (publication.title && publication.url) {
+                                let item;
+                                if (isValidURL(publication.url)) {
+                                    // use an anchor tag if we have a valid URL
+                                    item = "<a href=\"" + publication.url + "\" target=\"_blank\">" + publication.title + "</a>";
+                                } else {
+                                    // use a span if we don't have a valid URL
+                                    item = "<span>" + publication.title + "</span>";
+                                }
+                                links.push(item);
+                            }
                         }
 
-                        let links_string = links.join('<br />');
-                        links_string = links_string.replace('>Spectrum', '><em>Spectrum</em>');
+                        let links_string = '';
+                        if (links.length > 0) {
+                            links_string = links
+                                .map(link => `<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25">${link}</div>`)
+                                .join('');
+                            links_string = links_string.replace('>Spectrum', '><em>Spectrum</em>');
+                        }
 
-                        return "<b>Age (years):</b> " + age + "<br />" +
-                        "<b>Individuals with autism:</b> " + d.properties.individualswithautism + "<br />" +
-                        "<b>Diagnostic criteria:</b> " + diagnosticcriteria + "<br />" +
-                        "<b>Diagnostic tools:</b> " + diagnostictools + "<br />" +
-                        "<b>Percent w/ average IQ:</b> " + d.properties.percentwaverageiq + "<br />" +
-                        "<b>Sex ratio (M:F):</b> " + d.properties.sexratiomf + "<br />" +
-                        "<b>Year(s) studied:</b> " + d.properties.yearsstudied + "<br />" +
-                        "<b>Category:</b> " + d.properties.categoryadpddorasd + "<br />" +
+                        return '<div class="text-4 text-med-navy tracking-2 leading-6.25"><strong>Age (Years):</strong> ' + age + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Individuals with autism:</strong> ' + d.properties.individualswithautism + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Diagnostic criteria:</strong> ' + diagnosticcriteria + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Diagnostic tools:</strong> ' + diagnostictools + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Percent w/average IQ:</strong> ' + d.properties.percentwaverageiq + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Sex ratio (M:F):</strong> ' + d.properties.sexratiomf + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Year(s) studied:</strong> ' + d.properties.yearsstudied + '</div>' +
+                        '<div class="mt-3 text-4 text-med-navy tracking-2 leading-6.25"><strong>Category:</strong> ' + d.properties.categoryadpddorasd + '</div>' +
                         links_string;
                     });
 
-                let mapBlock = card_div.append("div")
-                    .classed("col-4", true);
+                // add placeholder that we will add map to when expanded
+                card_div.append('div')
+                    .attr('id', function(d) { return 'map_placeholder_' + d.properties.pk; });
 
-                let mapSVG = mapBlock.append("svg")
-                    .style("width", "100%")
-                    .style("height", "100%")
-                    .attr("id", function (d) { 
-                        return "map_svg_" + d.properties.pk;
-                    });
-
-                thisMapSVG = mapSVG;
-
-                let mapG = mapSVG.append("g")
-                    .classed("countries", true)
-                    .attr("id", function (d) { 
-                        return "map_svg_g_" + d.properties.pk;
-                    });
-
-                mapG.selectAll("path")
-                    .data(topojson.feature(world, world.objects.countries).features.filter(function(d){
-                        if (d.id !== "010") {
-                            return d;
-                        }
-                    }))
-                    .enter().append("path")
-                    .attr("d", path);
-
-                mapG.append("path")
-                    .datum(topojson.mesh(world, world.objects.countries, (a, b) => a !== b))
-                    .classed("country-borders", true)
-                    .attr("d", path);
-
-                // add this study to the map
-                const studiesG = mapG.append("g")
-                    .attr("id", "studies");
-
-                const mapSelection = studiesG.append("circle")
-                    .attr("cx", function (d) { 
-                        return projection(d.geometry.coordinates)[0]; 
-                    })
-                    .attr("cy", function (d) { 
-                        return projection(d.geometry.coordinates)[1]; 
-                    })
-                    .attr("r", 5)
-                    .style("fill", pointColor)
-                    .style("fill-opacity", "1")
-                    .style("stroke", "#fff")
-                    .style("stroke-width", "0")
-                    .classed("map-circles", true)
-                    .attr("id", function(d){
-                        return "map_dot_" + d.properties.pk
-                    });
-
-                thisMapSVG.each(function(d) {
-                    let zoom = d3.zoom()
-                        .on("zoom", function() {
-                            d3.select("#map_svg_g_" + d.properties.pk).attr("transform", d3.event.transform);
-                        });
-                    d3.select("#map_svg_" + d.properties.pk)
-                        .call(zoom.scaleTo, 2)
-                        .call(zoom.translateTo, projection(d.geometry.coordinates)[0] - (mapWidth/4), projection(d.geometry.coordinates)[1] - (mapWidth/6));
-                })
-
-                // add confidence interval graphic
-                let ciBlock = card_div.append("div")
-                    .classed("col-4", true); 
-                 
-                ciBlock.append("p")
-                    .style("text-align", "center")
-                    .text("95% Confidence interval");
-                    
-                let ciSVG = ciBlock.append("svg")
-                    .style("width", function (d) {
-                        if (d.properties.confidenceinterval.includes('Unavailable')) {
-                            return "0"
-                        } else {
-                            return "100%"
-                        }
-                    })
-                    .style("height", function (d) {
-                        if (d.properties.confidenceinterval.includes('Unavailable')) {
-                            return "0"
-                        } else {
-                            return "140"
-                        }
-                    });
-
-                let ciOuterLineG = ciSVG.append("g")
-                    .classed("ci-lines", true);
-                
-                ciOuterLineG.append("line")
-                    .attr("x1", mapWidth/2)
-                    .attr("x2", function (d) {
-                        let biggest = 25;
-                        if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
-                            biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                            if (biggest <= 25) {
-                                biggest = 25;
-                            } else if (biggest >= 70) {
-                                biggest = 70;
-                            }
-                        }
-                        return (mapWidth/2) + biggest + 30; 
-                    })
-                    .attr("y1", 50)
-                    .attr("y2", 50)
-                    .attr("stroke", "#666")
-                    .attr("stroke-width", function (d) {
-                        if (isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
-                            return 0;
-                        } else {
-                            return 1;
-                        }
-                    });
-
-                ciOuterLineG.append("text")
-                    .attr("x", function (d) {
-                        let biggest = 25;
-                        if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
-                            biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                            if (biggest <= 25) {
-                                biggest = 25;
-                            } else if (biggest >= 70) {
-                                biggest = 70;
-                            } 
-                        }
-                        return (mapWidth/2) + biggest + 35; 
-                    })
-                    .attr("y", 55)
-                    .text(function (d) {
-                        let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                        if (isNaN(biggest)) {
-                            return '';
-                        } else {
-                            return biggest;
-                        }
-                    })
-
-                let ciOuterG = ciSVG.append("g")
-                    .classed("ci-dots", true);
-                    
-                let bigDot = ciOuterG.append("circle")
-                    .attr("cx", mapWidth/2)
-                    .attr("cy", 70)
-                    .attr("r", function (d) {
-                        let biggest = 25;
-                        if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
-                            biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                            if (biggest <= 25) {
-                                biggest = 25;
-                            } else if (biggest >= 70) {
-                                biggest = 70;
-                            }
-                        }
-                        return biggest; 
-                    })
-                    .attr("fill", "#93e1f5")
-                    .attr("fill-opacity", 1)
-                    .style("stroke", "#fff")
-                    .style("stroke-width", "0");
-
-                let medDot = ciOuterG.append("circle")
-                    .attr("cx", mapWidth/2)
-                    .attr("cy", 70)
-                    .attr("r", function (d) {
-                        let halfway = 10;
-                        if (!isNaN(parseFloat(d.properties.prevalenceper10000))) {
-                            halfway = parseFloat(d.properties.prevalenceper10000);
-                            if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))){
-                                let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                                if (biggest <= 25) {
-                                    halfway = halfway + (25 - biggest);
-                                } else if (biggest >= 70) {
-                                    halfway = halfway - (biggest - 70);
-                                }
-                            }
-                            if (halfway < 10) {
-                                halfway = 10;
-                            }
-                        }
-                        return halfway;
-                    })
-                    .attr("fill", "#00bcf0")
-                    .attr("fill-opacity", 1)
-                    .style("stroke", "#fff")
-                    .style("stroke-width", 1);
-
-                let ciInnerLineG = ciSVG.append("g")
-                    .classed("ci-lines", true);
-                
-                ciInnerLineG.append("line")
-                    .attr("x1", mapWidth/2)
-                    .attr("x2", function (d) {
-                        let biggest = 25;
-                        if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
-                            biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                            if (biggest <= 25) {
-                                biggest = 25;
-                            } else if (biggest >= 70) {
-                                biggest = 70;
-                            }
-                        }
-                        return (mapWidth/2) + biggest + 20; 
-                    })
-                    .attr("y1", 70)
-                    .attr("y2", 70)
-                    .attr("stroke", "#666")
-                    .attr("stroke-width", function (d) {
-                        if (isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
-                            return 0;
-                        } else {
-                            return 1;
-                        }
-                    });
-
-                ciInnerLineG.append("text")
-                    .attr("x", function (d) {
-                        let biggest = 25;
-                        if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
-                            biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                            if (biggest <= 25) {
-                                biggest = 25;
-                            } else if (biggest >= 70) {
-                                biggest = 70;
-                            }
-                        }
-                        return (mapWidth/2) + biggest + 25; 
-                    })
-                    .attr("y", 75)
-                    .text(function (d) {
-                        let smallest = parseFloat(d.properties.confidenceinterval.split("-")[0]);
-                        if (isNaN(smallest)) {
-                            return '';
-                        } else {
-                            return smallest;
-                        }
-                    })                
-
-                let ciInnerG = ciSVG.append("g")
-                    .classed("ci-dots", true);
-
-                let smallDot = ciInnerG.append("circle")
-                    .attr("cx", mapWidth/2)
-                    .attr("cy", 70)
-                    .attr("r", function (d) {
-                        let smallest = 5;
-                        if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[0]))) {
-                            smallest = parseFloat(d.properties.confidenceinterval.split("-")[0]);
-                            if (!isNaN(parseFloat(d.properties.confidenceinterval.split("-")[1]))) {
-                                let biggest = parseFloat(d.properties.confidenceinterval.split("-")[1]);
-                                if (biggest <= 25) {
-                                    smallest = smallest + (25 - biggest);
-                                } else if (biggest >= 70) {
-                                    smallest = smallest - (biggest - 70);
-                                }
-                                if (smallest < 5) {
-                                    smallest = 5;
-                                }
-                            }
-                        }
-                        return smallest; 
-                    })
-                    .attr("fill", "#009bcc")
-                    .attr("fill-opacity", 1)
-                    .style("stroke", "#fff")
-                    .style("stroke-width", "0");
-
-                d3.select('#studies_tbody').selectAll('tr').sort(function(a, b){ 
+                d3.select('#studies-table_tbody').selectAll('tr').sort(function(a, b){ 
                     return a.properties.pk - b.properties.pk; 
                 });
 
-                $('.collapse').collapse({
+                $('[data-collapse-target]').collapse({
                     toggle: false
                 });
-     
+
+                $('[data-collapse-target]').on('shown.bs.collapse', function() {
+                    var collapseId = $(this).attr('id'); // e.g., "accordion_menu_123"
+                    var pk = collapseId.replace('accordion_menu_', '');
+                    var placeholder = $('#map_placeholder_' + pk);
+                    if (placeholder.children().length === 0) {
+                        var studyData = app.list.studiesByPk[pk];
+                        app.list.renderMiniMap(studyData, 'map_placeholder_' + pk);
+                    }
+                });
             });
         }
         
         // point color function
         function pointColor(feature) {
-            if (feature.properties.recommended == "yes" || feature.properties.recommended == "Yes") {
-                return "#03C0FF";
+            return '#D14D57';
+            /*
+            this functionality is no longer used, commenting out for now and to be removed later if not needed
+            if (feature.properties.recommended == 'yes' || feature.properties.recommended == 'Yes') {
+                // standard darker red
+                return '#910E1C';
             } else {
-                return "#007095";
+                // light red
+                return '#D14D57';
             }
+            */
         }
 
         // listener to toggle arrows on click
         $(document).on('click', '.study_row', function(){
-            const chevron_icon = $(this).find('.fas');
-            if (chevron_icon.hasClass('fa-chevron-down')) {
-                chevron_icon.removeClass('fa-chevron-down');
-                chevron_icon.addClass('fa-chevron-up');
-            } else {
-                chevron_icon.removeClass('fa-chevron-up');
-                chevron_icon.addClass('fa-chevron-down');
-            }
+            $(this).find('.chevron-down').toggleClass('open');
         });
 
-    // initialize
-    app.list.loadWorldMap();
-
-    if (timeline_type == "studied") {
-        $("#earliest-label").text("Earliest year studied");
-        $("#latest-label").text("Latest year studied");
-    } else {
-        $("#earliest-label").text("Earliest publication date");
-        $("#latest-label").text("Latest publication date");
-    }
-
+        // initialize
+        app.list.loadWorldMap();
     });
 }

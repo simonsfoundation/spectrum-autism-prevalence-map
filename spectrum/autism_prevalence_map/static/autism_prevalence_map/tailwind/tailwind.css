@@ -20,7 +20,7 @@
     }
 
     footer section a {
-        @apply no-underline text-light-navy-2 hover:text-light-red;
+        @apply no-underline text-light-navy-2 hover:text-med-red;
     }
 }
 
@@ -418,13 +418,13 @@
         @apply -bottom-0.25 rotate-180;
     }
     .tooltip .arrow:before {
-        @apply absolute content-empty bottom-0 z-2 border-solid border-t-0 border-x-6.5 border-b-6.5 border-transparent border-b-light-gray;
+        @apply absolute content-empty bottom-0 z-2 border-solid border-t-0 border-x-1.5 border-b-1.5 border-transparent border-b-light-gray;
     }
     .tooltip .arrow:after {
-        @apply absolute content-empty bottom-[0.5px] left-[-0.5px] w-arrow2 h-arrow2 z-1 border-solid border-t-0 border-x-6.5 border-b-6.5 border-transparent border-b-med-gray;
+        @apply absolute content-empty bottom-0.125 -left-0.125 w-arrow2 h-arrow2 z-1 border-solid border-t-0 border-x-1.5 border-b-1.5 border-transparent border-b-med-gray;
     }
     .tooltip-inner {
-        @apply py-3 px-6.5 bg-light-gray border-0.5 border-light-gray2 rounded-sm font-serif text-2xs2 text-dark-gray2 text-center max-w-tooltip shadow-tooltip;
+        @apply py-3 px-1.5 bg-light-gray border-0.125 border-light-gray2 rounded-sm font-serif text-2xs2 text-dark-gray2 text-center max-w-tooltip shadow-tooltip;
     }
     .tooltip.help {
         @apply -ml-5 -mt-23;
@@ -457,7 +457,7 @@
     }
     .timeline-switch > [type="checkbox"]:checked + label:after,
     .timeline-switch > [type="checkbox"]:not(:checked) + label:after {
-        @apply content-empty absolute -top-0.5 right-2.25 w-switchout h-switchout rounded-lg bg-light-navy-2 border-0.5 border-med-navy;
+        @apply content-empty absolute -top-0.5 right-2.25 w-switchout h-switchout rounded-lg bg-light-navy-2 border-0.125 border-med-navy;
     }
     .timeline-switch > [type="checkbox"]:checked,
     .timeline-switch > [type="checkbox"]:not(:checked) {
@@ -467,12 +467,38 @@
         @apply overflow-visible;
     }
     .brush .selection {
-        @apply stroke-light-red fill-light-gray4 stroke-dash-5;
+        @apply stroke-med-red fill-light-gray4 stroke-dash-5;
     }
     .timeline-axis {
         @apply text-white text-1xs2;
     }
     .timeline-circles {
        @apply translate-y-20;
+    }
+    #studies-table th:not(.w-toggle) {
+        @apply align-bottom pt-8.25 pb-4 text-left text-3.5 text-tan font-bold tracking-extra-wide leading-4.25;
+    }
+    #studies-table td,
+    #studies-table .w-toggle {
+        @apply py-4 align-top text-4 text-med-navy tracking-normal-lg;
+    }
+    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) {
+        @apply bg-white2 border-med-navy;
+    }
+    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) .chevron-down {
+        @apply rotate-180;
+    }
+    #studies-table_tbody tr.show {
+        @apply border-light-gray2 border-b-0.3125;
+    }
+    #studies-table_tbody tr.show td,
+    #studies-table_tbody tr.show .w-toggle {
+        @apply pt-6 pb-10.5;
+    }
+    #studies-table .show {
+        @apply visible;
+    }
+    #studies-table .show a {
+        @apply no-underline;
     }
 }
