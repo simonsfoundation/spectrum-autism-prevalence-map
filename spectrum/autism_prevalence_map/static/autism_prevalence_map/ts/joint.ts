@@ -95,6 +95,8 @@ export function ttInitJoint() {
             } else {
                 app.list.addRows();
             }
+
+            app.fetchAndUpdateMean();
         }
 
         d3.json('/studies-api/').then(function(data) {
@@ -555,15 +557,6 @@ export function ttInitJoint() {
         // calculate the citation count
         getCitationCount(citationURL);
 
-        // function to udpate the mean for both map and list
-        app.fetchAndUpdateMean = function() {
-            d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
-                if (data && data.mean) {
-                    $('[data-mean]').attr('data-mean', data.mean);
-                }
-            });
-        };
-
         // show the calculate mean popup and handle the copy to clipboard when the calculate mean button is clicked, show the note when hovered
         var $meanButton = $('[data-mean]');
         var $meanPopup = $('#mean-popup');
@@ -578,6 +571,23 @@ export function ttInitJoint() {
         var popupState = {
             clickTriggered: false,
             hoverActive: false
+        };
+
+        // function to udpate the mean for both map and list
+        app.fetchAndUpdateMean = function() {
+            d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
+                if (data && data.mean) {
+                    var meanValue = data.mean;
+            
+                    // update button attribute
+                    $('[data-mean]').attr('data-mean', meanValue);
+                    
+                    // update static box if it is visible
+                    if (!$('#mean-static').hasClass('hidden')) {
+                        $staticText.text(staticTextTemplate.replace('{value}', meanValue || ''));
+                    }
+                }
+            });
         };
 
         $meanButton.on('click', function () {
