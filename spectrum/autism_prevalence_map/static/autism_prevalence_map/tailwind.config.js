@@ -118,6 +118,7 @@ module.exports = {
             letterSpacing: {
                 '1': '0.01em', // 1%
                 '2': '0.02em', // 2%
+                '4': '0.04em', // 4%
                 'normal-md': '0.016em', // 0.26px
                 'normal-lg': '0.02em', // 0.32px
                 'widest-sm': '0.14em', // 1.92px
@@ -179,6 +180,7 @@ module.exports = {
                 'filterwide': '15.375rem', // 246px
                 'info': '18rem', // 288px
                 'mean-popup': '23.6875rem', //379px
+                'mean-popup-note': '26.5rem', //424px
                 'buttons': '25rem', // 400px
                 'listcard': '25.5rem', // 408px
                 'map': '51.625rem', // 826px
@@ -271,6 +273,7 @@ module.exports = {
                 'light-navy-3': '#6c8291',
                 'light-navy-2': '#DFE8EC',
                 'tan': '#FEF9EE',
+                'med-tan': '#F4EEDF',
                 'dark-tan': '#CAC6BC',
                 'dark-gray': '#2D2D2D',
                 'dark-gray2': '#585248',

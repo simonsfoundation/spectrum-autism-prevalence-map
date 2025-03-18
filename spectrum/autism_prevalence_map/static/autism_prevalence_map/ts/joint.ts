@@ -555,19 +555,48 @@ export function ttInitJoint() {
         // calculate the citation count
         getCitationCount(citationURL);
 
-        // show the calculate mean popup and handle the copy to clipboard when the calculate mean button is clicked
+        // function to udpate the mean for both map and list
+        app.fetchAndUpdateMean = function() {
+            d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
+                if (data && data.mean) {
+                    $('[data-mean]').attr('data-mean', data.mean);
+                }
+            });
+        };
+
+        // show the calculate mean popup and handle the copy to clipboard when the calculate mean button is clicked, show the note when hovered
         var $meanButton = $('[data-mean]');
         var $meanPopup = $('#mean-popup');
         var $popupText = $meanPopup.find('[data-id="mean-popup-text"]');
+        var $meanStatic = $('#mean-static');
+        var $staticText = $meanStatic.find('[data-id="mean-static-text"]');
+        var $dataLine = $('[data-id="mean-data-line"]');
+        var $noteLine = $('[data-id="mean-note-line"]');
         var popupTextTemplate = 'PREVALENCE MEAN ({value}) IS COPIED TO CLIPBOARD';
+        var staticTextTemplate = 'MEAN = {value}';
         var meanHideTimeout;
+        var popupState = {
+            clickTriggered: false,
+            hoverActive: false
+        };
 
         $meanButton.on('click', function () {
             var meanValue = $meanButton.attr('data-mean');
             $popupText.text(popupTextTemplate.replace('{value}', meanValue || ''));
+            $staticText.text(staticTextTemplate.replace('{value}', meanValue || ''));
 
-            // show the popup
+            popupState.clickTriggered = true;
+
+            // show the popup and the static box
             $meanPopup.removeClass('hidden').attr('aria-hidden', 'false');
+            $meanStatic.removeClass('hidden').attr('aria-hidden', 'false');
+
+            // make sure we are using the correct width
+            $meanPopup.removeClass('w-mean-popup-note');
+
+            // show only the data line on click
+            $dataLine.removeClass('hidden');
+            $noteLine.addClass('hidden');
 
             // copy value to clipboard
             navigator.clipboard.writeText(meanValue);
@@ -577,8 +606,42 @@ export function ttInitJoint() {
 
             meanHideTimeout = setTimeout(function () {
                 $meanPopup.addClass('hidden').attr('aria-hidden', 'true');
-            }, 5000);
+                popupState.clickTriggered = false;
+            }, 3000);
         });
+
+        $meanButton.on('mouseenter', function() {
+            popupState.hoverActive = true;
+            
+            $meanPopup.removeClass('hidden').attr('aria-hidden', 'false');
+            
+            // on hover we show the note, not the data line
+            $meanPopup.addClass('w-mean-popup-note');
+            $dataLine.addClass('hidden');
+            $noteLine.removeClass('hidden');
+            
+            if (!popupState.clickTriggered) {
+                clearTimeout(meanHideTimeout);
+            }
+        });
+
+        $meanButton.on('mouseleave', function() {
+            popupState.hoverActive = false;
+
+            $meanPopup.removeClass('w-mean-popup-note');
+            
+            // if clicked already show the data line, hide the note line, let timeout continue from the click
+            if (popupState.clickTriggered) {
+                $dataLine.removeClass('hidden');
+                $noteLine.addClass('hidden');
+            } else {
+                // hide if hover only
+                $meanPopup.addClass('hidden').attr('aria-hidden', 'true');
+            }
+        });
+
+        // initial fetch of mean value
+        app.fetchAndUpdateMean();
 
         // for the search field, handle the 'X' functionality and clearing keyword from URL
         const searchInput = document.querySelector('[data-id="keyword-filter-input"]') as HTMLInputElement;
