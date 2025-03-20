@@ -249,13 +249,19 @@ export function ttInitList() {
                 });
 
                 $('[data-collapse-target]').each(function () {
-                    $(this).addClass('hidden'); // Ensure all are hidden initially
+                    $(this).addClass('hidden');
                 });
 
                 $(document).on('click', '[data-toggle="collapse"]', function (e) {
+                    // prevent event from firing twice
+                    if (e.handled) return;
+                    e.handled = true;
                     e.preventDefault();
+
                     const targetId = $(this).attr('href');
-                    $(targetId).toggleClass('hidden');
+                    const target = $(targetId);
+
+                    target.toggleClass('hidden');
                 });
 
                 $('[data-collapse-target]').on('shown.bs.collapse', function() {
