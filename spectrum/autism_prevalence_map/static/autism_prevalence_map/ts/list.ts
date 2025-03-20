@@ -124,7 +124,7 @@ export function ttInitList() {
                     .attr('aria-controls', function (d) { 
                         return '#accordion_menu_' + d.properties.pk;
                     })
-                    .classed('border-light-gray2 border-b-0.3125', true);
+                    .classed('collapsed border-light-gray2 border-b-0.3125', true);
 
                 const toggletd = row1.append('th')
                     .attr('scope', 'row')
@@ -248,8 +248,14 @@ export function ttInitList() {
                     return a.properties.pk - b.properties.pk; 
                 });
 
-                $('[data-collapse-target]').collapse({
-                    toggle: false
+                $('[data-collapse-target]').each(function () {
+                    $(this).addClass('hidden'); // Ensure all are hidden initially
+                });
+
+                $(document).on('click', '[data-toggle="collapse"]', function (e) {
+                    e.preventDefault();
+                    const targetId = $(this).attr('href');
+                    $(targetId).toggleClass('hidden');
                 });
 
                 $('[data-collapse-target]').on('shown.bs.collapse', function() {
