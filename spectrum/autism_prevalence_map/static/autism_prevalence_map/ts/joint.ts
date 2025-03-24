@@ -95,7 +95,7 @@ export function ttInitJoint() {
             } else {
                 app.list.addRows();
             }
-
+            // update the mean
             app.fetchAndUpdateMean();
         }
 
@@ -187,6 +187,9 @@ export function ttInitJoint() {
             } else {
                 $('#max_year').val($('#max_year option:last').val());
             }
+
+            // initial fetch of mean value
+            app.meanValue = data.mean;
         });
 
         function onlyUnique(value, index, self) {
@@ -573,21 +576,17 @@ export function ttInitJoint() {
             hoverActive: false
         };
 
-        // function to udpate the mean for both map and list
+        // function to update the mean for both map and list
         app.fetchAndUpdateMean = function() {
-            d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
-                if (data && data.mean) {
-                    var meanValue = data.mean;
-            
-                    // update button attribute
-                    $('[data-mean]').attr('data-mean', meanValue);
-                    
-                    // update static box if it is visible
-                    if (!$('#mean-static').hasClass('hidden')) {
-                        $staticText.text(staticTextTemplate.replace('{value}', meanValue || ''));
-                    }
+            if (app.meanValue) {
+                // update button attribute
+                $('[data-mean]').attr('data-mean', app.meanValue);
+                
+                // update static box if it is visible
+                if (!$('#mean-static').hasClass('hidden')) {
+                    $staticText.text(staticTextTemplate.replace('{value}', app.meanValue || ''));
                 }
-            });
+            }
         };
 
         $meanButton.on('click', function () {
@@ -649,9 +648,6 @@ export function ttInitJoint() {
                 $meanPopup.addClass('hidden').attr('aria-hidden', 'true');
             }
         });
-
-        // initial fetch of mean value
-        app.fetchAndUpdateMean();
 
         // for the search field, handle the 'X' functionality and clearing keyword from URL
         const searchInput = document.querySelector('[data-id="keyword-filter-input"]') as HTMLInputElement;

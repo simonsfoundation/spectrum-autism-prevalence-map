@@ -159,7 +159,10 @@ export function ttInitMap() {
             app.updateURL();
             d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
                 studies = data;
+                app.meanValue = data.mean;
                 app.map.updateTimeline();
+                app.fetchAndUpdateMean();
+                return data;
             });
         }
 
