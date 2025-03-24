@@ -97,6 +97,7 @@ export function ttInitList() {
             $('#studies-table tbody').remove();     
             d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
                 studies = data;
+                app.meanValue = data.mean;
 
                 // update the results count
                 document.getElementById('results-count').textContent = studies.features.length;
@@ -273,6 +274,8 @@ export function ttInitList() {
                         app.list.renderMiniMap(studyData, 'map_placeholder_' + pk);
                     }
                 });
+
+                app.fetchAndUpdateMean();
             });
         }
         
