@@ -273,14 +273,22 @@ export function ttInitJoint() {
             let newMin = parseFloat($(this).val());
             if (isNaN(newMin)) newMin = 0;
 
-            // Get current slider max
+            // get current slider max
             let currentMax = $('#prevalence-slider').slider('values', 1);
             if (newMin > currentMax) newMin = currentMax;
 
-            // Update the slider’s min handle
-            $('#prevalence-slider').slider('values', 0, newMin);
-
             min_prevalenceper10000 = newMin.toString();
+            
+            // temporarily disable the slider's change event
+            var originalChangeHandler = $('#prevalence-slider').slider("option", "change");
+            $('#prevalence-slider').slider("option", "change", null);
+            
+            // update the slider value without triggering a change event
+            $('#prevalence-slider').slider('values', 0, newMin);
+            
+            // restore the original event
+            $('#prevalence-slider').slider("option", "change", originalChangeHandler);
+            
             app.runUpdate();
         });
 
@@ -288,14 +296,22 @@ export function ttInitJoint() {
             let newMax = parseFloat($(this).val());
             if (isNaN(newMax)) newMax = 500; // fallback
 
-            // Get current slider min
+            // get current slider min
             let currentMin = $('#prevalence-slider').slider('values', 0);
             if (newMax < currentMin) newMax = currentMin;
 
-            // Update the slider’s max handle
-            $('#prevalence-slider').slider('values', 1, newMax);
-
             max_prevalenceper10000 = newMax.toString();
+            
+            // temporarily disable the slider's change event
+            var originalChangeHandler = $('#prevalence-slider').slider("option", "change");
+            $('#prevalence-slider').slider("option", "change", null);
+            
+            // update the slider value without triggering a change event
+            $('#prevalence-slider').slider('values', 1, newMax);
+            
+            // restore the original event
+            $('#prevalence-slider').slider("option", "change", originalChangeHandler);
+            
             app.runUpdate();
         });
 
