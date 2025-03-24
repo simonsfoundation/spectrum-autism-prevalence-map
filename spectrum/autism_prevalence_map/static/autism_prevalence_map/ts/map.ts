@@ -162,7 +162,6 @@ export function ttInitMap() {
                 app.meanValue = data.mean;
                 app.map.updateTimeline();
                 app.fetchAndUpdateMean();
-                return data;
             });
         }
 

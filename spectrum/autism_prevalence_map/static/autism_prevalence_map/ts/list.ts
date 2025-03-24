@@ -264,7 +264,6 @@ export function ttInitList() {
                 });
 
                 app.fetchAndUpdateMean();
-                return data;
             });
         }
         
