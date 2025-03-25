@@ -176,6 +176,10 @@ export function ttInitMap() {
         app.map.addTimeline = function() {
             timeMin = d3.min(studies.features, function(d) { return new Date(d.properties.yearsstudied_number_min); });
             timeMax = d3.max(studies.features, function(d) { return new Date(d.properties.yearpublished); });
+
+            // extend the timeline to the end of the year of the last available data to allow that year to be selected
+            timeMax = new Date(timeMax.getFullYear() + 1, 11, 31, 23, 59, 59);
+
             // add the x brush
             brush = d3.brushX()
                 .extent([[0, 0], [timelineWidth, timelineHeight-33]])
