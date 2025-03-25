@@ -2,6 +2,8 @@ import { app } from './app.js';
 
 export function ttInitJoint() {
     $(document).ready(function () {
+        app.meanBoxVisible = sessionStorage.getItem('meanBoxVisible') === 'true';
+
         $(document).on('click', '[data-function="cookie-banner-set-consent"]', function (e) {
             e.preventDefault();
             let cookieValue = $(this).data('cookie-value');
@@ -273,14 +275,22 @@ export function ttInitJoint() {
             let newMin = parseFloat($(this).val());
             if (isNaN(newMin)) newMin = 0;
 
-            // Get current slider max
+            // get current slider max
             let currentMax = $('#prevalence-slider').slider('values', 1);
             if (newMin > currentMax) newMin = currentMax;
 
-            // Update the slider’s min handle
-            $('#prevalence-slider').slider('values', 0, newMin);
-
             min_prevalenceper10000 = newMin.toString();
+            
+            // temporarily disable the slider's change event
+            var originalChangeHandler = $('#prevalence-slider').slider("option", "change");
+            $('#prevalence-slider').slider("option", "change", null);
+            
+            // update the slider value without triggering a change event
+            $('#prevalence-slider').slider('values', 0, newMin);
+            
+            // restore the original event
+            $('#prevalence-slider').slider("option", "change", originalChangeHandler);
+            
             app.runUpdate();
         });
 
@@ -288,14 +298,22 @@ export function ttInitJoint() {
             let newMax = parseFloat($(this).val());
             if (isNaN(newMax)) newMax = 500; // fallback
 
-            // Get current slider min
+            // get current slider min
             let currentMin = $('#prevalence-slider').slider('values', 0);
             if (newMax < currentMin) newMax = currentMin;
 
-            // Update the slider’s max handle
-            $('#prevalence-slider').slider('values', 1, newMax);
-
             max_prevalenceper10000 = newMax.toString();
+            
+            // temporarily disable the slider's change event
+            var originalChangeHandler = $('#prevalence-slider').slider("option", "change");
+            $('#prevalence-slider').slider("option", "change", null);
+            
+            // update the slider value without triggering a change event
+            $('#prevalence-slider').slider('values', 1, newMax);
+            
+            // restore the original event
+            $('#prevalence-slider').slider("option", "change", originalChangeHandler);
+            
             app.runUpdate();
         });
 
@@ -414,6 +432,11 @@ export function ttInitJoint() {
             // remove the search input close X
              $('[data-id="keyword-filter-x-btn"]').addClass('hidden');
           
+            // hide the mean box
+            app.meanBoxVisible = false;
+            sessionStorage.removeItem('meanBoxVisible');
+            $('#mean-static').addClass('hidden').attr('aria-hidden', 'true');
+
             // run update
             app.runUpdate();
         });
@@ -583,8 +606,12 @@ export function ttInitJoint() {
                 $('[data-mean]').attr('data-mean', app.meanValue);
                 
                 // update static box if it is visible
-                if (!$('#mean-static').hasClass('hidden')) {
-                    $staticText.text(staticTextTemplate.replace('{value}', app.meanValue || ''));
+                if (app.meanBoxVisible) {
+                    var $staticText = $('#mean-static').find('[data-id="mean-static-text"]');
+                    if ($staticText.length) {
+                        $staticText.text('MEAN = ' + app.meanValue);
+                        $('#mean-static').removeClass('hidden').attr('aria-hidden', 'false');
+                    }
                 }
             }
         };
@@ -617,6 +644,10 @@ export function ttInitJoint() {
                 $meanPopup.addClass('hidden').attr('aria-hidden', 'true');
                 popupState.clickTriggered = false;
             }, 3000);
+
+            // set a flag for the mean box and store in session storage
+            app.meanBoxVisible = true;
+            sessionStorage.setItem('meanBoxVisible', 'true');
         });
 
         $meanButton.on('mouseenter', function() {
@@ -681,6 +712,11 @@ export function ttInitJoint() {
         } else {
             $('#earliest-label').text('Earliest year published');
             $('#latest-label').text('Latest year published');
+        }
+
+        // initialize mean box visibility
+        if (app.meanBoxVisible) {
+            app.fetchAndUpdateMean();
         }
     });
 }
