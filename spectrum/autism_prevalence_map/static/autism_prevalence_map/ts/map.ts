@@ -5,6 +5,8 @@ export function ttInitMap() {
         // app.map scope
         app.map = {};
 
+        app.map.expandedCluster = null;
+
         // globaly scope some variables for the map
         let studies, pinnedDot, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius, nodes, simulation;
 
@@ -17,261 +19,220 @@ export function ttInitMap() {
 
         let originalWidth, originalScale;
 
+        /*MEGADOT START*/
+
         app.map.createMegadots = function() {
-    // Local functions to handle expanding and collapsing
-    function expandCluster(clusterId) {
-        console.log("Expanding cluster:", clusterId);
-        
-        // Add this cluster to the expanded set
-        if (!app.map.expandedClusters) {
-            app.map.expandedClusters = new Set();
-        }
-        app.map.expandedClusters.add(clusterId);
-        
-        // Recreate megadots
-        setTimeout(function() {
-            app.map.createMegadots();
-        }, 10); // Small timeout to prevent stack overflow
-    }
-    
-    function collapseCluster(clusterId) {
-        console.log("Collapsing cluster:", clusterId);
-        
-        // Remove this cluster from the expanded set
-        if (app.map.expandedClusters) {
-            app.map.expandedClusters.delete(clusterId);
-        }
-        
-        // Recreate megadots
-        setTimeout(function() {
-            app.map.createMegadots();
-        }, 10); // Small timeout to prevent stack overflow
+    // Ensure expandedCluster is initialized
+    if (!('expandedCluster' in app.map)) {
+        app.map.expandedCluster = null;
     }
 
-    // Clear existing megadots
-    studiesG.selectAll('.megadot-container').remove();
-    
-    // Only create megadots at certain zoom levels
-    if (currentZoom > 3.5) {
-        // When highly zoomed in, ensure all individual dots are visible
-        studiesG.selectAll('circle.map-circles')
-            .style('visibility', 'visible')
-            .style('display', null)
-            .style('pointer-events', 'auto'); // Ensure dots are clickable
-        return;
-    }
-    
-    // If no nodes, exit
-    if (!nodes || nodes.length === 0) {
-        return;
+    // Nested functions for cluster interaction
+    function expandCluster(clusterId, event) {
+        if (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+        const cluster = app.map.clusters.find(c => c.id === clusterId);
+        if (cluster) {
+            app.map.expandedCluster = cluster;
+            app.map.createMegadots(); // Direct call for immediate update
+        }
     }
 
-    // Create clusters based on proximity
-    const clusters = [];
-    const clusterRadius = 20 / currentZoom; // Adjust based on zoom level
+    function collapseCluster(event) {
+        if (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+        app.map.expandedCluster = null;
+        app.map.createMegadots(); // Direct call for immediate update
+    }
+
+    // Early exit conditions
+    if (!nodes || nodes.length === 0) return;
+
+    // Remove the zoom threshold to ensure the outline remains visible at all zoom levels
+    // if (currentZoom > 6.0) {
+    //     studiesG.selectAll('.megadot-container').remove();
+    //     studiesG.selectAll('circle.map-circles')
+    //         .style('visibility', 'visible')
+    //         .style('display', null)
+    //         .style('pointer-events', 'auto');
+    //     return;
+    // }
+
+    // Reset visibility for all dots
+    studiesG.selectAll('circle.map-circles')
+        .style('visibility', 'hidden')
+        .style('display', 'none')
+        .style('pointer-events', 'none');
+
+    // Calculate clusters
+    const clusterRadius = 20 / currentZoom;
     const visitedNodes = new Set();
-    
-    // Check if we have previously expanded clusters stored
-    if (!app.map.expandedClusters) {
-        app.map.expandedClusters = new Set();
+    const clusters = [];
+
+    // Handle expanded cluster first
+    if (app.map.expandedCluster) {
+        app.map.expandedCluster.nodes.forEach(node => {
+            const pos = projection(node.geometry.coordinates);
+            node.x = pos[0];
+            node.y = pos[1];
+            visitedNodes.add(node.properties.pk);
+        });
+        app.map.expandedCluster.x = d3.mean(app.map.expandedCluster.nodes, n => n.x);
+        app.map.expandedCluster.y = d3.mean(app.map.expandedCluster.nodes, n => n.y);
+        clusters.push(app.map.expandedCluster);
     }
-    
-    // Process each node
-    nodes.forEach(function(node) {
+
+    // Cluster remaining nodes (excluding those in the expanded cluster)
+    nodes.forEach(node => {
         const nodeId = node.properties.pk;
-        
-        // Skip already clustered nodes
-        if (visitedNodes.has(nodeId)) {
-            return;
-        }
-        
-        // Find neighbors within clustering radius
+        if (visitedNodes.has(nodeId)) return;
+
         const cluster = {
             x: node.x,
             y: node.y,
             nodes: [node],
             count: 1,
-            id: nodeId.toString() // Initial cluster ID
+            id: nodeId.toString()
         };
-        
-        visitedNodes.add(nodeId);
-        
-        // Check other nodes for proximity
-        nodes.forEach(function(otherNode) {
+
+        nodes.forEach(otherNode => {
             const otherNodeId = otherNode.properties.pk;
-            
-            if (nodeId === otherNodeId || visitedNodes.has(otherNodeId)) {
-                return; // Skip self or already visited
-            }
-            
-            // Calculate distance between points
+            if (nodeId === otherNodeId || visitedNodes.has(otherNodeId)) return;
+
             const dx = node.x - otherNode.x;
             const dy = node.y - otherNode.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            // If close enough, add to cluster
+
             if (distance <= clusterRadius) {
                 cluster.nodes.push(otherNode);
                 cluster.count++;
-                cluster.id += "-" + otherNodeId; // Build cluster ID
-                visitedNodes.add(otherNodeId);
-                
-                // Update cluster center (average position)
+                cluster.id += "-" + otherNodeId;
                 cluster.x = (cluster.x * (cluster.count - 1) + otherNode.x) / cluster.count;
                 cluster.y = (cluster.y * (cluster.count - 1) + otherNode.y) / cluster.count;
+                visitedNodes.add(otherNodeId);
             }
         });
-        
-        // Only add as cluster if there's more than one node
-        if (cluster.count > 1) {
-            // Sort IDs for consistent identification
-            cluster.id = cluster.nodes
-                .map(n => n.properties.pk)
-                .sort((a, b) => a - b)
-                .join('-');
-                
-            // Check if this cluster was previously expanded
-            cluster.expanded = app.map.expandedClusters.has(cluster.id);
-            
+
+        if (cluster.count >= 5) {
+            cluster.id = cluster.nodes.map(n => n.properties.pk).sort((a, b) => a - b).join('-');
             clusters.push(cluster);
+            visitedNodes.add(nodeId);
+        } else {
+            cluster.nodes.forEach(n => visitedNodes.delete(n.properties.pk));
         }
     });
-    
-    // Store clusters in app.map for access in other functions
+
     app.map.clusters = clusters;
-    
-    // Create megadots for clusters with more than one node
-    clusters.forEach(function(cluster) {
-        // Calculate megadot size based on number of dots
+
+    // Remove old megadot containers
+    studiesG.selectAll('.megadot-container').remove();
+
+    // Render clusters
+    clusters.forEach(cluster => {
         const megadotRadius = Math.min(Math.max(Math.sqrt(cluster.count) * 4, 12), 30) / currentZoom;
-        
-        // Create a container group for each megadot
         const megadotContainer = studiesG.append('g')
             .attr('class', 'megadot-container')
             .attr('transform', `translate(${cluster.x},${cluster.y})`)
             .attr('data-cluster-id', cluster.id);
-        
-        // Handle based on expanded state
-        if (!cluster.expanded) {
-            // COLLAPSED STATE: Show the megadot with number
-            
-            // Hide individual dots in this cluster
-            cluster.nodes.forEach(function(node) {
+
+        if (app.map.expandedCluster && cluster.id === app.map.expandedCluster.id) {
+            // Calculate the radius to encompass all dots
+            const maxDistance = d3.max(cluster.nodes, node => {
+                const dx = node.x - cluster.x;
+                const dy = node.y - cluster.y;
+                return Math.sqrt(dx * dx + dy * dy);
+            });
+            const outlineRadius = (maxDistance || megadotRadius) + 10 / currentZoom; // Add 10 pixels of padding, scaled by zoom
+
+            const outline = megadotContainer.append('circle')
+                .attr('class', 'megadot-outline')
+                .attr('r', outlineRadius)
+                .style('fill', '#D14D57')
+                .style('fill-opacity', 0.15)
+                .style('stroke', '#910E1C')
+                .style('stroke-width', 1.5)
+                .style('stroke-dasharray', '4,4')
+                .style('pointer-events', 'stroke')
+                .style('cursor', 'pointer')
+                .lower();
+
+            cluster.nodes.forEach(node => {
+                const dot = d3.select('#map_dot_' + node.properties.pk);
+                dot.style('visibility', 'visible')
+                   .style('display', null)
+                   .style('pointer-events', 'all')
+                   .style('cursor', 'pointer')
+                   .raise()
+                   .on('click.megadot', function() {
+                       d3.event.stopPropagation();
+                   });
+            });
+
+            outline.on('click', function() {
+                const target = d3.event.target;
+                const targetClasses = target.getAttribute('class') || '';
+                if (targetClasses.includes('megadot-outline')) {
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
+                    collapseCluster(d3.event);
+                }
+            });
+        } else if (cluster.count >= 5) {
+            cluster.nodes.forEach(node => {
                 d3.select('#map_dot_' + node.properties.pk)
                     .style('visibility', 'hidden')
                     .style('display', 'none')
                     .style('pointer-events', 'none');
             });
-            
-            // Create a large transparent hit area
-            megadotContainer.append('circle')
-    .attr('class', 'megadot-hitarea')
-    .attr('cx', 0)
-    .attr('cy', 0)
-    .attr('r', megadotRadius * 1.5) // Larger hit area 
-    .style('fill', 'transparent')
-    .style('stroke', 'none')
-    .style('cursor', 'pointer')
-    .style('pointer-events', 'all')
-    .on('click', function() {
-        // Stop event from propagating to prevent map zoom
-        if (d3.event) {
-            d3.event.preventDefault();
-            d3.event.stopPropagation();
-        }
-        
-        // Log for debugging
-        console.log("Megadot clicked, expanding cluster:", cluster.id);
-        
-        // Expand the cluster
-        expandCluster(cluster.id);
-    });
-            
-            // Add the visible background circle
+
             megadotContainer.append('circle')
                 .attr('class', 'megadot-background')
-                .attr('cx', 0)
-                .attr('cy', 0)
                 .attr('r', megadotRadius)
                 .style('fill', '#D14D57')
-                .style('fill-opacity', 0.8)
                 .style('stroke', '#910E1C')
-                .style('stroke-width', 1)
-                .style('pointer-events', 'none'); // No pointer events on the visual elements
-                
-            // Add count text
+                .style('stroke-width', 0.5)
+                .style('cursor', 'pointer')
+                .style('pointer-events', 'all')
+                .on('mouseover', function() {
+                    d3.select(this)
+                        .style('fill', '#000')
+                        .style('stroke', '#000');
+                    megadotContainer.select('.megadot-count')
+                        .style('fill', '#FFF');
+                })
+                .on('mouseout', function() {
+                    d3.select(this)
+                        .style('fill', '#D14D57')
+                        .style('stroke', '#910E1C');
+                    megadotContainer.select('.megadot-count')
+                        .style('fill', '#000');
+                })
+                .on('click', function() {
+                    d3.event.preventDefault();
+                    d3.event.stopPropagation();
+                    expandCluster(cluster.id, d3.event);
+                });
+
             megadotContainer.append('text')
                 .attr('class', 'megadot-count')
                 .attr('x', 0)
                 .attr('y', 0)
                 .attr('text-anchor', 'middle')
                 .attr('dominant-baseline', 'central')
-                .attr('fill', 'white')
-                .attr('font-size', megadotRadius * 0.7)
-                .attr('pointer-events', 'none')
-                .attr('font-weight', 'bold')
+                .style('fill', '#000')
+                .style('font-size', 12 / currentZoom + 'px')
+                .style('pointer-events', 'none')
+                .style('font-weight', 'bold')
                 .text(cluster.count);
-        } 
-        else {
-            // EXPANDED STATE: Show individual dots with container outline
-            
-            // Add a large transparent hit area for collapsing
-            megadotContainer.append('circle')
-    .attr('class', 'megadot-hitarea-expanded')
-    .attr('cx', 0)
-    .attr('cy', 0)
-    .attr('r', megadotRadius * 2.2) // Even larger hit area
-    .style('fill', 'transparent')
-    .style('stroke', 'none')
-    .style('cursor', 'pointer')
-    .style('pointer-events', 'all')
-    .on('click', function() {
-        // Only collapse if clicking the hit area itself
-        if (d3.event.target === this) {
-            // Stop event from propagating to prevent map zoom
-            if (d3.event) {
-                d3.event.preventDefault();
-                d3.event.stopPropagation();
-            }
-            
-            // Log for debugging
-            console.log("Outline clicked, collapsing cluster:", cluster.id);
-            
-            // Collapse the cluster
-            collapseCluster(cluster.id);
         }
     });
-            
-            // Add the visible outline circle
-            megadotContainer.append('circle')
-                .attr('class', 'megadot-outline')
-                .attr('cx', 0)
-                .attr('cy', 0)
-                .attr('r', megadotRadius * 1.8)
-                .style('fill', '#D14D57')
-                .style('fill-opacity', 0.15)
-                .style('stroke', '#910E1C')
-                .style('stroke-width', 1.5)
-                .style('stroke-dasharray', '4,4')
-                .style('pointer-events', 'none'); // No pointer events on the visual elements
-            
-            // Individual dots within the cluster are visible in expanded state
-            cluster.nodes.forEach(function(node) {
-                const dot = d3.select('#map_dot_' + node.properties.pk);
-                
-                // Make individual dots visible and clickable
-                dot.style('visibility', 'visible')
-                   .style('display', null)
-                   .style('pointer-events', 'auto');
-                   
-                // Raise dots to appear above the cluster outline
-                dot.raise();
-            });
-        }
-    });
-    
-    // Ensure non-clustered nodes are visible and clickable
-    nodes.forEach(function(node) {
+
+    // Show non-clustered nodes
+    nodes.forEach(node => {
         if (!visitedNodes.has(node.properties.pk)) {
             d3.select('#map_dot_' + node.properties.pk)
                 .style('visibility', 'visible')
@@ -279,7 +240,24 @@ export function ttInitMap() {
                 .style('pointer-events', 'auto');
         }
     });
+
+    // Global click handler
+    if (!app.map.globalClickHandlerAdded) {
+        d3.select('#map-svg').on('click.closeExpanded', null);
+        d3.select('#map-svg').on('click.closeExpanded', function() {
+            if (app.map.expandedCluster) {
+                const target = d3.event.target;
+                const targetClasses = target.getAttribute('class') || '';
+                if (!targetClasses.includes('map-circles') && !targetClasses.includes('megadot-')) {
+                    collapseCluster(d3.event);
+                }
+            }
+        });
+        app.map.globalClickHandlerAdded = true;
+    }
 };
+
+        /*MEGADOT END*/
 
         // Function to zoom to a specific area
         function zoomToArea(bbox) {
@@ -1028,10 +1006,6 @@ export function ttInitMap() {
             studiesG.selectAll('circle.map-circles')
                 .attr('cx', function (d) { return d.x; })
                 .attr('cy', function (d) { return d.y; });
-
-            if (Math.random() < 0.1) { // 10% chance each tick
-        app.map.createMegadots();
-    }
         }  
 
         app.map.clearExpandedClusters = function() {
@@ -1104,33 +1078,63 @@ export function ttInitMap() {
         });
 
         function showHover(pk) {
-            // show the same tooltip on the map and timeline
-            $('#map_dot_' + pk).tooltip('show');
-            $('#timeline_dot_' + pk).tooltip('show');
+    // Only show tooltips on visible elements
+    const mapDot = $('#map_dot_' + pk);
+    const timelineDot = $('#timeline_dot_' + pk);
+    
+    // Check if we should try to show the tooltip
+    if (pinnedDot !== pk && app.map.expandedClusterId) {
+        // If we have an expanded cluster, check if this dot is in it
+        const clusterWithDot = app.map.clusters.find(cluster => 
+            cluster.id === app.map.expandedClusterId && 
+            cluster.nodes.some(node => node.properties.pk == pk)
+        );
+        
+        // Only show tooltip if this dot is part of the expanded cluster
+        if (!clusterWithDot) return;
+    }
+    
+    // Only show tooltips if elements are visible
+    if (mapDot.is(':visible')) {
+        mapDot.tooltip('show');
+    }
+    
+    if (timelineDot.is(':visible')) {
+        timelineDot.tooltip('show');
+    }
 
-            // black hover state
-            d3.select('#map_dot_' + pk)
-                .style('fill', '#000')
-                .style('stroke', '#000');
+    // Apply hover state
+    d3.select('#map_dot_' + pk)
+        .style('fill', '#000')
+        .style('stroke', '#000');
 
-            d3.select('#timeline_dot_' + pk)
-                .style('fill', '#FFF')
-                .style('stroke', '#FFF');
-        }
+    d3.select('#timeline_dot_' + pk)
+        .style('fill', '#FFF')
+        .style('stroke', '#FFF');
+}
 
-        function hideHover(pk) {
-            // hide on map and timeline
-            $('#map_dot_' + pk).tooltip('hide');
-            $('#timeline_dot_' + pk).tooltip('hide');
+// Update hideHover to be more robust
+function hideHover(pk) {
+    try {
+        $('#map_dot_' + pk).tooltip('hide');
+    } catch(e) {
+        console.log('Suppressed tooltip error for map dot', pk);
+    }
+    
+    try {
+        $('#timeline_dot_' + pk).tooltip('hide');
+    } catch(e) {
+        console.log('Suppressed tooltip error for timeline dot', pk);
+    }
 
-            // revert to default color
-            d3.select('#map_dot_' + pk)
-                .style('fill', pointColor)
-                .style('stroke', '#910E1C');
-            d3.select('#timeline_dot_' + pk)
-                .style('fill', pointColor)
-                .style('stroke', '#910E1C');
-        }
+    // Revert to default color
+    d3.select('#map_dot_' + pk)
+        .style('fill', pointColor)
+        .style('stroke', '#910E1C');
+    d3.select('#timeline_dot_' + pk)
+        .style('fill', pointColor)
+        .style('stroke', '#910E1C');
+}
 
         // pin a dot and tooltip
         function pinDot(d) {
@@ -1281,25 +1285,26 @@ export function ttInitMap() {
         }
 
         function togglePin(d) {
-            const pk = d.properties.pk;
-
-            $('#map_dot_' + pk).tooltip('hide');
-            $('#timeline_dot_' + pk).tooltip('hide');
-
-            // if we clicked the same dot again, unpin
-            if (pinnedDot === pk) {
-                unpinDot(pk);
-                return;
-            }
-
-            // if some other dot was pinned, unpin that first
-            if (pinnedDot && pinnedDot !== pk) {
-                unpinDot(pinnedDot);
-            }
-
-            // pin the new dot
-            pinDot(d);
-        }
+    const pk = d.properties.pk;
+    
+    // Hide tooltips
+    $('#map_dot_' + pk).tooltip('hide');
+    $('#timeline_dot_' + pk).tooltip('hide');
+    
+    // if we clicked the same dot again, unpin
+    if (pinnedDot === pk) {
+        unpinDot(pk);
+        return;
+    }
+    
+    // if some other dot was pinned, unpin that first
+    if (pinnedDot && pinnedDot !== pk) {
+        unpinDot(pinnedDot);
+    }
+    
+    // pin the new dot
+    pinDot(d);
+}
 
         // listen for state change in the timeline switch
         $('#timeline-switch').change(function() {

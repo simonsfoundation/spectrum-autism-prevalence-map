@@ -318,7 +318,18 @@ module.exports = {
                 '180': '180deg',
             },
             strokeDash: {
+                '4': '4',
                 '5': '5',
+            },
+            fillOpacity: {
+                '15': '0.15',
+            },
+            strokeWidth: {
+                '0.125': '0.5px',
+                '0.3125': '1.25px',
+                '1': '0.25rem',
+                '1.5': '1.5',
+                '3': '0.75rem',
             },
             screens: {
                 'lg': '90rem',
@@ -329,8 +340,14 @@ module.exports = {
     plugins: [
         function ({ addUtilities }) {
             addUtilities({
+                '.stroke-dash-4': {
+                    'stroke-dasharray': '4',
+                },
                 '.stroke-dash-5': {
                     'stroke-dasharray': '5',
+                },
+                '.pointer-events-stroke': {
+                    'pointer-events': 'stroke',
                 },
             });
         },
@@ -355,5 +372,6 @@ module.exports = {
         'max-h-info2',
         'max-h-info3',
         'max-h-info4',
+        'megadot-outline',
     ],
 }

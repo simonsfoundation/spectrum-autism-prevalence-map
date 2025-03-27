@@ -501,22 +501,4 @@
     #studies-table .show a {
         @apply no-underline;
     }
-
-     .megadot-hitarea,
-    .megadot-hitarea-expanded {
-        @apply cursor-pointer;
-    }
-    
-    .megadot-background,
-    .megadot-outline {
-        pointer-events: none;
-    }
-    
-    .megadot-count {
-        pointer-events: none;
-    }
-    
-    .megadot-container {
-        transition: opacity 0.3s ease;
-    }
 }
