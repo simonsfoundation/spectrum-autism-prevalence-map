@@ -192,6 +192,14 @@ export function ttInitJoint() {
                 $('#max_year').val($('#max_year option:last').val());
             }
 
+            // disable options based on initial min and max values
+            const initialMinYear = parseInt($('#min_year').val());
+            const initialMaxYear = parseInt($('#max_year').val());
+            comboBox_max_year.selectAll('option')
+                .property('disabled', function() { return parseInt(this.value) < initialMinYear; });
+            comboBox_min_year.selectAll('option')
+                .property('disabled', function() { return parseInt(this.value) > initialMaxYear; });
+
             // initial fetch of mean value
             app.meanValue = data.mean;
         });
@@ -431,6 +439,14 @@ export function ttInitJoint() {
             $('#educationlevelofparticipants').val('all');
             $('#continent').val('all');
             $('#country').val('all');
+
+            // re-enable all min and max select options
+            if (comboBox_min_year) {
+                comboBox_min_year.selectAll('option').property('disabled', false);
+            }
+            if (comboBox_max_year) {
+                comboBox_max_year.selectAll('option').property('disabled', false);
+            }
 
             // remove brush from timeline
             if ($('#map-link').hasClass('text-red') || $('#map-link').hasClass('active')) {
