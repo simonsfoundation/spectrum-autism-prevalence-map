@@ -68,6 +68,8 @@ export function ttInitJoint() {
             grantGTMConsent();
         }
 
+        let comboBox_min_year, comboBox_max_year;
+
         // api call holder
         app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education+'&country='+country+'&continent='+continent;
 
@@ -158,8 +160,8 @@ export function ttInitJoint() {
             }
 
             // making the combo box options for earliest published and latest published
-            const comboBox_min_year = d3.select('#min_year');
-            const comboBox_max_year = d3.select('#max_year');
+            comboBox_min_year = d3.select('#min_year');
+            comboBox_max_year = d3.select('#max_year');
 
             const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.yearsstudied_number_min); }).getUTCFullYear();
             const timeMax = d3.max(data.features, function(d) { return new Date(d.properties.yearpublished); }).getUTCFullYear();
@@ -210,13 +212,17 @@ export function ttInitJoint() {
 
         $('#min_year').on('change', function(e) {
             $('#more-information-card').css('display', 'none');
-            // update filters
             if (timeline_type == 'studied') {
                 yearsstudied_number_min = $(this).val();
             } else {
                 min_yearpublished = $(this).val();
             }
-            // update the timeline when selection is actively in use
+            // make sure that max_year is greater than min year
+            const minYearSelected = parseInt($(this).val());
+            if (comboBox_max_year) {
+                comboBox_max_year.selectAll('option')
+                    .property('disabled', function() { return parseInt(this.value) < minYearSelected; });
+            }
             let selection = d3.select('.selection');
             if (!selection.empty() && selection.attr('display') !== 'none') {
                 app.map.updateTimelineBrushFromFilters();
@@ -226,13 +232,17 @@ export function ttInitJoint() {
 
         $('#max_year').on('change', function(e) {
             $('#more-information-card').css('display', 'none');
-            // update filters
             if (timeline_type == 'studied') {
                 yearsstudied_number_max = $(this).val();
             } else {
                 max_yearpublished = $(this).val();
             }
-            // update the timeline when selection is actively in use
+            // make sure that min year is less than max year
+            const maxYearSelected = parseInt($(this).val());
+            if (comboBox_min_year) {
+                comboBox_min_year.selectAll('option')
+                    .property('disabled', function() { return parseInt(this.value) > maxYearSelected; });
+            }
             let selection = d3.select('.selection');
             if (!selection.empty() && selection.attr('display') !== 'none') {
                 app.map.updateTimelineBrushFromFilters();
