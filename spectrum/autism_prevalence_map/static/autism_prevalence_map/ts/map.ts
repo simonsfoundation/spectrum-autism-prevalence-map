@@ -258,19 +258,36 @@ export function ttInitMap() {
             } 
 
             function moveHandles() {
-                if (!d3.event.selection) return; // Ignore empty selections.
+                if (!d3.event.selection) {
+                    return;
+                }
 
                 d3.select('.selection').attr('display', null);
 
                 showWelcomeCard();
-            
-                const s = d3.event.selection, 
+
+                let s = d3.event.selection, 
                     d0 = d3.event.selection.map(timelineX.invert),
                     d1 = [];
 
                 d1[0] = d3.timeYear.ceil(d0[0]);
                 d1[1] = d3.timeYear.floor(d0[1]);
-        
+
+                let isUpdating = false;
+
+                // ensure min year is not greater than max year
+                let minYear = d1[0].getUTCFullYear();
+                let maxYear = d1[1].getUTCFullYear();
+                if (minYear > maxYear && !isUpdating) {
+                    // set min year to match max year
+                    d1[0] = new Date(maxYear, 0, 1);
+                    const newSelection = [timelineX(d1[0]), s[1]];
+                    isUpdating = true;
+                    brushG.call(brush.move, newSelection);
+                    isUpdating = false;
+                    s = newSelection;
+                }
+
                 if (s == null) {
                     handle.attr('display', 'none');
                     handleText.attr('display', 'none');
@@ -280,7 +297,7 @@ export function ttInitMap() {
                         .attr('transform', function(d, i) { 
                             return 'translate(' + s[i] + ',' + timelineHeight / 2.45 + ')'; 
                         });
-        
+
                     handleText
                         .attr('display', null)
                         .attr('x', function(d, i) {
@@ -294,8 +311,7 @@ export function ttInitMap() {
                             return d1[i].getUTCFullYear(); 
                         });
                 }
-        
-            } 
+            }
             
             let min_year, max_year;
             if(timeline_type == 'studied') {
