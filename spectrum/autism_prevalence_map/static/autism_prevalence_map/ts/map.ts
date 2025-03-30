@@ -1,4 +1,5 @@
 import { app } from './app.js';
+import { updateYearDropdowns } from './joint.js';
 
 export function ttInitMap() {
     $(document).ready(function (){
@@ -250,9 +251,13 @@ export function ttInitMap() {
                     max_yearpublished = d1[1].getUTCFullYear();    
                 }
 
-                // Update the select filters in the UI.
-                $('#min_year').val(d1[0].getUTCFullYear());
-                $('#max_year').val(d1[1].getUTCFullYear());
+                // update the select filters
+                const minYear = d1[0].getUTCFullYear();
+                const maxYear = d1[1].getUTCFullYear();
+                $('#min_year').val(minYear);
+                $('#max_year').val(maxYear);
+                // disable options that are not available
+                updateYearDropdowns(minYear, maxYear);
 
                 app.map.pullDataAndUpdate();
             } 
