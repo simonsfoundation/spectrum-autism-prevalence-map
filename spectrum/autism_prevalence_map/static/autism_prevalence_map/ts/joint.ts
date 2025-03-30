@@ -254,8 +254,8 @@ export function ttInitJoint() {
                 max_yearpublished = $(this).val();
             }
             // make sure that min year is less than max year
-            const minYearSelected = parseInt($(this).val());
-            const maxYearSelected = parseInt($('#max_year').val());
+            const maxYearSelected = parseInt($(this).val());
+            const minYearSelected = parseInt($('#min_year').val());
             updateYearDropdowns(minYearSelected, maxYearSelected);
             let selection = d3.select('.selection');
             if (!selection.empty() && selection.attr('display') !== 'none') {
