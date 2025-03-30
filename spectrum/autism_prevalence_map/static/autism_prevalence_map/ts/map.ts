@@ -20,243 +20,231 @@ export function ttInitMap() {
         let originalWidth, originalScale;
 
         /*MEGADOT START*/
-
         app.map.createMegadots = function() {
-    // Ensure expandedCluster is initialized
-    if (!('expandedCluster' in app.map)) {
-        app.map.expandedCluster = null;
-    }
-
-    // Nested functions for cluster interaction
-    function expandCluster(clusterId, event) {
-        if (event) {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-        }
-        const cluster = app.map.clusters.find(c => c.id === clusterId);
-        if (cluster) {
-            app.map.expandedCluster = cluster;
-            app.map.createMegadots(); // Direct call for immediate update
-        }
-    }
-
-    function collapseCluster(event) {
-        if (event) {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-        }
-        app.map.expandedCluster = null;
-        app.map.createMegadots(); // Direct call for immediate update
-    }
-
-    // Early exit conditions
-    if (!nodes || nodes.length === 0) return;
-
-    // Remove the zoom threshold to ensure the outline remains visible at all zoom levels
-    // if (currentZoom > 6.0) {
-    //     studiesG.selectAll('.megadot-container').remove();
-    //     studiesG.selectAll('circle.map-circles')
-    //         .style('visibility', 'visible')
-    //         .style('display', null)
-    //         .style('pointer-events', 'auto');
-    //     return;
-    // }
-
-    // Reset visibility for all dots
-    studiesG.selectAll('circle.map-circles')
-        .style('visibility', 'hidden')
-        .style('display', 'none')
-        .style('pointer-events', 'none');
-
-    // Calculate clusters
-    const clusterRadius = 20 / currentZoom;
-    const visitedNodes = new Set();
-    const clusters = [];
-
-    // Handle expanded cluster first
-    if (app.map.expandedCluster) {
-        app.map.expandedCluster.nodes.forEach(node => {
-            const pos = projection(node.geometry.coordinates);
-            node.x = pos[0];
-            node.y = pos[1];
-            visitedNodes.add(node.properties.pk);
-        });
-        app.map.expandedCluster.x = d3.mean(app.map.expandedCluster.nodes, n => n.x);
-        app.map.expandedCluster.y = d3.mean(app.map.expandedCluster.nodes, n => n.y);
-        clusters.push(app.map.expandedCluster);
-    }
-
-    // Cluster remaining nodes (excluding those in the expanded cluster)
-    nodes.forEach(node => {
-        const nodeId = node.properties.pk;
-        if (visitedNodes.has(nodeId)) return;
-
-        const cluster = {
-            x: node.x,
-            y: node.y,
-            nodes: [node],
-            count: 1,
-            id: nodeId.toString()
-        };
-
-        nodes.forEach(otherNode => {
-            const otherNodeId = otherNode.properties.pk;
-            if (nodeId === otherNodeId || visitedNodes.has(otherNodeId)) return;
-
-            const dx = node.x - otherNode.x;
-            const dy = node.y - otherNode.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance <= clusterRadius) {
-                cluster.nodes.push(otherNode);
-                cluster.count++;
-                cluster.id += "-" + otherNodeId;
-                cluster.x = (cluster.x * (cluster.count - 1) + otherNode.x) / cluster.count;
-                cluster.y = (cluster.y * (cluster.count - 1) + otherNode.y) / cluster.count;
-                visitedNodes.add(otherNodeId);
+            // Ensure expandedCluster is initialized
+            if (!('expandedCluster' in app.map)) {
+                app.map.expandedCluster = null;
             }
-        });
 
-        if (cluster.count >= 5) {
-            cluster.id = cluster.nodes.map(n => n.properties.pk).sort((a, b) => a - b).join('-');
-            clusters.push(cluster);
-            visitedNodes.add(nodeId);
-        } else {
-            cluster.nodes.forEach(n => visitedNodes.delete(n.properties.pk));
-        }
-    });
-
-    app.map.clusters = clusters;
-
-    // Remove old megadot containers
-    studiesG.selectAll('.megadot-container').remove();
-
-    // Render clusters
-    clusters.forEach(cluster => {
-        const megadotRadius = Math.min(Math.max(Math.sqrt(cluster.count) * 4, 12), 30) / currentZoom;
-        const megadotContainer = studiesG.append('g')
-            .attr('class', 'megadot-container')
-            .attr('transform', `translate(${cluster.x},${cluster.y})`)
-            .attr('data-cluster-id', cluster.id);
-
-        if (app.map.expandedCluster && cluster.id === app.map.expandedCluster.id) {
-            // Calculate the radius to encompass all dots
-            const maxDistance = d3.max(cluster.nodes, node => {
-                const dx = node.x - cluster.x;
-                const dy = node.y - cluster.y;
-                return Math.sqrt(dx * dx + dy * dy);
-            });
-            const outlineRadius = (maxDistance || megadotRadius) + 10 / currentZoom; // Add 10 pixels of padding, scaled by zoom
-
-            const outline = megadotContainer.append('circle')
-                .attr('class', 'megadot-outline')
-                .attr('r', outlineRadius)
-                .style('fill', '#D14D57')
-                .style('fill-opacity', 0.15)
-                .style('stroke', '#910E1C')
-                .style('stroke-width', 1.5)
-                .style('stroke-dasharray', '4,4')
-                .style('pointer-events', 'stroke')
-                .style('cursor', 'pointer')
-                .lower();
-
-            cluster.nodes.forEach(node => {
-                const dot = d3.select('#map_dot_' + node.properties.pk);
-                dot.style('visibility', 'visible')
-                   .style('display', null)
-                   .style('pointer-events', 'all')
-                   .style('cursor', 'pointer')
-                   .raise()
-                   .on('click.megadot', function() {
-                       d3.event.stopPropagation();
-                   });
-            });
-
-            outline.on('click', function() {
-                const target = d3.event.target;
-                const targetClasses = target.getAttribute('class') || '';
-                if (targetClasses.includes('megadot-outline')) {
-                    d3.event.preventDefault();
-                    d3.event.stopPropagation();
-                    collapseCluster(d3.event);
+            // Nested functions for cluster interaction
+            function expandCluster(clusterId, event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
                 }
-            });
-        } else if (cluster.count >= 5) {
-            cluster.nodes.forEach(node => {
-                d3.select('#map_dot_' + node.properties.pk)
-                    .style('visibility', 'hidden')
-                    .style('display', 'none')
-                    .style('pointer-events', 'none');
-            });
+                const cluster = app.map.clusters.find(c => c.id === clusterId);
+                if (cluster) {
+                    app.map.expandedCluster = cluster;
+                    app.map.createMegadots(); // Direct call for immediate update
+                }
+            }
 
-            megadotContainer.append('circle')
-                .attr('class', 'megadot-background')
-                .attr('r', megadotRadius)
-                .style('fill', '#D14D57')
-                .style('stroke', '#910E1C')
-                .style('stroke-width', 0.5)
-                .style('cursor', 'pointer')
-                .style('pointer-events', 'all')
-                .on('mouseover', function() {
-                    d3.select(this)
-                        .style('fill', '#000')
-                        .style('stroke', '#000');
-                    megadotContainer.select('.megadot-count')
-                        .style('fill', '#FFF');
-                })
-                .on('mouseout', function() {
-                    d3.select(this)
-                        .style('fill', '#D14D57')
-                        .style('stroke', '#910E1C');
-                    megadotContainer.select('.megadot-count')
-                        .style('fill', '#000');
-                })
-                .on('click', function() {
-                    d3.event.preventDefault();
-                    d3.event.stopPropagation();
-                    expandCluster(cluster.id, d3.event);
+            function collapseCluster(event) {
+                if (event) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                }
+                app.map.expandedCluster = null;
+                app.map.createMegadots(); // Direct call for immediate update
+            }
+
+            // Early exit conditions
+            if (!nodes || nodes.length === 0) return;
+
+            // Reset visibility for all dots
+            studiesG.selectAll('circle.map-circles')
+                .style('visibility', 'hidden')
+                .style('display', 'none')
+                .style('pointer-events', 'none');
+
+            // Calculate clusters
+            const clusterRadius = 20 / currentZoom;
+            const visitedNodes = new Set();
+            const clusters = [];
+
+            // Handle expanded cluster first
+            if (app.map.expandedCluster) {
+                app.map.expandedCluster.nodes.forEach(node => {
+                    const pos = projection(node.geometry.coordinates);
+                    node.x = pos[0];
+                    node.y = pos[1];
+                    visitedNodes.add(node.properties.pk);
+                });
+                app.map.expandedCluster.x = d3.mean(app.map.expandedCluster.nodes, n => n.x);
+                app.map.expandedCluster.y = d3.mean(app.map.expandedCluster.nodes, n => n.y);
+                clusters.push(app.map.expandedCluster);
+            }
+
+            // Cluster remaining nodes (excluding those in the expanded cluster)
+            nodes.forEach(node => {
+                const nodeId = node.properties.pk;
+                if (visitedNodes.has(nodeId)) return;
+
+                const cluster = {
+                    x: node.x,
+                    y: node.y,
+                    nodes: [node],
+                    count: 1,
+                    id: nodeId.toString()
+                };
+
+                nodes.forEach(otherNode => {
+                    const otherNodeId = otherNode.properties.pk;
+                    if (nodeId === otherNodeId || visitedNodes.has(otherNodeId)) return;
+
+                    const dx = node.x - otherNode.x;
+                    const dy = node.y - otherNode.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance <= clusterRadius) {
+                        cluster.nodes.push(otherNode);
+                        cluster.count++;
+                        cluster.id += "-" + otherNodeId;
+                        cluster.x = (cluster.x * (cluster.count - 1) + otherNode.x) / cluster.count;
+                        cluster.y = (cluster.y * (cluster.count - 1) + otherNode.y) / cluster.count;
+                        visitedNodes.add(otherNodeId);
+                    }
                 });
 
-            megadotContainer.append('text')
-                .attr('class', 'megadot-count')
-                .attr('x', 0)
-                .attr('y', 0)
-                .attr('text-anchor', 'middle')
-                .attr('dominant-baseline', 'central')
-                .style('fill', '#000')
-                .style('font-size', 12 / currentZoom + 'px')
-                .style('pointer-events', 'none')
-                .style('font-weight', 'bold')
-                .text(cluster.count);
-        }
-    });
-
-    // Show non-clustered nodes
-    nodes.forEach(node => {
-        if (!visitedNodes.has(node.properties.pk)) {
-            d3.select('#map_dot_' + node.properties.pk)
-                .style('visibility', 'visible')
-                .style('display', null)
-                .style('pointer-events', 'auto');
-        }
-    });
-
-    // Global click handler
-    if (!app.map.globalClickHandlerAdded) {
-        d3.select('#map-svg').on('click.closeExpanded', null);
-        d3.select('#map-svg').on('click.closeExpanded', function() {
-            if (app.map.expandedCluster) {
-                const target = d3.event.target;
-                const targetClasses = target.getAttribute('class') || '';
-                if (!targetClasses.includes('map-circles') && !targetClasses.includes('megadot-')) {
-                    collapseCluster(d3.event);
+                if (cluster.count >= 5) {
+                    cluster.id = cluster.nodes.map(n => n.properties.pk).sort((a, b) => a - b).join('-');
+                    clusters.push(cluster);
+                    visitedNodes.add(nodeId);
+                } else {
+                    cluster.nodes.forEach(n => visitedNodes.delete(n.properties.pk));
                 }
-            }
-        });
-        app.map.globalClickHandlerAdded = true;
-    }
-};
+            });
 
+            app.map.clusters = clusters;
+
+            // Remove old megadot containers
+            studiesG.selectAll('.megadot-container').remove();
+
+            // Render clusters
+            clusters.forEach(cluster => {
+                const megadotRadius = Math.min(Math.max(Math.sqrt(cluster.count) * 4, 12), 30) / currentZoom;
+                const megadotContainer = studiesG.append('g')
+                    .attr('class', 'megadot-container')
+                    .attr('transform', `translate(${cluster.x},${cluster.y})`)
+                    .attr('data-cluster-id', cluster.id);
+
+                if (app.map.expandedCluster && cluster.id === app.map.expandedCluster.id) {
+                    // Calculate the radius to encompass all dots
+                    const maxDistance = d3.max(cluster.nodes, node => {
+                        const dx = node.x - cluster.x;
+                        const dy = node.y - cluster.y;
+                        return Math.sqrt(dx * dx + dy * dy);
+                    });
+                    const outlineRadius = (maxDistance || megadotRadius) + 10 / currentZoom; // Add 10 pixels of padding, scaled by zoom
+
+                    const outline = megadotContainer.append('circle')
+                        .attr('class', 'megadot-outline')
+                        .attr('r', outlineRadius)
+                        .style('fill', '#D14D57')
+                        .style('fill-opacity', 0.15)
+                        .style('stroke', '#910E1C')
+                        .style('stroke-width', 1.5 / currentZoom)
+                        .style('stroke-dasharray', '4,4')
+                        .style('pointer-events', 'stroke')
+                        .style('cursor', 'pointer')
+                        .lower();
+
+                    cluster.nodes.forEach(node => {
+                        const dot = d3.select('#map_dot_' + node.properties.pk);
+                        dot.style('visibility', 'visible')
+                           .style('display', null)
+                           .style('pointer-events', 'all')
+                           .style('cursor', 'pointer')
+                           .raise()
+                           .on('click.megadot', function() {
+                               d3.event.stopPropagation();
+                           });
+                    });
+
+                    outline.on('click', function() {
+                        const target = d3.event.target;
+                        const targetClasses = target.getAttribute('class') || '';
+                        if (targetClasses.includes('megadot-outline')) {
+                            d3.event.preventDefault();
+                            d3.event.stopPropagation();
+                            collapseCluster(d3.event);
+                        }
+                    });
+                } else if (cluster.count >= 5) {
+                    cluster.nodes.forEach(node => {
+                        d3.select('#map_dot_' + node.properties.pk)
+                            .style('visibility', 'hidden')
+                            .style('display', 'none')
+                            .style('pointer-events', 'none');
+                    });
+
+                    megadotContainer.append('circle')
+                        .attr('class', 'megadot-background')
+                        .attr('r', megadotRadius)
+                        .style('fill', '#D14D57')
+                        .style('stroke', '#910E1C')
+                        .style('stroke-width', 0.5)
+                        .style('cursor', 'pointer')
+                        .style('pointer-events', 'all')
+                        .on('mouseover', function() {
+                            d3.select(this)
+                                .style('fill', '#000')
+                                .style('stroke', '#000');
+                            megadotContainer.select('.megadot-count')
+                                .style('fill', '#FFF');
+                        })
+                        .on('mouseout', function() {
+                            d3.select(this)
+                                .style('fill', '#D14D57')
+                                .style('stroke', '#910E1C');
+                            megadotContainer.select('.megadot-count')
+                                .style('fill', '#000');
+                        })
+                        .on('click', function() {
+                            d3.event.preventDefault();
+                            d3.event.stopPropagation();
+                            expandCluster(cluster.id, d3.event);
+                        });
+
+                    megadotContainer.append('text')
+                        .attr('class', 'megadot-count')
+                        .attr('x', 0)
+                        .attr('y', 0)
+                        .attr('text-anchor', 'middle')
+                        .attr('dominant-baseline', 'central')
+                        .style('fill', '#000')
+                        .style('font-size', 12 / currentZoom + 'px')
+                        .style('pointer-events', 'none')
+                        .style('font-weight', 'bold')
+                        .text(cluster.count);
+                }
+            });
+
+            // Show non-clustered nodes
+            nodes.forEach(node => {
+                if (!visitedNodes.has(node.properties.pk)) {
+                    d3.select('#map_dot_' + node.properties.pk)
+                        .style('visibility', 'visible')
+                        .style('display', null)
+                        .style('pointer-events', 'auto');
+                }
+            });
+
+            // Global click handler
+            if (!app.map.globalClickHandlerAdded) {
+                d3.select('#map-svg').on('click.closeExpanded', null);
+                d3.select('#map-svg').on('click.closeExpanded', function() {
+                    if (app.map.expandedCluster) {
+                        const target = d3.event.target;
+                        const targetClasses = target.getAttribute('class') || '';
+                        if (!targetClasses.includes('map-circles') && !targetClasses.includes('megadot-')) {
+                            collapseCluster(d3.event);
+                        }
+                    }
+                });
+                app.map.globalClickHandlerAdded = true;
+            }
+        };
         /*MEGADOT END*/
 
         // Function to zoom to a specific area
@@ -941,7 +929,7 @@ export function ttInitMap() {
                 .style('fill', pointColor)
                 .style('fill-opacity', '1')
                 .style('stroke', '#910E1C')
-                .style('stroke-width', '0.5')
+                .style('stroke-width', 0.5 / currentZoom)
                 .classed('map-circles', true)
                 .attr('id', function(d){
                     return 'map_dot_' + d.properties.pk
@@ -1043,7 +1031,8 @@ export function ttInitMap() {
             // select all pins and apply new radius in transition with zoom
             d3.selectAll('.map-circles').transition()
                 .duration(100)
-                .attr('r', new_radius);
+                .attr('r', new_radius)
+                .style('stroke-width', 0.5 / k);
 
             // also scale the country borders
             d3.selectAll('.country-borders').transition()
