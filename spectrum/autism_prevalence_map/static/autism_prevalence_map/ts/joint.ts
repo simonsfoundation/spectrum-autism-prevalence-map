@@ -1,5 +1,17 @@
 import { app } from './app.js';
 
+// function to update disabled min and max years options that can be called from this file and map.ts
+export function updateYearDropdowns(minYear, maxYear) {
+    if (app.comboBox_max_year) {
+        app.comboBox_max_year.selectAll('option')
+            .property('disabled', function() { return parseInt(this.value) < minYear; });
+    }
+    if (app.comboBox_min_year) {
+        app.comboBox_min_year.selectAll('option')
+            .property('disabled', function() { return parseInt(this.value) > maxYear; });
+    }
+}
+
 export function ttInitJoint() {
     $(document).ready(function () {
         app.meanBoxVisible = sessionStorage.getItem('meanBoxVisible') === 'true';
@@ -68,7 +80,8 @@ export function ttInitJoint() {
             grantGTMConsent();
         }
 
-        let comboBox_min_year, comboBox_max_year;
+        app.comboBox_min_year = null;
+        app.comboBox_max_year = null;
 
         // api call holder
         app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education+'&country='+country+'&continent='+continent;
@@ -160,18 +173,18 @@ export function ttInitJoint() {
             }
 
             // making the combo box options for earliest published and latest published
-            comboBox_min_year = d3.select('#min_year');
-            comboBox_max_year = d3.select('#max_year');
+            app.comboBox_min_year = d3.select('#min_year');
+            app.comboBox_max_year = d3.select('#max_year');
 
             const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.yearsstudied_number_min); }).getUTCFullYear();
             const timeMax = d3.max(data.features, function(d) { return new Date(d.properties.yearpublished); }).getUTCFullYear();
 
             for (let index = timeMin; index <= timeMax; index++) {
-                comboBox_min_year.append('option')
+                app.comboBox_min_year.append('option')
                     .attr('value', index)
                     .text(index);
 
-                comboBox_max_year.append('option')
+                app.comboBox_max_year.append('option')
                     .attr('value', index)
                     .text(index);
             }
@@ -195,10 +208,7 @@ export function ttInitJoint() {
             // disable options based on initial min and max values
             const initialMinYear = parseInt($('#min_year').val());
             const initialMaxYear = parseInt($('#max_year').val());
-            comboBox_max_year.selectAll('option')
-                .property('disabled', function() { return parseInt(this.value) < initialMinYear; });
-            comboBox_min_year.selectAll('option')
-                .property('disabled', function() { return parseInt(this.value) > initialMaxYear; });
+            updateYearDropdowns(initialMinYear, initialMaxYear);
 
             // initial fetch of mean value
             app.meanValue = data.mean;
@@ -227,10 +237,8 @@ export function ttInitJoint() {
             }
             // make sure that max_year is greater than min year
             const minYearSelected = parseInt($(this).val());
-            if (comboBox_max_year) {
-                comboBox_max_year.selectAll('option')
-                    .property('disabled', function() { return parseInt(this.value) < minYearSelected; });
-            }
+            const maxYearSelected = parseInt($('#max_year').val());
+            updateYearDropdowns(minYearSelected, maxYearSelected);
             let selection = d3.select('.selection');
             if (!selection.empty() && selection.attr('display') !== 'none') {
                 app.map.updateTimelineBrushFromFilters();
@@ -246,11 +254,9 @@ export function ttInitJoint() {
                 max_yearpublished = $(this).val();
             }
             // make sure that min year is less than max year
-            const maxYearSelected = parseInt($(this).val());
-            if (comboBox_min_year) {
-                comboBox_min_year.selectAll('option')
-                    .property('disabled', function() { return parseInt(this.value) > maxYearSelected; });
-            }
+            const minYearSelected = parseInt($(this).val());
+            const maxYearSelected = parseInt($('#max_year').val());
+            updateYearDropdowns(minYearSelected, maxYearSelected);
             let selection = d3.select('.selection');
             if (!selection.empty() && selection.attr('display') !== 'none') {
                 app.map.updateTimelineBrushFromFilters();
@@ -441,11 +447,11 @@ export function ttInitJoint() {
             $('#country').val('all');
 
             // re-enable all min and max select options
-            if (comboBox_min_year) {
-                comboBox_min_year.selectAll('option').property('disabled', false);
+            if (app.comboBox_min_year) {
+                app.comboBox_min_year.selectAll('option').property('disabled', false);
             }
-            if (comboBox_max_year) {
-                comboBox_max_year.selectAll('option').property('disabled', false);
+            if (app.comboBox_max_year) {
+                app.comboBox_max_year.selectAll('option').property('disabled', false);
             }
 
             // remove brush from timeline
