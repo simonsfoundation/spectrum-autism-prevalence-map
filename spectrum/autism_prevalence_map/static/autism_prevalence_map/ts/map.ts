@@ -19,7 +19,6 @@ export function ttInitMap() {
 
         let originalWidth, originalScale;
 
-        /*MEGADOT START*/
         app.map.createMegadots = function() {
             // expand a cluster
             function expandCluster(clusterId, event) {
@@ -30,7 +29,7 @@ export function ttInitMap() {
                 const cluster = app.map.clusters.find(c => c.id === clusterId);
                 if (cluster) {
                     app.map.expandedCluster = cluster;
-                    app.map.createMegadots(); // Direct call for immediate update
+                    app.map.createMegadots();
                 }
             }
 
@@ -41,11 +40,10 @@ export function ttInitMap() {
                     event.stopImmediatePropagation();
                 }
                 app.map.expandedCluster = null;
-                app.map.createMegadots(); // Direct call for immediate update
+                app.map.createMegadots();
             }
 
             if (!nodes || nodes.length === 0) return;
-
             const previousExpandedClusterId = app.map.expandedCluster ? app.map.expandedCluster.id : null;
 
             // reset dot visibility
@@ -246,7 +244,6 @@ export function ttInitMap() {
                 app.map.globalClickHandlerAdded = true;
             }
         };
-        /*MEGADOT END*/
 
         // function to zoom to a specific area
         function zoomToArea(bbox) {
@@ -396,12 +393,12 @@ export function ttInitMap() {
 
                 graticuleG.append('path')
                     .datum(graticuleOutline)
-                    .attr('class', 'graticule fill-none stroke-dark-tan stroke-[0.5px]')
+                    .attr('class', 'graticule fill-none stroke-dark-tan stroke-0.125')
                     .attr('d', path);
 
                 graticuleG.append('path')
                     .datum(graticule)
-                    .attr('class', 'graticule fill-none stroke-dark-tan stroke-[0.5px]')
+                    .attr('class', 'graticule fill-none stroke-dark-tan stroke-0.125')
                     .attr('d', path);  
                     
                 app.map.initializeTimeline();
@@ -1083,7 +1080,7 @@ export function ttInitMap() {
                 if (!clusterWithDot) return;
             }
             
-            // Only show tooltips if elements are visible
+            // only show tooltips if elements are visible
             if (mapDot.is(':visible')) {
                 mapDot.tooltip('show');
             }
@@ -1092,7 +1089,7 @@ export function ttInitMap() {
                 timelineDot.tooltip('show');
             }
 
-            // Apply hover state
+            // apply hover state
             d3.select('#map_dot_' + pk)
                 .style('fill', '#000')
                 .style('stroke', '#000');

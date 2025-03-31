@@ -363,7 +363,7 @@ module.exports = {
         'fill-navy',
         'stroke-dark-tan',
         'stroke-tan',
-        'stroke-[0.5px]',
+        'stroke-0.125',
         'ui-slider',
         'ui-slider-handle',
         'ui-slider-range',
