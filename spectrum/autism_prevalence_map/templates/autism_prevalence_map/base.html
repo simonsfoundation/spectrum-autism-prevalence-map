@@ -73,7 +73,7 @@
                 <nav class='flex items-center gap-8'>
                     <a id='map-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/" %}text-red{% endif %}' href="{% url 'index' %}">Map</a>
                     <a id='list-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/list/" %}text-red{% endif %}' href="{% url 'list_view' %}">List</a>
-                    <a class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/about/" %}text-red{% endif %}' href="{% url 'about' %}">About</a>
+                    <a id='about-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/about/" %}text-red{% endif %}' href="{% url 'about' %}">About</a>
                 </nav>
 
                 {% if request.path != "/about/" %}

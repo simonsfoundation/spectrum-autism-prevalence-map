@@ -96,6 +96,7 @@ export function ttInitJoint() {
             $('#list-link').attr('href', '/list/' + app.api_call_param_string);
             $('#map-link').attr('href', '/' + app.api_call_param_string);
             $('#download-link').attr('href', '/studies-csv/' + app.api_call_param_string);
+            $('#about-link').attr('href', '/about/' + app.api_call_param_string);
         }
 
         // function for updating content based on filters
@@ -716,26 +717,28 @@ export function ttInitJoint() {
         const searchInput = document.querySelector('[data-id="keyword-filter-input"]') as HTMLInputElement;
         const xButton = document.querySelector('[data-id="keyword-filter-x-btn"]') as HTMLButtonElement;
 
-        function toggleXButton() {
-            if (searchInput.value.trim().length > 0) {
-                xButton.classList.remove('hidden');
-            } else {
-                xButton.classList.add('hidden');
+        if (searchInput) {
+            function toggleXButton() {
+                if (searchInput.value.trim().length > 0) {
+                    xButton.classList.remove('hidden');
+                } else {
+                    xButton.classList.add('hidden');
+                }
             }
-        }
 
-        searchInput.addEventListener('input', toggleXButton);
-        toggleXButton();
-
-        // when the X button is clicked, clear the search, remove the keyword
-        xButton.addEventListener('click', function () {
-            searchInput.value = '';
-            // reset the global 'keyword' variable so it's removed from URL params
-            keyword = '';
+            searchInput.addEventListener('input', toggleXButton);
             toggleXButton();
-            searchInput.focus();
-            app.runUpdate();
-        });
+
+            // when the X button is clicked, clear the search, remove the keyword
+            xButton.addEventListener('click', function () {
+                searchInput.value = '';
+                // reset the global 'keyword' variable so it's removed from URL params
+                keyword = '';
+                toggleXButton();
+                searchInput.focus();
+                app.runUpdate();
+            });
+        }
 
         // update min and max year labels based on the timeline study type
         if (timeline_type == 'studied') {
