@@ -175,11 +175,19 @@ export function ttInitMap() {
         }
 
         app.map.addTimeline = function() {
-            timeMin = d3.min(studies.features, function(d) { return new Date(d.properties.yearsstudied_number_min); });
-            timeMax = d3.max(studies.features, function(d) { return new Date(d.properties.yearpublished); });
+            timeMin = d3.min(studies.features, function(d) {
+                // fallback for null values
+                const dateStr = d.properties.yearsstudied_number_min || '1970-01-01';
+                const [year] = dateStr.split('-');
+                // january 1st of the min year
+                return new Date(Date.UTC(parseInt(year, 10), 0, 1));
+            });
+            timeMax = d3.max(studies.features, function(d) {
+                const year = parseInt(d.properties.yearpublished, 10);
+                // december 31st 11:59 of the max year
+                return new Date(Date.UTC(year, 11, 31, 23, 59, 59));
+            });
 
-            // extend the timeline to the end of the year of the last available data to allow that year to be selected
-            timeMax = new Date(timeMax.getFullYear() + 1, 11, 31, 23, 59, 59);
 
             // add the x brush
             brush = d3.brushX()
