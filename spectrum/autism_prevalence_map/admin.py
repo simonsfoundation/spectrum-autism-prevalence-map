@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 import sys, os, urllib.request, json, time, datetime, re
 from django.contrib import admin
-from .models import studies, options, AboutPage, AboutSection, Link
+from .models import studies, options, AboutPage, AboutSection
 from django import forms
 from django.conf.urls import url
 from django.template.response import TemplateResponse
@@ -291,16 +291,10 @@ class StudiesAdmin(admin.ModelAdmin):
         option_obj.value = datetime.date.today().strftime("%-d %B %Y")
         option_obj.save()
 
-class LinkInline(admin.TabularInline):
-    model = Link
-    extra = 1
-    fields = ('link_text', 'link_url', 'order')
-
-class AboutSectionInline(admin.TabularInline):
+class AboutSectionInline(admin.StackedInline):
     model = AboutSection
     extra = 0
-    fields = ('section_type', 'title', 'content', 'order')
-    inlines = [LinkInline]
+    fields = ('section_type', 'title', 'content', 'links', 'order')
 
     class Media:
         js = ('autism_prevalence_map/admin.js',)
@@ -308,10 +302,10 @@ class AboutSectionInline(admin.TabularInline):
             'all': ('autism_prevalence_map/admin.css',),
         }
 
+admin.site.register(options)
+
 @admin.register(AboutPage)
 class AboutPageAdmin(admin.ModelAdmin):
     inlines = [AboutSectionInline]
     list_display = ('title',)
     fields = ('title', 'meta_title', 'meta_description')
-
-admin.site.register(options)

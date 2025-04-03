@@ -84,6 +84,10 @@ class AboutSection(models.Model):
     title = models.CharField(max_length=255, blank=True, help_text="Section title (used for Table of Contents sections)")
     content = RichTextField(blank=True, help_text="Rich text content (used for Text Block sections)")
     order = models.PositiveIntegerField(default=0, help_text="Order of this section")
+    links = models.TextField(
+        blank=True,
+        help_text="Enter links for Table of Contents sections as: link_text|link_url,link_text|link_url"
+    )
 
     def __str__(self):
         return f"{self.title or 'Untitled'} ({self.section_type})"
@@ -91,14 +95,14 @@ class AboutSection(models.Model):
     class Meta:
         ordering = ['order']
 
-class Link(models.Model):
-    section = models.ForeignKey(AboutSection, on_delete=models.CASCADE, related_name='links')
-    link_text = models.CharField(max_length=255, help_text="Text to display for the link")
-    link_url = models.URLField(help_text="URL for the link")
-    order = models.PositiveIntegerField(default=0, help_text="Order of this link")
-
-    def __str__(self):
-        return self.link_text
-
-    class Meta:
-        ordering = ['order']
+    def get_links(self):
+        """Parse the links field into a list of (link_text, link_url) tuples."""
+        if not self.links:
+            return []
+        link_pairs = self.links.split(',')
+        links = []
+        for pair in link_pairs:
+            if '|' in pair:
+                link_text, link_url = pair.split('|', 1)
+                links.append((link_text.strip(), link_url.strip()))
+        return links

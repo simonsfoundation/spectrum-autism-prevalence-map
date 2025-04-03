@@ -1,25 +1,21 @@
 (function($) {
     jQuery(document).ready(function($) {
-        // Remove the table header
-        $('table#sections thead').hide();
-
         // Add labels above each field, but only if they haven't been added yet
         function addFieldLabels($row) {
-            // Check if labels have already been added to this row
-            if ($row.find('td.field-section_type label').length === 0) {
-                $row.find('td.field-section_type').prepend('<label>Section Type</label>');
-                $row.find('td.field-title').prepend('<label>Title</label>');
-                $row.find('td.field-content').prepend('<label>Content</label>');
-                $row.find('td.field-order').prepend('<label>Order</label>');
-                // Hide the label for the delete column
-                $row.find('td.delete').prepend('<label style="display: none;">Delete?</label>');
+            // In StackedInline, fields are in div.form-row
+            if ($row.find('div.field-section_type label').length === 0) {
+                $row.find('div.field-section_type').prepend('<label>Section Type</label>');
+                $row.find('div.field-title').prepend('<label>Title</label>');
+                $row.find('div.field-content').prepend('<label>Content</label>');
+                $row.find('div.field-links').prepend('<label>Links</label>');
+                $row.find('div.field-order').prepend('<label>Order</label>');
             }
         }
 
         function toggleFields($row, sectionType) {
-            var $titleField = $row.find('td.field-title');
-            var $contentField = $row.find('td.field-content');
-            var $linksField = $row.find('> .inline-related:has(.field-link_text)');
+            var $titleField = $row.find('div.field-title');
+            var $contentField = $row.find('div.field-content');
+            var $linksField = $row.find('div.field-links');
 
             console.log('Toggling fields for row:', $row, 'Section Type:', sectionType);
             console.log('Title Field:', $titleField);
@@ -38,7 +34,7 @@
         }
 
         // Handle existing rows
-        $('.form-row:has(.field-section_type)').each(function() {
+        $('.inline-related:has(.field-section_type)').each(function() {
             var $row = $(this);
             addFieldLabels($row);
             var sectionType = $row.find('select[name$="-section_type"]').val();
@@ -47,8 +43,8 @@
         });
 
         // Handle section_type changes
-        $(document).on('change', '.form-row select[name$="-section_type"]', function() {
-            var $row = $(this).closest('.form-row');
+        $(document).on('change', 'select[name$="-section_type"]', function() {
+            var $row = $(this).closest('.inline-related');
             var sectionType = $(this).val();
             console.log('Section type changed:', sectionType);
             toggleFields($row, sectionType);

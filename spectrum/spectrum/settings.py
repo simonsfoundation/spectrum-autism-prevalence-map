@@ -163,3 +163,13 @@ ALLOWED_ADMIN_IP_RANGES = ["34.231.5.44/32",
                            ]
 RESTRICTED_APP_NAMES=['admin']
 TRUST_PRIVATE_IP=True
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Full',
+        'height': 291,
+        'width': 835,
+        'extraAllowedContent': 'p(*)[*]{*};h2(*)[*]{*};h3(*)[*]{*};h4(*)[*]{*};a(*)[*]{*};li(*)[*]{*};ul(*)[*]{*};span(*)[*]{*}',
+        'removePlugins': 'stylesheetparser',
+    },
+}

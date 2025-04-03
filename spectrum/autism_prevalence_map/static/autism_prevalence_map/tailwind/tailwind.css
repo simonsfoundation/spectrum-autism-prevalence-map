@@ -7,7 +7,7 @@
         @apply text-blue underline;
     }
 
-    b {
+    b, strong {
         @apply font-bold;
     }
 
