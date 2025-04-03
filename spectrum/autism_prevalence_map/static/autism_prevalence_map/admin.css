@@ -1,0 +1,13 @@
+#aboutpage_form .form-row td label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+#aboutpage_form .form-row td.delete label {
+    display: none;
+}
+
+#aboutpage_form thead {
+    display: none;
+}

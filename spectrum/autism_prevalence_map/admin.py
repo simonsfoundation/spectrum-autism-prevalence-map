@@ -304,6 +304,9 @@ class AboutSectionInline(admin.TabularInline):
 
     class Media:
         js = ('autism_prevalence_map/admin.js',)
+        css = {
+            'all': ('autism_prevalence_map/admin.css',),
+        }
 
 @admin.register(AboutPage)
 class AboutPageAdmin(admin.ModelAdmin):
