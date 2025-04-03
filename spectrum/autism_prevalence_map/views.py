@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from datetime import date
@@ -8,8 +7,6 @@ import re, csv, os
 from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.db.models import Avg, FloatField
 from django.db.models.functions import Cast
-
-#import all apartment models and forms
 from autism_prevalence_map.models import *
 
 country_to_continent = {
@@ -343,6 +340,8 @@ def about(request):
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
 
+    about_page = AboutPage.objects.first()
+
     context_dict = {
         'min_yearpublished':min_yearpublished,
         'max_yearpublished':max_yearpublished,
@@ -360,7 +359,9 @@ def about(request):
         'country': country,
         'continent': continent,
         'style_sheet': style_sheet,
-        'script': script,}
+        'script': script,
+        'about_page': about_page,
+    }
         
     return render(request, 'autism_prevalence_map/about.html', context_dict)
 

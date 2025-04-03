@@ -3,13 +3,14 @@ from __future__ import unicode_literals
 from django.conf import settings
 import sys, os, urllib.request, json, time, datetime, re
 from django.contrib import admin
-from .models import studies, options
+from .models import studies, options, AboutPage, AboutSection, Link
 from django import forms
 from django.conf.urls import url
 from django.template.response import TemplateResponse
 from django.shortcuts import redirect
 import csv
 import io
+
 class StudiesForm(forms.ModelForm):
     
     yearpublished = forms.CharField(label='Year Published', required=False, initial='')
@@ -50,6 +51,7 @@ class StudiesForm(forms.ModelForm):
 
 class CsvImportForm(forms.Form):
     csv_file = forms.FileField()
+
 @admin.register(studies)
 class StudiesAdmin(admin.ModelAdmin):
     list_display = ("id", "yearpublished", "authors", "country", "area",
@@ -289,3 +291,24 @@ class StudiesAdmin(admin.ModelAdmin):
         option_obj.value = datetime.date.today().strftime("%-d %B %Y")
         option_obj.save()
 
+class LinkInline(admin.TabularInline):
+    model = Link
+    extra = 1
+    fields = ('link_text', 'link_url', 'order')
+
+class AboutSectionInline(admin.TabularInline):
+    model = AboutSection
+    extra = 0
+    fields = ('section_type', 'title', 'content', 'order')
+    inlines = [LinkInline]
+
+    class Media:
+        js = ('autism_prevalence_map/admin.js',)
+
+@admin.register(AboutPage)
+class AboutPageAdmin(admin.ModelAdmin):
+    inlines = [AboutSectionInline]
+    list_display = ('title',)
+    fields = ('title', 'meta_title', 'meta_description')
+
+admin.site.register(options)

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.db import models
-
 from datetime import date
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 
@@ -49,6 +48,7 @@ class studies(models.Model):
     link4url = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Link 4 Url')
     latitude = models.FloatField(default=None, blank=True, null=True)
     longitude = models.FloatField(default=None, blank=True, null=True)
+
 class options(models.Model):
     class Meta:
         verbose_name = 'Option'
@@ -56,3 +56,49 @@ class options(models.Model):
     
     name = models.CharField(max_length=255, default='', blank=True, null=True)
     value = models.CharField(max_length=255, default='', blank=True, null=True)
+
+class AboutPage(models.Model):
+    class Meta:
+        verbose_name = 'About Page'
+        verbose_name_plural = 'About Pages'
+
+    title = models.CharField(max_length=255, default='About the Global Autism Prevalence Map', help_text="Main title of the About page")
+    meta_title = models.CharField(max_length=255, default='', blank=True, help_text="SEO meta title (up to 60 characters recommended)")
+    meta_description = models.TextField(default='', blank=True, help_text="SEO meta description (up to 160 characters recommended)")
+
+    def __str__(self):
+        return self.title
+
+class AboutSection(models.Model):
+    class Meta:
+        verbose_name = 'About Section'
+        verbose_name_plural = 'About Sections'
+
+    SECTION_TYPES = (
+        ('text', 'Text Block'),
+        ('toc', 'Table of Contents'),
+    )
+
+    about_page = models.ForeignKey(AboutPage, on_delete=models.CASCADE, related_name='sections')
+    section_type = models.CharField(max_length=20, choices=SECTION_TYPES, default='text', help_text="Type of section")
+    title = models.CharField(max_length=255, blank=True, help_text="Section title (used for Table of Contents sections)")
+    content = RichTextField(blank=True, help_text="Rich text content (used for Text Block sections)")
+    order = models.PositiveIntegerField(default=0, help_text="Order of this section")
+
+    def __str__(self):
+        return f"{self.title or 'Untitled'} ({self.section_type})"
+
+    class Meta:
+        ordering = ['order']
+
+class Link(models.Model):
+    section = models.ForeignKey(AboutSection, on_delete=models.CASCADE, related_name='links')
+    link_text = models.CharField(max_length=255, help_text="Text to display for the link")
+    link_url = models.URLField(help_text="URL for the link")
+    order = models.PositiveIntegerField(default=0, help_text="Order of this link")
+
+    def __str__(self):
+        return self.link_text
+
+    class Meta:
+        ordering = ['order']

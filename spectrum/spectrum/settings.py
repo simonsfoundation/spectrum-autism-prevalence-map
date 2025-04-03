@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'svg',
     'admin_honeypot',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
