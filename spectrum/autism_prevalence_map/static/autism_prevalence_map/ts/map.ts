@@ -188,7 +188,6 @@ export function ttInitMap() {
                 return new Date(Date.UTC(year, 11, 31, 23, 59, 59));
             });
 
-
             // add the x brush
             brush = d3.brushX()
                 .extent([[0, 0], [timelineWidth, timelineHeight-33]])
@@ -393,8 +392,20 @@ export function ttInitMap() {
             }
 
             max_Y_domain = d3.max(studiesByYear, function(d) { return d.value; }) + 1;
+            // dot height and the ideal gap height when we don't have to overlap dots to fit
+            const dotHeight = 8;
+            const gap = 1;
+            const dotSpacing = dotHeight + gap;
+            // max height we have to work with so we don't get too close to the help tip text line
+            const maxHeight = timelineHeight - 83;
+            // max amount of dots with ideal spacing that can fit in the max height
+            const maxDotsAtDotSpacing = Math.floor(maxHeight / dotSpacing);
+            // apply consistent offset to all years and align to the bottom
+            const offset = max_Y_domain <= maxDotsAtDotSpacing ? dotSpacing : maxHeight / (max_Y_domain - 1);
             timelineY
-                .domain([1, max_Y_domain]);
+                .domain([1, max_Y_domain])
+                .range([timelineHeight - 83, timelineHeight - 83 - (max_Y_domain - 1) * offset])
+                .clamp(true);
 
             // set count = 0 for each year for every year studied/published and
             // set up battleship grid in studiesByYear to mark where pills are when plotted
@@ -662,11 +673,6 @@ export function ttInitMap() {
             // only if we have a valid brush and timeline
             if (!brush || !timelineX) return;
             
-            // only update if the selection is already being used
-            if (d3.select('.selection').attr('display') === 'none' || d3.select('.selection').empty()) {
-                return;
-            }
-            
             let minYear, maxYear;
             
             if (timeline_type == 'studied') {
@@ -677,10 +683,9 @@ export function ttInitMap() {
                 maxYear = max_yearpublished || $('#max_year').val();
             }
         
-            const minDate = new Date(parseInt(minYear, 10), 0, 1);
-            const maxDate = new Date(parseInt(maxYear, 10), 11, 31, 23, 59, 59);
-            
-            if (brushG && minYear && maxYear) {
+            if (minYear && maxYear) {
+                const minDate = new Date(parseInt(minYear, 10), 0, 1);
+                const maxDate = new Date(parseInt(maxYear, 10), 11, 31, 23, 59, 59);
                 brushG.call(brush.move, [minDate, maxDate].map(timelineX));
             }
         };
