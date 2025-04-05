@@ -861,10 +861,12 @@ export function ttInitMap() {
             // pinned state is blue with white border
             d3.select('#map_dot_' + pk)
                 .style('fill', '#0B6BC3')
-                .style('stroke', '#FFF');
+                .style('stroke', '#FFF')
+                .moveToFront();
             d3.select('#timeline_dot_' + pk)
                 .style('fill', '#FEF9EE')
-                .style('stroke', '#FFF');
+                .style('stroke', '#FFF')
+                .moveToFront();
 
             // populate and show info card
             populateInfoCard(d);
