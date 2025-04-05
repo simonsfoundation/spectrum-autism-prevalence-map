@@ -20,3 +20,4 @@ django-ipware==3.0.7
 django-admin-honeypot==1.1.0
 django-inline-svg==0.1.1
 django-ckeditor==5.9.0
+Pillow==10.4.0

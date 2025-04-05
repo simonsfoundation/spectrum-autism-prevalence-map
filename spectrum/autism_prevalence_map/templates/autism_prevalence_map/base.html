@@ -10,11 +10,11 @@
     <meta name='twitter:card' content='summary_large_image'>
     <meta name='twitter:title' content='{% block twitter_title %}Global Autism Prevalence Map | The Transmitter{% endblock %}'>
     <meta name='twitter:description' content='{% block twitter_description %}The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.{% endblock %}'>
-    <meta name='twitter:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/global-ausitm-prevalence-map-social.png'>
+    <meta name='twitter:image' content='{% block twitter_image %}https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/global-ausitm-prevalence-map-social.png{% endblock %}'>
     <meta property='og:title' content='{% block og_title %}Global Autism Prevalence Map | The Transmitter{% endblock %}' />
     <meta property='og:type' content='website' />
     <meta property='og:url' content='https://autismprevalence.thetransmitter.org/' />
-    <meta property='og:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/global-ausitm-prevalence-map-social.png' />
+    <meta property='og:image' content='{% block og_image %}https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/global-ausitm-prevalence-map-social.png{% endblock %}' />
     <meta property='og:description' content='{% block og_description %}The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.{% endblock %}' />
 
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>

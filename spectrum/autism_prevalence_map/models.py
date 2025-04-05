@@ -65,6 +65,12 @@ class AboutPage(models.Model):
     title = models.CharField(max_length=255, default='About the Global Autism Prevalence Map', help_text="Main title of the About page")
     meta_title = models.CharField(max_length=255, default='', blank=True, help_text="SEO meta title (up to 60 characters recommended)")
     meta_description = models.TextField(default='', blank=True, help_text="SEO meta description (up to 160 characters recommended)")
+    meta_thumbnail = models.ImageField(
+        upload_to='about_thumbnails/',
+        blank=True,
+        null=True,
+        help_text="Image to use as the social media thumbnail (recommended size: 1200x630 pixels)"
+    )
 
     def __str__(self):
         return self.title

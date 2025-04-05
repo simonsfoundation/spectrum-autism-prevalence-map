@@ -308,4 +308,4 @@ admin.site.register(options)
 class AboutPageAdmin(admin.ModelAdmin):
     inlines = [AboutSectionInline]
     list_display = ('title',)
-    fields = ('title', 'meta_title', 'meta_description')
+    fields = ('title', 'meta_title', 'meta_description', 'meta_thumbnail')

@@ -2,36 +2,46 @@
 
 {% load static %}
 
-{% block title %}
+{% block title %}{% spaceless %}
     {% if about_page %}
         {{ about_page.title }}
     {% endif %}
-{% endblock %}
-{% block meta_description %}
+{% endspaceless %}{% endblock %}
+{% block meta_description %}{% spaceless %}
     {% if about_page and about_page.meta_description %}
         {{ about_page.meta_description }}
     {% endif %}
-{% endblock %}
-{% block twitter_title %}
+{% endspaceless %}{% endblock %}
+{% block twitter_title %}{% spaceless %}
     {% if about_page and about_page.meta_title %}
         {{ about_page.meta_title }}
     {% endif %}
-{% endblock %}
-{% block twitter_description %}
+{% endspaceless %}{% endblock %}
+{% block twitter_description %}{% spaceless %}
     {% if about_page and about_page.meta_description %}
         {{ about_page.meta_description }}
     {% endif %}
-{% endblock %}
-{% block og_title %}
+{% endspaceless %}{% endblock %}
+{% block twitter_image %}{% spaceless %}
+    {% if about_page and about_page.meta_thumbnail %}
+        {{ request.build_absolute_uri }}{{ about_page.meta_thumbnail.url }}
+    {% endif %}
+{% endspaceless %}{% endblock %}
+{% block og_title %}{% spaceless %}
     {% if about_page and about_page.meta_title %}
         {{ about_page.meta_title }}
     {% endif %}
-{% endblock %}
-{% block og_description %}
+{% endspaceless %}{% endblock %}
+{% block og_description %}{% spaceless %}
     {% if about_page and about_page.meta_description %}
         {{ about_page.meta_description }}
     {% endif %}
-{% endblock %}
+{% endspaceless %}{% endblock %}
+{% block og_image %}{% spaceless %}
+    {% if about_page and about_page.meta_thumbnail %}
+        {{ request.build_absolute_uri }}{{ about_page.meta_thumbnail.url }}
+    {% endif %}
+{% endspaceless %}{% endblock %}
 
 {% block page_name %}about{% endblock %}
 
