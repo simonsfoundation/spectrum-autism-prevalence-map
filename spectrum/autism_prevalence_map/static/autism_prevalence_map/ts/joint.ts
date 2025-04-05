@@ -240,8 +240,7 @@ export function ttInitJoint() {
             const minYearSelected = parseInt($(this).val());
             const maxYearSelected = parseInt($('#max_year').val());
             updateYearDropdowns(minYearSelected, maxYearSelected);
-            let selection = d3.select('.selection');
-            if (!selection.empty() && selection.attr('display') !== 'none') {
+            if (app.map && typeof app.map.updateTimelineBrushFromFilters === 'function') {
                 app.map.updateTimelineBrushFromFilters();
             }
             app.runUpdate();
@@ -258,8 +257,7 @@ export function ttInitJoint() {
             const maxYearSelected = parseInt($(this).val());
             const minYearSelected = parseInt($('#min_year').val());
             updateYearDropdowns(minYearSelected, maxYearSelected);
-            let selection = d3.select('.selection');
-            if (!selection.empty() && selection.attr('display') !== 'none') {
+            if (app.map && typeof app.map.updateTimelineBrushFromFilters === 'function') {
                 app.map.updateTimelineBrushFromFilters();
             }
             app.runUpdate();
