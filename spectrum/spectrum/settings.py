@@ -164,15 +164,24 @@ ALLOWED_ADMIN_IP_RANGES = ["34.231.5.44/32",
 RESTRICTED_APP_NAMES=['admin']
 TRUST_PRIVATE_IP=True
 
-CKEDITOR_CONFIGS = {
+CKEDITOR_5_CONFIGS = {
     'default': {
-        'toolbar': 'Full',
+        'toolbar': {
+            'items': [
+                'heading', '|',
+                'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                'undo', 'redo', '|',
+                'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+                'alignment', 'outdent', 'indent', '|',
+                'insertTable', 'mediaEmbed', 'codeBlock'
+            ]
+        },
         'height': 291,
         'width': 835,
-        'extraAllowedContent': 'p(*)[*]{*};h2(*)[*]{*};h3(*)[*]{*};h4(*)[*]{*};a(*)[*]{*};li(*)[*]{*};ul(*)[*]{*};span(*)[*]{*}',
-        'removePlugins': 'stylesheetparser',
     },
 }
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

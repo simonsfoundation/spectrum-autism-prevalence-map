@@ -96,7 +96,9 @@ class AboutSection(models.Model):
     )
 
     def __str__(self):
-        return f"{self.title or 'Untitled'} ({self.section_type})"
+        if self.section_type == 'toc':
+            return f"{self.title or 'Untitled'} (Table of Contents)"
+        return "Text Block"
 
     class Meta:
         ordering = ['order']
