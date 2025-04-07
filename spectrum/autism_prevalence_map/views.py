@@ -566,7 +566,7 @@ def studiesApi(request):
 def studiesCsv(request):
     #create header for CSV file download
     response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="spectrum_autism_prevalence_map_data_download.csv"'
+    response['Content-Disposition'] = 'attachment; filename="transmitter_autism_prevalence_map_data_download.csv"'
 
     if request.method == 'GET':
         kwargs = {}
