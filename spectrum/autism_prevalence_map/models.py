@@ -83,28 +83,47 @@ class AboutSection(models.Model):
     SECTION_TYPES = (
         ('text', 'Text Block'),
         ('toc', 'Table of Contents'),
+        ('callout', 'Callout Box'),
+        ('newsletter', 'Newsletter'),
     )
 
     about_page = models.ForeignKey(AboutPage, on_delete=models.CASCADE, related_name='sections')
     section_type = models.CharField(max_length=20, choices=SECTION_TYPES, default='text', help_text="Type of section")
     title = models.CharField(max_length=255, blank=True, help_text="Section title (used for Table of Contents sections)")
-    content = RichTextField(blank=True, help_text="Rich text content (used for Text Block sections)")
+    content = RichTextField(blank=True, help_text="Rich text content (used for Text Block and Callout Box sections)")
     order = models.PositiveIntegerField(default=0, help_text="Order of this section")
     links = models.TextField(
         blank=True,
         help_text="Enter links for Table of Contents sections as: link_text|link_url,link_text|link_url"
     )
+    newsletter_title = models.CharField(
+        max_length=255,
+        blank=True,
+        default="Sign up for our weekly newsletter.",
+        help_text="Title for newsletter section."
+    )
+    newsletter_support_line = models.CharField(
+        max_length=255,
+        blank=True,
+        default="Catch up on what you may have missed from our recent coverage.",
+        help_text="Support copy for newsletter section."
+    )
 
+    # Set the field title in the admin area
     def __str__(self):
         if self.section_type == 'toc':
             return f"{self.title or 'Untitled'} (Table of Contents)"
+        elif self.section_type == 'callout':
+            return "Callout Box"
+        elif self.section_type == 'newsletter':
+            return "Newsletter"
         return "Text Block"
 
     class Meta:
         ordering = ['order']
 
+    # get the links from text field and parse them into HTML
     def get_links(self):
-        """Parse the links field into a list of (link_text, link_url) tuples."""
         if not self.links:
             return []
         link_pairs = self.links.split(',')

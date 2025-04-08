@@ -294,13 +294,10 @@ class StudiesAdmin(admin.ModelAdmin):
 class AboutSectionInline(admin.StackedInline):
     model = AboutSection
     extra = 0
-    fields = ('section_type', 'title', 'content', 'links', 'order')
+    fields = ('section_type', 'title', 'content', 'newsletter_title', 'newsletter_support_line', 'links', 'order')
 
     class Media:
-        js = ('autism_prevalence_map/admin.js',)
-        css = {
-            'all': ('autism_prevalence_map/admin.css',),
-        }
+        js = ('autism_prevalence_map/dist/admin.min.js' if os.environ['DJANGO_ALLOWED_HOSTS'] != '127.0.0.1' else 'autism_prevalence_map/dist/admin.js',)
 
 admin.site.register(options)
 
