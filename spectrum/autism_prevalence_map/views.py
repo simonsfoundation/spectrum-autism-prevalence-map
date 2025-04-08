@@ -8,6 +8,9 @@ from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.db.models import Avg, FloatField
 from django.db.models.functions import Cast
 from autism_prevalence_map.models import *
+from django.views.decorators.http import require_POST
+import requests
+import hashlib
 
 country_to_continent = {
   'Algeria': 'Africa',
@@ -727,3 +730,45 @@ def studiesCsv(request):
         print(request.method)
 
     return response
+
+from django.views.decorators.http import require_POST
+import requests
+import hashlib
+
+@require_POST
+def subscribe_newsletter(request):
+    email = request.POST.get('email', '').strip()
+    if not email or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+        return JsonResponse({'success': False, 'message': 'Invalid email address'}, status=400)
+
+    mailchimp_api_key = settings.MAILCHIMP_API_KEY
+    list_id = settings.MAILCHIMP_LIST_ID
+    dc = mailchimp_api_key.split('-')[1]
+    subscriber_hash = hashlib.md5(email.lower().encode()).hexdigest()
+    mailchimp_url = f"https://{dc}.api.mailchimp.com/3.0/lists/{list_id}/members/{subscriber_hash}"
+
+    response = requests.get(
+        mailchimp_url,
+        auth=('apikey', mailchimp_api_key),
+        headers={'Content-Type': 'application/json'}
+    )
+
+    subscribe_url = f"https://{dc}.api.mailchimp.com/3.0/lists/{list_id}/members/"
+    subscribe_data = {
+        'email_address': email,
+        'status': 'subscribed',
+        'merge_fields': {
+            'GROUPINGS': [{'id': '14', 'groups': ['16']}]
+        }
+    }
+
+    subscribe_response = requests.post(
+        subscribe_url,
+        auth=('apikey', mailchimp_api_key),
+        json=subscribe_data
+    )
+
+    if subscribe_response.status_code in (200, 201):
+        return JsonResponse({'success': True, 'message': 'Thank you for subscribing!'})
+    else:
+        return JsonResponse({'success': False, 'message': 'Subscription failed. Please try again.'}, status=400)

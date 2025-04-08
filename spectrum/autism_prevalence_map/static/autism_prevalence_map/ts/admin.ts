@@ -8,6 +8,8 @@
                 $row.find('div.field-content').prepend('<label>Content</label>');
                 $row.find('div.field-newsletter_title').prepend('<label>Newsletter Title</label>');
                 $row.find('div.field-newsletter_support_line').prepend('<label>Newsletter Support Line</label>');
+                $row.find('div.field-section_title_text').prepend('<label>Section Title Text</label>');
+                $row.find('div.field-section_title_id').prepend('<label>Section Title ID</label>');
                 $row.find('div.field-links').prepend('<label>Links</label>');
                 $row.find('div.field-order').prepend('<label>Order</label>');
             }
@@ -19,26 +21,31 @@
             var $contentField = $row.find('div.field-content');
             var $newsletterTitleField = $row.find('div.field-newsletter_title');
             var $newsletterSupportLineField = $row.find('div.field-newsletter_support_line');
+            var $sectionTitleTextField = $row.find('div.field-section_title_text');
+            var $sectionTitleIdField = $row.find('div.field-section_title_id');
             var $linksField = $row.find('div.field-links');
 
+            // hide all fields initially
+            $titleField.hide();
+            $contentField.hide();
+            $newsletterTitleField.hide();
+            $newsletterSupportLineField.hide();
+            $sectionTitleTextField.hide();
+            $sectionTitleIdField.hide();
+            $linksField.hide();
+
+            // show fields based on section type
             if (sectionType === 'text' || sectionType === 'callout') {
-                $titleField.hide();
                 $contentField.show();
-                $newsletterTitleField.hide();
-                $newsletterSupportLineField.hide();
-                $linksField.hide();
             } else if (sectionType === 'toc') {
                 $titleField.show();
-                $contentField.hide();
-                $newsletterTitleField.hide();
-                $newsletterSupportLineField.hide();
                 $linksField.show();
             } else if (sectionType === 'newsletter') {
-                $titleField.hide();
-                $contentField.hide();
                 $newsletterTitleField.show();
                 $newsletterSupportLineField.show();
-                $linksField.hide();
+            } else if (sectionType === 'section_title') {
+                $sectionTitleTextField.show();
+                $sectionTitleIdField.show();
             }
         }
 

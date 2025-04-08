@@ -81,9 +81,10 @@ class AboutSection(models.Model):
         verbose_name_plural = 'About Sections'
 
     SECTION_TYPES = (
+        ('section_title', 'Section Title'),
         ('text', 'Text Block'),
         ('toc', 'Table of Contents'),
-        ('callout', 'Callout Box'),
+        ('callout', 'Special Callout'),
         ('newsletter', 'Newsletter'),
     )
 
@@ -95,6 +96,16 @@ class AboutSection(models.Model):
     links = models.TextField(
         blank=True,
         help_text="Enter links for Table of Contents sections as: link_text|link_url,link_text|link_url"
+    )
+    section_title_text = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Text for the Section Title (used for Section Title sections)"
+    )
+    section_title_id = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="ID attribute for the Section Title (used for Section Title sections)"
     )
     newsletter_title = models.CharField(
         max_length=255,
@@ -114,9 +125,11 @@ class AboutSection(models.Model):
         if self.section_type == 'toc':
             return f"{self.title or 'Untitled'} (Table of Contents)"
         elif self.section_type == 'callout':
-            return "Callout Box"
+            return "Special Callout"
         elif self.section_type == 'newsletter':
             return "Newsletter"
+        elif self.section_type == 'section_title':
+            return "Section Title"
         return "Text Block"
 
     class Meta:

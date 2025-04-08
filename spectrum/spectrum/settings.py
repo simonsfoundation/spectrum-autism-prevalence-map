@@ -35,6 +35,8 @@ DEBUG = (os.getenv('DJANGO_DEBUG', 'False') == 'True')
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
 GMAP_API_KEY = os.environ["GMAP_API_KEY"]
+MAILCHIMP_API_KEY = os.environ.get("MAILCHIMP_API_KEY", "")
+MAILCHIMP_LIST_ID = os.environ.get("MAILCHIMP_LIST_ID", "")
 
 # Application definition
 

@@ -23,11 +23,7 @@
         @apply mb-5.5;
     }
 
-    article h2 {
-        @apply font-medium font-sans mb-4 md:mb-7.5 md:mt-12 md:text-lg mt-6 text-1md text-red uppercase;
-    }
-
-    article h2:first-child {
+    [data-module='section_title']:first-child {
         @apply mt-0;
     }
 

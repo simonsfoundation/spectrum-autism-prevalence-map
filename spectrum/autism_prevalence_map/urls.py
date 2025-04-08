@@ -7,5 +7,5 @@ urlpatterns = [
     url(r'^about/$', views.about, name='about'),
     url(r'^studies-api/$', views.studiesApi, name='studiesApi'),
     url(r'^studies-csv/$', views.studiesCsv, name='studiesCsv'),
-
+    url(r'^subscribe-newsletter/$', views.subscribe_newsletter, name='subscribe_newsletter'),
 ]

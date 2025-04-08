@@ -58,7 +58,11 @@
         </section>
         <section class="max-w-400 mx-auto px-4 py-4 md:py-8">
             {% for section in about_page.sections.all %}
-                {% if section.section_type == 'toc' %}
+                {% if section.section_type == 'callout' %}
+                    <article data-module='callout' class="flex flex-col gap-8 mx-auto md:mt-8 mb-3 lg:mb-7 px-6 py-8 lg:p-12 md:max-w-159 border-l-red bg-light-gray border-l-4 lg:border-l-6">
+                        {{ section.content|safe }}
+                    </article>
+                {% elif section.section_type == 'toc' %}
                     <article class="mx-auto border-l-red flex flex-col bg-light-gray px-6 py-8 border-l-1 md:max-w-159 md:px-14 md:py-12 md:mt-8 md:mb-20 md:border-l-6">
                         <h2 class="font-serif font-bold normal-case text-3sm leading-5.5 text-red md:tracking-normal-lg md:mb-8 md:leading-7.1 md:text-1.5md">{{ section.title }}</h2>
                         <div class="font-serif-text font-thin text-1sm leading-6.4 tracking-wide text-dark-gray2 md:leading-8 md:tracking-wide md:text-3sm">
@@ -69,12 +73,12 @@
                             {% endfor %}
                         </div>
                     </article>
-                {% elif section.section_type == 'text' %}
-                    <article class="mx-auto mt-3 md:max-w-159">
-                        {{ section.content|safe }}
+                {% elif section.section_type == 'section_title' %}
+                    <article data-module='section_title' class="mx-auto mb-4 mt-6 md:mt-12 md:max-w-159">
+                        <h2 id="{{ section.section_title_id }}" class="font-sans font-medium text-1md uppercase text-red lg:text-lg">{{ section.section_title_text|safe }}</h2>
                     </article>
-                {% elif section.section_type == 'callout' %}
-                    <article data-module='callout' class="flex flex-col gap-8 mx-auto mt-3 mb-3 lg:mb-7 px-6 py-8 lg:p-12 md:max-w-159 border-l-red bg-light-gray border-l-4 lg:border-l-6">
+                {% elif section.section_type == 'text' %}
+                    <article class="mx-auto md:max-w-159">
                         {{ section.content|safe }}
                     </article>
                 {% elif section.section_type == 'newsletter' %}
@@ -232,5 +236,87 @@
     let education = '{{ education }}';
     let country = '{{ country }}';
     let continent = '{{ continent }}';
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const newsletterForms = document.querySelectorAll('form[data-id="mc-embedded-subscribe"]');
+    
+    newsletterForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const emailInput = form.querySelector('input[name="EMAIL"]');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const errorMessage = form.querySelector('[data-id="error-message"]');
+            const responseMessage = form.querySelector('[data-id="mce-response"]');
+            const responseError = form.querySelector('[data-id="mce-response-error"]');
+            const email = emailInput.value.trim();
+            
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(email)) {
+                errorMessage.classList.remove('hidden');
+                errorMessage.innerHTML = '<div class="pt-2 text-2xs leading-2 tracking-normal-md" data-id="error-input">Please enter an email address.</div>';
+                emailInput.classList.add('border-med-red');
+                emailInput.classList.add('border-0.375');
+                emailInput.classList.remove('border-navy');
+                form.querySelector('[data-id="email-error-icon"]').classList.remove('hidden');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('email', email);
+
+            submitBtn.disabled = true;
+
+            fetch('/subscribe-newsletter/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                errorMessage.classList.add('hidden');
+                emailInput.classList.remove('border-med-red');
+                emailInput.classList.remove('border-0.375');
+                emailInput.classList.add('border-navy');
+                form.querySelector('[data-id="email-error-icon"]').classList.add('hidden');
+
+                if (data.success) {
+                    responseMessage.textContent = data.message;
+                    responseMessage.classList.remove('hidden');
+                    responseError.classList.add('hidden');
+                    form.querySelector('[data-id="input-col"]').classList.add('hidden');
+                    form.querySelector('[data-id="signup-instructions"]').classList.add('hidden');
+                    emailInput.value = '';
+                } else {
+                    responseError.textContent = data.message;
+                    responseError.classList.remove('hidden');
+                    responseMessage.classList.add('hidden');
+                }
+            })
+            .catch(error => {
+                responseError.textContent = 'An error occurred. Please try again.';
+                responseError.classList.remove('hidden');
+                responseMessage.classList.add('hidden');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+            });
+        });
+
+        form.querySelector('input[name="EMAIL"]').addEventListener('input', function() {
+            const errorMessage = form.querySelector('[data-id="error-message"]');
+            const emailIcon = form.querySelector('[data-id="email-error-icon"]');
+            if (errorMessage && !errorMessage.classList.contains('hidden')) {
+                errorMessage.classList.add('hidden');
+                this.classList.remove('border-med-red');
+                this.classList.add('border-navy');
+                emailIcon.classList.add('hidden');
+            }
+        });
+    });
+});
 </script>
 {% endblock %}
