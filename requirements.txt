@@ -22,3 +22,4 @@ django-inline-svg==0.1.1
 django-ckeditor-5==0.2.13
 Pillow==10.4.0
 requests
+django-mathfilters

@@ -1,6 +1,7 @@
 {% extends 'autism_prevalence_map/base.html' %}
 
 {% load static %}
+{% load mathfilters %}
 
 {% block title %}{% spaceless %}
     {% if about_page %}
@@ -92,8 +93,8 @@
                                 -->
                                 <div class="flex flex-col gap-4 lg:grid lg:grid-cols-9 lg:gap-6">
                                     <div class="flex flex-col col-span-9" data-id="signup-instructions">
-                                        <h2 class="font-serif text-red font-normal normal-case text-3sm mb-1 md:mb-4 md:text-2md lg:text-lg lg:tracking-normal lg:leading-7.1" data-id="newsletter-title">{{ section.newsletter_title }}</h2>
-                                        <p class="font-serif text-dark-brown leading-5 text-1sm lg:text-3sm mb-0" data-id="newsletter-subtitle">{{ section.newsletter_support_line }}</p>
+                                        <h2 class="font-serif text-red font-normal normal-case text-3sm mb-1 md:mb-4 md:text-2md lg:text-lg lg:tracking-normal lg:leading-7.1" data-id="newsletter-title">{{ section.newsletter_title|safe }}</h2>
+                                        <p class="font-serif text-dark-brown leading-5 text-1sm lg:text-3sm mb-0" data-id="newsletter-subtitle">{{ section.newsletter_support_line|safe }}</p>
                                     </div>
                                     <div data-id="mce-response-error" class="hidden col-span-9 font-serif text-3sm text-red tracking-wide-sm lg:font-normal lg:leading-7.1 lg:text-2md lg:tracking-normal-md"></div>
                                     <div class="flex flex-col  col-span-9" data-id="input-col">
@@ -110,7 +111,7 @@
                                             </div>
                                             <div data-id="error-message" class="hidden font-sans w-full pl-2 text-1xs text-med-red tracking-tight-sm font-light"></div>
                                         </div>
-                                        <input type="checkbox" name="group[14][16]" id="mce-group[14]-14-4" value="" class="hidden" checked="">
+                                        <input type="checkbox" name="group[14][{{ section.newsletter_id|mul:section.newsletter_id }}]" value="" class="hidden" checked="">
 
                                     </div>
                                     <div data-id="mce-response" class="hidden col-span-9 font-serif text-3sm tracking-wide-sm lg:self-center lg:font-normal lg:leading-7.1 lg:text-2md lg:tracking-normal-md text-red"></div>
@@ -263,8 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            const formData = new FormData();
-            formData.append('email', email);
+            const formData = new FormData(form);
 
             submitBtn.disabled = true;
 
@@ -297,6 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
+                console.error('Subscription error:', error);
                 responseError.textContent = 'An error occurred. Please try again.';
                 responseError.classList.remove('hidden');
                 responseMessage.classList.add('hidden');

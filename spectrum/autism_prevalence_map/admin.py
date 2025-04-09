@@ -294,7 +294,7 @@ class StudiesAdmin(admin.ModelAdmin):
 class AboutSectionInline(admin.StackedInline):
     model = AboutSection
     extra = 0
-    fields = ('section_type', 'title', 'content', 'newsletter_title', 'newsletter_support_line', 'section_title_text', 'section_title_id', 'links', 'order')
+    fields = ('section_type', 'title', 'content', 'newsletter_title', 'newsletter_support_line', 'newsletter_id', 'section_title_text', 'section_title_id', 'links', 'order')
 
     class Media:
         js = ('autism_prevalence_map/dist/admin.min.js' if os.environ['DJANGO_ALLOWED_HOSTS'] != '127.0.0.1' else 'autism_prevalence_map/dist/admin.js',)

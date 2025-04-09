@@ -10,7 +10,7 @@ from django.db.models.functions import Cast
 from autism_prevalence_map.models import *
 from django.views.decorators.http import require_POST
 import requests
-import hashlib
+import json
 
 country_to_continent = {
   'Algeria': 'Africa',
@@ -731,44 +731,50 @@ def studiesCsv(request):
 
     return response
 
-from django.views.decorators.http import require_POST
-import requests
-import hashlib
-
 @require_POST
 def subscribe_newsletter(request):
-    email = request.POST.get('email', '').strip()
+    email = request.POST.get('EMAIL', '').strip()
     if not email or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
         return JsonResponse({'success': False, 'message': 'Invalid email address'}, status=400)
 
-    mailchimp_api_key = settings.MAILCHIMP_API_KEY
-    list_id = settings.MAILCHIMP_LIST_ID
-    dc = mailchimp_api_key.split('-')[1]
-    subscriber_hash = hashlib.md5(email.lower().encode()).hexdigest()
-    mailchimp_url = f"https://{dc}.api.mailchimp.com/3.0/lists/{list_id}/members/{subscriber_hash}"
+    # Extract all group[14][X] keys from POST data
+    group_data = {key: 'on' if value and value[0] != '' else '' for key, value in request.POST.items() if key.startswith('group[14][')}
 
-    response = requests.get(
+    # Prepare data with email and all group fields
+    data = {'EMAIL': email}
+    data.update(group_data)
+
+    # Send to Mailchimp's hosted endpoint
+    mailchimp_url = "https://spectrumnews.us11.list-manage.com/subscribe/post-json?u=725d9bd9f4c8ea826904b1f95&id=323ad556f4&c=callback"
+    response = requests.post(
         mailchimp_url,
-        auth=('apikey', mailchimp_api_key),
-        headers={'Content-Type': 'application/json'}
+        data=data,
+        headers={'Content-Type': 'application/x-www-form-urlencoded'}
     )
 
-    subscribe_url = f"https://{dc}.api.mailchimp.com/3.0/lists/{list_id}/members/"
-    subscribe_data = {
-        'email_address': email,
-        'status': 'subscribed',
-        'merge_fields': {
-            'GROUPINGS': [{'id': '14', 'groups': ['16']}]
-        }
-    }
-
-    subscribe_response = requests.post(
-        subscribe_url,
-        auth=('apikey', mailchimp_api_key),
-        json=subscribe_data
-    )
-
-    if subscribe_response.status_code in (200, 201):
-        return JsonResponse({'success': True, 'message': 'Thank you for subscribing!'})
+    if response.status_code == 200:
+        try:
+            # Extract msg from JSONP response
+            response_text = response.text
+            start = response_text.find('(') + 1
+            end = response_text.rfind(')')
+            json_str = response_text[start:end]
+            data = json.loads(json_str)
+            if data.get('result') == 'success':
+                return JsonResponse({'success': True, 'message': data.get('msg', 'Thank you for subscribing!')})
+            else:
+                return JsonResponse({'success': False, 'message': data.get('msg', 'Subscription failed. Please try again.')}, status=400)
+        except (ValueError, json.JSONDecodeError):
+            return JsonResponse({'success': False, 'message': 'Subscription failed: Invalid response'}, status=400)
     else:
-        return JsonResponse({'success': False, 'message': 'Subscription failed. Please try again.'}, status=400)
+        error_message = 'Subscription failed. Please try again.'
+        try:
+            if 'already subscribed' in response.text.lower():
+                error_message = 'This email is already subscribed.'
+            elif 'invalid' in response.text.lower():
+                error_message = 'Invalid email address.'
+            else:
+                error_message = response.text.strip()[:100]
+        except ValueError:
+            pass
+        return JsonResponse({'success': False, 'message': error_message}, status=400)

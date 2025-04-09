@@ -119,6 +119,11 @@ class AboutSection(models.Model):
         default="Catch up on what you may have missed from our recent coverage.",
         help_text="Support copy for newsletter section."
     )
+    newsletter_id = models.PositiveIntegerField(
+        default=2,
+        blank=True,
+        help_text="Newsletter ID (value: 2 for Spectrum weekly newsletter)"
+    )
 
     # Set the field title in the admin area
     def __str__(self):
