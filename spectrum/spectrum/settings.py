@@ -20,6 +20,9 @@ environ.Env.read_env() # reading .env file
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Define the SVG directory
+SVG_DIRS = [os.path.join(BASE_DIR, 'autism_prevalence_map', 'static', 'autism_prevalence_map', 'img')]
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    'svg',
     'admin_honeypot',
 ]
 

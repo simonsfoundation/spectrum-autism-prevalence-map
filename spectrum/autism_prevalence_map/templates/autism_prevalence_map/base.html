@@ -1,154 +1,128 @@
-{% load staticfiles %}
+{% load static %}
+{% load svg %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-    <!-- Basic Page Needs
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <meta charset="utf-8">
-    <title>{% block title %}{% endblock %}</title>
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Global Autism Prevalence Map | The Transmitter">
-    <meta name="twitter:description" content="The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.">
-    <meta name="twitter:image" content="https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/PrevalenceMapSG.png">
-    <meta property="og:title" content="Global Autism Prevalence Map | The Transmitter" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://autismprevalence.thetransmitter.org/" />
-    <meta property="og:image" content="https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/PrevalenceMapSG.png" />
-    <meta property="og:description" content="The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing." />
+    <meta charset='utf-8'>
+    <title>{% block title %}Global Autism Prevalence Map | The Transmitter{% endblock %}</title>
+    <meta name='description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.'>
+    <meta name='author' content=''>
+    <meta name='twitter:card' content='summary_large_image'>
+    <meta name='twitter:title' content='Global Autism Prevalence Map | The Transmitter'>
+    <meta name='twitter:description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.'>
+    <meta name='twitter:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/transmitter-autism-prevalence-map-thumbnail.png'>
+    <meta property='og:title' content='Global Autism Prevalence Map | The Transmitter' />
+    <meta property='og:type' content='website' />
+    <meta property='og:url' content='https://autismprevalence.thetransmitter.org/' />
+    <meta property='og:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/transmitter-autism-prevalence-map-thumbnail.png' />
+    <meta property='og:description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.' />
 
-    <!-- Mobile Specific Metas
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
 
-    <!-- CSS libraries
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <!-- <link rel="stylesheet" href="https://use.typekit.net/hjy6pmo.css"> -->
-    <script src="https://use.typekit.net/gnz4dab.js"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/vendor/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-    <!-- Custom site-wide CSS
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="stylesheet" type="text/css" href="{% static 'autism_prevalence_map/css/style.css' %}">
+    {% static '' as static_base %}
+    <link rel='stylesheet' type='text/css' href='{{ static_base }}{{ style_sheet }}'>
 
     {% block css_block %} {% endblock %}
 
-    <!-- Favicon
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="icon" type="image/png" href="{% static 'autism_prevalence_map/img/favicon.png' %}">
+    <link rel='icon' type='image/svg+xml' href="{% static 'autism_prevalence_map/img/favicon.svg' %}">
 
-    <!-- [Google Analytics/Optimize] -->
-    <style>.async-hide { opacity: 0 !important} </style>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BKVX7LHVRB"></script>
+    <!-- Google Tag Manager -->
     <script>
-
-    var stagingOptimizeContainer = 'GTM-T96ZVZZ';
-
-    var prodOptimizeContainer = 'GTM-K4R62V8';
-
-    var optimizeContainer = prodOptimizeContainer;
-
-    if (window.location.hostname.indexOf('staging') != -1){
-        optimizeContainer = stagingOptimizeContainer;
-
-        //page hiding snippet for staging
-        (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
-        h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
-        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
-        })(window,document.documentElement,'async-hide','dataLayer',4000,
-        {'GTM-T96ZVZZ':true});
-
-    }else{
-        
+        // Define dataLayer and the gtag function.
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-BKVX7LHVRB');
 
+        gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'analytics_storage': 'denied'
+        });
+        gtag('consent', 'default', {
+            'analytics_storage': 'granted',
+            'region': ['US']
+        });
+        dataLayer.push({'content_group_id': 'TTmiscellaneous17',
+                        'content_group_name': 'Tools, Microsites and Miscellaneous Resources'}
+        );
 
-        //page hiding snippet for production
-        (function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
-        h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
-        (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
-        })(window,document.documentElement,'async-hide','dataLayer',4000,
-        {'GTM-K4R62V8':true});
-
-    }
-
-
-    window.smartlook||(function(d) {
-        var o=smartlook=function(){ o.api.push(arguments)},h=d.getElementsByTagName('head')[0];
-        var c=d.createElement('script');o.api=new Array();c.async=true;c.type='text/javascript';
-        c.charset='utf-8';c.src='https://rec.smartlook.com/recorder.js';h.appendChild(c);
-        })(document);
-        smartlook('init', '4628f793b5a08af66717e9398e6a50ca3b8b9d0a');
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-TVJ9V6L');
 
     </script>
+    <!-- End Google Tag Manager -->
 
-    <!-- [/Google Analytics, Smartlook, and Optimize] -->
 </head>
 
-<body>
-    <!-- Navbar
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <nav class="navbar navbar-expand-xl fixed-top navbar-light spectrum-gradient">
-        <div class="left">
-            <a class="navbar-brand" href="https://www.thetransmitter.org/">
-                <img src="{% static 'autism_prevalence_map/img/spectrum-logo-white.png' %}" width="auto" height="40" class="d-inline-block" alt="">
-            </a>
-        </div>
-        <div class="middle">
-            <a class="navbar-brand centered-title" href="#">
-                <span class="navbar-brand-text">Global Autism Prevalence</span>
-            </a>
-        </div>
-        <div class="right">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#right-nav-container" aria-controls="right-nav-container" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<body class='font-sans bg-tan' data-page='{% block page_name %}{% endblock %}'>
+    <header class='sticky top-0 w-full px-10 py-4.7 border-b border-black bg-white z-10'>
+        <div class='flex justify-between items-center w-full mx-auto max-w-container'>
+            <div class='flex items-center space-x-8'>
+                <a class='max-w-logo flex items-center' href='https://www.thetransmitter.org/'>
+                    {% svg 'transmitter-logo' %}
+                    <span class='sr-only'>The Transmitter</span>
+                </a>
+                <a class='flex items-center pt-2 no-underline' href='#'>
+                    <span class='text-1md text-med-navy uppercase leading-none'>Global Autism Prevalence</span>
+                </a>
+            </div>
+            <div class='flex items-center space-x-8'>
+                <nav class='flex items-center gap-8'>
+                    <a id='map-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/" %}text-red{% endif %}' href="{% url 'index' %}">Map</a>
+                    <a id='list-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/list/" %}text-red{% endif %}' href="{% url 'list_view' %}">List</a>
+                    <a id='about-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/about/" %}text-red{% endif %}' href="{% url 'about' %}">About</a>
+                </nav>
 
-            <div class="collapse navbar-collapse" id="right-nav-container">
-                <!-- <span class="mr-auto"></span> -->
-                <ul class="nav nav-tabs mr-4">
-                    <li class="nav-item">
-                        <a id="map-link" class="nav-link {% if request.path == '/' %}active{% endif %} " href="{% url 'index' %}">Map</a>
-                    </li>
-                    <li class="nav-item">
-                        <a id="list-link" class="nav-link {% if request.path == '/list/' %}active{% endif %}" href="{% url 'list_view' %}">List</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">About</a>
-                    </li>
-                </ul>
-                <form class="form-inline">
-                    <div class="input-group">
-                        <input id="search" class="form-control spectrum-form" type="search" placeholder="Filter data by keyword" aria-label="Filter data by keyword">
-                        <div class="input-group-append">
-                            <span class="input-group-text spectrum-append"><i class="fas fa-search"></i></span>
+                {% if request.path != "/about/" %}
+                    <form class='flex items-center w-search border border-navy rounded-xl pl-1.5'>
+                        <div class='flex items-center justify-center'>
+                            {% svg 'icon-search' %}
                         </div>
-                    </div>
-                </form>
+                        <div class='flex-search relative'>
+                            <input id='search' class='w-full py-1.2 px-2 text-1xs3 text-med-navy font-bold uppercase placeholder-light-navy-3 rounded-xl outline-none' data-id="keyword-filter-input" type='search' placeholder='Filter data by keyword' aria-label='Filter data by keyword'>
+                            <button class='absolute -right-1 top-0 border-none hidden' type="button" aria-label="Clear search" role="button" data-id="keyword-filter-x-btn">
+                                {% svg 'icon-clear' %}
+                            </button>
+                        </div>
+                    </form>
+                {% endif %}
             </div>
         </div>
-    </nav>
+    </header>
 
-    <main>
+    <main {% if request.path != '/about/' %}class='pt-3 pb-4 px-10'{% endif %}>
         {% block body_block %} {% endblock %}
+        {% include 'autism_prevalence_map/mobile_popup.html' %}
     </main>
 
     {% block modal_block %} {% endblock %}
 
-    <!-- JS libraries
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <script src="https://use.typekit.net/gnz4dab.js"></script>
-    <script src="{% static 'autism_prevalence_map/vendor/js/jquery-3.3.1.min.js' %}"></script> 
-    <script src="{% static 'autism_prevalence_map/vendor/js/underscore-min.js' %}"></script>  
-    <script src="{% static 'autism_prevalence_map/vendor/js/popper.min.js' %}"></script> 
+    {% if request.path == "/about/" %}
+        {% include "autism_prevalence_map/footer.html" %}
+    {% endif %}
+
+    <script src="{% static 'autism_prevalence_map/vendor/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'autism_prevalence_map/vendor/js/jquery-ui.js' %}"></script> 
+    <script src="{% static 'autism_prevalence_map/vendor/js/popper.min.js' %}"></script>
     <script src="{% static 'autism_prevalence_map/vendor/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'autism_prevalence_map/vendor/js/d3.v5.min.js' %}"></script>    
+    <script src="{% static 'autism_prevalence_map/vendor/js/d3.v5.min.js' %}"></script>
+    <script src='{{ static_base }}{{ script }}'></script>
 
     {% block js_block %} {% endblock %}
+
+    <div role='banner' data-id='cookie-consent-banner' class='top-0 invisible fixed left-0 z-50 min-w-full border-dark-gray2 border-t-0.5 text-center bg-none bg-dark-gray/95 h-fit md:h-17.7'>
+        <div class='flex bg-transparent h-full text-tan p-4 justify-center w-full relative lg:px-5'>
+            <div class='block m-0 text-left justify-evenly items-center mx-auto md:flex md:justify-center'>
+                <span class='block font-serif text-sm text-left tracking-normal-lg leading-4 mb-2.5 md:mb-0 md:text-1sm md:leading-4.8'>We care about your data, and we’d like to use cookies to give you a smooth browsing experience. Please agree and read more about our <a class='text-tan' href='https://www.thetransmitter.org/privacy-policy'>privacy policy</a>.
+                </span>
+                <a href='#' data-cookie-value='true' data-function='cookie-banner-set-consent' class='bg-med-red float-left inline-block rounded font-extrabold text-sm text-center tracking-extra-wide h-10 w-12/25 px-10 py-2 no-underline text-light-navy-2 m-0 hover:underline md:flex md:items-center md:justify-center md:ml-2.5 md:h-11.5 md:w-32 lg:w-auto lg:py-4 lg:px-10'>AGREE</a>
+                <a href='#' data-cookie-value='revoke' data-function='cookie-banner-set-consent' class='bg-transparent border-light-gray2 border-0.125 float-right inline-block rounded font-extrabold text-sm text-center tracking-extra-wide h-10 w-12/25 px-10 py-2 no-underline text-light-navy-2 m-0 hover:underline md:flex md:items-center md:justify-center md:ml-2.5 md:h-11.5 md:w-32 lg:w-auto lg:py-4 lg:px-10'>DISMISS</a>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
