@@ -1,0 +1,504 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer base {
+    a {
+        @apply text-blue underline;
+    }
+
+    b {
+        @apply font-bold;
+    }
+
+    article p {
+        @apply mb-3 font-serif font-light text-1sm text-dark-gray2 tracking-normal-lg lg:mb-7 lg:tracking-wide lg:text-3sm lg:leading-8;
+    }
+
+    article ul {
+        @apply pl-8 mb-8 list-disc marker:text-red;
+    }
+
+    footer section a {
+        @apply no-underline text-light-navy-2 hover:text-med-red;
+    }
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Light.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Light.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Light.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 200;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-LightItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-LightItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-LightItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 200;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Regular.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Regular.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-RegularItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-RegularItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-RegularItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Book.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Book.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Book.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-BookItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BookItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BookItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Medium.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Medium.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-MediumItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-MediumItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-MediumItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-SemiBold.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-SemiBold.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-SemiBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-SemiBoldItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-SemiBoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-SemiBoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Bold.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Bold.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-BoldItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-ExtraBold.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-ExtraBold.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-ExtraBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-ExtraBoldItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-ExtraBoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-ExtraBoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-Black.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Black.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-Black.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: 'GothiaSans';
+    src: url('../fonts/GothiaSansCompleteOT/GothiaSans-BlackItalic.otf') format('opentype'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BlackItalic.woff') format('woff'),
+        url('../fonts/GothiaSansCompleteWeb/GothiaSans-BlackItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Light.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Light.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 200;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-LightItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-LightItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 200;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Regular.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-RegularItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-RegularItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Book.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Book.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BookItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BookItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Medium.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-MediumItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-MediumItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-SemiBold.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-SemiBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-SemiBoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-SemiBoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Bold.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-ExtraBold.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-ExtraBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-ExtraBoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-ExtraBoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Black.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-Black.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: 'GothiaSerif';
+    src: url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BlackItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifCompleteWeb/GothiaSerif-BlackItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 900;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-Regular.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Regular.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Regular.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-RegularItalic.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-RegularItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-RegularItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-Book.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Book.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Book.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-BookItalic.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-BookItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-BookItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-Medium.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Medium.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Medium.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-MediumItalic.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-MediumItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-MediumItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-SemiBold.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-SemiBold.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-SemiBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-SemiBoldItalic.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-SemiBoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-SemiBoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-Bold.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Bold.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-Bold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 700;
+}
+
+@font-face {
+    font-family: 'GothiaSerifText';
+    src: url('../fonts/GothiaSerifTextCompleteOT/GothiaSerifText-BoldItalic.otf') format('opentype'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-BoldItalic.woff') format('woff'),
+        url('../fonts/GothiaSerifTextCompleteWeb/GothiaSerifText-BoldItalic.woff2') format('woff2');
+    font-style: italic;
+    font-weight: 700;
+}
+
+@layer utilities {
+    input[type="search"]::-webkit-search-cancel-button {
+        @apply hidden;
+    }
+    .ui-slider {
+        @apply relative h-1 bg-light-navy-2 rounded-sm;
+    }
+    .ui-slider-handle {
+        @apply absolute inline-block w-2.5 h-2.5 -top-0.75 rounded-full bg-med-navy;
+    }
+    .ui-slider-range {
+        @apply absolute h-1 bg-med-navy;
+    }
+    .tooltip {
+        @apply relative opacity-100;
+    }
+    .tooltip.bs-tooltip-bottom {
+        @apply pt-1.5;
+    }
+    .tooltip.bs-tooltip-top {
+        @apply pb-1.5 -mt-0.75 -mr-0.25;
+    }
+    .tooltip .arrow {
+        @apply absolute block w-arrow h-arrow border-transparent;
+    }
+    .bs-tooltip-bottom .arrow {
+        @apply -top-0.25;
+    }
+    .bs-tooltip-top .arrow {
+        @apply -bottom-0.25 rotate-180;
+    }
+    .tooltip .arrow:before {
+        @apply absolute content-empty bottom-0 z-2 border-solid border-t-0 border-x-1.5 border-b-1.5 border-transparent border-b-light-gray;
+    }
+    .tooltip .arrow:after {
+        @apply absolute content-empty bottom-0.125 -left-0.125 w-arrow2 h-arrow2 z-1 border-solid border-t-0 border-x-1.5 border-b-1.5 border-transparent border-b-med-gray;
+    }
+    .tooltip-inner {
+        @apply py-3 px-1.5 bg-light-gray border-0.125 border-light-gray2 rounded-sm font-serif text-2xs2 text-dark-gray2 text-center max-w-tooltip shadow-tooltip;
+    }
+    .tooltip.help {
+        @apply -ml-5 -mt-23;
+    }
+    .tooltip.help .tooltip-inner {
+        @apply w-help max-w-none text-left pr-11.5 pl-5.2;
+    }
+    .tooltip.copy {
+        @apply pt-0;
+    }
+    .tooltip.copy .tooltip-inner {
+        @apply px-4;
+    }
+    .map-circles {
+        @apply cursor-pointer;
+    }
+    .timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob,
+    .timeline-switch > [type="checkbox"]:not(:checked) + label + .timeline-switch-knob {
+        @apply absolute inline-block w-switchin h-switchin top-0.75 rounded-circle cursor-pointer pointer-events-none transition-all duration-100 ease-in;
+    }
+    .timeline-switch > [type="checkbox"]:checked + label + .timeline-switch-knob {
+        @apply right-3.25;
+    }
+    .timeline-switch > [type="checkbox"]:not(:checked) + label + .timeline-switch-knob {
+        @apply right-8.75;
+    }
+    .timeline-switch > [type="checkbox"]:checked + label,
+    .timeline-switch > [type="checkbox"]:not(:checked) + label {
+        @apply inline-block mr-1.75 py-1.25 pr-13 cursor-pointer;
+    }
+    .timeline-switch > [type="checkbox"]:checked + label:after,
+    .timeline-switch > [type="checkbox"]:not(:checked) + label:after {
+        @apply content-empty absolute -top-0.5 right-2.25 w-switchout h-switchout rounded-lg bg-light-navy-2 border-0.125 border-med-navy;
+    }
+    .timeline-switch > [type="checkbox"]:checked,
+    .timeline-switch > [type="checkbox"]:not(:checked) {
+        @apply hidden;
+    }
+    #timeline svg {
+        @apply overflow-visible;
+    }
+    .brush .selection {
+        @apply stroke-med-red fill-light-gray4 stroke-dash-5;
+    }
+    .timeline-axis {
+        @apply text-white text-1xs2;
+    }
+    .timeline-circles {
+       @apply translate-y-20;
+    }
+    #studies-table th:not(.w-toggle) {
+        @apply align-bottom pt-8.25 pb-4 text-left text-3.5 text-tan font-bold tracking-extra-wide leading-4.25;
+    }
+    #studies-table td,
+    #studies-table .w-toggle {
+        @apply py-4 align-top text-4 text-med-navy tracking-normal-lg;
+    }
+    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) {
+        @apply bg-white2 border-med-navy;
+    }
+    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) .chevron-down {
+        @apply rotate-180;
+    }
+    #studies-table_tbody tr.show {
+        @apply border-light-gray2 border-b-0.3125;
+    }
+    #studies-table_tbody tr.show td,
+    #studies-table_tbody tr.show .w-toggle {
+        @apply pt-6 pb-10.5;
+    }
+    #studies-table .show {
+        @apply visible;
+    }
+    #studies-table .show a {
+        @apply no-underline;
+    }
+}
