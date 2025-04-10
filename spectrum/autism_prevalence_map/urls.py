@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^studies-api/$', views.studiesApi, name='studiesApi'),
     url(r'^studies-csv/$', views.studiesCsv, name='studiesCsv'),
     url(r'^subscribe-newsletter/$', views.subscribe_newsletter, name='subscribe_newsletter'),
+    url(r'^ckeditor5/', include('django_ckeditor_5.urls')),
 ]

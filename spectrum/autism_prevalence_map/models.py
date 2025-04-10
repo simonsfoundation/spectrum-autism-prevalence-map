@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from datetime import date
-from ckeditor.fields import RichTextField
+from django_ckeditor_5.fields import CKEditor5Field
 
 # Create your models here.
 
@@ -91,7 +91,7 @@ class AboutSection(models.Model):
     about_page = models.ForeignKey(AboutPage, on_delete=models.CASCADE, related_name='sections')
     section_type = models.CharField(max_length=20, choices=SECTION_TYPES, default='text', help_text="Type of section")
     title = models.CharField(max_length=255, blank=True, help_text="Section title (used for Table of Contents sections)")
-    content = RichTextField(blank=True, help_text="Rich text content (used for Text Block and Callout Box sections)")
+    content = CKEditor5Field(blank=True, help_text="Rich text content (used for Text Block and Callout Box sections)")
     order = models.PositiveIntegerField(default=0, help_text="Order of this section")
     links = models.TextField(
         blank=True,
