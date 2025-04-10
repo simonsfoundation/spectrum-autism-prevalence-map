@@ -35,6 +35,8 @@ DEBUG = (os.getenv('DJANGO_DEBUG', 'False') == 'True')
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
 GMAP_API_KEY = os.environ["GMAP_API_KEY"]
+MAILCHIMP_API_KEY = os.environ.get("MAILCHIMP_API_KEY", "")
+MAILCHIMP_LIST_ID = os.environ.get("MAILCHIMP_LIST_ID", "")
 
 # Application definition
 
@@ -49,6 +51,8 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'svg',
     'admin_honeypot',
+    'django_ckeditor_5',
+    'mathfilters',
 ]
 
 MIDDLEWARE = [
@@ -162,3 +166,25 @@ ALLOWED_ADMIN_IP_RANGES = ["34.231.5.44/32",
                            ]
 RESTRICTED_APP_NAMES=['admin']
 TRUST_PRIVATE_IP=True
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': {
+            'items': [
+                'heading', '|',
+                'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                'undo', 'redo', '|',
+                'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+                'alignment', 'outdent', 'indent', '|',
+                'insertTable', 'mediaEmbed', 'codeBlock'
+            ]
+        },
+        'height': 291,
+        'width': 835,
+    },
+}
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
