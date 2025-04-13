@@ -129,7 +129,7 @@ export function ttInitList() {
 
                 const toggletd = row1.append('th')
                     .attr('scope', 'row')
-                    .classed('p-0 pl-3.75 min-w-toggle', true);
+                    .classed('p-0 pl-3.75 min-w-toggle sticky left-0 z-11', true);
 
                 toggletd.append('img')
                     .attr('src', chevron_down)
@@ -140,14 +140,14 @@ export function ttInitList() {
                     .text(function (d) { 
                         return d.properties.yearpublished; 
                     })
-                    .classed('min-w-td1', true);
+                    .classed('min-w-td1 sticky left-13.75 z-11', true);
 
                 row1.append('td')
                     .html(function (d) { 
                         const authors = d.properties.authors.replace('et al.', '<em>et al.</em>');
                         return authors; 
                     })
-                    .classed('min-w-td2', true);
+                    .classed('min-w-td2 sticky left-38.75 z-11', true);
 
                 row1.append('td')
                     .text(function (d) { 

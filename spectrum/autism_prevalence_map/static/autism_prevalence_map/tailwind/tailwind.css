@@ -475,6 +475,9 @@
     .timeline-circles {
        @apply translate-y-20;
     }
+    #studies-table thead th {
+        @apply bg-dark-gray;
+    }
     #studies-table th:not(.min-w-toggle) {
         @apply align-bottom pt-8.25 pb-4 text-left text-3.5 text-tan font-bold tracking-extra-wide leading-4.25 whitespace-nowrap pr-14;
     }
@@ -490,6 +493,10 @@
     #studies-table td,
     #studies-table .min-w-toggle {
         @apply py-4 align-top text-4 text-med-navy tracking-normal-lg;
+    }
+    #studies-table tbody th,
+    #studies-table tbody td {
+        @apply bg-tan;
     }
     #studies-table_tbody tr:not(.collapsed):not(.bg-tan) {
         @apply bg-white2 border-med-navy;
