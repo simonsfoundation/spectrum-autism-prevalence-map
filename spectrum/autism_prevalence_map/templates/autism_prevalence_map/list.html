@@ -13,21 +13,33 @@
     <div class='pt-3.25 pb-4 mx-auto max-w-container'>
         <div id='list'>
             <div class='pb-3.25 text-2xs uppercase text-med-navy'><span id='results-count'>0</span> results</div>
-
-            <table id='studies-table' class='w-full'>
-                <thead class='bg-dark-gray border-b-3 border-tan sticky top-17.7 z-10'>
-                    <tr>
-                        <th scope='col' class='w-toggle'></th>
-                        <th scope='col'>YEAR</th>
-                        <th scope='col'>AUTHOR</th>
-                        <th scope='col'>COUNTRY</th>
-                        <th scope='col'>AREA</th>
-                        <th scope='col'>SAMPLE SIZE</th>
-                        <th scope='col'>PREVALENCE (PER 10,000)</th>
-                        <th scope='col' class='pr-6'>95% CONFIDENCE INTERVAL</th>
-                    </tr>
-                </thead>
-            </table>
+            <div class='w-full overflow-x-auto'>
+                <table id='studies-table' class='table-fixed'>
+                    <!-- <thead class='bg-dark-gray border-b-3 border-tan sticky top-17.7 z-10'> -->
+                    <thead class='bg-dark-gray border-b-3 border-tan z-10'>
+                        <tr>
+                            <th scope='col' class='min-w-toggle'></th>
+                            <th scope='col' class='min-w-td1'>YEAR</th>
+                            <th scope='col' class='min-w-td2'>AUTHOR</th>
+                            <th scope='col' class='min-w-td3'>COUNTRY</th>
+                            <th scope='col' class='min-w-td4'>AREA</th>
+                            <th scope='col'>SAMPLE SIZE</th>
+                            <th scope='col'>PREVALENCE (PER 10,000)</th>
+                            <th scope='col'>95% CONFIDENCE INTERVAL</th>
+                            <th scope='col'>AGE (YEARS)</th>
+                            <th scope='col'>INDIVIDUALS WITH AUTISM</th>
+                            <th scope='col'>DIAGNOSTIC CRITERIA</th>
+                            <th scope='col'>DIAGNOSTIC TOOLS</th>
+                            <th scope='col'>PERCENT/AVERAGE IQ</th>
+                            <th scope='col'>SEX RATIO (M:F)</th>
+                            <th scope='col'>YEAR(S) STUDIED</th>
+                            <th scope='col'>CATEGORY</th>
+                            <th scope='col' class='min-w-td16'>STUDY TYPE</th>
+                            <th scope='col'>PUBLICATION</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
     </div>
 </div>     

@@ -475,11 +475,20 @@
     .timeline-circles {
        @apply translate-y-20;
     }
-    #studies-table th:not(.w-toggle) {
-        @apply align-bottom pt-8.25 pb-4 text-left text-3.5 text-tan font-bold tracking-extra-wide leading-4.25;
+    #studies-table th:not(.min-w-toggle) {
+        @apply align-bottom pt-8.25 pb-4 text-left text-3.5 text-tan font-bold tracking-extra-wide leading-4.25 whitespace-nowrap pr-14;
+    }
+    #studies-table td {
+        @apply pr-14;
+    }
+    #studies-table th:not(.min-w-toggle):last-child {
+        @apply pr-6.5;
+    }
+    #studies-table td:last-child {
+        @apply pr-0;
     }
     #studies-table td,
-    #studies-table .w-toggle {
+    #studies-table .min-w-toggle {
         @apply py-4 align-top text-4 text-med-navy tracking-normal-lg;
     }
     #studies-table_tbody tr:not(.collapsed):not(.bg-tan) {
@@ -492,7 +501,7 @@
         @apply border-light-gray2 border-b-0.3125;
     }
     #studies-table_tbody tr.show td,
-    #studies-table_tbody tr.show .w-toggle {
+    #studies-table_tbody tr.show .min-w-toggle {
         @apply pt-6 pb-10.5;
     }
     #studies-table .show {
