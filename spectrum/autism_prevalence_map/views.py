@@ -293,6 +293,11 @@ def list_view(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        try:
+            last_updated_on_obj = options.objects.get(name='last_updated_on')
+            last_updated_on = last_updated_on_obj.value
+        except:
+            last_updated_on = ''
 
     context_dict = {
         'min_yearpublished':min_yearpublished,
@@ -310,6 +315,7 @@ def list_view(request):
         'education':education,
         'country': country,
         'continent': continent,
+        'last_updated_on': last_updated_on,
         'style_sheet': style_sheet,
         'script': script,}
 
@@ -342,6 +348,11 @@ def about(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        try:
+            last_updated_on_obj = options.objects.get(name='last_updated_on')
+            last_updated_on = last_updated_on_obj.value
+        except:
+            last_updated_on = ''
 
     context_dict = {
         'min_yearpublished':min_yearpublished,
@@ -359,6 +370,7 @@ def about(request):
         'education':education,
         'country': country,
         'continent': continent,
+        'last_updated_on': last_updated_on,
         'style_sheet': style_sheet,
         'script': script,}
         

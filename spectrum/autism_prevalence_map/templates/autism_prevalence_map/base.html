@@ -6,6 +6,9 @@
     <meta charset='utf-8'>
     <title>{% block title %}Global Autism Prevalence Map | The Transmitter{% endblock %}</title>
     <meta name='description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.'>
+    {% if last_updated_on %}
+    <meta name="revised" content="{{ last_updated_on }}">
+    {% endif %}
     <meta name='author' content=''>
     <meta name='twitter:card' content='summary_large_image'>
     <meta name='twitter:title' content='Global Autism Prevalence Map | The Transmitter'>
