@@ -18,7 +18,15 @@
     <meta property='og:description' content='{% block og_description %}Use The Transmitter’s interactive Global Autism Prevalence Map to explore studies and data on autism prevalence worldwide.{% endblock %}' />
 
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
-
+    {% if last_updated_on %}
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "dateModified": "{{ last_updated_on }}"
+        }
+    </script>
+    {% endif %}
     {% static '' as static_base %}
     <link rel='stylesheet' type='text/css' href='{{ static_base }}{{ style_sheet }}'>
 
