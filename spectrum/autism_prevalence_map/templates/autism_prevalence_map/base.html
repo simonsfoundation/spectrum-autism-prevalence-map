@@ -5,17 +5,17 @@
 <head>
     <meta charset='utf-8'>
     <title>{% block title %}Global Autism Prevalence Map | The Transmitter{% endblock %}</title>
-    <meta name='description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.'>
+    <meta name='description' content='{% block description %}The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.{% endblock %}'>
     <meta name='author' content=''>
     <meta name='twitter:card' content='summary_large_image'>
-    <meta name='twitter:title' content='Global Autism Prevalence Map | The Transmitter'>
-    <meta name='twitter:description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.'>
+    <meta name='twitter:title' content='{% block twitter_title %}Global Autism Prevalence Map | The Transmitter{% endblock %}'>
+    <meta name='twitter:description' content='{% block twitter_description %}Use The Transmitter’s interactive Global Autism Prevalence Map to explore studies and data on autism prevalence worldwide.{% endblock %}'>
     <meta name='twitter:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/transmitter-autism-prevalence-map-thumbnail.png'>
-    <meta property='og:title' content='Global Autism Prevalence Map | The Transmitter' />
+    <meta property='og:title' content='{% block og_title %}Global Autism Prevalence Map | The Transmitter{% endblock %}' />
     <meta property='og:type' content='website' />
     <meta property='og:url' content='https://autismprevalence.thetransmitter.org/' />
     <meta property='og:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/transmitter-autism-prevalence-map-thumbnail.png' />
-    <meta property='og:description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.' />
+    <meta property='og:description' content='{% block og_description %}Use The Transmitter’s interactive Global Autism Prevalence Map to explore studies and data on autism prevalence worldwide.{% endblock %}' />
 
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
 
