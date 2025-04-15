@@ -499,7 +499,11 @@
         @apply bg-tan;
     }
     #studies-table_tbody tr:not(.collapsed):not(.bg-tan) {
-        @apply bg-white2 border-med-navy;
+        @apply border-med-navy;
+    }
+    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) td,
+    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) th {
+        @apply bg-white2;
     }
     #studies-table_tbody tr:not(.collapsed):not(.bg-tan) .chevron-down {
         @apply rotate-180;

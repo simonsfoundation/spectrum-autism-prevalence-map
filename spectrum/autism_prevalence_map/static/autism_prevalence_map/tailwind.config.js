@@ -188,6 +188,7 @@ module.exports = {
                 'map-expand': '61.188rem', // 979px
                 'map-lg-expand': '64.438rem',  // 1031px
                 'map-xl-expand': '80.875rem',  // 1294px
+                'rowcard': '22.0625rem', // 353px
             },
             minWidth: {
                 'toggle': '3.438rem', // 55px
@@ -196,6 +197,7 @@ module.exports = {
                 'td3': '9.3125rem', // 149px
                 'td4': '17.625rem', // 282px
                 'td16': '14.0625rem', // 225px
+                'rowcard': '22.0625rem', // 353px
             },
             maxHeight: {
                 'info1': 'calc(100% - 52px)', // height of the info card minus the sticky button wrapper at the bottom with 1 link

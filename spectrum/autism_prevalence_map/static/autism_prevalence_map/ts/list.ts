@@ -241,7 +241,7 @@ export function ttInitList() {
                             }
                         }
 
-                        return links.join(', ');
+                        return links.join(' ');
                     });
 
                 let row2 = enter_selection.insert('tr')
@@ -251,13 +251,17 @@ export function ttInitList() {
                     })
                     .attr('data-collapse-target', 'true');
 
-                let card_div = row2.append('td')
-                    .attr('colspan', '9')
-                    .append('div')
-                    .classed('flex', true)
+                let card_div1 = row2.append('td')
+                    .classed('sticky left-0 min-w-rowcard w-rowcard z-11 bg-tan', true)
+                    .attr('colspan', '3')
+                    .append('div');
 
-                card_div.append('div')
-                    .classed('w-listcard pl-13.75 pr-8', true)
+                let card_div2 = row2.append('td')
+                    .attr('colspan', '14')
+                    .append('div');
+
+                card_div1.append('div')
+                    .classed('pl-13.75 pr-8', true)
                     .append('p')
                     .html(function (d) { 
                         const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
@@ -308,7 +312,8 @@ export function ttInitList() {
                     });
 
                 // add placeholder that we will add map to when expanded
-                card_div.append('div')
+                card_div2.append('div')
+                    .classed('pl-15', true)
                     .attr('id', function(d) { return 'map_placeholder_' + d.properties.pk; });
 
                 d3.select('#studies-table_tbody').selectAll('tr').sort(function(a, b){ 
