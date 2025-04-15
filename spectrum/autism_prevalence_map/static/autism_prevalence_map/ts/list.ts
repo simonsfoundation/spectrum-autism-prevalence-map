@@ -251,16 +251,16 @@ export function ttInitList() {
                     })
                     .attr('data-collapse-target', 'true');
 
-                let card_div1 = row2.append('td')
+                let card_div_left = row2.append('td')
                     .classed('sticky left-0 min-w-rowcard w-rowcard z-11 bg-tan', true)
                     .attr('colspan', '3')
                     .append('div');
 
-                let card_div2 = row2.append('td')
+                let card_div_right = row2.append('td')
                     .attr('colspan', '14')
                     .append('div');
 
-                card_div1.append('div')
+                card_div_left.append('div')
                     .classed('pl-13.75 pr-8', true)
                     .append('p')
                     .html(function (d) { 
@@ -312,7 +312,7 @@ export function ttInitList() {
                     });
 
                 // add placeholder that we will add map to when expanded
-                card_div2.append('div')
+                card_div_right.append('div')
                     .classed('pl-15', true)
                     .attr('id', function(d) { return 'map_placeholder_' + d.properties.pk; });
 
