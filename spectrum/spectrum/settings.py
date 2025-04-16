@@ -132,7 +132,6 @@ USE_L10N = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATIC_VERSION = '1.0.0'
 
 STATIC_URL = os.environ["DJANGO_STATIC_URL"]
 

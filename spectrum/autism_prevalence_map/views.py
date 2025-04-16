@@ -8,7 +8,6 @@ import re, csv, os
 from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.db.models import Avg, FloatField
 from django.db.models.functions import Cast
-from django.conf import settings
 
 #import all apartment models and forms
 from autism_prevalence_map.models import *
@@ -221,8 +220,8 @@ def index(request):
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
-        style_sheet = 'autism_prevalence_map/dist/main.min.css?v=' + settings.STATIC_VERSION
-        script = 'autism_prevalence_map/dist/main.min.js?v=' + settings.STATIC_VERSION
+        style_sheet = 'autism_prevalence_map/dist/main.min.css'
+        script = 'autism_prevalence_map/dist/main.min.js'
 
     if request.method == 'GET':
         min_yearpublished = request.GET.get('min_yearpublished', '')
@@ -275,8 +274,8 @@ def list_view(request):
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
-        style_sheet = 'autism_prevalence_map/dist/main.min.css?v=' + settings.STATIC_VERSION
-        script = 'autism_prevalence_map/dist/main.min.js?v=' + settings.STATIC_VERSION
+        style_sheet = 'autism_prevalence_map/dist/main.min.css'
+        script = 'autism_prevalence_map/dist/main.min.js'
 
     if request.method == 'GET':
         min_yearpublished = request.GET.get('min_yearpublished','')
@@ -324,8 +323,8 @@ def about(request):
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
-        style_sheet = 'autism_prevalence_map/dist/main.min.css?v=' + settings.STATIC_VERSION
-        script = 'autism_prevalence_map/dist/main.min.js?v=' + settings.STATIC_VERSION
+        style_sheet = 'autism_prevalence_map/dist/main.min.css'
+        script = 'autism_prevalence_map/dist/main.min.js'
 
     if request.method == 'GET':
         min_yearpublished = request.GET.get('min_yearpublished','')
