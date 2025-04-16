@@ -288,4 +288,10 @@ class StudiesAdmin(admin.ModelAdmin):
         option_obj, _ = options.objects.update_or_create(name='last_updated_on')
         option_obj.value = datetime.date.today().strftime("%-d %B %Y")
         option_obj.save()
+        now = datetime.datetime.now(datetime.timezone.utc)
+        nowformatted = now.replace(second=0, microsecond=0)
+        nowformatted = nowformatted.isoformat(timespec='minutes')
+        meta_option_obj, _ = options.objects.update_or_create(name='last_updated_on_meta')
+        meta_option_obj.value = nowformatted
+        meta_option_obj.save()
 
