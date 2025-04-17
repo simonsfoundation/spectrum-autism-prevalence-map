@@ -8,6 +8,7 @@ import re, csv, os
 from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.db.models import Avg, FloatField
 from django.db.models.functions import Cast
+from django.contrib.staticfiles.finders import find as find_static_file
 from django.conf import settings
 
 #import all apartment models and forms
@@ -212,6 +213,21 @@ country_to_continent = {
   'Vanuatu': 'Australia and Oceania'
 }
 
+# return unix timestamp to use for cache busting
+def get_file_timestamp(static_path):
+    real_path = find_static_file(static_path)
+    if real_path and os.path.exists(real_path):
+        return str(int(os.path.getmtime(real_path)))
+    return ''
+
+# attach version to file path
+def versioned(path):
+    real = find_static_file(path)
+    if real and os.path.exists(real):
+        ts = int(os.path.getmtime(real))
+        return f"{path}?v={ts}"
+    return path
+
 # Create your views here.
 def index(request):
     """
@@ -221,8 +237,8 @@ def index(request):
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
-        style_sheet = 'autism_prevalence_map/dist/main.min.css?v=' + settings.STATIC_VERSION
-        script = 'autism_prevalence_map/dist/main.min.js?v=' + settings.STATIC_VERSION
+        style_sheet = versioned('autism_prevalence_map/dist/main.min.css')
+        script = versioned('autism_prevalence_map/dist/main.min.js')
 
     if request.method == 'GET':
         min_yearpublished = request.GET.get('min_yearpublished', '')
@@ -275,8 +291,8 @@ def list_view(request):
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
-        style_sheet = 'autism_prevalence_map/dist/main.min.css?v=' + settings.STATIC_VERSION
-        script = 'autism_prevalence_map/dist/main.min.js?v=' + settings.STATIC_VERSION
+        style_sheet = versioned('autism_prevalence_map/dist/main.min.css')
+        script = versioned('autism_prevalence_map/dist/main.min.js')
 
     if request.method == 'GET':
         min_yearpublished = request.GET.get('min_yearpublished','')
@@ -324,8 +340,8 @@ def about(request):
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
-        style_sheet = 'autism_prevalence_map/dist/main.min.css?v=' + settings.STATIC_VERSION
-        script = 'autism_prevalence_map/dist/main.min.js?v=' + settings.STATIC_VERSION
+        style_sheet = versioned('autism_prevalence_map/dist/main.min.css')
+        script = versioned('autism_prevalence_map/dist/main.min.js')
 
     if request.method == 'GET':
         min_yearpublished = request.GET.get('min_yearpublished','')
