@@ -245,6 +245,10 @@ def index(request):
         except:
             last_updated_on = ''
 
+        #sort fields
+        sort_field = request.GET.get('sort_field', '')
+        sort_order = request.GET.get('sort_order', 'asc')
+
     context_dict = {'min_yearpublished': min_yearpublished,
                     'max_yearpublished': max_yearpublished,
                     'yearsstudied_number_min': yearsstudied_number_min,
@@ -261,6 +265,8 @@ def index(request):
                     'country': country,
                     'continent': continent,
                     'last_updated_on': last_updated_on,
+                    'sort_field': sort_field,
+                    'sort_order': sort_order,
                     'style_sheet': style_sheet,
                     'script': script,}
     
@@ -293,6 +299,12 @@ def list_view(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        sort_field = request.GET.get('sort_field','')
+        sort_order = request.GET.get('sort_order','asc')
+
+        #sort fields
+        sort_field = request.GET.get('sort_field', '')
+        sort_order = request.GET.get('sort_order', 'asc')
 
     context_dict = {
         'min_yearpublished':min_yearpublished,
@@ -310,6 +322,8 @@ def list_view(request):
         'education':education,
         'country': country,
         'continent': continent,
+        'sort_field': sort_field,
+        'sort_order': sort_order,
         'style_sheet': style_sheet,
         'script': script,}
 
@@ -343,6 +357,10 @@ def about(request):
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
 
+        #sort fields
+        sort_field = request.GET.get('sort_field', '')
+        sort_order = request.GET.get('sort_order', 'asc')
+
     context_dict = {
         'min_yearpublished':min_yearpublished,
         'max_yearpublished':max_yearpublished,
@@ -359,6 +377,8 @@ def about(request):
         'education':education,
         'country': country,
         'continent': continent,
+        'sort_field': sort_field,
+        'sort_order': sort_order,
         'style_sheet': style_sheet,
         'script': script,}
         
@@ -388,6 +408,10 @@ def studiesApi(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+
+        #sort fields
+        sort_field = request.GET.get('sort_field', '')
+        sort_order = request.GET.get('sort_order', 'asc')
 
         #apply filters
         if min_yearpublished:
@@ -506,6 +530,10 @@ def studiesApi(request):
             pulled_studies = studies.objects.annotate(search=vector).filter(search=keyword).filter(**kwargs)
         else:
             pulled_studies = studies.objects.filter(**kwargs)
+
+        if sort_field == 'yearpublished_number':
+            prefix = '' if sort_order == 'asc' else '-'
+            pulled_studies = pulled_studies.order_by(prefix + sort_field)
 
         # calculate the mean on page load, and after filtering, and include that value in the JSON response
         mean_agg = pulled_studies.aggregate(mean=Avg(Cast('prevalenceper10000_number', FloatField())))

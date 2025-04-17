@@ -316,9 +316,12 @@ export function ttInitList() {
                     .classed('pl-15', true)
                     .attr('id', function(d) { return 'map_placeholder_' + d.properties.pk; });
 
+                /*
+                REMOVED TO WORK ON SORTING. IS THIS NEEDED?
                 d3.select('#studies-table_tbody').selectAll('tr').sort(function(a, b){ 
                     return a.properties.pk - b.properties.pk; 
                 });
+                */
 
                 $('[data-collapse-target]').each(function () {
                     $(this).addClass('hidden');

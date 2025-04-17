@@ -481,6 +481,15 @@
     #studies-table th:not(.min-w-toggle) {
         @apply align-bottom pt-8.25 pb-4 text-left text-3.5 text-tan font-bold tracking-extra-wide leading-4.25 whitespace-nowrap pr-14;
     }
+    #studies-table th:not(.min-w-toggle) div {
+        @apply relative flex gap-1;
+    }
+    #studies-table th:not(.min-w-toggle) span {
+        @apply relative;
+    }
+    #studies-table th:not(.min-w-toggle) svg {
+        @apply absolute transform -translate-y-0.5 left-0;
+    }
     #studies-table td {
         @apply pr-14;
     }
