@@ -9,7 +9,6 @@ from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.db.models import Avg, FloatField
 from django.db.models.functions import Cast
 from django.contrib.staticfiles.finders import find as find_static_file
-from django.conf import settings
 
 #import all apartment models and forms
 from autism_prevalence_map.models import *
@@ -212,13 +211,6 @@ country_to_continent = {
   'Tuvalu': 'Australia and Oceania',
   'Vanuatu': 'Australia and Oceania'
 }
-
-# return unix timestamp to use for cache busting
-def get_file_timestamp(static_path):
-    real_path = find_static_file(static_path)
-    if real_path and os.path.exists(real_path):
-        return str(int(os.path.getmtime(real_path)))
-    return ''
 
 # attach version to file path
 def versioned(path):
