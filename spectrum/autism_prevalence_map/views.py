@@ -531,7 +531,26 @@ def studiesApi(request):
         else:
             pulled_studies = studies.objects.filter(**kwargs)
 
-        if sort_field == 'yearpublished_number':
+        # column sorting on list page
+        sortable_fields = {
+            'yearpublished',
+            'authors',
+            'country',
+            'area',
+            'samplesize_number',
+            'prevalenceper10000_number',
+            'confidenceinterval',
+            'age',
+            'individualswithautism_number',
+            'diagnosticcriteria',
+            'diagnostictools',
+            'percentwaverageiq_number',
+            'sexratiomf_number',
+            'yearsstudied',
+            'categoryadpddorasd',
+            'studytype'
+        }
+        if sort_field in sortable_fields:
             prefix = '' if sort_order == 'asc' else '-'
             pulled_studies = pulled_studies.order_by(prefix + sort_field)
 

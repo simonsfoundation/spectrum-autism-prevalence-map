@@ -108,13 +108,13 @@ export function ttInitList() {
                     app.list.studiesByPk[d.properties.pk] = d;
                 });
 
-                let enter_selection = table.append('tbody')
-                    .attr('id', 'studies-table_tbody')
-                    .selectAll('tr')
+                // group row1 and row2 in their own tbody so sorting doesn’t split them
+                let grouped = table.selectAll('tbody.study-group')
                     .data(studies.features)
-                    .enter();
+                    .enter()
+                    .append('tbody')
                 
-                let row1 = enter_selection.append('tr')
+                let row1 = grouped.append('tr')
                     .attr('data-toggle', 'collapse')
                     .attr('href', function (d) { 
                         return '#accordion_menu_' + d.properties.pk; 
@@ -147,7 +147,7 @@ export function ttInitList() {
                         const authors = d.properties.authors.replace('et al.', '<em>et al.</em>');
                         return authors; 
                     })
-                    .classed('min-w-td2 sticky left-38.75 z-11', true);
+                    .classed('min-w-td2 sticky left-46.5 z-11', true);
 
                 row1.append('td')
                     .text(function (d) { 
@@ -244,7 +244,7 @@ export function ttInitList() {
                         return links.join(' ');
                     });
 
-                let row2 = enter_selection.insert('tr')
+                let row2 = grouped.append('tr')
                     .classed('collapse bg-tan', true)
                     .attr('id', function (d) { 
                         return 'accordion_menu_' + d.properties.pk; 
@@ -368,7 +368,77 @@ export function ttInitList() {
             */
         }
 
-        // listener to toggle arrows on click
+        function closeAllSortDropdowns() {
+            $('[data-id="sort-pop"]').addClass('hidden');
+            $('[data-id="sort-trigger"]').removeClass('text-light-red').attr('aria-expanded', false);
+            $('[data-id="sort-chevron"] svg').removeClass('rotate-180 -translate-y-0.25');
+        }
+
+        // toggle sort dropdown
+        $(document).on('click', '[data-id="sort-trigger"]', function (e) {
+            e.stopPropagation();
+
+            const $wrapper  = $(this).closest('[data-id="sort-wrapper"]');
+            const $myPop = $wrapper.find('[data-id="sort-pop"]');
+            const $myChevron = $(this).find('[data-id="sort-chevron"]');
+
+            // close other dropdowns
+            $('[data-id="sort-pop"]').not($myPop).addClass('hidden');
+            $('[data-id="sort-trigger"]').not(this).removeClass('text-light-red');
+            $('[data-id="sort-chevron"] svg').not($myChevron).removeClass('rotate-180 -translate-y-0.25');
+
+            // toggle this dropdown
+            $myPop.toggleClass('hidden');
+            $(this).toggleClass('text-light-red');
+            $myChevron.toggleClass('rotate-180 -translate-y-0.25');
+
+            // update aria
+            $(this).attr('aria-expanded', !$myPop.hasClass('hidden'));
+        });
+
+        // click anywhere else to close all dropdowns
+        $(document).on('click', closeAllSortDropdowns);
+
+        let lastScrollLeft = 0;
+        $('[data-id="scroll-wrapper"]').on('scroll', function () {
+            const x = this.scrollLeft;
+            if (x !== lastScrollLeft) {
+                closeAllSortDropdowns();
+                lastScrollLeft = x;
+            }
+        });
+
+        // handle clicking the sort options in the dropdown
+        $(document).on('click', '[data-id="sort-pop"] button[data-sort-order]', function (e) {
+            e.preventDefault();
+
+            // toggle active state
+            $('[data-id="sort-pop"] button[data-sort-order]').removeClass('text-med-red');
+            $(this).addClass('text-med-red');
+
+            const field = $(this).closest('[data-id="sort-pop"]').attr('data-sort-field');
+            const order = $(this).attr('data-sort-order');
+            if (!field || !order) return;
+
+            const url = new URL(window.location.href);
+            url.searchParams.set('sort_field', field);
+            url.searchParams.set('sort_order', order);
+            window.location.href = url.toString();
+        });
+
+        // apply button active state after page reload
+        $(function () {
+            const url   = new URL(location.href);
+            const field = url.searchParams.get('sort_field');
+            const order = url.searchParams.get('sort_order');
+
+            if (field && order) {
+                const selector = '[data-id="sort-pop"][data-sort-field="' + field + '"] ' + 'button[data-sort-order="' + order + '"]';
+                $(selector).addClass('text-med-red');
+            }
+        });
+
+        // listener to toggle hidden row arrows on click
         $(document).on('click', '.study_row', function(){
             $(this).find('.chevron-down').toggleClass('open');
         });
