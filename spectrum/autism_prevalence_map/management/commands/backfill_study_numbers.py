@@ -41,7 +41,8 @@ class Command(BaseCommand):
             # confidenceinterval_low + confidenceinterval_high
             try:
                 if study.confidenceinterval:
-                    nums = re.findall(r'[-+]?\d*\.?\d+', study.confidenceinterval)
+                    ci = study.confidenceinterval.replace('–', '-')
+                    nums = re.findall(r'[-+]?\d*\.?\d+', ci)
                     if len(nums) >= 2:
                         study.confidenceinterval_low = float(nums[0])
                         study.confidenceinterval_high = float(nums[1])
@@ -56,7 +57,8 @@ class Command(BaseCommand):
             # age_low + age_high
             try:
                 if study.age:
-                    nums = re.findall(r'[-+]?\d*\.?\d+', study.age)
+                    normalized = study.age.replace("–", "-")  # normalize en-dash to hyphen
+                    nums = re.findall(r'\d*\.?\d+', normalized)
                     if len(nums) >= 2:
                         study.age_low = float(nums[0])
                         study.age_high = float(nums[1])
