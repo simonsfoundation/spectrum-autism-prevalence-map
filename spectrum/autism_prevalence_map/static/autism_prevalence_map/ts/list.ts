@@ -416,7 +416,7 @@ export function ttInitList() {
             $('[data-id="sort-pop"] button[data-sort-order]').removeClass('text-med-red');
             $(this).addClass('text-med-red');
 
-            const field = $(this).closest('[data-id="sort-pop"]').attr('data-sort-field');
+            const field = $(this).attr('data-sort-field') || $(this).closest('[data-id="sort-pop"]').attr('data-sort-field');
             const order = $(this).attr('data-sort-order');
             if (!field || !order) return;
 

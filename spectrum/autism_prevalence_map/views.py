@@ -550,9 +550,18 @@ def studiesApi(request):
             'categoryadpddorasd',
             'studytype'
         }
-        if sort_field in sortable_fields:
-            prefix = '' if sort_order == 'asc' else '-'
-            pulled_studies = pulled_studies.order_by(prefix + sort_field)
+        if sort_field:
+            if sort_field == 'confidenceinterval':
+                pulled_studies = (pulled_studies
+                                  .order_by('confidenceinterval_low' if sort_order == 'asc'
+                                           else 'confidenceinterval_high'))
+            elif sort_field == 'age':
+                pulled_studies = (pulled_studies
+                                  .order_by('age_low' if sort_order == 'asc'
+                                           else 'age_high'))
+            elif sort_field in sortable_fields:
+                prefix = '' if sort_order == 'asc' else '-'
+                pulled_studies = pulled_studies.order_by(prefix + sort_field)
 
         # calculate the mean on page load, and after filtering, and include that value in the JSON response
         mean_agg = pulled_studies.aggregate(mean=Avg(Cast('prevalenceper10000_number', FloatField())))

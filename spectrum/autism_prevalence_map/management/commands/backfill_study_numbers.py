@@ -1,51 +1,75 @@
 from django.core.management.base import BaseCommand
 from autism_prevalence_map.models import studies
-
 import re
 
-def extract_number(value):
-    """
-    Converts string like '12,345' or '67%' or '1.2' to float or int
-    Returns None if conversion fails.
-    """
-    if not value:
-        return None
-    try:
-        value_clean = re.sub(r'[^\d.]+', '', value)
-        if not value_clean:
-            return None
-        return float(value_clean)
-    except Exception:
-        return None
-
 class Command(BaseCommand):
-    help = 'Backfill *_number fields on studies model'
+    help = 'Backfill numeric fields for studies model'
 
-    def handle(self, *args, **options):
-        total_updated = 0
+    def handle(self, *args, **kwargs):
+        count = 0
+
         for study in studies.objects.all():
-            changed = False
+            updated = False
 
-            # Backfill individualswithautism_number
-            num = extract_number(study.individualswithautism)
-            if num is not None and study.individualswithautism_number != num:
-                study.individualswithautism_number = int(num)
-                changed = True
+            # individualswithautism_number
+            try:
+                if study.individualswithautism:
+                    value = re.sub(r'[^\d]', '', study.individualswithautism)
+                    study.individualswithautism_number = int(value) if value else None
+                    updated = True
+            except Exception:
+                pass
 
-            # Backfill percentwaverageiq_number
-            num = extract_number(study.percentwaverageiq)
-            if num is not None and study.percentwaverageiq_number != num:
-                study.percentwaverageiq_number = num
-                changed = True
+            # percentwaverageiq_number
+            try:
+                if study.percentwaverageiq:
+                    match = re.search(r'[-+]?\d*\.?\d+', study.percentwaverageiq)
+                    study.percentwaverageiq_number = float(match.group()) if match else None
+                    updated = True
+            except Exception:
+                pass
 
-            # Backfill sexratiomf_number
-            num = extract_number(study.sexratiomf)
-            if num is not None and study.sexratiomf_number != num:
-                study.sexratiomf_number = num
-                changed = True
+            # sexratiomf_number
+            try:
+                if study.sexratiomf:
+                    match = re.search(r'[-+]?\d*\.?\d+', study.sexratiomf)
+                    study.sexratiomf_number = float(match.group()) if match else None
+                    updated = True
+            except Exception:
+                pass
 
-            if changed:
+            # confidenceinterval_low + confidenceinterval_high
+            try:
+                if study.confidenceinterval:
+                    nums = re.findall(r'[-+]?\d*\.?\d+', study.confidenceinterval)
+                    if len(nums) >= 2:
+                        study.confidenceinterval_low = float(nums[0])
+                        study.confidenceinterval_high = float(nums[1])
+                        updated = True
+                    elif len(nums) == 1:
+                        study.confidenceinterval_low = float(nums[0])
+                        study.confidenceinterval_high = float(nums[0])
+                        updated = True
+            except Exception:
+                pass
+
+            # age_low + age_high
+            try:
+                if study.age:
+                    nums = re.findall(r'[-+]?\d*\.?\d+', study.age)
+                    if len(nums) >= 2:
+                        study.age_low = float(nums[0])
+                        study.age_high = float(nums[1])
+                        updated = True
+                    elif len(nums) == 1:
+                        study.age_low = float(nums[0])
+                        study.age_high = float(nums[0])
+                        updated = True
+            except Exception:
+                pass
+
+            if updated:
                 study.save()
-                total_updated += 1
+                count += 1
 
-        self.stdout.write(self.style.SUCCESS(f"Updated {total_updated} study records."))
+        self.stdout.write(self.style.SUCCESS(f'Successfully updated {count} study records.'))
