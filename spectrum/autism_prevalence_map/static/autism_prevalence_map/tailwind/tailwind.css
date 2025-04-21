@@ -527,12 +527,15 @@
     #studies-table .show a {
         @apply no-underline;
     }
-
     [data-id='sort-pop']:before {
         @apply content-empty absolute right-4.7 w-0 h-0 -top-2 border-x-2.5 border-x-transparent border-b-2 border-b-light-navy-2;
     }
-
     [data-id='sort-trigger'].text-light-red svg path {
         @apply fill-light-red;
+    }
+    @media screen and (max-width: 767px) {
+        [data-page='about'] header {
+            @apply hidden;
+        }
     }
 }
