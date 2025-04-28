@@ -21,11 +21,7 @@ export function ttInitMap() {
 
         app.map.createMegadots = function() {
             // expand a cluster
-            function expandCluster(clusterId, event) {
-                if (event) {
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-                }
+            function expandCluster(clusterId) {
                 const cluster = app.map.clusters.find(c => c.id === clusterId);
                 if (cluster) {
                     app.map.expandedCluster = cluster;
@@ -34,11 +30,7 @@ export function ttInitMap() {
             }
 
             // collapse a cluster
-            function collapseCluster(event) {
-                if (event) {
-                    event.preventDefault();
-                    event.stopImmediatePropagation();
-                }
+            function collapseCluster() {
                 app.map.expandedCluster = null;
                 app.map.createMegadots();
             }
@@ -46,15 +38,13 @@ export function ttInitMap() {
             if (!nodes || nodes.length === 0) return;
             const previousExpandedClusterId = app.map.expandedCluster ? app.map.expandedCluster.id : null;
 
-            // reset dot visibility
             studiesG.selectAll('circle.map-circles')
                 .style('visibility', 'hidden')
                 .style('display', 'none')
                 .style('pointer-events', 'none')
                 .style('opacity', app.map.expandedCluster ? 0.6 : 1);
 
-            // calculate and form clusters
-            const clusterRadius = 20 / currentZoom;
+            const clusterRadius = 24 / currentZoom;
             const visitedNodes = new Set();
             const clusters = [];
 
@@ -63,8 +53,8 @@ export function ttInitMap() {
                 if (visitedNodes.has(nodeId)) return;
 
                 const cluster = {
-                    x: node.x,
-                    y: node.y,
+                    x: node.originalX,
+                    y: node.originalY,
                     nodes: [node],
                     count: 1,
                     id: nodeId.toString()
@@ -74,15 +64,15 @@ export function ttInitMap() {
                     const otherNodeId = otherNode.properties.pk;
                     if (nodeId === otherNodeId || visitedNodes.has(otherNodeId)) return;
 
-                    const dx = node.x - otherNode.x;
-                    const dy = node.y - otherNode.y;
+                    const dx = node.originalX - otherNode.originalX;
+                    const dy = node.originalY - otherNode.originalY;
                     const distance = Math.sqrt(dx * dx + dy * dy);
 
                     if (distance <= clusterRadius) {
                         cluster.nodes.push(otherNode);
                         cluster.count++;
-                        cluster.x = (cluster.x * (cluster.count - 1) + otherNode.x) / cluster.count;
-                        cluster.y = (cluster.y * (cluster.count - 1) + otherNode.y) / cluster.count;
+                        cluster.x = (cluster.x * (cluster.count - 1) + otherNode.originalX) / cluster.count;
+                        cluster.y = (cluster.y * (cluster.count - 1) + otherNode.originalY) / cluster.count;
                         visitedNodes.add(otherNodeId);
                     }
                 });
@@ -98,40 +88,47 @@ export function ttInitMap() {
 
             app.map.clusters = clusters;
 
-            // when zooming in, if the expanded mega dot would no longer be the same number of dots inside, or if we are less than 5 dots, close the megadot
             if (previousExpandedClusterId) {
                 const currentExpandedCluster = clusters.find(c => c.id === previousExpandedClusterId);
                 if (!currentExpandedCluster || currentExpandedCluster.count < 5) {
-                    app.map.expandedCluster = null;
+                    const previousCluster = app.map.expandedCluster;
+                    const newCluster = clusters.find(c => {
+                        const previousNodeIds = previousCluster.nodes.map(n => n.properties.pk).sort();
+                        const currentNodeIds = c.nodes.map(n => n.properties.pk).sort();
+                        return previousNodeIds.length === currentNodeIds.length && 
+                               previousNodeIds.every((id, i) => id === currentNodeIds[i]);
+                    });
+                    if (newCluster && newCluster.count >= 5) {
+                        app.map.expandedCluster = newCluster;
+                    } else {
+                        app.map.expandedCluster = null;
+                    }
                 } else {
                     app.map.expandedCluster = currentExpandedCluster;
                 }
             }
 
-            // remove old megadot containers
             studiesG.selectAll('.megadot-container').remove();
 
-            // create megadot clusters
             clusters.forEach(cluster => {
-                const megadotRadius = Math.min(Math.max(Math.sqrt(cluster.count) * 4, 12), 30) / currentZoom;
+                const megadotRadius = Math.min(Math.max(Math.sqrt(cluster.count) * 3.4, 12), 30) / currentZoom;
+                const avgX = cluster.nodes.reduce((sum, n) => sum + n.x, 0) / cluster.count;
+                const avgY = cluster.nodes.reduce((sum, n) => sum + n.y, 0) / cluster.count;
                 const megadotContainer = studiesG.append('g')
                     .attr('class', 'megadot-container')
-                    .attr('transform', `translate(${cluster.x},${cluster.y})`)
+                    .attr('transform', `translate(${avgX},${avgY})`)
                     .attr('data-cluster-id', cluster.id)
-                    .style('opacity', app.map.expandedCluster && cluster.id !== app.map.expandedCluster.id ? 0.6 : 1);
+                    .style('opacity', app.map.expandedCluster && cluster.id !== app.map.expandedCluster.id ? 0.6 : 1)
+                    .style('pointer-events', 'all');
 
-                // if this megadot is currently expanded
                 if (app.map.expandedCluster && cluster.id === app.map.expandedCluster.id) {
-                    // calculate the radius to contain all dots
                     const maxDistance = d3.max(cluster.nodes, node => {
-                        const dx = node.x - cluster.x;
-                        const dy = node.y - cluster.y;
+                        const dx = node.x - avgX;
+                        const dy = node.y - avgY;
                         return Math.sqrt(dx * dx + dy * dy);
                     });
-                    // outline radius with a small amount of padding in the expanded megadot
                     const outlineRadius = (maxDistance || megadotRadius) + 8 / currentZoom;
 
-                    // expanded megadot outline
                     const outline = megadotContainer.append('circle')
                         .attr('class', 'megadot-outline')
                         .attr('r', outlineRadius)
@@ -143,31 +140,21 @@ export function ttInitMap() {
                         .style('cursor', 'pointer')
                         .lower();
 
-                    // show dots inside of a cluster when a megadot is clicked
+                    // defer showing expanded dots until after all megadots are rendered
                     cluster.nodes.forEach(node => {
                         const dot = d3.select('#map_dot_' + node.properties.pk);
-                        dot.style('visibility', 'visible')
-                           .style('display', null)
-                           .style('pointer-events', 'all')
-                           .style('cursor', 'pointer')
-                           .style('opacity', 1)
-                           .raise()
-                           .on('click.megadot', function() {
-                               d3.event.stopPropagation();
-                           });
+                        dot.attr('data-expanded', 'true');
                     });
 
-                    // collapse megadot when it is clicked
                     outline.on('click', function() {
                         const target = d3.event.target;
                         const targetClasses = target.getAttribute('class') || '';
                         if (targetClasses.includes('megadot-outline')) {
                             d3.event.preventDefault();
                             d3.event.stopPropagation();
-                            collapseCluster(d3.event);
+                            collapseCluster();
                         }
                     });
-                // if the megadot is not expanded yet
                 } else if (cluster.count >= 5) {
                     cluster.nodes.forEach(node => {
                         d3.select('#map_dot_' + node.properties.pk)
@@ -201,7 +188,7 @@ export function ttInitMap() {
                         .on('click', function() {
                             d3.event.preventDefault();
                             d3.event.stopPropagation();
-                            expandCluster(cluster.id, d3.event);
+                            expandCluster(cluster.id);
                         });
 
                     megadotContainer.append('text')
@@ -229,7 +216,19 @@ export function ttInitMap() {
                 }
             });
 
-            // close the megadot if clicking anything that is not a dot inside the megadot
+            // show expanded dots and bring them to the front
+            studiesG.selectAll('circle.map-circles[data-expanded="true"]')
+                .style('visibility', 'visible')
+                .style('display', null)
+                .style('pointer-events', 'all')
+                .style('cursor', 'pointer')
+                .style('opacity', 1)
+                .raise()
+                .on('click.megadot', function() {
+                    d3.event.stopPropagation();
+                })
+                .attr('data-expanded', null);
+
             if (!app.map.globalClickHandlerAdded) {
                 d3.select('#map-svg').on('click.closeExpanded', null);
                 d3.select('#map-svg').on('click.closeExpanded', function() {
@@ -237,7 +236,7 @@ export function ttInitMap() {
                         const target = d3.event.target;
                         const targetClasses = target.getAttribute('class') || '';
                         if (!targetClasses.includes('map-circles') && !targetClasses.includes('megadot-')) {
-                            collapseCluster(d3.event);
+                            collapseCluster();
                         }
                     }
                 });
