@@ -24,22 +24,15 @@ export function ttInitMap() {
             app.map.createMegadots();
         };
 
-        app.map.createMegadots = function() {
-            // expand a cluster
-            function expandCluster(clusterId) {
-                const cluster = app.map.clusters.find(c => c.id === clusterId);
-                if (cluster) {
-                    app.map.expandedCluster = cluster;
-                    app.map.createMegadots();
-                }
-            }
-
-            // collapse a cluster
-            function collapseCluster() {
-                app.map.expandedCluster = null;
+        app.map.expandCluster = function (clusterId) {
+            const cluster = app.map.clusters.find(c => c.id === clusterId);
+            if (cluster) {
+                app.map.expandedCluster = cluster;
                 app.map.createMegadots();
             }
+        };
 
+        app.map.createMegadots = function() {
             if (!nodes || nodes.length === 0) return;
             const previousExpandedClusterId = app.map.expandedCluster ? app.map.expandedCluster.id : null;
 
@@ -91,6 +84,7 @@ export function ttInitMap() {
                 }
             });
 
+            // Update mega dot clusters to support map interactions like zooming and filtering, and keep an expanded mega dot open if it’s still valid in the new clusters.
             app.map.clusters = clusters;
 
             if (previousExpandedClusterId) {
@@ -115,7 +109,9 @@ export function ttInitMap() {
 
             studiesG.selectAll('.megadot-container').remove();
 
+            // draw mega dots for clusters on the map, either as a single dot with a count or an expanded view with individual dots
             clusters.forEach(cluster => {
+                // calculate size and center of the mega dot based on number of studies and zoom level
                 const megadotRadius = Math.min(Math.max(Math.sqrt(cluster.count) * 3.4, 12), 30) / currentZoom;
                 const avgX = cluster.nodes.reduce((sum, n) => sum + n.x, 0) / cluster.count;
                 const avgY = cluster.nodes.reduce((sum, n) => sum + n.y, 0) / cluster.count;
@@ -127,6 +123,7 @@ export function ttInitMap() {
                     .style('pointer-events', 'all');
 
                 if (app.map.expandedCluster && cluster.id === app.map.expandedCluster.id) {
+                    // for expanded mega dot, draw an outline to fit all study dots
                     const maxDistance = d3.max(cluster.nodes, node => {
                         const dx = node.x - avgX;
                         const dy = node.y - avgY;
@@ -151,15 +148,17 @@ export function ttInitMap() {
                         dot.attr('data-expanded', 'true');
                     });
 
+                    // clicking outline collapses mega dot
                     outline.on('click', function() {
                         const target = d3.event.target;
                         const targetClasses = target.getAttribute('class') || '';
                         if (targetClasses.includes('megadot-outline')) {
                             d3.event.preventDefault();
                             d3.event.stopPropagation();
-                            collapseCluster();
+                            app.map.collapseCluster();
                         }
                     });
+                // mega dot needs to contain at least 5 study dots
                 } else if (cluster.count >= 5) {
                     cluster.nodes.forEach(node => {
                         d3.select('#map_dot_' + node.properties.pk)
@@ -168,6 +167,7 @@ export function ttInitMap() {
                             .style('pointer-events', 'none');
                     });
 
+                    // create mega dot
                     megadotContainer.append('circle')
                         .attr('class', 'megadot-background')
                         .attr('r', megadotRadius)
@@ -193,13 +193,12 @@ export function ttInitMap() {
                         .on('click', function() {
                             d3.event.preventDefault();
                             d3.event.stopPropagation();
-                            expandCluster(cluster.id);
+                            app.map.expandCluster(cluster.id);
                         });
 
+                    // add mega dot count
                     megadotContainer.append('text')
                         .attr('class', 'megadot-count')
-                        .attr('x', 0)
-                        .attr('y', 0)
                         .attr('text-anchor', 'middle')
                         .attr('dominant-baseline', 'central')
                         .style('fill', '#000')
@@ -241,34 +240,13 @@ export function ttInitMap() {
                         const target = d3.event.target;
                         const targetClasses = target.getAttribute('class') || '';
                         if (!targetClasses.includes('map-circles') && !targetClasses.includes('megadot-')) {
-                            collapseCluster();
+                            app.map.collapseCluster();
                         }
                     }
                 });
                 app.map.globalClickHandlerAdded = true;
             }
         };
-
-        // function to zoom to a specific area
-        function zoomToArea(bbox) {
-            // calculate the scale to fit the bbox
-            const scale = Math.min(
-                width / bbox.width,
-                height / bbox.height
-            ) * 0.9;
-            
-            // limit zoom distance
-            const limitedScale = Math.min(scale, 3);
-            
-            const transform = d3.zoomIdentity
-                .translate(width / 2, height / 2)
-                .scale(limitedScale)
-                .translate(-(bbox.x + bbox.width / 2), -(bbox.y + bbox.height / 2));
-            
-            svg_zoom.transition()
-                .duration(750)
-                .call(zoom.transform, transform);
-        }
 
         // add map data to the world map g container
         app.map.initializeMap = function() {

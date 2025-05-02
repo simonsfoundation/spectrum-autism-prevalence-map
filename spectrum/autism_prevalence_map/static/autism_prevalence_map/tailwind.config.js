@@ -320,9 +320,6 @@ module.exports = {
             strokeDash: {
                 '5': '5',
             },
-            fillOpacity: {
-                '15': '0.15',
-            },
             screens: {
                 'lg': '90rem',
                 'xl': '108rem',
