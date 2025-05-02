@@ -1,7 +1,12 @@
 {% extends 'autism_prevalence_map/base.html' %} 
 
 {% load static %} 
-{% block  title %}Global Autism Prevalence Map_List | The Transmitter {% endblock %}
+{% block title %}Global Autism Prevalence Map - List of studies | The Transmitter{% endblock %}
+{% block twitter_title %}Global Autism Prevalence Map - List of studies | The Transmitter{% endblock %}
+{% block og_title %}Global Autism Prevalence Map - List of studies | The Transmitter{% endblock %}
+{% block description %}Explore a curated list of studies on autism prevalence worldwide, offering insights into regional data and research methodologies.{% endblock %}
+{% block twitter_description %}Explore a curated list of studies on autism prevalence worldwide, offering insights into regional data and research methodologies.{% endblock %}
+{% block og_description %}Explore a curated list of studies on autism prevalence worldwide, offering insights into regional data and research methodologies.{% endblock %}
 {% block page_name %}list{% endblock %}
 
 {% block body_block %}
@@ -15,7 +20,7 @@
             <div class='pb-3.25 text-2xs uppercase text-med-navy'><span id='results-count'>0</span> results</div>
 
             <table id='studies-table' class='w-full'>
-                <thead class='bg-dark-gray border-b-3 border-tan'>
+                <thead class='bg-dark-gray border-b-3 border-tan sticky top-17.7 z-10'>
                     <tr>
                         <th scope='col' class='w-toggle'></th>
                         <th scope='col'>YEAR</th>

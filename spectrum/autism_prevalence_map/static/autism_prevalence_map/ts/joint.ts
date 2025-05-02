@@ -1,7 +1,21 @@
 import { app } from './app.js';
 
+// function to update disabled min and max years options that can be called from this file and map.ts
+export function updateYearDropdowns(minYear, maxYear) {
+    if (app.comboBox_max_year) {
+        app.comboBox_max_year.selectAll('option')
+            .property('disabled', function() { return parseInt(this.value) < minYear; });
+    }
+    if (app.comboBox_min_year) {
+        app.comboBox_min_year.selectAll('option')
+            .property('disabled', function() { return parseInt(this.value) > maxYear; });
+    }
+}
+
 export function ttInitJoint() {
     $(document).ready(function () {
+        app.meanBoxVisible = sessionStorage.getItem('meanBoxVisible') === 'true';
+
         $(document).on('click', '[data-function="cookie-banner-set-consent"]', function (e) {
             e.preventDefault();
             let cookieValue = $(this).data('cookie-value');
@@ -66,6 +80,9 @@ export function ttInitJoint() {
             grantGTMConsent();
         }
 
+        app.comboBox_min_year = null;
+        app.comboBox_max_year = null;
+
         // api call holder
         app.api_call_param_string = '?min_yearpublished='+min_yearpublished+'&max_yearpublished='+max_yearpublished+'&yearsstudied_number_min='+yearsstudied_number_min+'&yearsstudied_number_max='+yearsstudied_number_max+'&min_samplesize='+min_samplesize+'&max_samplesize='+max_samplesize+'&min_prevalenceper10000='+min_prevalenceper10000+'&max_prevalenceper10000='+max_prevalenceper10000+'&studytype='+encodeURIComponent(studytype)+'&keyword='+encodeURIComponent(keyword)+'&timeline_type='+timeline_type+'&meanincome='+income+'&education='+education+'&country='+country+'&continent='+continent;
 
@@ -79,6 +96,7 @@ export function ttInitJoint() {
             $('#list-link').attr('href', '/list/' + app.api_call_param_string);
             $('#map-link').attr('href', '/' + app.api_call_param_string);
             $('#download-link').attr('href', '/studies-csv/' + app.api_call_param_string);
+            $('#about-link').attr('href', '/about/' + app.api_call_param_string);
         }
 
         // function for updating content based on filters
@@ -95,6 +113,8 @@ export function ttInitJoint() {
             } else {
                 app.list.addRows();
             }
+            // update the mean
+            app.fetchAndUpdateMean();
         }
 
         d3.json('/studies-api/').then(function(data) {
@@ -154,18 +174,18 @@ export function ttInitJoint() {
             }
 
             // making the combo box options for earliest published and latest published
-            const comboBox_min_year = d3.select('#min_year');
-            const comboBox_max_year = d3.select('#max_year');
+            app.comboBox_min_year = d3.select('#min_year');
+            app.comboBox_max_year = d3.select('#max_year');
 
             const timeMin = d3.min(data.features, function(d) { return new Date(d.properties.yearsstudied_number_min); }).getUTCFullYear();
             const timeMax = d3.max(data.features, function(d) { return new Date(d.properties.yearpublished); }).getUTCFullYear();
 
             for (let index = timeMin; index <= timeMax; index++) {
-                comboBox_min_year.append('option')
+                app.comboBox_min_year.append('option')
                     .attr('value', index)
                     .text(index);
 
-                comboBox_max_year.append('option')
+                app.comboBox_max_year.append('option')
                     .attr('value', index)
                     .text(index);
             }
@@ -185,6 +205,14 @@ export function ttInitJoint() {
             } else {
                 $('#max_year').val($('#max_year option:last').val());
             }
+
+            // disable options based on initial min and max values
+            const initialMinYear = parseInt($('#min_year').val());
+            const initialMaxYear = parseInt($('#max_year').val());
+            updateYearDropdowns(initialMinYear, initialMaxYear);
+
+            // initial fetch of mean value
+            app.meanValue = data.mean;
         });
 
         function onlyUnique(value, index, self) {
@@ -203,15 +231,16 @@ export function ttInitJoint() {
 
         $('#min_year').on('change', function(e) {
             $('#more-information-card').css('display', 'none');
-            // update filters
             if (timeline_type == 'studied') {
                 yearsstudied_number_min = $(this).val();
             } else {
                 min_yearpublished = $(this).val();
             }
-            // update the timeline when selection is actively in use
-            let selection = d3.select('.selection');
-            if (!selection.empty() && selection.attr('display') !== 'none') {
+            // make sure that max_year is greater than min year
+            const minYearSelected = parseInt($(this).val());
+            const maxYearSelected = parseInt($('#max_year').val());
+            updateYearDropdowns(minYearSelected, maxYearSelected);
+            if (app.map && typeof app.map.updateTimelineBrushFromFilters === 'function') {
                 app.map.updateTimelineBrushFromFilters();
             }
             app.runUpdate();
@@ -219,15 +248,16 @@ export function ttInitJoint() {
 
         $('#max_year').on('change', function(e) {
             $('#more-information-card').css('display', 'none');
-            // update filters
             if (timeline_type == 'studied') {
                 yearsstudied_number_max = $(this).val();
             } else {
                 max_yearpublished = $(this).val();
             }
-            // update the timeline when selection is actively in use
-            let selection = d3.select('.selection');
-            if (!selection.empty() && selection.attr('display') !== 'none') {
+            // make sure that min year is less than max year
+            const maxYearSelected = parseInt($(this).val());
+            const minYearSelected = parseInt($('#min_year').val());
+            updateYearDropdowns(minYearSelected, maxYearSelected);
+            if (app.map && typeof app.map.updateTimelineBrushFromFilters === 'function') {
                 app.map.updateTimelineBrushFromFilters();
             }
             app.runUpdate();
@@ -268,14 +298,22 @@ export function ttInitJoint() {
             let newMin = parseFloat($(this).val());
             if (isNaN(newMin)) newMin = 0;
 
-            // Get current slider max
+            // get current slider max
             let currentMax = $('#prevalence-slider').slider('values', 1);
             if (newMin > currentMax) newMin = currentMax;
 
-            // Update the slider’s min handle
-            $('#prevalence-slider').slider('values', 0, newMin);
-
             min_prevalenceper10000 = newMin.toString();
+            
+            // temporarily disable the slider's change event
+            var originalChangeHandler = $('#prevalence-slider').slider("option", "change");
+            $('#prevalence-slider').slider("option", "change", null);
+            
+            // update the slider value without triggering a change event
+            $('#prevalence-slider').slider('values', 0, newMin);
+            
+            // restore the original event
+            $('#prevalence-slider').slider("option", "change", originalChangeHandler);
+            
             app.runUpdate();
         });
 
@@ -283,14 +321,22 @@ export function ttInitJoint() {
             let newMax = parseFloat($(this).val());
             if (isNaN(newMax)) newMax = 500; // fallback
 
-            // Get current slider min
+            // get current slider min
             let currentMin = $('#prevalence-slider').slider('values', 0);
             if (newMax < currentMin) newMax = currentMin;
 
-            // Update the slider’s max handle
-            $('#prevalence-slider').slider('values', 1, newMax);
-
             max_prevalenceper10000 = newMax.toString();
+            
+            // temporarily disable the slider's change event
+            var originalChangeHandler = $('#prevalence-slider').slider("option", "change");
+            $('#prevalence-slider').slider("option", "change", null);
+            
+            // update the slider value without triggering a change event
+            $('#prevalence-slider').slider('values', 1, newMax);
+            
+            // restore the original event
+            $('#prevalence-slider').slider("option", "change", originalChangeHandler);
+            
             app.runUpdate();
         });
 
@@ -402,6 +448,14 @@ export function ttInitJoint() {
             if (app.map.expandedCluster) {
                 app.map.collapseCluster();
             }
+          
+            // re-enable all min and max select options
+            if (app.comboBox_min_year) {
+                app.comboBox_min_year.selectAll('option').property('disabled', false);
+            }
+            if (app.comboBox_max_year) {
+                app.comboBox_max_year.selectAll('option').property('disabled', false);
+            }
 
             // remove brush from timeline
             if ($('#map-link').hasClass('text-red') || $('#map-link').hasClass('active')) {
@@ -411,8 +465,13 @@ export function ttInitJoint() {
             }
 
             // remove the search input close X
-             $('[data-id="keyword-filter-x-btn"]').addClass('hidden');
+            $('[data-id="keyword-filter-x-btn"]').addClass('hidden');
           
+            // hide the mean box
+            app.meanBoxVisible = false;
+            sessionStorage.removeItem('meanBoxVisible');
+            $('#mean-static').addClass('hidden').attr('aria-hidden', 'true');
+
             // run update
             app.runUpdate();
         });
@@ -559,19 +618,56 @@ export function ttInitJoint() {
         // calculate the citation count
         getCitationCount(citationURL);
 
-        // show the calculate mean popup and handle the copy to clipboard when the calculate mean button is clicked
+        // show the calculate mean popup and handle the copy to clipboard when the calculate mean button is clicked, show the note when hovered
         var $meanButton = $('[data-mean]');
         var $meanPopup = $('#mean-popup');
         var $popupText = $meanPopup.find('[data-id="mean-popup-text"]');
+        var $meanStatic = $('#mean-static');
+        var $staticText = $meanStatic.find('[data-id="mean-static-text"]');
+        var $dataLine = $('[data-id="mean-data-line"]');
+        var $noteLine = $('[data-id="mean-note-line"]');
         var popupTextTemplate = 'PREVALENCE MEAN ({value}) IS COPIED TO CLIPBOARD';
+        var staticTextTemplate = 'MEAN = {value}';
         var meanHideTimeout;
+        var popupState = {
+            clickTriggered: false,
+            hoverActive: false
+        };
+
+        // function to update the mean for both map and list
+        app.fetchAndUpdateMean = function() {
+            if (app.meanValue) {
+                // update button attribute
+                $('[data-mean]').attr('data-mean', app.meanValue);
+                
+                // update static box if it is visible
+                if (app.meanBoxVisible) {
+                    var $staticText = $('#mean-static').find('[data-id="mean-static-text"]');
+                    if ($staticText.length) {
+                        $staticText.text('MEAN = ' + app.meanValue);
+                        $('#mean-static').removeClass('hidden').attr('aria-hidden', 'false');
+                    }
+                }
+            }
+        };
 
         $meanButton.on('click', function () {
             var meanValue = $meanButton.attr('data-mean');
             $popupText.text(popupTextTemplate.replace('{value}', meanValue || ''));
+            $staticText.text(staticTextTemplate.replace('{value}', meanValue || ''));
 
-            // show the popup
+            popupState.clickTriggered = true;
+
+            // show the popup and the static box
             $meanPopup.removeClass('hidden').attr('aria-hidden', 'false');
+            $meanStatic.removeClass('hidden').attr('aria-hidden', 'false');
+
+            // make sure we are using the correct width
+            $meanPopup.removeClass('w-mean-popup-note');
+
+            // show only the data line on click
+            $dataLine.removeClass('hidden');
+            $noteLine.addClass('hidden');
 
             // copy value to clipboard
             navigator.clipboard.writeText(meanValue);
@@ -581,33 +677,70 @@ export function ttInitJoint() {
 
             meanHideTimeout = setTimeout(function () {
                 $meanPopup.addClass('hidden').attr('aria-hidden', 'true');
-            }, 5000);
+                popupState.clickTriggered = false;
+            }, 3000);
+
+            // set a flag for the mean box and store in session storage
+            app.meanBoxVisible = true;
+            sessionStorage.setItem('meanBoxVisible', 'true');
+        });
+
+        $meanButton.on('mouseenter', function() {
+            popupState.hoverActive = true;
+            
+            $meanPopup.removeClass('hidden').attr('aria-hidden', 'false');
+            
+            // on hover we show the note, not the data line
+            $meanPopup.addClass('w-mean-popup-note');
+            $dataLine.addClass('hidden');
+            $noteLine.removeClass('hidden');
+            
+            if (!popupState.clickTriggered) {
+                clearTimeout(meanHideTimeout);
+            }
+        });
+
+        $meanButton.on('mouseleave', function() {
+            popupState.hoverActive = false;
+
+            $meanPopup.removeClass('w-mean-popup-note');
+            
+            // if clicked already show the data line, hide the note line, let timeout continue from the click
+            if (popupState.clickTriggered) {
+                $dataLine.removeClass('hidden');
+                $noteLine.addClass('hidden');
+            } else {
+                // hide if hover only
+                $meanPopup.addClass('hidden').attr('aria-hidden', 'true');
+            }
         });
 
         // for the search field, handle the 'X' functionality and clearing keyword from URL
         const searchInput = document.querySelector('[data-id="keyword-filter-input"]') as HTMLInputElement;
         const xButton = document.querySelector('[data-id="keyword-filter-x-btn"]') as HTMLButtonElement;
 
-        function toggleXButton() {
-            if (searchInput.value.trim().length > 0) {
-                xButton.classList.remove('hidden');
-            } else {
-                xButton.classList.add('hidden');
+        if (searchInput) {
+            function toggleXButton() {
+                if (searchInput.value.trim().length > 0) {
+                    xButton.classList.remove('hidden');
+                } else {
+                    xButton.classList.add('hidden');
+                }
             }
-        }
 
-        searchInput.addEventListener('input', toggleXButton);
-        toggleXButton();
-
-        // when the X button is clicked, clear the search, remove the keyword
-        xButton.addEventListener('click', function () {
-            searchInput.value = '';
-            // reset the global 'keyword' variable so it's removed from URL params
-            keyword = '';
+            searchInput.addEventListener('input', toggleXButton);
             toggleXButton();
-            searchInput.focus();
-            app.runUpdate();
-        });
+
+            // when the X button is clicked, clear the search, remove the keyword
+            xButton.addEventListener('click', function () {
+                searchInput.value = '';
+                // reset the global 'keyword' variable so it's removed from URL params
+                keyword = '';
+                toggleXButton();
+                searchInput.focus();
+                app.runUpdate();
+            });
+        }
 
         // update min and max year labels based on the timeline study type
         if (timeline_type == 'studied') {
@@ -616,6 +749,11 @@ export function ttInitJoint() {
         } else {
             $('#earliest-label').text('Earliest year published');
             $('#latest-label').text('Latest year published');
+        }
+
+        // initialize mean box visibility
+        if (app.meanBoxVisible) {
+            app.fetchAndUpdateMean();
         }
     });
 }

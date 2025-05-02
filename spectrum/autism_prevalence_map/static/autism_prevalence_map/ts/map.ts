@@ -1,4 +1,5 @@
 import { app } from './app.js';
+import { updateYearDropdowns } from './joint.js';
 
 export function ttInitMap() {
     $(document).ready(function (){
@@ -393,8 +394,9 @@ export function ttInitMap() {
             app.updateURL();
             d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
                 studies = data;
-                $('[data-mean]').attr('data-mean', data.mean);
+                app.meanValue = data.mean;
                 app.map.updateTimeline();
+                app.fetchAndUpdateMean();
             });
         }
 
@@ -407,8 +409,19 @@ export function ttInitMap() {
         }
 
         app.map.addTimeline = function() {
-            timeMin = d3.min(studies.features, function(d) { return new Date(d.properties.yearsstudied_number_min); });
-            timeMax = d3.max(studies.features, function(d) { return new Date(d.properties.yearpublished); });
+            timeMin = d3.min(studies.features, function(d) {
+                // fallback for null values
+                const dateStr = d.properties.yearsstudied_number_min || '1970-01-01';
+                const [year] = dateStr.split('-');
+                // january 1st of the min year
+                return new Date(Date.UTC(parseInt(year, 10), 0, 1));
+            });
+            timeMax = d3.max(studies.features, function(d) {
+                const year = parseInt(d.properties.yearpublished, 10);
+                // december 31st 11:59 of the max year
+                return new Date(Date.UTC(year, 11, 31, 23, 59, 59));
+            });
+
             // add the x brush
             brush = d3.brushX()
                 .extent([[0, 0], [timelineWidth, timelineHeight-33]])
@@ -479,27 +492,48 @@ export function ttInitMap() {
                     max_yearpublished = d1[1].getUTCFullYear();    
                 }
 
-                // Update the select filters in the UI.
-                $('#min_year').val(d1[0].getUTCFullYear());
-                $('#max_year').val(d1[1].getUTCFullYear());
+                // update the select filters
+                const minYear = d1[0].getUTCFullYear();
+                const maxYear = d1[1].getUTCFullYear();
+                $('#min_year').val(minYear);
+                $('#max_year').val(maxYear);
+                // disable options that are not available
+                updateYearDropdowns(minYear, maxYear);
 
                 app.map.pullDataAndUpdate();
             } 
 
             function moveHandles() {
-                if (!d3.event.selection) return; // Ignore empty selections.
+                if (!d3.event.selection) {
+                    return;
+                }
 
                 d3.select('.selection').attr('display', null);
 
                 showWelcomeCard();
-            
-                const s = d3.event.selection, 
+
+                let s = d3.event.selection, 
                     d0 = d3.event.selection.map(timelineX.invert),
                     d1 = [];
 
                 d1[0] = d3.timeYear.ceil(d0[0]);
                 d1[1] = d3.timeYear.floor(d0[1]);
-        
+
+                let isUpdating = false;
+
+                // ensure min year is not greater than max year
+                let minYear = d1[0].getUTCFullYear();
+                let maxYear = d1[1].getUTCFullYear();
+                if (minYear > maxYear && !isUpdating) {
+                    // set min year to match max year
+                    d1[0] = new Date(maxYear, 0, 1);
+                    const newSelection = [timelineX(d1[0]), s[1]];
+                    isUpdating = true;
+                    brushG.call(brush.move, newSelection);
+                    isUpdating = false;
+                    s = newSelection;
+                }
+
                 if (s == null) {
                     handle.attr('display', 'none');
                     handleText.attr('display', 'none');
@@ -509,7 +543,7 @@ export function ttInitMap() {
                         .attr('transform', function(d, i) { 
                             return 'translate(' + s[i] + ',' + timelineHeight / 2.45 + ')'; 
                         });
-        
+
                     handleText
                         .attr('display', null)
                         .attr('x', function(d, i) {
@@ -523,8 +557,7 @@ export function ttInitMap() {
                             return d1[i].getUTCFullYear(); 
                         });
                 }
-        
-            } 
+            }
             
             let min_year, max_year;
             if(timeline_type == 'studied') {
@@ -593,8 +626,20 @@ export function ttInitMap() {
             }
 
             max_Y_domain = d3.max(studiesByYear, function(d) { return d.value; }) + 1;
+            // dot height and the ideal gap height when we don't have to overlap dots to fit
+            const dotHeight = 8;
+            const gap = 1;
+            const dotSpacing = dotHeight + gap;
+            // max height we have to work with so we don't get too close to the help tip text line
+            const maxHeight = timelineHeight - 83;
+            // max amount of dots with ideal spacing that can fit in the max height
+            const maxDotsAtDotSpacing = Math.floor(maxHeight / dotSpacing);
+            // apply consistent offset to all years and align to the bottom
+            const offset = max_Y_domain <= maxDotsAtDotSpacing ? dotSpacing : maxHeight / (max_Y_domain - 1);
             timelineY
-                .domain([1, max_Y_domain]);
+                .domain([1, max_Y_domain])
+                .range([timelineHeight - 83, timelineHeight - 83 - (max_Y_domain - 1) * offset])
+                .clamp(true);
 
             // set count = 0 for each year for every year studied/published and
             // set up battleship grid in studiesByYear to mark where pills are when plotted
@@ -868,11 +913,6 @@ export function ttInitMap() {
             // only if we have a valid brush and timeline
             if (!brush || !timelineX) return;
             
-            // only update if the selection is already being used
-            if (d3.select('.selection').attr('display') === 'none' || d3.select('.selection').empty()) {
-                return;
-            }
-            
             let minYear, maxYear;
             
             if (timeline_type == 'studied') {
@@ -883,10 +923,9 @@ export function ttInitMap() {
                 maxYear = max_yearpublished || $('#max_year').val();
             }
         
-            const minDate = new Date(parseInt(minYear, 10), 0, 1);
-            const maxDate = new Date(parseInt(maxYear, 10), 11, 31, 23, 59, 59);
-            
-            if (brushG && minYear && maxYear) {
+            if (minYear && maxYear) {
+                const minDate = new Date(parseInt(minYear, 10), 0, 1);
+                const maxDate = new Date(parseInt(maxYear, 10), 11, 31, 23, 59, 59);
                 brushG.call(brush.move, [minDate, maxDate].map(timelineX));
             }
         };
@@ -1113,10 +1152,12 @@ export function ttInitMap() {
             // pinned state is blue with white border
             d3.select('#map_dot_' + pk)
                 .style('fill', '#0B6BC3')
-                .style('stroke', '#FFF');
+                .style('stroke', '#FFF')
+                .moveToFront();
             d3.select('#timeline_dot_' + pk)
                 .style('fill', '#FEF9EE')
-                .style('stroke', '#FFF');
+                .style('stroke', '#FFF')
+                .moveToFront();
 
             // populate and show info card
             populateInfoCard(d);

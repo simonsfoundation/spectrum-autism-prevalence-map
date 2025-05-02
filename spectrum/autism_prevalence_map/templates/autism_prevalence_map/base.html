@@ -5,20 +5,31 @@
 <head>
     <meta charset='utf-8'>
     <title>{% block title %}Global Autism Prevalence Map | The Transmitter{% endblock %}</title>
-    <meta name='description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.'>
+    <meta name='description' content='{% block description %}Use The Transmitter’s interactive Global Autism Prevalence Map to explore studies and data on autism prevalence worldwide.{% endblock %}'>
+    {% if last_updated_on_meta %}
+    <meta property="article:modified_time" content="{{ last_updated_on_meta }}">
+    {% endif %}
     <meta name='author' content=''>
     <meta name='twitter:card' content='summary_large_image'>
-    <meta name='twitter:title' content='Global Autism Prevalence Map | The Transmitter'>
-    <meta name='twitter:description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.'>
-    <meta name='twitter:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/global-ausitm-prevalence-map-social.png'>
-    <meta property='og:title' content='Global Autism Prevalence Map | The Transmitter' />
+    <meta name='twitter:title' content='{% block twitter_title %}Global Autism Prevalence Map | The Transmitter{% endblock %}'>
+    <meta name='twitter:description' content='{% block twitter_description %}Use The Transmitter’s interactive Global Autism Prevalence Map to explore studies and data on autism prevalence worldwide.{% endblock %}'>
+    <meta name='twitter:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/transmitter-autism-prevalence-map-thumbnail.png'>
+    <meta property='og:title' content='{% block og_title %}Global Autism Prevalence Map | The Transmitter{% endblock %}' />
     <meta property='og:type' content='website' />
     <meta property='og:url' content='https://autismprevalence.thetransmitter.org/' />
-    <meta property='og:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/global-ausitm-prevalence-map-social.png' />
-    <meta property='og:description' content='The map features a collection of studies on autism prevalence around the world. It highlights places where information is available — and places where information is missing.' />
+    <meta property='og:image' content='https://autismprevalence.thetransmitter.org/static/autism_prevalence_map/img/transmitter-autism-prevalence-map-thumbnail.png' />
+    <meta property='og:description' content='{% block og_description %}Use The Transmitter’s interactive Global Autism Prevalence Map to explore studies and data on autism prevalence worldwide.{% endblock %}' />
 
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
-
+    {% if last_updated_on %}
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "dateModified": "{{ last_updated_on }}"
+        }
+    </script>
+    {% endif %}
     {% static '' as static_base %}
     <link rel='stylesheet' type='text/css' href='{{ static_base }}{{ style_sheet }}'>
 
@@ -73,7 +84,7 @@
                 <nav class='flex items-center gap-8'>
                     <a id='map-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/" %}text-red{% endif %}' href="{% url 'index' %}">Map</a>
                     <a id='list-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/list/" %}text-red{% endif %}' href="{% url 'list_view' %}">List</a>
-                    <a class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/about/" %}text-red{% endif %}' href="{% url 'about' %}">About</a>
+                    <a id='about-link' class='text-2xs font-bold text-navy uppercase no-underline hover:text-red {% if request.path == "/about/" %}text-red{% endif %}' href="{% url 'about' %}">About</a>
                 </nav>
 
                 {% if request.path != "/about/" %}

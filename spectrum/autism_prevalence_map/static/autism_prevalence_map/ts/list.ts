@@ -97,6 +97,7 @@ export function ttInitList() {
             $('#studies-table tbody').remove();     
             d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
                 studies = data;
+                app.meanValue = data.mean;
 
                 // update the results count
                 document.getElementById('results-count').textContent = studies.features.length;
@@ -124,7 +125,7 @@ export function ttInitList() {
                     .attr('aria-controls', function (d) { 
                         return '#accordion_menu_' + d.properties.pk;
                     })
-                    .classed('border-light-gray2 border-b-0.3125', true);
+                    .classed('collapsed border-light-gray2 border-b-0.3125', true);
 
                 const toggletd = row1.append('th')
                     .attr('scope', 'row')
@@ -248,8 +249,20 @@ export function ttInitList() {
                     return a.properties.pk - b.properties.pk; 
                 });
 
-                $('[data-collapse-target]').collapse({
-                    toggle: false
+                $('[data-collapse-target]').each(function () {
+                    $(this).addClass('hidden');
+                });
+
+                $(document).on('click', '[data-toggle="collapse"]', function (e) {
+                    // prevent event from firing twice
+                    if (e.handled) return;
+                    e.handled = true;
+                    e.preventDefault();
+
+                    const targetId = $(this).attr('href');
+                    const target = $(targetId);
+
+                    target.toggleClass('hidden');
                 });
 
                 $('[data-collapse-target]').on('shown.bs.collapse', function() {
@@ -261,6 +274,8 @@ export function ttInitList() {
                         app.list.renderMiniMap(studyData, 'map_placeholder_' + pk);
                     }
                 });
+
+                app.fetchAndUpdateMean();
             });
         }
         

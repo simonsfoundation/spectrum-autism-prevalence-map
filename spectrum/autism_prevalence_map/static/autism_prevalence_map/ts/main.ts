@@ -17,8 +17,8 @@ import { ttInitList } from './list.ts';
             ttInitArray();
             ttInitGeo();
             ttInitProjection();
-            ttInitJoint();
         }
+        ttInitJoint();
         ttInitMobilePopup();
 
         switch (pageName) {
