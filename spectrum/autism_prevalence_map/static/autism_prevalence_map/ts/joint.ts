@@ -399,6 +399,10 @@ export function ttInitJoint() {
             $('#continent').val('all');
             $('#country').val('all');
 
+            if (app.map.expandedCluster) {
+                app.map.collapseCluster();
+            }
+
             // remove brush from timeline
             if ($('#map-link').hasClass('text-red') || $('#map-link').hasClass('active')) {
                 // clear anything pinned on the map or timeline

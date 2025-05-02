@@ -19,6 +19,11 @@ export function ttInitMap() {
 
         let originalWidth, originalScale;
 
+        app.map.collapseCluster = function () {
+            app.map.expandedCluster = null;
+            app.map.createMegadots();
+        };
+
         app.map.createMegadots = function() {
             // expand a cluster
             function expandCluster(clusterId) {
