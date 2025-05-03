@@ -257,6 +257,10 @@ def index(request):
             last_updated_on = ''
             last_updated_on_meta = ''
 
+        #sort fields
+        sort_field = request.GET.get('sort_field', '')
+        sort_order = request.GET.get('sort_order', 'asc')
+
     context_dict = {'min_yearpublished': min_yearpublished,
                     'max_yearpublished': max_yearpublished,
                     'yearsstudied_number_min': yearsstudied_number_min,
@@ -274,6 +278,8 @@ def index(request):
                     'continent': continent,
                     'last_updated_on': last_updated_on,
                     'last_updated_on_meta': last_updated_on_meta,
+                    'sort_field': sort_field,
+                    'sort_order': sort_order,
                     'style_sheet': style_sheet,
                     'script': script,}
     
@@ -306,6 +312,8 @@ def list_view(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        sort_field = request.GET.get('sort_field','')
+        sort_order = request.GET.get('sort_order','asc')
         try:
             last_updated_on_meta_obj = options.objects.get(name='last_updated_on_meta')
             last_updated_on_meta = last_updated_on_meta_obj.value
@@ -329,6 +337,8 @@ def list_view(request):
         'country': country,
         'continent': continent,
         'last_updated_on_meta': last_updated_on_meta,
+        'sort_field': sort_field,
+        'sort_order': sort_order,
         'style_sheet': style_sheet,
         'script': script,}
 
@@ -361,6 +371,8 @@ def about(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        sort_field = request.GET.get('sort_field', '')
+        sort_order = request.GET.get('sort_order', 'asc')
         try:
             last_updated_on_meta_obj = options.objects.get(name='last_updated_on_meta')
             last_updated_on_meta = last_updated_on_meta_obj.value
@@ -384,6 +396,8 @@ def about(request):
         'country': country,
         'continent': continent,
         'last_updated_on_meta': last_updated_on_meta,
+        'sort_field': sort_field,
+        'sort_order': sort_order,
         'style_sheet': style_sheet,
         'script': script,}
         
@@ -413,6 +427,8 @@ def studiesApi(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        sort_field = request.GET.get('sort_field', '')
+        sort_order = request.GET.get('sort_order', 'asc')
 
         #apply filters
         if min_yearpublished:
@@ -531,6 +547,37 @@ def studiesApi(request):
             pulled_studies = studies.objects.annotate(search=vector).filter(search=keyword).filter(**kwargs)
         else:
             pulled_studies = studies.objects.filter(**kwargs)
+
+        # column sorting on list page
+        sortable_fields = {
+            'yearpublished',
+            'authors',
+            'country',
+            'area',
+            'samplesize_number',
+            'prevalenceper10000_number',
+            'confidenceinterval',
+            'age',
+            'individualswithautism_number',
+            'diagnosticcriteria',
+            'diagnostictools',
+            'percentwaverageiq_number',
+            'sexratiomf_number',
+            'yearsstudied',
+            'categoryadpddorasd',
+            'studytype'
+        }
+        if sort_field:
+            if sort_field == 'confidenceinterval':
+                pulled_studies = (pulled_studies.order_by('confidenceinterval_low' if sort_order == 'asc' else 'confidenceinterval_high'))
+            elif sort_field == 'age':
+                if sort_order == 'asc':
+                    pulled_studies = pulled_studies.order_by('age_low', 'age_high')
+                else:
+                    pulled_studies = pulled_studies.order_by('-age_high', '-age_low')
+            elif sort_field in sortable_fields:
+                prefix = '' if sort_order == 'asc' else '-'
+                pulled_studies = pulled_studies.order_by(prefix + sort_field)
 
         # calculate the mean on page load, and after filtering, and include that value in the JSON response
         mean_agg = pulled_studies.aggregate(mean=Avg(Cast('prevalenceper10000_number', FloatField())))

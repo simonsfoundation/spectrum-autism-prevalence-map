@@ -475,15 +475,41 @@
     .timeline-circles {
        @apply translate-y-20;
     }
-    #studies-table th:not(.w-toggle) {
-        @apply align-bottom pt-8.25 pb-4 text-left text-3.5 text-tan font-bold tracking-extra-wide leading-4.25;
+    #studies-table thead th {
+        @apply bg-dark-gray z-10;
+    }
+    #studies-table th:not(.min-w-toggle) {
+        @apply align-bottom pt-8.75 pb-3.5 text-left text-3.5 text-tan font-bold tracking-extra-wide leading-4.25 whitespace-nowrap pr-14;
+    }
+    #studies-table th:not(.min-w-toggle) span {
+        @apply relative;
+    }
+    #studies-table th:not(.min-w-toggle) svg {
+        @apply absolute transform -translate-y-0.5 left-0;
+    }
+    #studies-table td {
+        @apply pr-14 pl-1.5;
+    }
+    #studies-table th:not(.min-w-toggle):last-child {
+        @apply pr-6.5;
+    }
+    #studies-table td:last-child {
+        @apply pr-0;
     }
     #studies-table td,
-    #studies-table .w-toggle {
+    #studies-table .min-w-toggle {
         @apply py-4 align-top text-4 text-med-navy tracking-normal-lg;
     }
+    #studies-table tbody th,
+    #studies-table tbody td {
+        @apply bg-tan;
+    }
     #studies-table_tbody tr:not(.collapsed):not(.bg-tan) {
-        @apply bg-white2 border-med-navy;
+        @apply border-med-navy;
+    }
+    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) td,
+    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) th {
+        @apply bg-white2;
     }
     #studies-table_tbody tr:not(.collapsed):not(.bg-tan) .chevron-down {
         @apply rotate-180;
@@ -492,7 +518,7 @@
         @apply border-light-gray2 border-b-0.3125;
     }
     #studies-table_tbody tr.show td,
-    #studies-table_tbody tr.show .w-toggle {
+    #studies-table_tbody tr.show .min-w-toggle {
         @apply pt-6 pb-10.5;
     }
     #studies-table .show {
@@ -500,6 +526,12 @@
     }
     #studies-table .show a {
         @apply no-underline;
+    }
+    [data-id='sort-pop']:before {
+        @apply content-empty absolute right-4.7 w-0 h-0 -top-2 border-x-2.5 border-x-transparent border-b-2 border-b-light-navy-2;
+    }
+    [data-id='sort-trigger'].text-light-red svg path {
+        @apply fill-light-red;
     }
     @media screen and (max-width: 767px) {
         [data-page='about'] header {
