@@ -129,7 +129,7 @@ export function ttInitList() {
 
                 const toggletd = row1.append('th')
                     .attr('scope', 'row')
-                    .classed('p-0 pl-3.75 w-toggle', true);
+                    .classed('p-0 pl-3.75 min-w-toggle sticky left-0 z-11', true);
 
                 toggletd.append('img')
                     .attr('src', chevron_down)
@@ -140,43 +140,109 @@ export function ttInitList() {
                     .text(function (d) { 
                         return d.properties.yearpublished; 
                     })
-                    .classed('w-td1', true);
+                    .classed('min-w-td1 sticky left-13.75 z-11', true);
 
                 row1.append('td')
                     .html(function (d) { 
                         const authors = d.properties.authors.replace('et al.', '<em>et al.</em>');
                         return authors; 
                     })
-                    .classed('w-td2 pr-8', true);
+                    .classed('min-w-td2 sticky left-38.75 z-11', true);
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.country; 
                     })
-                    .classed('w-td3', true);
+                    .classed('min-w-td3', true);
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
                     })
-                    .classed('w-td4 pr-8', true);
+                    .classed('min-w-td4', true);
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.samplesize; 
-                    })
-                    .classed('w-td5', true);
+                    });
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
-                    })
-                    .classed('w-td6', true);
+                    });
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', '); 
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.individualswithautism; 
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.diagnostictools.replace(/ *([|]) */g, '$1').split('|').join(', ');
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.percentwaverageiq; 
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.sexratiomf; 
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.yearsstudied; 
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.categoryadpddorasd; 
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.studytype.replace(/ *([|]) */g, '$1').split('|').join(', ');
                     })
+                    .classed('min-w-td16', true);
+
+                row1.append('td')
+                    .html(function (d) { 
+                        let links = [];
+                        const publications = [
+                            { title: d.properties.link1title, url: d.properties.link1url },
+                            { title: d.properties.link2title, url: d.properties.link2url },
+                            { title: d.properties.link3title, url: d.properties.link3url },
+                            { title: d.properties.link4title, url: d.properties.link4url }
+                        ];
+
+                        for (let i = 0; i < publications.length; i++) {
+                            const publication = publications[i];
+                            if (publication.title && publication.url && isValidURL(publication.url)) {
+                                links.push(`<a href="${publication.url}" target="_blank">${publication.title}</a>`);
+                            } else if (publication.title) {
+                                links.push(`<span>${publication.title}</span>`);
+                            }
+                        }
+
+                        return links.join(' ');
+                    });
 
                 let row2 = enter_selection.insert('tr')
                     .classed('collapse bg-tan', true)
@@ -185,13 +251,17 @@ export function ttInitList() {
                     })
                     .attr('data-collapse-target', 'true');
 
-                let card_div = row2.append('td')
-                    .attr('colspan', '9')
-                    .append('div')
-                    .classed('flex', true)
+                let card_div_left = row2.append('td')
+                    .classed('sticky left-0 min-w-rowcard w-rowcard z-11 bg-tan', true)
+                    .attr('colspan', '3')
+                    .append('div');
 
-                card_div.append('div')
-                    .classed('w-listcard pl-13.75 pr-8', true)
+                let card_div_right = row2.append('td')
+                    .attr('colspan', '14')
+                    .append('div');
+
+                card_div_left.append('div')
+                    .classed('pl-13.75 pr-8', true)
                     .append('p')
                     .html(function (d) { 
                         const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
@@ -242,7 +312,8 @@ export function ttInitList() {
                     });
 
                 // add placeholder that we will add map to when expanded
-                card_div.append('div')
+                card_div_right.append('div')
+                    .classed('pl-15', true)
                     .attr('id', function(d) { return 'map_placeholder_' + d.properties.pk; });
 
                 d3.select('#studies-table_tbody').selectAll('tr').sort(function(a, b){ 
