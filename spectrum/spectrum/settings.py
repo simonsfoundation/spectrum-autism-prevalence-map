@@ -36,10 +36,15 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
 GMAP_API_KEY = os.environ["GMAP_API_KEY"]
 
+# Cloudflare settings
+CLOUDFLARE_API_TOKEN = env('CLOUDFLARE_API_TOKEN')
+CLOUDFLARE_ZONE_ID = env('CLOUDFLARE_ZONE_ID')
+CLOUDFLARE_SUBDOMAIN = 'autismprevalence.thetransmitter.org'
+
 # Application definition
 
 INSTALLED_APPS = [
-    'autism_prevalence_map',
+    'autism_prevalence_map.apps.AutismPrevalenceMapConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -162,3 +167,23 @@ ALLOWED_ADMIN_IP_RANGES = ["34.231.5.44/32",
                            ]
 RESTRICTED_APP_NAMES=['admin']
 TRUST_PRIVATE_IP=True
+
+# Logging for Cloudflare cache purging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'cloudflare_purge.log'),
+        },
+    },
+    'loggers': {
+        'autism_prevalence_map': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
