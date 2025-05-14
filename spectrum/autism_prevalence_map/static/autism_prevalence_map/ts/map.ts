@@ -27,6 +27,24 @@ export function ttInitMap() {
                 .style('display', 'none')
                 .style('pointer-events', 'none')
                 .style('opacity', 1);
+
+            // reset zoom to base level (baseZoom = 1), centered on viewport
+            const newZoomLevel = baseZoom;
+            const viewportCenterX = width / 2;
+            const viewportCenterY = height / 2;
+            const translateX = viewportCenterX - viewportCenterX * newZoomLevel;
+            const translateY = viewportCenterY - viewportCenterY * newZoomLevel;
+
+            const newTransform = d3.zoomIdentity
+                .translate(translateX, translateY)
+                .scale(newZoomLevel);
+
+            svg_zoom.transition()
+                .duration(500)
+                .call(zoom.transform, newTransform);
+
+            currentZoom = newZoomLevel;
+
             app.map.drawMegadots();
         };
 
@@ -959,8 +977,7 @@ export function ttInitMap() {
                 .on('click', function(d) {
                     // if there's an expanded cluster, collapse it
                     if (app.map.expandedCluster && !app.map.expandedCluster.nodes.some(node => node.properties.pk === d.properties.pk)) {
-                        app.map.expandedCluster = null;
-                        app.map.createMegadots();
+                        app.map.collapseCluster();
                     }
 
                     // pin or unpin
@@ -1050,8 +1067,7 @@ export function ttInitMap() {
                 .on('click', function(d) {
                     // if there's an expanded cluster, collapse it
                     if (app.map.expandedCluster && !app.map.expandedCluster.nodes.some(node => node.properties.pk === d.properties.pk)) {
-                        app.map.expandedCluster = null;
-                        app.map.createMegadots();
+                        app.map.collapseCluster();
                     }
 
                     // pin or unpin
