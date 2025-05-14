@@ -977,8 +977,7 @@ export function ttInitMap() {
                 .on('click', function(d) {
                     // if there's an expanded cluster, collapse it
                     if (app.map.expandedCluster && !app.map.expandedCluster.nodes.some(node => node.properties.pk === d.properties.pk)) {
-                        app.map.expandedCluster = null;
-                        app.map.createMegadots();
+                        app.map.collapseCluster();
                     }
 
                     // pin or unpin
@@ -1068,8 +1067,7 @@ export function ttInitMap() {
                 .on('click', function(d) {
                     // if there's an expanded cluster, collapse it
                     if (app.map.expandedCluster && !app.map.expandedCluster.nodes.some(node => node.properties.pk === d.properties.pk)) {
-                        app.map.expandedCluster = null;
-                        app.map.createMegadots();
+                        app.map.collapseCluster();
                     }
 
                     // pin or unpin
