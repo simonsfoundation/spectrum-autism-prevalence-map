@@ -6,7 +6,8 @@ export function ttInitMap() {
         // app.map scope
         app.map = {};
 
-        app.map.expandedCluster = null;
+        app.map.lastZoomAction = 'manual';
+        app.map.isAutoZoomTransition = false;
 
         // globaly scope some variables for the map
         let studies, pinnedDot, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius, nodes, simulation, baseZoom = 1;
@@ -28,22 +29,31 @@ export function ttInitMap() {
                 .style('pointer-events', 'none')
                 .style('opacity', 1);
 
-            // reset zoom to base level (baseZoom = 1), centered on viewport
-            const newZoomLevel = baseZoom;
-            const viewportCenterX = width / 2;
-            const viewportCenterY = height / 2;
-            const translateX = viewportCenterX - viewportCenterX * newZoomLevel;
-            const translateY = viewportCenterY - viewportCenterY * newZoomLevel;
+            // zoom out if the last zoom action was automatic
+            const targetZoomLevel = Math.pow(zoomInFactor, 2);
+            const shouldZoomOut = app.map.lastZoomAction === 'auto' || Math.abs(currentZoom - targetZoomLevel) < 0.01;
+            if (shouldZoomOut) {
+                const newZoomLevel = baseZoom;
+                const viewportCenterX = width / 2;
+                const viewportCenterY = height / 2;
+                const translateX = viewportCenterX - viewportCenterX * newZoomLevel;
+                const translateY = viewportCenterY - viewportCenterY * newZoomLevel;
 
-            const newTransform = d3.zoomIdentity
-                .translate(translateX, translateY)
-                .scale(newZoomLevel);
+                const newTransform = d3.zoomIdentity
+                    .translate(translateX, translateY)
+                    .scale(newZoomLevel);
 
-            svg_zoom.transition()
-                .duration(500)
-                .call(zoom.transform, newTransform);
-
-            currentZoom = newZoomLevel;
+                app.map.isAutoZoomTransition = true;
+                svg_zoom.interrupt();
+                svg_zoom.transition()
+                    .duration(500)
+                    .call(zoom.transform, newTransform)
+                    .on('end', function() {
+                        currentZoom = baseZoom;
+                        app.map.lastZoomAction = 'manual';
+                        app.map.isAutoZoomTransition = false;
+                    });
+            }
 
             app.map.drawMegadots();
         };
@@ -57,25 +67,48 @@ export function ttInitMap() {
                 const avgX = cluster.nodes.reduce((sum, n) => sum + n.x, 0) / cluster.count;
                 const avgY = cluster.nodes.reduce((sum, n) => sum + n.y, 0) / cluster.count;
 
-                // zoom in 2 levels and respect max zoom
+                // zoom in 2 levels from base, but only if current zoom is less than target
                 const targetZoomLevel = Math.pow(zoomInFactor, 2);
-                const newZoomLevel = Math.min(targetZoomLevel, 6.5536);
+                let newZoomLevel = currentZoom;
+                let shouldZoom = false;
 
-                // center the cluster in the viewport
+                if (currentZoom < targetZoomLevel - 0.001) {
+                    newZoomLevel = targetZoomLevel;
+                    shouldZoom = true;
+                }
+
+                // always center on the mega dot
                 const viewportCenterX = width / 2;
                 const viewportCenterY = height / 2;
-                const translateX = viewportCenterX - avgX * newZoomLevel;
-                const translateY = viewportCenterY - avgY * newZoomLevel;
+                const finalZoomLevel = shouldZoom ? newZoomLevel : currentZoom;
+                const translateX = viewportCenterX - avgX * finalZoomLevel;
+                const translateY = viewportCenterY - avgY * finalZoomLevel;
 
                 const newTransform = d3.zoomIdentity
                     .translate(translateX, translateY)
-                    .scale(newZoomLevel);
+                    .scale(finalZoomLevel);
+
+                // cancel any ongoing transition to prevent overlap
+                svg_zoom.interrupt();
+
+                app.map.isAutoZoomTransition = true;
+
+                if (shouldZoom) {
+                    app.map.lastZoomAction = 'auto';
+                }
 
                 svg_zoom.transition()
                     .duration(500)
-                    .call(zoom.transform, newTransform);
-
-                currentZoom = newZoomLevel;
+                    .call(zoom.transform, newTransform)
+                    .on('end', function() {
+                        if (shouldZoom) {
+                            currentZoom = newZoomLevel;
+                        }
+                        setTimeout(() => {
+                            app.map.isAutoZoomTransition = false;
+                            console.log('expandCluster transition end: lastZoomAction =', app.map.lastZoomAction, 'isAutoZoomTransition =', app.map.isAutoZoomTransition, 'currentZoom =', currentZoom);
+                        }, 200);
+                    });
 
                 app.map.drawMegadots();
             }
@@ -215,7 +248,7 @@ export function ttInitMap() {
                 .style('opacity', app.map.expandedCluster ? 0.6 : 1);
 
             // radius within which a cluster can form
-            const clusterRadius = 18 / baseZoom;
+            const clusterRadius = 18 / currentZoom;
             if (!app.map.clusters) {
                 const visitedNodes = new Set();
                 let clusters = [];
@@ -415,7 +448,16 @@ export function ttInitMap() {
                 g_zoom.attr('transform', `translate(${d3.event.transform.x}, ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
                 scalePins(d3.event.transform.k);
                 
-                if (app.map.clusters) {
+                if (!app.map.isAutoZoomTransition) {
+                    app.map.lastZoomAction = 'manual';
+                }
+
+                // recalculate clusters on zoom only if there's no expanded cluster
+                if (!app.map.expandedCluster) {
+                    app.map.clusters = null;
+                    app.map.createMegadots();
+                } else {
+                    // ff there's an expanded cluster, just redraw without reforming clusters
                     app.map.drawMegadots();
                 }
             }
