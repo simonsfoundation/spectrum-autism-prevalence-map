@@ -106,7 +106,6 @@ export function ttInitMap() {
                         }
                         setTimeout(() => {
                             app.map.isAutoZoomTransition = false;
-                            console.log('expandCluster transition end: lastZoomAction =', app.map.lastZoomAction, 'isAutoZoomTransition =', app.map.isAutoZoomTransition, 'currentZoom =', currentZoom);
                         }, 200);
                     });
 
