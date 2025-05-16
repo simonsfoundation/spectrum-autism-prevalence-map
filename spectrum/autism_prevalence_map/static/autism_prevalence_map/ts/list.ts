@@ -108,13 +108,13 @@ export function ttInitList() {
                     app.list.studiesByPk[d.properties.pk] = d;
                 });
 
-                let enter_selection = table.append('tbody')
-                    .attr('id', 'studies-table_tbody')
-                    .selectAll('tr')
+                // group row1 and row2 in their own tbody so sorting doesn’t split them
+                let grouped = table.selectAll('tbody.study-group')
                     .data(studies.features)
-                    .enter();
+                    .enter()
+                    .append('tbody')
                 
-                let row1 = enter_selection.append('tr')
+                let row1 = grouped.append('tr')
                     .attr('data-toggle', 'collapse')
                     .attr('href', function (d) { 
                         return '#accordion_menu_' + d.properties.pk; 
@@ -129,7 +129,7 @@ export function ttInitList() {
 
                 const toggletd = row1.append('th')
                     .attr('scope', 'row')
-                    .classed('p-0 pl-3.75 w-toggle', true);
+                    .classed('p-0 pl-3.75 min-w-toggle sticky left-0 z-11', true);
 
                 toggletd.append('img')
                     .attr('src', chevron_down)
@@ -140,58 +140,128 @@ export function ttInitList() {
                     .text(function (d) { 
                         return d.properties.yearpublished; 
                     })
-                    .classed('w-td1', true);
+                    .classed('min-w-td1 sticky left-13.75 z-11', true);
 
                 row1.append('td')
                     .html(function (d) { 
                         const authors = d.properties.authors.replace('et al.', '<em>et al.</em>');
                         return authors; 
                     })
-                    .classed('w-td2 pr-8', true);
+                    .classed('min-w-td2 sticky left-46.5 z-11', true);
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.country; 
                     })
-                    .classed('w-td3', true);
+                    .classed('min-w-td3', true);
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.area.replace(/ *([|]) */g, '$1').split('|').join(', ');
                     })
-                    .classed('w-td4 pr-8', true);
+                    .classed('min-w-td4', true);
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.samplesize; 
-                    })
-                    .classed('w-td5', true);
+                    });
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.prevalenceper10000.replace(/ *([|]) */g, '$1').split('|').join(', ');
-                    })
-                    .classed('w-td6', true);
+                    });
 
                 row1.append('td')
                     .text(function (d) { 
                         return d.properties.confidenceinterval.replace(/ *([|]) */g, '$1').split('|').join(', '); 
-                    })
+                    });
 
-                let row2 = enter_selection.insert('tr')
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.individualswithautism; 
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.diagnosticcriteria.replace(/ *([|]) */g, '$1').split('|').join(', ');
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.diagnostictools.replace(/ *([|]) */g, '$1').split('|').join(', ');
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.percentwaverageiq; 
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.sexratiomf; 
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.yearsstudied; 
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.categoryadpddorasd; 
+                    });
+
+                row1.append('td')
+                    .text(function (d) { 
+                        return d.properties.studytype.replace(/ *([|]) */g, '$1').split('|').join(', ');
+                    })
+                    .classed('min-w-td16', true);
+
+                row1.append('td')
+                    .html(function (d) { 
+                        let links = [];
+                        const publications = [
+                            { title: d.properties.link1title, url: d.properties.link1url },
+                            { title: d.properties.link2title, url: d.properties.link2url },
+                            { title: d.properties.link3title, url: d.properties.link3url },
+                            { title: d.properties.link4title, url: d.properties.link4url }
+                        ];
+
+                        for (let i = 0; i < publications.length; i++) {
+                            const publication = publications[i];
+                            if (publication.title && publication.url && isValidURL(publication.url)) {
+                                links.push(`<a href="${publication.url}" target="_blank">${publication.title}</a>`);
+                            } else if (publication.title) {
+                                links.push(`<span>${publication.title}</span>`);
+                            }
+                        }
+
+                        return links.join(' ');
+                    });
+
+                let row2 = grouped.append('tr')
                     .classed('collapse bg-tan', true)
                     .attr('id', function (d) { 
                         return 'accordion_menu_' + d.properties.pk; 
                     })
                     .attr('data-collapse-target', 'true');
 
-                let card_div = row2.append('td')
-                    .attr('colspan', '9')
-                    .append('div')
-                    .classed('flex', true)
+                let card_div_left = row2.append('td')
+                    .classed('sticky left-0 min-w-rowcard w-rowcard z-11 bg-tan', true)
+                    .attr('colspan', '3')
+                    .append('div');
 
-                card_div.append('div')
-                    .classed('w-listcard pl-13.75 pr-8', true)
+                let card_div_right = row2.append('td')
+                    .attr('colspan', '14')
+                    .append('div');
+
+                card_div_left.append('div')
+                    .classed('pl-13.75 pr-8', true)
                     .append('p')
                     .html(function (d) { 
                         const age = d.properties.age.replace(/ *([|]) */g, '$1').split('|').join(', ');
@@ -242,12 +312,16 @@ export function ttInitList() {
                     });
 
                 // add placeholder that we will add map to when expanded
-                card_div.append('div')
+                card_div_right.append('div')
+                    .classed('pl-15', true)
                     .attr('id', function(d) { return 'map_placeholder_' + d.properties.pk; });
 
+                /*
+                REMOVED TO WORK ON SORTING. IS THIS NEEDED?
                 d3.select('#studies-table_tbody').selectAll('tr').sort(function(a, b){ 
                     return a.properties.pk - b.properties.pk; 
                 });
+                */
 
                 $('[data-collapse-target]').each(function () {
                     $(this).addClass('hidden');
@@ -294,7 +368,77 @@ export function ttInitList() {
             */
         }
 
-        // listener to toggle arrows on click
+        function closeAllSortDropdowns() {
+            $('[data-id="sort-pop"]').addClass('hidden');
+            $('[data-id="sort-trigger"]').removeClass('text-light-red').attr('aria-expanded', false);
+            $('[data-id="sort-chevron"] svg').removeClass('rotate-180 -translate-y-0.25');
+        }
+
+        // toggle sort dropdown
+        $(document).on('click', '[data-id="sort-trigger"]', function (e) {
+            e.stopPropagation();
+
+            const $wrapper  = $(this).closest('[data-id="sort-wrapper"]');
+            const $myPop = $wrapper.find('[data-id="sort-pop"]');
+            const $myChevron = $(this).find('[data-id="sort-chevron"]');
+
+            // close other dropdowns
+            $('[data-id="sort-pop"]').not($myPop).addClass('hidden');
+            $('[data-id="sort-trigger"]').not(this).removeClass('text-light-red');
+            $('[data-id="sort-chevron"] svg').not($myChevron).removeClass('rotate-180 -translate-y-0.25');
+
+            // toggle this dropdown
+            $myPop.toggleClass('hidden');
+            $(this).toggleClass('text-light-red');
+            $myChevron.toggleClass('rotate-180 -translate-y-0.25');
+
+            // update aria
+            $(this).attr('aria-expanded', !$myPop.hasClass('hidden'));
+        });
+
+        // click anywhere else to close all dropdowns
+        $(document).on('click', closeAllSortDropdowns);
+
+        let lastScrollLeft = 0;
+        $('[data-id="scroll-wrapper"]').on('scroll', function () {
+            const x = this.scrollLeft;
+            if (x !== lastScrollLeft) {
+                closeAllSortDropdowns();
+                lastScrollLeft = x;
+            }
+        });
+
+        // handle clicking the sort options in the dropdown
+        $(document).on('click', '[data-id="sort-pop"] button[data-sort-order]', function (e) {
+            e.preventDefault();
+
+            // toggle active state
+            $('[data-id="sort-pop"] button[data-sort-order]').removeClass('text-med-red');
+            $(this).addClass('text-med-red');
+
+            const field = $(this).attr('data-sort-field') || $(this).closest('[data-id="sort-pop"]').attr('data-sort-field');
+            const order = $(this).attr('data-sort-order');
+            if (!field || !order) return;
+
+            const url = new URL(window.location.href);
+            url.searchParams.set('sort_field', field);
+            url.searchParams.set('sort_order', order);
+            window.location.href = url.toString();
+        });
+
+        // apply button active state after page reload
+        $(function () {
+            const url   = new URL(location.href);
+            const field = url.searchParams.get('sort_field');
+            const order = url.searchParams.get('sort_order');
+
+            if (field && order) {
+                const selector = '[data-id="sort-pop"][data-sort-field="' + field + '"] ' + 'button[data-sort-order="' + order + '"]';
+                $(selector).addClass('text-med-red');
+            }
+        });
+
+        // listener to toggle hidden row arrows on click
         $(document).on('click', '.study_row', function(){
             $(this).find('.chevron-down').toggleClass('open');
         });
