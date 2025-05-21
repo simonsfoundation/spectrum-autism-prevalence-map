@@ -126,7 +126,7 @@ export function ttInitMap() {
         app.map.drawMegadots = function() {
              const maxZoomThreshold = 6.5536;
     
-            // if zoomed in beyond the threshold, don't draw any mega dots
+            // if zoomed in to the threshold, don't draw any mega dots
             if (currentZoom >= maxZoomThreshold) {
                 studiesG.selectAll('.megadot-container').remove();
                 
@@ -268,7 +268,7 @@ export function ttInitMap() {
 
             const maxZoomThreshold = 6.5536;
     
-            // if zoomed in beyond the threshold, show all individual dots and skip mega dots
+            // if zoomed in to the threshold, don't draw any mega dots
             if (currentZoom >= maxZoomThreshold) {
                 studiesG.selectAll('circle.map-circles')
                     .style('visibility', 'visible')
