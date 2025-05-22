@@ -22,6 +22,11 @@ export function ttInitMap() {
         let originalWidth, originalScale;
 
         app.map.collapseCluster = function () {
+            if (pinnedDot) {
+                unpinDot(pinnedDot);
+                pinnedDot = null;
+            }
+
             app.map.expandedCluster = null;
             studiesG.selectAll('circle.map-circles')
                 .style('visibility', 'hidden')
@@ -59,6 +64,11 @@ export function ttInitMap() {
         };
 
         app.map.expandCluster = function (clusterId) {
+            if (pinnedDot) {
+                unpinDot(pinnedDot);
+                pinnedDot = null;
+            }
+
             const cluster = app.map.clusters.find(c => c.id === clusterId);
             if (cluster) {
                 app.map.expandedCluster = cluster;
@@ -114,6 +124,23 @@ export function ttInitMap() {
         };
 
         app.map.drawMegadots = function() {
+             const maxZoomThreshold = 6.5536;
+    
+            // if zoomed in to the threshold, don't draw any mega dots
+            if (currentZoom >= maxZoomThreshold) {
+                studiesG.selectAll('.megadot-container').remove();
+                
+                nodes.forEach(node => {
+                    d3.select('#map_dot_' + node.properties.pk)
+                        .style('visibility', 'visible')
+                        .style('display', null)
+                        .style('pointer-events', 'auto')
+                        .style('opacity', 1);
+                });
+                
+                return;
+            }
+
             studiesG.selectAll('.megadot-container').remove();
             app.map.clusters.forEach(cluster => {
                 // size of collapsed circle
@@ -238,6 +265,25 @@ export function ttInitMap() {
 
         app.map.createMegadots = function() {
             if (!nodes || nodes.length === 0) return;
+
+            const maxZoomThreshold = 6.5536;
+    
+            // if zoomed in to the threshold, don't draw any mega dots
+            if (currentZoom >= maxZoomThreshold) {
+                studiesG.selectAll('circle.map-circles')
+                    .style('visibility', 'visible')
+                    .style('display', null)
+                    .style('pointer-events', 'auto')
+                    .style('opacity', 1);
+                    
+                studiesG.selectAll('.megadot-container').remove();
+                
+                const previousExpandedClusterId = app.map.expandedCluster ? app.map.expandedCluster.id : null;
+                app.map.expandedCluster = null;
+                
+                return;
+            }
+
             const previousExpandedClusterId = app.map.expandedCluster ? app.map.expandedCluster.id : null;
 
             studiesG.selectAll('circle.map-circles')
