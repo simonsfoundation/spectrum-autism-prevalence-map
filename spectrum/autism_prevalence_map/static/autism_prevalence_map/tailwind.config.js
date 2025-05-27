@@ -138,6 +138,8 @@ module.exports = {
                 '0.3125': '1.25px',
                 '1': '0.25rem',
                 '1.5': '0.375rem', // 6px
+                '2': '0.5rem', // 8px
+                '2.5': '0.625rem', // 10px
                 '3': '0.75rem', // 12px
             },
             height: {
@@ -164,9 +166,9 @@ module.exports = {
                 'arrow': '0.75rem', // 12px
                 'arrow2': '0.813rem', // 13px
                 'switchin': '0.875rem', // 14px
+                'chevron': '1.25rem', // 20px
                 'zoomcontrol': '2.25rem', // 36px
                 'switchout': '2.75rem', // 44px
-                'toggle': '3.438rem', // 55px
                 'filter': '10.813rem', // 173px
                 'button': '12rem', // 192px
                 'filterwide': '15.375rem', // 246px
@@ -189,12 +191,16 @@ module.exports = {
                 'map-expand': '61.188rem', // 979px
                 'map-lg-expand': '64.438rem',  // 1031px
                 'map-xl-expand': '80.875rem',  // 1294px
-                'td1': '6.25rem', // 100px
-                'td2': '12.375rem', // 198px
-                'td3': '8.375rem', // 134px
+                'rowcard': '22.0625rem', // 353px
+            },
+            minWidth: {
+                'toggle': '3.438rem', // 55px
+                'td1': '8.1875rem', // 131px
+                'td2': '13.625rem', // 218px
+                'td3': '9.3125rem', // 149px
                 'td4': '17.625rem', // 282px
-                'td5': '10.375rem', // 166px
-                'td6': '17.5rem', // 280px
+                'td16': '14.0625rem', // 225px
+                'rowcard': '22.0625rem', // 353px
             },
             maxHeight: {
                 'info1': 'calc(100% - 52px)', // height of the info card minus the sticky button wrapper at the bottom with 1 link
@@ -241,12 +247,14 @@ module.exports = {
                 '8.5': '2.125rem', // 34px
                 '8.75': '2.188rem', // 35px
                 '9': '2.25rem', // 36px
+                '9.75': '2.4375rem', // 39px
                 '10': '2.5rem', // 40px
                 '10.5': '2.625rem', // 42px
                 '11.5': '2.875rem', // 46px
                 '12.5': '3.125rem', // 50px
                 '13': '3.25rem', // 52px
                 '13.75': '3.438rem', // 55px
+                '14': '3.5rem', // 56px
                 '14.5': '3.625rem', // 58px
                 '15': '3.75rem', // 60px
                 '16': '4rem', // 64px
@@ -255,6 +263,7 @@ module.exports = {
                 '23': '5.75rem', // 92px
                 '24' : '6rem', // 96px
                 '25.5' : '6.375rem', // 102px
+                '38.75' : '9.6875rem', // 155px
                 '46.5' : '11.625rem', // 186px
                 '62' : '15.5rem', // 248px
                 '63.5': '15.875rem', // 254px
@@ -267,6 +276,7 @@ module.exports = {
             colors: {
                 'red': '#910E1C',
                 'med-red': '#D14D57',
+                'light-red': '#F26670',
                 'blue': '#0B6BC3',
                 'navy': '#003049',
                 'med-navy': '#2E5367',
@@ -277,6 +287,7 @@ module.exports = {
                 'dark-tan': '#CAC6BC',
                 'dark-gray': '#2D2D2D',
                 'dark-gray2': '#585248',
+                'dark-gray3': '#3D3D3D',
                 'med-gray': '#CCC',
                 'light-gray': '#F4F5F6',
                 'light-gray2': '#BFCBD1',
