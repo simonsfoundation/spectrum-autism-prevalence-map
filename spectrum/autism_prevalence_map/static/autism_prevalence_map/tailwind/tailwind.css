@@ -501,9 +501,4 @@
     #studies-table .show a {
         @apply no-underline;
     }
-    @media screen and (max-width: 767px) {
-        [data-page='about'] header {
-            @apply hidden;
-        }
-    }
 }
