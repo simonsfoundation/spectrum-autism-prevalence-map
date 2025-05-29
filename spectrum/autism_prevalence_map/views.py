@@ -8,6 +8,7 @@ import re, csv, os
 from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.db.models import Avg, FloatField
 from django.db.models.functions import Cast
+from django.contrib.staticfiles.finders import find as find_static_file
 
 #import all apartment models and forms
 from autism_prevalence_map.models import *
@@ -211,6 +212,14 @@ country_to_continent = {
   'Vanuatu': 'Australia and Oceania'
 }
 
+# attach version to file path
+def versioned(path):
+    real = find_static_file(path)
+    if real and os.path.exists(real):
+        ts = int(os.path.getmtime(real))
+        return f"{path}?v={ts}"
+    return path
+
 # Create your views here.
 def index(request):
     """
@@ -220,8 +229,8 @@ def index(request):
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
-        style_sheet = 'autism_prevalence_map/dist/main.min.css'
-        script = 'autism_prevalence_map/dist/main.min.js'
+        style_sheet = versioned('autism_prevalence_map/dist/main.min.css')
+        script = versioned('autism_prevalence_map/dist/main.min.js')
 
     if request.method == 'GET':
         min_yearpublished = request.GET.get('min_yearpublished', '')
@@ -242,8 +251,11 @@ def index(request):
         try:
             last_updated_on_obj = options.objects.get(name='last_updated_on')
             last_updated_on = last_updated_on_obj.value
+            last_updated_on_meta_obj = options.objects.get(name='last_updated_on_meta')
+            last_updated_on_meta = last_updated_on_meta_obj.value
         except:
             last_updated_on = ''
+            last_updated_on_meta = ''
 
     context_dict = {'min_yearpublished': min_yearpublished,
                     'max_yearpublished': max_yearpublished,
@@ -261,6 +273,7 @@ def index(request):
                     'country': country,
                     'continent': continent,
                     'last_updated_on': last_updated_on,
+                    'last_updated_on_meta': last_updated_on_meta,
                     'style_sheet': style_sheet,
                     'script': script,}
     
@@ -274,8 +287,8 @@ def list_view(request):
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
-        style_sheet = 'autism_prevalence_map/dist/main.min.css'
-        script = 'autism_prevalence_map/dist/main.min.js'
+        style_sheet = versioned('autism_prevalence_map/dist/main.min.css')
+        script = versioned('autism_prevalence_map/dist/main.min.js')
 
     if request.method == 'GET':
         min_yearpublished = request.GET.get('min_yearpublished','')
@@ -293,6 +306,11 @@ def list_view(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        try:
+            last_updated_on_meta_obj = options.objects.get(name='last_updated_on_meta')
+            last_updated_on_meta = last_updated_on_meta_obj.value
+        except:
+            last_updated_on_meta = ''
 
     context_dict = {
         'min_yearpublished':min_yearpublished,
@@ -310,6 +328,7 @@ def list_view(request):
         'education':education,
         'country': country,
         'continent': continent,
+        'last_updated_on_meta': last_updated_on_meta,
         'style_sheet': style_sheet,
         'script': script,}
 
@@ -323,8 +342,8 @@ def about(request):
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
-        style_sheet = 'autism_prevalence_map/dist/main.min.css'
-        script = 'autism_prevalence_map/dist/main.min.js'
+        style_sheet = versioned('autism_prevalence_map/dist/main.min.css')
+        script = versioned('autism_prevalence_map/dist/main.min.js')
 
     if request.method == 'GET':
         min_yearpublished = request.GET.get('min_yearpublished','')
@@ -342,6 +361,11 @@ def about(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        try:
+            last_updated_on_meta_obj = options.objects.get(name='last_updated_on_meta')
+            last_updated_on_meta = last_updated_on_meta_obj.value
+        except:
+            last_updated_on_meta = ''
 
     context_dict = {
         'min_yearpublished':min_yearpublished,
@@ -359,6 +383,7 @@ def about(request):
         'education':education,
         'country': country,
         'continent': continent,
+        'last_updated_on_meta': last_updated_on_meta,
         'style_sheet': style_sheet,
         'script': script,}
         
