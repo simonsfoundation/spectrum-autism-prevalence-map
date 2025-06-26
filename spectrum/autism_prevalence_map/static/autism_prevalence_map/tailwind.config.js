@@ -166,7 +166,6 @@ module.exports = {
                 'switchin': '0.875rem', // 14px
                 'zoomcontrol': '2.25rem', // 36px
                 'switchout': '2.75rem', // 44px
-                'toggle': '3.438rem', // 55px
                 'filter': '10.813rem', // 173px
                 'button': '12rem', // 192px
                 'filterwide': '15.375rem', // 246px
@@ -189,12 +188,16 @@ module.exports = {
                 'map-expand': '61.188rem', // 979px
                 'map-lg-expand': '64.438rem',  // 1031px
                 'map-xl-expand': '80.875rem',  // 1294px
+                'rowcard': '22.0625rem', // 353px
+            },
+            minWidth: {
+                'toggle': '3.438rem', // 55px
                 'td1': '6.25rem', // 100px
-                'td2': '12.375rem', // 198px
-                'td3': '8.375rem', // 134px
+                'td2': '13.625rem', // 198px
+                'td3': '9.3125rem', // 149px
                 'td4': '17.625rem', // 282px
-                'td5': '10.375rem', // 166px
-                'td6': '17.5rem', // 280px
+                'td16': '14.0625rem', // 225px
+                'rowcard': '22.0625rem', // 353px
             },
             maxHeight: {
                 'info1': 'calc(100% - 52px)', // height of the info card minus the sticky button wrapper at the bottom with 1 link
@@ -247,6 +250,7 @@ module.exports = {
                 '12.5': '3.125rem', // 50px
                 '13': '3.25rem', // 52px
                 '13.75': '3.438rem', // 55px
+                '14': '3.5rem', // 56px
                 '14.5': '3.625rem', // 58px
                 '15': '3.75rem', // 60px
                 '16': '4rem', // 64px
@@ -255,6 +259,7 @@ module.exports = {
                 '23': '5.75rem', // 92px
                 '24' : '6rem', // 96px
                 '25.5' : '6.375rem', // 102px
+                '38.75' : '9.6875rem', // 155px
                 '46.5' : '11.625rem', // 186px
                 '62' : '15.5rem', // 248px
                 '63.5': '15.875rem', // 254px
