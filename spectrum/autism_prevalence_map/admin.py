@@ -287,8 +287,9 @@ class StudiesAdmin(admin.ModelAdmin):
         study.num_yearsstudied=num_yearsstudied
         
     def last_updated_on(self):
+        now = datetime.datetime.now(datetime.timezone.utc)
         option_obj, _ = options.objects.update_or_create(name='last_updated_on')
-        option_obj.value = datetime.date.today().strftime("%-d %B %Y")
+        option_obj.value = now.strftime("%-d %B %Y")
         option_obj.save()
 
 class AboutSectionInline(admin.StackedInline):
@@ -306,3 +307,7 @@ class AboutPageAdmin(admin.ModelAdmin):
     inlines = [AboutSectionInline]
     list_display = ('title',)
     fields = ('title', 'meta_title', 'meta_description', 'meta_thumbnail')
+        nowformatted = now.replace(second=0, microsecond=0).isoformat(timespec='minutes')
+        meta_option_obj, _ = options.objects.update_or_create(name='last_updated_on_meta')
+        meta_option_obj.value = nowformatted
+        meta_option_obj.save()

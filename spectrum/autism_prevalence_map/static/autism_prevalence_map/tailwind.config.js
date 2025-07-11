@@ -353,7 +353,7 @@ module.exports = {
         'fill-navy',
         'stroke-dark-tan',
         'stroke-tan',
-        'stroke-[0.5px]',
+        'stroke-0.125',
         'ui-slider',
         'ui-slider-handle',
         'ui-slider-range',
@@ -362,5 +362,6 @@ module.exports = {
         'max-h-info2',
         'max-h-info3',
         'max-h-info4',
+        'megadot-outline',
     ],
 }

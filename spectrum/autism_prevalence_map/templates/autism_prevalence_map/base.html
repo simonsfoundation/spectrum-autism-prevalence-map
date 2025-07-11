@@ -20,6 +20,16 @@
     <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
     <meta name='csrf-token' content='{% csrf_token %}'>
 
+    {% if last_updated_on %}
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "dateModified": "{{ last_updated_on }}"
+        }
+    </script>
+    {% endif %}
+
     {% static '' as static_base %}
     <link rel='stylesheet' type='text/css' href='{{ static_base }}{{ style_sheet }}'>
 
@@ -44,7 +54,7 @@
             'region': ['US']
         });
         dataLayer.push({'content_group_id': 'TTmiscellaneous17',
-                        'content_group_name': 'Tools, Microsites and Miscellaneous Resources'}
+                        'content_group_name': 'tools, microsites and miscellaneous resources'}
         );
 
         (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
