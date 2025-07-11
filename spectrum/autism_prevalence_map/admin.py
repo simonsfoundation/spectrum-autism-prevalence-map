@@ -3,13 +3,14 @@ from __future__ import unicode_literals
 from django.conf import settings
 import sys, os, urllib.request, json, time, datetime, re
 from django.contrib import admin
-from .models import studies, options
+from .models import studies, options, AboutPage, AboutSection
 from django import forms
 from django.conf.urls import url
 from django.template.response import TemplateResponse
 from django.shortcuts import redirect
 import csv
 import io
+
 class StudiesForm(forms.ModelForm):
     
     yearpublished = forms.CharField(label='Year Published', required=False, initial='')
@@ -50,6 +51,7 @@ class StudiesForm(forms.ModelForm):
 
 class CsvImportForm(forms.Form):
     csv_file = forms.FileField()
+
 @admin.register(studies)
 class StudiesAdmin(admin.ModelAdmin):
     list_display = ("id", "yearpublished", "authors", "country", "area",
@@ -293,3 +295,19 @@ class StudiesAdmin(admin.ModelAdmin):
         meta_option_obj, _ = options.objects.update_or_create(name='last_updated_on_meta')
         meta_option_obj.value = nowformatted
         meta_option_obj.save()
+
+class AboutSectionInline(admin.StackedInline):
+    model = AboutSection
+    extra = 0
+    fields = ('section_type', 'title', 'content', 'newsletter_title', 'newsletter_support_line', 'newsletter_id', 'section_title_text', 'section_title_id', 'links', 'order')
+
+    class Media:
+        js = ('autism_prevalence_map/dist/admin.min.js' if os.environ['DJANGO_ALLOWED_HOSTS'] != '127.0.0.1' else 'autism_prevalence_map/dist/admin.js',)
+
+admin.site.register(options)
+
+@admin.register(AboutPage)
+class AboutPageAdmin(admin.ModelAdmin):
+    inlines = [AboutSectionInline]
+    list_display = ('title',)
+    fields = ('title', 'meta_title', 'meta_description', 'meta_thumbnail')

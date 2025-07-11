@@ -1,12 +1,48 @@
 {% extends 'autism_prevalence_map/base.html' %}
 
 {% load static %}
-{% block title %}How to use the Global Autism Prevalence Map | The Transmitter{% endblock %}
-{% block twitter_title %}How to use the Global Autism Prevalence Map | The Transmitter{% endblock %}
-{% block og_title %}How to use the Global Autism Prevalence Map | The Transmitter{% endblock %}
-{% block description %}Learn how to use The Transmitter’s Global Autism Prevalence Map to explore studies and data on autism prevalence worldwide.{% endblock %}
-{% block twitter_description %}Learn how to use The Transmitter’s Global Autism Prevalence Map to explore studies and data on autism prevalence worldwide.{% endblock %}
-{% block og_description %}Learn how to use The Transmitter’s Global Autism Prevalence Map to explore studies and data on autism prevalence worldwide.{% endblock %}
+{% load mathfilters %}
+
+{% block title %}{% spaceless %}
+    {% if about_page %}
+        {{ about_page.title }}
+    {% endif %}
+{% endspaceless %}{% endblock %}
+{% block meta_description %}{% spaceless %}
+    {% if about_page and about_page.meta_description %}
+        {{ about_page.meta_description }}
+    {% endif %}
+{% endspaceless %}{% endblock %}
+{% block twitter_title %}{% spaceless %}
+    {% if about_page and about_page.meta_title %}
+        {{ about_page.meta_title }}
+    {% endif %}
+{% endspaceless %}{% endblock %}
+{% block twitter_description %}{% spaceless %}
+    {% if about_page and about_page.meta_description %}
+        {{ about_page.meta_description }}
+    {% endif %}
+{% endspaceless %}{% endblock %}
+{% block twitter_image %}{% spaceless %}
+    {% if about_page and about_page.meta_thumbnail %}
+        {{ request.build_absolute_uri }}{{ about_page.meta_thumbnail.url }}
+    {% endif %}
+{% endspaceless %}{% endblock %}
+{% block og_title %}{% spaceless %}
+    {% if about_page and about_page.meta_title %}
+        {{ about_page.meta_title }}
+    {% endif %}
+{% endspaceless %}{% endblock %}
+{% block og_description %}{% spaceless %}
+    {% if about_page and about_page.meta_description %}
+        {{ about_page.meta_description }}
+    {% endif %}
+{% endspaceless %}{% endblock %}
+{% block og_image %}{% spaceless %}
+    {% if about_page and about_page.meta_thumbnail %}
+        {{ request.build_absolute_uri }}{{ about_page.meta_thumbnail.url }}
+    {% endif %}
+{% endspaceless %}{% endblock %}
 {% block page_name %}about{% endblock %}
 
 {% block body_block %}
@@ -14,107 +50,166 @@
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
 <div class="bg-white pb-14 md:pb-32">
-    <section class="py-5 bg-light-navy-2">
-        <div class="font-serif font-light my-8 flex flex-col items-center col-span-4 md:col-start-4 md:col-span-6">
-            <h1 class="text-4md text-red text-center md:text-xl">About the Global Autism Prevalence Map</h1>
-        </div>
-    </section>
-    <section class="max-w-400 mx-auto px-4 py-4 md:py-8">
-        <article class="mx-auto border-l-red flex flex-col bg-light-gray px-6 py-8 border-l-1 md:max-w-159 md:px-14 md:py-12 md:mt-8 md:mb-20 md:border-l-6">
-            <h2 class="font-serif font-bold normal-case text-3sm leading-5.5 text-red md:tracking-normal-lg md:mb-8 md:leading-7.1 md:text-1.5md">Table of contents</h2>
-            <div
-                class="font-serif-text font-thin text-1sm leading-6.4 tracking-wide text-dark-gray2 md:leading-8 md:tracking-wide md:text-3sm">
-                <a class="block font-serif font-medium" href="#how-to-use-map">How to use the map</a>
-                <a class="block font-serif font-medium" href="#key-to-terms">Key to terms used on the map</a>
-                <a class="block font-serif font-medium" href="#how-to-cite-map">How to cite the map</a>
-                <a class="block font-serif font-medium" href="#more-info">Read <i>The Transmitter</i>’s autism prevalence coverage</a>
-                <a class="block font-serif font-medium" href="#team">The team behind the map</a>
-                <a class="block font-serif font-medium" href="#hear-from-you">Contact us</a>
+    {% if about_page %}
+        <section class="py-5 bg-light-navy-2">
+            <div class="font-serif font-light my-8 flex flex-col items-center col-span-4 md:col-start-4 md:col-span-6">
+                <h1 class="text-4md text-red text-center md:text-xl">About the Global Autism Prevalence Map</h1>
             </div>
-        </article>
-        <article class="mx-auto mt-3 md:max-w-159">
-            <p>This map was created by the team at <a href="https://www.thetransmitter.org/"><i>The Transmitter</i></a>, an essential resource for the neuroscience community, dedicated to helping scientists at all career stages stay current and build connections. <a href="https://www.thetransmitter.org/spectrum/"><i>Spectrum</i></a> is a key part of <i>The Transmitter</i> and publishes news and perspectives about autism research. Subscribe to our <a href="https://www.thetransmitter.org/newsletters-alerts/"><i>Spectrum</i> newsletter</a> to stay up to date.</p>
-            <p>The map features a collection of studies on autism prevalence around the world. It highlights places where information is available—and places where information is missing. We periodically update the map with new studies as they become available</p>
-            <h2 id="how-to-use-map" class="mb-4 mt-6 font-sans font-medium uppercase text-1md text-red md:mt-12 md:text-lg">How to use the Global Autism Prevalence Map:</h2>
-            <p>Each dot on the map represents a study. To see more information about a particular study, click on the corresponding dot. The window that pops up has key pieces of available information from that study.</p>
-            <p>You can also view and filter the studies in the “list” view. In either the map or the list view, you can use the filters at the top to display studies that match certain criteria, such as sample size, prevalence estimate or study type. And you can use the timeline at the bottom of the page to filter by the years in which studies were conducted or published.</p>
-            <h2 id="key-to-terms" class="mb-4 mt-6 font-sans font-medium uppercase text-1md text-red md:mt-12 md:text-lg">Key to terms used on the Global Autism Prevalence Map:</h2>
-            <p><b>Prevalence</b> is shown on the map as the estimated number of autistic people per 10,000 people in the population studied.</p>
-            <p>When available, the study shows the proportion of participants with at least an  <b>average IQ</b>—the definition of “average” IQ varies from study to study but typically refers to a score above 70 or 80.</p>
-            <p class="mb-0"><b>Diagnostic criteria</b> include the following options:</p>
-            <p class="mb-0">ABC—Autism Behavior Checklist</p>
-            <p class="mb-0">ADOS—Autism Diagnostic Observation Schedule</p>
-            <p class="mb-0">ADI, ADI-R—Autism Diagnostic Interview, Autism Diagnostic Interview-Revised</p>
-            <p class="mb-0">Autistic Disorder</p>
-            <p class="mb-0">CABS—Clancy Autism Behavior Scale</p>
-            <p class="mb-0">CARS—Childhood Autism Rating Scale</p>
-            <p class="mb-0">CCMD-2, CCMD-2-R—Chinese Classification of Mental Disorders, 2<sup>nd</sup> edition</p>
-            <p class="mb-0">Clinician diagnosis</p>
-            <p class="mb-0">DAWBA—Development and Well-Being Assessment</p>
-            <p class="mb-0">DISCO—Diagnostic Interview for Social and Communication Disorderss</p>
-            <p class="mb-0">DSM-III, DSM-III-R, DSM-IV, DSM-IV-TR, DSM-5—editions of the Diagnostic and Statistical Manual of Mental Disorders</p>
-            <p class="mb-0">Gillberg criteria—Christopher Gillberg’s diagnostic description</p>
-            <p class="mb-0">ICD-8, ICD-9, ICD-9-CM, ICD-10—editions of the International Classification of Diseases</p>
-            <p class="mb-0">INDT-ASD—INCLEN Diagnostic Tool for Autism Spectrum Disorder</p>
-            <p class="mb-0">Parent report</p>
-            <p class="mb-0">Kanner criteria—Leo Kanner’s diagnostic description</p>
-            <p class="mb-0">SCDC—Social and Communication Disorders Checklist</p>
-            <p class="mb-0">SCQ—Social Communication Questionnaire</p>
-            <p class="mb-0">SRS—Social Responsiveness Scale</p>
-            <p class="mb-0">Rating scale</p>
-            <p class="mb-0">RDC—Research Diagnostic Criteria</p>
-            <p>Rutter criteria—Michael Rutter’s diagnostic description</p>
-            <p class="mb-0"><b>Study type</b> includes the following options:<br></p>
-            <p class="mb-0">Epidemiological survey—active case-finding with two-stage screen and case confirmation</p>
-            <p class="mb-0">Registry—analysis of already-identified cases in research databases</p>
-            <p class="mb-0">Administrative database—classifications based on existing documented provision of services</p>
-            <p class="mb-0">General health survey—reported symptoms or diagnoses in a population-based survey sample</p>
-            <p>Research cohort—people identified for research projects and followed over time</p>
-            <p class="mb-0"><b>Category</b> includes the following options:<br></p>
-            <p class="mb-0">AD—autistic disorder (now classified as autism spectrum disorder, or ASD, in the DSM-5)</p>
-            <p class="mb-0">PDD—pervasive developmental disorder (now classified as ASD in the DSM-5)</p>
-            <p>ASD—autism spectrum disorder</p>
-            <h2 id="how-to-cite-map" class="mb-4 mt-6 font-sans font-medium uppercase text-1md text-red md:mt-12 md:text-lg">How to cite the Global Autism Prevalence Map:</h2>
-            <p>
-                Please include a statement in your article or on your website that indicates that you retrieved the information from <a href="https://autismprevalence.thetransmitter.org/">https://autismprevalence.thetransmitter.org/</a>. If you refer to the map by name, please call it the “Global Autism Prevalence Map from <i>The Transmitter</i>” and link to this page. For more information on syndication, visit our <a href="https://www.thetransmitter.org/editorial-policies/#syndication">editorial policies</a> page.
-            </p>
-            <h2 id="more-info" class="mb-4 mt-8 font-sans font-medium uppercase text-1md text-red md:mt-14 md:text-lg">Read stories on autism prevalence published by <i>The Transmitter</i>:</h2>
-            <ul>
-                <li>
-                    <p class="mb-5.5">
-                        <a class="font-normal" href="https://www.thetransmitter.org/spectrum/u-s-autism-prevalence-continues-to-rise-as-race-and-sex-gaps-shrink-new-stats-show/">U.S. autism prevalence continues to rise as race and sex gaps shrink, new stats show</a>
-                    </p>
-                </li>
-                <li>
-                    <p class="mb-5.5">
-                        <a class="font-normal" href="https://www.thetransmitter.org/spectrum/autism-rates-united-states-explained/">Autism by the numbers: Explaining its apparent rise</a>
-                    </p>
-                </li>
-                <li>
-                    <p class="mb-5.5">
-                        <a class="font-normal" href="https://www.thetransmitter.org/spectrum/analysis-offers-first-reliable-estimate-of-prevalence-in-oman/">Analysis offers first reliable estimate of prevalence in Oman</a>
-                    </p>
-                </li>
-                <li>
-                    <p class="mb-5.5">
-                        <a class="font-normal" href="https://www.spectrumnews.org/news/study-quantifies-prevalence-autism-india/">Study quantifies prevalence of autism in India</a>
-                    </p>
-                </li>
-                <li>
-                    <p class="mb-5.5">
-                        <a class="font-normal" href="https://www.spectrumnews.org/news/study-quantifies-prevalence-autism-india/">Autism incidence in England varies by ethnicity, class, location</a>
-                    </p>
-                </li>
-            </ul>
-            <p><b>Explore more at</b> <a href="https://www.thetransmitter.org/prevalence/">https://www.thetransmitter.org/prevalence/</a></p>
-            <h2 id="team" class="mb-4 mt-6 font-sans font-medium text-1md uppercase text-red md:mt-12 md:mb-7.5 md:text-lg">The team behind the global Autism Prevalence Map:</h2>
-            <p>The Global Autism Prevalence Map is updated periodically with information collected by Heather MacFarlane, a research data analyst at Oregon Health & Science University.</p>
-            <p>The Global Autism Prevalence Map was first released in 2018 under the leadership of <a href="https://www.thetransmitter.org/contributor/apoorva-mandavilli/">Apoorva Mandavilli</a>, <i>Spectrum</i>’s founding editor-in-chief. <a href="https://www.thetransmitter.org/contributor/nicholette-zeliadt/">Nicholette Zeliadt</a>, <i>The Transmitter</i>’s managing editor, led the map’s build on the editorial side. <a href="https://www.thetransmitter.org/contributor/rebecca-horne/">Rebecca Horne</a>, <i>The Transmitter</i>’s art director, commissioned and oversees the map’s design. Michael Kranz, the Simons Foundation’s former director of web development, oversaw the map’s technical build.</p>
-            <p>Special project advisers <a href="https://www.thetransmitter.org/contributor/gauri-divan/">Gauri Divan</a>, director of the child development group at Sangath; <a href="https://www.thetransmitter.org/contributor/maureen-durkin/">Maureen Durkin</a>, professor and chair of population health sciences at the University of Wisconsin-Madison; <a href="https://www.thetransmitter.org/contributor/mayada-elsabbagh/">Mayada Elsabbagh</a>, professor of neurology and neurosurgery at McGill University; <a href="https://www.thetransmitter.org/contributor/eric-fombonne/">Eric Fombonne</a>, professor emeritus of psychiatry at Oregon Health & Science University; and <a href="https://www.thetransmitter.org/contributor/catherine-rice/">Catherine Rice</a>, branch chief in the Disability and Health Promotion Branch at the U.S. Centers for Disease Control and Prevention, provided invaluable guidance and expertise throughout the entire project.</p>
-            <h2 id="hear-from-you" class="mb-4 mt-6 font-sans font-medium text-1md uppercase text-red md:mt-12 md:mb-7.5 md:text-lg">We want to hear from you:</h2>
-            <p>If you have questions or feedback about the Global Autism Prevalence Map, email us at <a href="mailto:community@thetransmitter.org">community@thetransmitter.org</a>.</p>
-        </article>
-    </section>
+        </section>
+        <section class="max-w-400 mx-auto px-4 py-4 md:py-8">
+            {% for section in about_page.sections.all %}
+                {% if section.section_type == 'callout' %}
+                    <article data-module='callout' class="flex flex-col gap-8 mx-auto md:mt-8 mb-3 lg:mb-7 px-6 py-8 lg:p-12 md:max-w-159 border-l-red bg-light-gray border-l-4 lg:border-l-6">
+                        {{ section.content|safe }}
+                    </article>
+                {% elif section.section_type == 'toc' %}
+                    <article class="mx-auto border-l-red flex flex-col bg-light-gray px-6 py-8 border-l-1 md:max-w-159 md:px-14 md:py-12 md:mt-8 md:mb-20 md:border-l-6">
+                        <h2 class="font-serif font-bold normal-case text-3sm leading-5.5 text-red md:tracking-normal-lg md:mb-8 md:leading-7.1 md:text-1.5md">{{ section.title }}</h2>
+                        <div class="font-serif-text font-thin text-1sm leading-6.4 tracking-wide text-dark-gray2 md:leading-8 md:tracking-wide md:text-3sm">
+                            {% for link in section.get_links %}
+                                <a class="block font-serif font-medium" href="{{ link.1 }}">{{ link.0|safe }}</a>
+                            {% empty %}
+                                <p>No links available.</p>
+                            {% endfor %}
+                        </div>
+                    </article>
+                {% elif section.section_type == 'section_title' %}
+                    <article data-module='section_title' class="mx-auto mb-4 mt-6 md:mt-12 md:max-w-159">
+                        <h2 id="{{ section.section_title_id }}" class="font-sans font-medium text-1md uppercase text-red lg:text-lg">{{ section.section_title_text|safe }}</h2>
+                    </article>
+                {% elif section.section_type == 'text' %}
+                    <article class="mx-auto md:max-w-159">
+                        {{ section.content|safe }}
+                    </article>
+                {% elif section.section_type == 'newsletter' %}
+                    <article class='mx-auto md:max-w-159'>
+                        <div data-id="mc_embed_signup" class="bg-no-repeat bg-cover bg-dark-tan min-h-30 col-span-4 px-6 py-8 md:p-6 lg:px-8 lg:py-12 lg:col-span-6 lg:col-start-4" style="background-image: url(https://staging.thetransmitter.org/wp-content/uploads/2024/11/nl-background-softened-scaled.webp)">
+                            <form action="https://spectrumnews.us11.list-manage.com/subscribe/post-json?u=725d9bd9f4c8ea826904b1f95&amp;id=323ad556f4&amp;f_id=00fdc2e1f0&amp;c=?" method="post" class="w-full" data-id="mc-embedded-subscribe" data-page="" name="mc-embedded-subscribe" aria-label="Subscribe to a newsletter">
+                                <!--
+                                <div class="cf-turnstile" data-sitekey="0x4AAAAAAAz2iQKcvhCg0EjK">
+                                    <input type="hidden" name="cf-turnstile-response" id="cf-chl-widget-4x5r1_response" value="0.p5UHtUqhqfac3XeCRUINO1C3zlRbHFiOaXN_fNjLuPux9_zOFlmQy6DkHqSxBz6k_CP8-8QcAikH-YIuiHEkGPbpPqu-JcZ2oPZkeMHuTV0b7wiS2fm0WqT6d0mzks71GMj-4JrK_56E6w8yvqSJKs_6wyjfYKCGeohbPBzEdjU6J8o46dLz5_gKk3eWIeHmBYeOPHlXL5KPNKbmvW9tQkHpse59j4NrMnNE8fgNECC3CeAMUdgDHWgDSE50Gi0IzFppkTW3TP_tQ-IOy9-u2rRjMC4cwC_ZDlOdqaPq5ArNdfKwNMWWV6ExLF0Y5ZDFiMQHEatozQSu3rStSeVWKHB0iVT211lsqirud9U99nZvMMuyxuQMKZkUpKnrKovesJ97l6bt0EDzRGPtZaJJ03wuWWQZ_zppbfAEsS74wocqWXQ2lJDOyVGc9Imre0VV_0c5Yd9JVj1Hqfr16Vu58-6wEb8UwfX-cjCl_VemWp3sd3LGJAA_f2qXxGiYnjVNC8iHO9LQ2eKZtScDAP8Sg184XpuXU7tb_Igo38LxMjMgWWVRM_culfKq1km3yzygw-ZW20mfVlAfFD3tbpuRswsxIMRS1jHPX8qdi675V-lEkXau8ozAzBZ8K--LlbfD13bEh-CmkknNOQUXovw6Q83QqlW7TCUjlf3c8o_DVD4hTk7LGTkhSlN4X4szHaVUO80yqFVcF99Mkq6i_9mxZSyOumqnGo1PfZnsxMXUn23KB1netLaWeozaqT-dwQ7TL_M2nJfBJ83YAPtZ7GkaG4vfMY-lct_kmKHj1Dyjku7V2Rhi0P1ytjJRmgh5pSwLOLfqjjXugsvKUBh-x_bQHTTdewTu-Wbh8dWkuDkLOTs.9EqyJfsygTkmxlP2PfTqFw.dede66ac9f48e851fd4163a5f1db42d9f2d6492123f01872f483284943e24f59">
+                                </div>
+                                -->
+                                <div class="flex flex-col gap-4 lg:grid lg:grid-cols-9 lg:gap-6">
+                                    <div class="flex flex-col col-span-9" data-id="signup-instructions">
+                                        <h2 class="font-serif text-red font-normal normal-case text-3sm mb-1 md:mb-4 md:text-2md lg:text-lg lg:tracking-normal lg:leading-7.1" data-id="newsletter-title">{{ section.newsletter_title|safe }}</h2>
+                                        <p class="font-serif text-dark-brown leading-5 text-1sm lg:text-3sm mb-0" data-id="newsletter-subtitle">{{ section.newsletter_support_line|safe }}</p>
+                                    </div>
+                                    <div data-id="mce-response-error" class="hidden col-span-9 font-serif text-3sm text-red tracking-wide-sm lg:font-normal lg:leading-7.1 lg:text-2md lg:tracking-normal-md"></div>
+                                    <div class="flex flex-col  col-span-9" data-id="input-col">
+                                        <div class="flex flex-col max-w-newsletter">
+                                            <div class="flex">
+                                                <div class="grow relative">
+                                                    <label for="EMAIL" class="screen-reader-text">Email Address</label>
+                                                    <input type="email" placeholder="email@address.com" name="EMAIL" class="email border-r-0 w-full pl-4 py-4.5 h-10.5 border-0.125 border-navy rounded-l text-med-navy focus-visible:outline-0 placeholder:text-2xs placeholder:uppercase bg-light-navy-2 placeholder:opacity-60" value="">
+                                                    <div class="hidden absolute right-4 top-3.5" data-id="email-error-icon">
+                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_515_446)"><path d="M8.0013 4.66602C8.36949 4.66602 8.66797 4.96449 8.66797 5.33268V7.99935C8.66797 8.36754 8.36949 8.66602 8.0013 8.66602C7.63311 8.66602 7.33463 8.36754 7.33463 7.99935V5.33268C7.33463 4.96449 7.63311 4.66602 8.0013 4.66602Z" fill="#D14D57"></path><path d="M8.0013 9.99935C7.63311 9.99935 7.33463 10.2978 7.33463 10.666C7.33463 11.0342 7.63311 11.3327 8.0013 11.3327H8.00797C8.37616 11.3327 8.67463 11.0342 8.67463 10.666C8.67463 10.2978 8.37616 9.99935 8.00797 9.99935H8.0013Z" fill="#D14D57"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M0.667969 7.99935C0.667969 3.94926 3.95121 0.666016 8.0013 0.666016C12.0514 0.666016 15.3346 3.94926 15.3346 7.99935C15.3346 12.0494 12.0514 15.3327 8.0013 15.3327C3.95121 15.3327 0.667969 12.0494 0.667969 7.99935ZM8.0013 1.99935C4.68759 1.99935 2.0013 4.68564 2.0013 7.99935C2.0013 11.3131 4.68759 13.9993 8.0013 13.9993C11.315 13.9993 14.0013 11.3131 14.0013 7.99935C14.0013 4.68564 11.315 1.99935 8.0013 1.99935Z" fill="#D14D57"></path></g><defs><clipPath id="clip0_515_446"><rect width="16" height="16" fill="white"></rect></clipPath></defs></svg>
+                                                    </div>
+                                                </div>
+                                                <button type="submit" name="subscribe" data-id="mc-subscribe-btn" class="button cursor-pointer border-l-0 border-0.5 w-22 max-w-newslettersubmit h-10.5 rounded-r text-center font-sans font-bold text-light-navy-2 leading-5.6 uppercase text-sm lg:w-full bg-med-navy border-navy">Submit</button>
+                                            </div>
+                                            <div data-id="error-message" class="hidden font-sans w-full pl-2 text-1xs text-med-red tracking-tight-sm font-light"></div>
+                                        </div>
+                                        <input type="checkbox" name="group[14][{{ section.newsletter_id|mul:section.newsletter_id }}]" value="" class="hidden" checked="">
+
+                                    </div>
+                                    <div data-id="mce-response" class="hidden col-span-9 font-serif text-3sm tracking-wide-sm lg:self-center lg:font-normal lg:leading-7.1 lg:text-2md lg:tracking-normal-md text-red"></div>
+                                </div>
+                            </form>
+                        </div>
+                    </article>
+                {% endif %}
+            {% endfor %}
+            <!--
+            <article class="mx-auto mt-3 md:max-w-159">
+                <p>This map was created by the team at <a href="https://www.thetransmitter.org/"><i>The Transmitter</i></a>, an essential resource for the neuroscience community, dedicated to helping scientists at all career stages stay current and build connections. <a href="https://www.thetransmitter.org/spectrum/"><i>Spectrum</i></a> is a key part of <i>The Transmitter</i> and publishes news and perspectives about autism research. Subscribe to our <a href="https://www.thetransmitter.org/newsletters-alerts/"><i>Spectrum</i> newsletter</a> to stay up to date.</p>
+                <p>The map features a collection of studies on autism prevalence around the world. It highlights places where information is available—and places where information is missing. We periodically update the map with new studies as they become available</p>
+                <h2 id="how-to-use-map" class="mb-4 mt-6 font-sans font-medium uppercase text-1md text-red md:mt-12 md:text-lg">How to use the Global Autism Prevalence Map:</h2>
+                <p>Each dot on the map represents a study. To see more information about a particular study, click on the corresponding dot. The window that pops up has key pieces of available information from that study.</p>
+                <p>You can also view and filter the studies in the “list” view. In either the map or the list view, you can use the filters at the top to display studies that match certain criteria, such as sample size, prevalence estimate or study type. And you can use the timeline at the bottom of the page to filter by the years in which studies were conducted or published.</p>
+                <h2 id="key-to-terms" class="mb-4 mt-6 font-sans font-medium uppercase text-1md text-red md:mt-12 md:text-lg">Key to terms used on the Global Autism Prevalence Map:</h2>
+                <p><b>Prevalence</b> is shown on the map as the estimated number of autistic people per 10,000 people in the population studied.</p>
+                <p>When available, the study shows the proportion of participants with at least an  <b>average IQ</b>—the definition of “average” IQ varies from study to study but typically refers to a score above 70 or 80.</p>
+                <p class="mb-0"><b>Diagnostic criteria</b> include the following options:</p>
+                <p class="mb-0">ABC—Autism Behavior Checklist</p>
+                <p class="mb-0">ADOS—Autism Diagnostic Observation Schedule</p>
+                <p class="mb-0">ADI, ADI-R—Autism Diagnostic Interview, Autism Diagnostic Interview-Revised</p>
+                <p class="mb-0">Autistic Disorder</p>
+                <p class="mb-0">CABS—Clancy Autism Behavior Scale</p>
+                <p class="mb-0">CARS—Childhood Autism Rating Scale</p>
+                <p class="mb-0">CCMD-2, CCMD-2-R—Chinese Classification of Mental Disorders, 2<sup>nd</sup> edition</p>
+                <p class="mb-0">Clinician diagnosis</p>
+                <p class="mb-0">DAWBA—Development and Well-Being Assessment</p>
+                <p class="mb-0">DISCO—Diagnostic Interview for Social and Communication Disorderss</p>
+                <p class="mb-0">DSM-III, DSM-III-R, DSM-IV, DSM-IV-TR, DSM-5—editions of the Diagnostic and Statistical Manual of Mental Disorders</p>
+                <p class="mb-0">Gillberg criteria—Christopher Gillberg’s diagnostic description</p>
+                <p class="mb-0">ICD-8, ICD-9, ICD-9-CM, ICD-10—editions of the International Classification of Diseases</p>
+                <p class="mb-0">INDT-ASD—INCLEN Diagnostic Tool for Autism Spectrum Disorder</p>
+                <p class="mb-0">Parent report</p>
+                <p class="mb-0">Kanner criteria—Leo Kanner’s diagnostic description</p>
+                <p class="mb-0">SCDC—Social and Communication Disorders Checklist</p>
+                <p class="mb-0">SCQ—Social Communication Questionnaire</p>
+                <p class="mb-0">SRS—Social Responsiveness Scale</p>
+                <p class="mb-0">Rating scale</p>
+                <p class="mb-0">RDC—Research Diagnostic Criteria</p>
+                <p>Rutter criteria—Michael Rutter’s diagnostic description</p>
+                <p class="mb-0"><b>Study type</b> includes the following options:<br></p>
+                <p class="mb-0">Epidemiological survey—active case-finding with two-stage screen and case confirmation</p>
+                <p class="mb-0">Registry—analysis of already-identified cases in research databases</p>
+                <p class="mb-0">Administrative database—classifications based on existing documented provision of services</p>
+                <p class="mb-0">General health survey—reported symptoms or diagnoses in a population-based survey sample</p>
+                <p>Research cohort—people identified for research projects and followed over time</p>
+                <p class="mb-0"><b>Category</b> includes the following options:<br></p>
+                <p class="mb-0">AD—autistic disorder (now classified as autism spectrum disorder, or ASD, in the DSM-5)</p>
+                <p class="mb-0">PDD—pervasive developmental disorder (now classified as ASD in the DSM-5)</p>
+                <p>ASD—autism spectrum disorder</p>
+                <h2 id="how-to-cite-map" class="mb-4 mt-6 font-sans font-medium uppercase text-1md text-red md:mt-12 md:text-lg">How to cite the Global Autism Prevalence Map:</h2>
+                <p>
+                    Please include a statement in your article or on your website that indicates that you retrieved the information from <a href="https://autismprevalence.thetransmitter.org/">https://autismprevalence.thetransmitter.org/</a>. If you refer to the map by name, please call it the “Global Autism Prevalence Map from <i>The Transmitter</i>” and link to this page. For more information on syndication, visit our <a href="https://www.thetransmitter.org/editorial-policies/#syndication">editorial policies</a> page.
+                </p>
+                <h2 id="more-info" class="mb-4 mt-8 font-sans font-medium uppercase text-1md text-red md:mt-14 md:text-lg">Read stories on autism prevalence published by <i>The Transmitter</i>:</h2>
+                <ul>
+                    <li>
+                        <p class="mb-5.5">
+                            <a class="font-normal" href="https://www.thetransmitter.org/spectrum/u-s-autism-prevalence-continues-to-rise-as-race-and-sex-gaps-shrink-new-stats-show/">U.S. autism prevalence continues to rise as race and sex gaps shrink, new stats show</a>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="mb-5.5">
+                            <a class="font-normal" href="https://www.thetransmitter.org/spectrum/autism-rates-united-states-explained/">Autism by the numbers: Explaining its apparent rise</a>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="mb-5.5">
+                            <a class="font-normal" href="https://www.thetransmitter.org/spectrum/analysis-offers-first-reliable-estimate-of-prevalence-in-oman/">Analysis offers first reliable estimate of prevalence in Oman</a>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="mb-5.5">
+                            <a class="font-normal" href="https://www.spectrumnews.org/news/study-quantifies-prevalence-autism-india/">Study quantifies prevalence of autism in India</a>
+                        </p>
+                    </li>
+                    <li>
+                        <p class="mb-5.5">
+                            <a class="font-normal" href="https://www.spectrumnews.org/news/study-quantifies-prevalence-autism-india/">Autism incidence in England varies by ethnicity, class, location</a>
+                        </p>
+                    </li>
+                </ul>
+                <p><b>Explore more at</b> <a href="https://www.thetransmitter.org/prevalence/">https://www.thetransmitter.org/prevalence/</a></p>
+                <h2 id="team" class="mb-4 mt-6 font-sans font-medium text-1md uppercase text-red md:mt-12 md:mb-7.5 md:text-lg">The team behind the global Autism Prevalence Map:</h2>
+                <p>The Global Autism Prevalence Map is updated periodically with information collected by Heather MacFarlane, a research data analyst at Oregon Health & Science University.</p>
+                <p>The Global Autism Prevalence Map was first released in 2018 under the leadership of <a href="https://www.thetransmitter.org/contributor/apoorva-mandavilli/">Apoorva Mandavilli</a>, <i>Spectrum</i>’s founding editor-in-chief. <a href="https://www.thetransmitter.org/contributor/nicholette-zeliadt/">Nicholette Zeliadt</a>, <i>The Transmitter</i>’s managing editor, led the map’s build on the editorial side. <a href="https://www.thetransmitter.org/contributor/rebecca-horne/">Rebecca Horne</a>, <i>The Transmitter</i>’s art director, commissioned and oversees the map’s design. Michael Kranz, the Simons Foundation’s former director of web development, oversaw the map’s technical build.</p>
+                <p>Special project advisers <a href="https://www.thetransmitter.org/contributor/gauri-divan/">Gauri Divan</a>, director of the child development group at Sangath; <a href="https://www.thetransmitter.org/contributor/maureen-durkin/">Maureen Durkin</a>, professor and chair of population health sciences at the University of Wisconsin-Madison; <a href="https://www.thetransmitter.org/contributor/mayada-elsabbagh/">Mayada Elsabbagh</a>, professor of neurology and neurosurgery at McGill University; <a href="https://www.thetransmitter.org/contributor/eric-fombonne/">Eric Fombonne</a>, professor emeritus of psychiatry at Oregon Health & Science University; and <a href="https://www.thetransmitter.org/contributor/catherine-rice/">Catherine Rice</a>, branch chief in the Disability and Health Promotion Branch at the U.S. Centers for Disease Control and Prevention, provided invaluable guidance and expertise throughout the entire project.</p>
+                <h2 id="hear-from-you" class="mb-4 mt-6 font-sans font-medium text-1md uppercase text-red md:mt-12 md:mb-7.5 md:text-lg">We want to hear from you:</h2>
+                <p>If you have questions or feedback about the Global Autism Prevalence Map, email us at <a href="mailto:community@thetransmitter.org">community@thetransmitter.org</a>.</p>
+            </article>
+            -->
+        </section>
+    {% else %}
+        <section class="max-w-400 mx-auto px-4 py-4 md:py-8">
+            <p>No About page content available.</p>
+        </section>
+    {% endif %}
 </div>
 
 {% endblock %}
@@ -141,5 +236,87 @@
     let education = '{{ education }}';
     let country = '{{ country }}';
     let continent = '{{ continent }}';
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const newsletterForms = document.querySelectorAll('form[data-id="mc-embedded-subscribe"]');
+    
+    newsletterForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const emailInput = form.querySelector('input[name="EMAIL"]');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const errorMessage = form.querySelector('[data-id="error-message"]');
+            const responseMessage = form.querySelector('[data-id="mce-response"]');
+            const responseError = form.querySelector('[data-id="mce-response-error"]');
+            const email = emailInput.value.trim();
+            
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!emailRegex.test(email)) {
+                errorMessage.classList.remove('hidden');
+                errorMessage.innerHTML = '<div class="pt-2 text-2xs leading-2 tracking-normal-md" data-id="error-input">Please enter an email address.</div>';
+                emailInput.classList.add('border-med-red');
+                emailInput.classList.add('border-0.375');
+                emailInput.classList.remove('border-navy');
+                form.querySelector('[data-id="email-error-icon"]').classList.remove('hidden');
+                return;
+            }
+
+            const formData = new FormData(form);
+
+            submitBtn.disabled = true;
+
+            fetch('/subscribe-newsletter/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                errorMessage.classList.add('hidden');
+                emailInput.classList.remove('border-med-red');
+                emailInput.classList.remove('border-0.375');
+                emailInput.classList.add('border-navy');
+                form.querySelector('[data-id="email-error-icon"]').classList.add('hidden');
+
+                if (data.success) {
+                    responseMessage.textContent = data.message;
+                    responseMessage.classList.remove('hidden');
+                    responseError.classList.add('hidden');
+                    form.querySelector('[data-id="input-col"]').classList.add('hidden');
+                    form.querySelector('[data-id="signup-instructions"]').classList.add('hidden');
+                    emailInput.value = '';
+                } else {
+                    responseError.textContent = data.message;
+                    responseError.classList.remove('hidden');
+                    responseMessage.classList.add('hidden');
+                }
+            })
+            .catch(error => {
+                console.error('Subscription error:', error);
+                responseError.textContent = 'An error occurred. Please try again.';
+                responseError.classList.remove('hidden');
+                responseMessage.classList.add('hidden');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+            });
+        });
+
+        form.querySelector('input[name="EMAIL"]').addEventListener('input', function() {
+            const errorMessage = form.querySelector('[data-id="error-message"]');
+            const emailIcon = form.querySelector('[data-id="email-error-icon"]');
+            if (errorMessage && !errorMessage.classList.contains('hidden')) {
+                errorMessage.classList.add('hidden');
+                this.classList.remove('border-med-red');
+                this.classList.add('border-navy');
+                emailIcon.classList.add('hidden');
+            }
+        });
+    });
+});
 </script>
 {% endblock %}
