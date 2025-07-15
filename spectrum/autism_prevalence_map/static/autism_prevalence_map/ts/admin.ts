@@ -21,6 +21,7 @@
             var $contentField = $row.find('div.field-content');
             var $newsletterTitleField = $row.find('div.field-newsletter_title');
             var $newsletterSupportLineField = $row.find('div.field-newsletter_support_line');
+            var $newsletterIdField = $row.find('div.field-newsletter_id');
             var $sectionTitleTextField = $row.find('div.field-section_title_text');
             var $sectionTitleIdField = $row.find('div.field-section_title_id');
             var $linksField = $row.find('div.field-links');
@@ -30,6 +31,7 @@
             $contentField.hide();
             $newsletterTitleField.hide();
             $newsletterSupportLineField.hide();
+            $newsletterIdField.hide();
             $sectionTitleTextField.hide();
             $sectionTitleIdField.hide();
             $linksField.hide();
@@ -43,6 +45,7 @@
             } else if (sectionType === 'newsletter') {
                 $newsletterTitleField.show();
                 $newsletterSupportLineField.show();
+                $newsletterIdField.show();
             } else if (sectionType === 'section_title') {
                 $sectionTitleTextField.show();
                 $sectionTitleIdField.show();
