@@ -4,6 +4,9 @@ from django.db import models
 from datetime import date
 from django_ckeditor_5.fields import CKEditor5Field
 
+# Constants
+NEWSLETTER_SPECTRUM_WEEKLY_LIST_ID = 2
+
 # Create your models here.
 
 class studies(models.Model):
@@ -120,7 +123,7 @@ class AboutSection(models.Model):
         help_text="Support copy for newsletter section."
     )
     newsletter_id = models.PositiveIntegerField(
-        default=2,
+        default=NEWSLETTER_SPECTRUM_WEEKLY_LIST_ID,
         blank=True,
         help_text="Newsletter ID (value: 2 for Spectrum weekly newsletter)"
     )

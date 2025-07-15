@@ -1,7 +1,7 @@
 astroid==3.2.4
 backports.functools-lru-cache==2.0
 configparser==7.1.0
-Django==3.2.5
+Django==3.2.25
 django-environ==0.11.2
 enum34==1.1.10
 futures==3.1.1
