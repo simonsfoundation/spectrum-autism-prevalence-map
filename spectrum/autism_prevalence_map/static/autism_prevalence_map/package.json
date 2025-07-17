@@ -4,9 +4,13 @@
     "description": "The Transmitter Autism Prevalence Map",
     "scripts": {
         "tailwind": "tailwindcss build -i ./tailwind/tailwind.css --output ./dist/main.min.css --minify",
-        "esbuild": "esbuild ts/main.ts --outfile=dist/main.min.js --bundle --minify",
+        "esbuild-main": "esbuild ts/main.ts --outdir=dist --bundle --minify --out-extension:.js=.min.js",
+        "esbuild-admin": "esbuild ts/admin.ts --outdir=dist --minify --out-extension:.js=.min.js",
+        "esbuild": "npm run esbuild-main && npm run esbuild-admin",
         "watch-css": "tailwindcss -i ./tailwind/tailwind.css --output ./dist/main.css --watch",
-        "watch-js": "esbuild ts/main.ts --outfile=dist/main.js --bundle --watch",
+        "watch-js-main": "esbuild ts/main.ts --outdir=dist --bundle --watch",
+        "watch-js-admin": "esbuild ts/admin.ts --outdir=dist --watch",
+        "watch-js": "concurrently npm:watch-js-main npm:watch-js-admin",
         "dev": "concurrently npm:watch-css npm:watch-js",
         "build": "npm run tailwind && npm run esbuild"
     },
