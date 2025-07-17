@@ -157,55 +157,43 @@ class StudiesAdmin(admin.ModelAdmin):
         return super().delete_model(request, obj)
 
     def geocode(self, study):
-        try:
-            gmaps_api_key = '&key=' + settings.GMAP_API_KEY
-            base_url = 'https://maps.googleapis.com/maps/api/geocode/json'
+        gmaps_api_key = '&key=' + settings.GMAP_API_KEY
+        base_url = 'https://maps.googleapis.com/maps/api/geocode/json'
 
-            # call the geocode URL
-            area = study.area
-            country = study.country
+        # call the geocode URL
+        area = study.area
+        country = study.country
 
-            if not country:
-                print(f"Geocoding skipped: no country for study {study.id}")
-                return None 
-        
-            if area in ('Mainland and Azores', 'Northern Ostrobothnia County', 'Nationwide'):
-                area = ''
-            if area == 'Middlesex':
-                country = 'London'
-                
-            address = '?address=' + urllib.parse.quote(area) + ',' + urllib.parse.quote(country)
-            #add region codes for the countries/areas that are being located wrongly by google geocode API
-            countrymap = {'Japan': 'jp', 'Qatar': 'qa',
-                          'Iran': 'ir', 'Greece': 'gr',
-                          'Scotland': 'gb', 'Taiwan': 'tw',
-                          'South Korea': 'kr', 'Wales': 'gb',
-                          'France': 'fr', 'Norway': 'no'
-                          }
-            if country in countrymap.keys() :
-                address = address + '&region=' + countrymap[country]
-            url = base_url + address + gmaps_api_key
+        if not country:
+            return None 
+    
+        if area in ('Mainland and Azores', 'Northern Ostrobothnia County', 'Nationwide'):
+            area = ''
+        if area == 'Middlesex':
+            country = 'London'
             
-            print(f"Geocoding {country}, {area}")
-            response = urllib.request.urlopen(url)
-            data = json.loads(response.read())
+        address = '?address=' + urllib.parse.quote(area) + ',' + urllib.parse.quote(country)
+        #add region codes for the countries/areas that are being located wrongly by google geocode API
+        countrymap = {'Japan': 'jp', 'Qatar': 'qa',
+                      'Iran': 'ir', 'Greece': 'gr',
+                      'Scotland': 'gb', 'Taiwan': 'tw',
+                      'South Korea': 'kr', 'Wales': 'gb',
+                      'France': 'fr', 'Norway': 'no'
+                      }
+        if country in countrymap.keys() :
+            address = address + '&region=' + countrymap[country]
+        url = base_url + address + gmaps_api_key
+        response = urllib.request.urlopen(url)
+        data = json.loads(response.read())
 
-            if data['status'] == "OK":
-                latitude = float(data['results'][0]['geometry']['location']['lat'])
-                longitude = float(data['results'][0]['geometry']['location']['lng'])
-                print(f"  Geocoded successfully: {latitude}, {longitude}")
-            else:
-                latitude = None
-                longitude = None
-                print(f"  Geocoding failed: {data.get('status', 'Unknown error')}")
-                
-            study.latitude=latitude
-            study.longitude=longitude
-            
-        except Exception as e:
-            print(f"Geocoding error for study {study.id}: {type(e).__name__}: {str(e)}")
-            study.latitude = None
-            study.longitude = None
+        if data['status'] == "OK":
+            latitude = float(data['results'][0]['geometry']['location']['lat'])
+            longitude = float(data['results'][0]['geometry']['location']['lng'])
+        else:
+            latitude = None
+            longitude = None
+        study.latitude=latitude
+        study.longitude=longitude
 
     def parse_data(self, study):
         # for year, population, and prevalence rate, convert from strings to dates and numbers and store in DB
