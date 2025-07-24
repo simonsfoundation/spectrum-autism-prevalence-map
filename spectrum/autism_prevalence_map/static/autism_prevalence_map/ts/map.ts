@@ -6,10 +6,11 @@ export function ttInitMap() {
         // app.map scope
         app.map = {};
 
-        app.map.expandedCluster = null;
+        app.map.lastZoomAction = 'manual';
+        app.map.isAutoZoomTransition = false;
 
         // globaly scope some variables for the map
-        let studies, pinnedDot, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius, nodes, simulation;
+        let studies, pinnedDot, projection, path, width, height, scale, svg, g, graticuleG, countriesG, studiesG, g_zoom, svg_zoom, zoom, new_radius, nodes, simulation, baseZoom = 1;
 
         // functions for adding a graticule to the map
         const graticuleOutline = d3.geoGraticule().outline();
@@ -21,99 +22,132 @@ export function ttInitMap() {
         let originalWidth, originalScale;
 
         app.map.collapseCluster = function () {
-            app.map.expandedCluster = null;
-            app.map.createMegadots();
-        };
-
-        app.map.expandCluster = function (clusterId) {
-            const cluster = app.map.clusters.find(c => c.id === clusterId);
-            if (cluster) {
-                app.map.expandedCluster = cluster;
-                app.map.createMegadots();
+            if (pinnedDot) {
+                unpinDot(pinnedDot);
+                pinnedDot = null;
             }
-        };
 
-        app.map.createMegadots = function() {
-            if (!nodes || nodes.length === 0) return;
-            const previousExpandedClusterId = app.map.expandedCluster ? app.map.expandedCluster.id : null;
-
+            app.map.expandedCluster = null;
             studiesG.selectAll('circle.map-circles')
                 .style('visibility', 'hidden')
                 .style('display', 'none')
                 .style('pointer-events', 'none')
-                .style('opacity', app.map.expandedCluster ? 0.6 : 1);
+                .style('opacity', 1);
 
-            const clusterRadius = 24 / currentZoom;
-            const visitedNodes = new Set();
-            const clusters = [];
+            // zoom out if the last zoom action was automatic
+            const targetZoomLevel = Math.pow(zoomInFactor, 2);
+            const shouldZoomOut = app.map.lastZoomAction === 'auto' || Math.abs(currentZoom - targetZoomLevel) < 0.01;
+            if (shouldZoomOut) {
+                const newZoomLevel = baseZoom;
+                const viewportCenterX = width / 2;
+                const viewportCenterY = height / 2;
+                const translateX = viewportCenterX - viewportCenterX * newZoomLevel;
+                const translateY = viewportCenterY - viewportCenterY * newZoomLevel;
 
-            nodes.forEach(node => {
-                const nodeId = node.properties.pk;
-                if (visitedNodes.has(nodeId)) return;
+                const newTransform = d3.zoomIdentity
+                    .translate(translateX, translateY)
+                    .scale(newZoomLevel);
 
-                const cluster = {
-                    x: node.originalX,
-                    y: node.originalY,
-                    nodes: [node],
-                    count: 1,
-                    id: nodeId.toString()
-                };
-
-                nodes.forEach(otherNode => {
-                    const otherNodeId = otherNode.properties.pk;
-                    if (nodeId === otherNodeId || visitedNodes.has(otherNodeId)) return;
-
-                    const dx = node.originalX - otherNode.originalX;
-                    const dy = node.originalY - otherNode.originalY;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance <= clusterRadius) {
-                        cluster.nodes.push(otherNode);
-                        cluster.count++;
-                        cluster.x = (cluster.x * (cluster.count - 1) + otherNode.originalX) / cluster.count;
-                        cluster.y = (cluster.y * (cluster.count - 1) + otherNode.originalY) / cluster.count;
-                        visitedNodes.add(otherNodeId);
-                    }
-                });
-
-                if (cluster.count >= 5) {
-                    cluster.id = cluster.nodes.map(n => n.properties.pk).sort((a, b) => a - b).join('-');
-                    clusters.push(cluster);
-                    visitedNodes.add(nodeId);
-                } else {
-                    cluster.nodes.forEach(n => visitedNodes.delete(n.properties.pk));
-                }
-            });
-
-            // Update mega dot clusters to support map interactions like zooming and filtering, and keep an expanded mega dot open if it’s still valid in the new clusters.
-            app.map.clusters = clusters;
-
-            if (previousExpandedClusterId) {
-                const currentExpandedCluster = clusters.find(c => c.id === previousExpandedClusterId);
-                if (!currentExpandedCluster || currentExpandedCluster.count < 5) {
-                    const previousCluster = app.map.expandedCluster;
-                    const newCluster = clusters.find(c => {
-                        const previousNodeIds = previousCluster.nodes.map(n => n.properties.pk).sort();
-                        const currentNodeIds = c.nodes.map(n => n.properties.pk).sort();
-                        return previousNodeIds.length === currentNodeIds.length && 
-                               previousNodeIds.every((id, i) => id === currentNodeIds[i]);
+                app.map.isAutoZoomTransition = true;
+                svg_zoom.interrupt();
+                svg_zoom.transition()
+                    .duration(500)
+                    .call(zoom.transform, newTransform)
+                    .on('end', function() {
+                        currentZoom = baseZoom;
+                        app.map.lastZoomAction = 'manual';
+                        app.map.isAutoZoomTransition = false;
                     });
-                    if (newCluster && newCluster.count >= 5) {
-                        app.map.expandedCluster = newCluster;
-                    } else {
-                        app.map.expandedCluster = null;
-                    }
-                } else {
-                    app.map.expandedCluster = currentExpandedCluster;
+            }
+
+            app.map.drawMegadots();
+        };
+
+        app.map.expandCluster = function (clusterId) {
+            if (pinnedDot) {
+                unpinDot(pinnedDot);
+                pinnedDot = null;
+            }
+
+            const cluster = app.map.clusters.find(c => c.id === clusterId);
+            if (cluster) {
+                app.map.expandedCluster = cluster;
+
+                // find center of the cluster
+                const avgX = cluster.nodes.reduce((sum, n) => sum + n.x, 0) / cluster.count;
+                const avgY = cluster.nodes.reduce((sum, n) => sum + n.y, 0) / cluster.count;
+
+                // zoom in 2 levels from base, but only if current zoom is less than target
+                const targetZoomLevel = Math.pow(zoomInFactor, 2);
+                let newZoomLevel = currentZoom;
+                let shouldZoom = false;
+
+                if (currentZoom < targetZoomLevel - 0.001) {
+                    newZoomLevel = targetZoomLevel;
+                    shouldZoom = true;
                 }
+
+                // always center on the mega dot
+                const viewportCenterX = width / 2;
+                const viewportCenterY = height / 2;
+                const finalZoomLevel = shouldZoom ? newZoomLevel : currentZoom;
+                const translateX = viewportCenterX - avgX * finalZoomLevel;
+                const translateY = viewportCenterY - avgY * finalZoomLevel;
+
+                const newTransform = d3.zoomIdentity
+                    .translate(translateX, translateY)
+                    .scale(finalZoomLevel);
+
+                // cancel any ongoing transition to prevent overlap
+                svg_zoom.interrupt();
+
+                app.map.isAutoZoomTransition = true;
+
+                if (shouldZoom) {
+                    app.map.lastZoomAction = 'auto';
+                }
+
+                svg_zoom.transition()
+                    .duration(500)
+                    .call(zoom.transform, newTransform)
+                    .on('end', function() {
+                        if (shouldZoom) {
+                            currentZoom = newZoomLevel;
+                        }
+                        setTimeout(() => {
+                            app.map.isAutoZoomTransition = false;
+                        }, 200);
+                    });
+
+                app.map.drawMegadots();
+            }
+        };
+
+        app.map.drawMegadots = function() {
+             const maxZoomThreshold = 6.5536;
+    
+            // if zoomed in to the threshold, don't draw any mega dots
+            if (currentZoom >= maxZoomThreshold && !app.map.expandedCluster) {
+                studiesG.selectAll('.megadot-container').remove();
+                
+                nodes.forEach(node => {
+                    d3.select('#map_dot_' + node.properties.pk)
+                        .style('visibility', 'visible')
+                        .style('display', null)
+                        .style('pointer-events', 'auto')
+                        .style('opacity', 1);
+                });
+                
+                return;
             }
 
             studiesG.selectAll('.megadot-container').remove();
-
-            // draw mega dots for clusters on the map, either as a single dot with a count or an expanded view with individual dots
-            clusters.forEach(cluster => {
-                // calculate size and center of the mega dot based on number of studies and zoom level
-                const megadotRadius = Math.min(Math.max(Math.sqrt(cluster.count) * 3.4, 12), 30) / currentZoom;
+            app.map.clusters.forEach(cluster => {
+                // size of collapsed circle
+                const minSize = 12;
+                const increaseAmount = 0.2;
+                const baseRadius = minSize + (cluster.count - 5) * increaseAmount;
+                const megadotRadius = Math.min(Math.max(baseRadius, 12), 30) / currentZoom;
                 const avgX = cluster.nodes.reduce((sum, n) => sum + n.x, 0) / cluster.count;
                 const avgY = cluster.nodes.reduce((sum, n) => sum + n.y, 0) / cluster.count;
                 const megadotContainer = studiesG.append('g')
@@ -124,13 +158,13 @@ export function ttInitMap() {
                     .style('pointer-events', 'all');
 
                 if (app.map.expandedCluster && cluster.id === app.map.expandedCluster.id) {
-                    // for expanded mega dot, draw an outline to fit all study dots
                     const maxDistance = d3.max(cluster.nodes, node => {
                         const dx = node.x - avgX;
                         const dy = node.y - avgY;
                         return Math.sqrt(dx * dx + dy * dy);
                     });
-                    const outlineRadius = (maxDistance || megadotRadius) + 8 / currentZoom;
+                    // size of the outline around the expanded dot, increase the '+ n' to add more breathing room around the cluster
+                    const outlineRadius = (maxDistance || megadotRadius) + 6 / currentZoom;
 
                     const outline = megadotContainer.append('circle')
                         .attr('class', 'megadot-outline')
@@ -143,13 +177,11 @@ export function ttInitMap() {
                         .style('cursor', 'pointer')
                         .lower();
 
-                    // defer showing expanded dots until after all megadots are rendered
                     cluster.nodes.forEach(node => {
                         const dot = d3.select('#map_dot_' + node.properties.pk);
                         dot.attr('data-expanded', 'true');
                     });
 
-                    // clicking outline collapses mega dot
                     outline.on('click', function() {
                         const target = d3.event.target;
                         const targetClasses = target.getAttribute('class') || '';
@@ -159,7 +191,7 @@ export function ttInitMap() {
                             app.map.collapseCluster();
                         }
                     });
-                // mega dot needs to contain at least 5 study dots
+                // need at least 5 dots to create a cluster
                 } else if (cluster.count >= 5) {
                     cluster.nodes.forEach(node => {
                         d3.select('#map_dot_' + node.properties.pk)
@@ -168,7 +200,6 @@ export function ttInitMap() {
                             .style('pointer-events', 'none');
                     });
 
-                    // create mega dot
                     megadotContainer.append('circle')
                         .attr('class', 'megadot-background')
                         .attr('r', megadotRadius)
@@ -197,7 +228,6 @@ export function ttInitMap() {
                             app.map.expandCluster(cluster.id);
                         });
 
-                    // add mega dot count
                     megadotContainer.append('text')
                         .attr('class', 'megadot-count')
                         .attr('text-anchor', 'middle')
@@ -210,9 +240,8 @@ export function ttInitMap() {
                 }
             });
 
-            // show non-clustered dots
             nodes.forEach(node => {
-                if (!visitedNodes.has(node.properties.pk)) {
+                if (!app.map.clusters.some(cluster => cluster.nodes.includes(node))) {
                     d3.select('#map_dot_' + node.properties.pk)
                         .style('visibility', 'visible')
                         .style('display', null)
@@ -221,7 +250,6 @@ export function ttInitMap() {
                 }
             });
 
-            // show expanded dots and bring them to the front
             studiesG.selectAll('circle.map-circles[data-expanded="true"]')
                 .style('visibility', 'visible')
                 .style('display', null)
@@ -233,6 +261,146 @@ export function ttInitMap() {
                     d3.event.stopPropagation();
                 })
                 .attr('data-expanded', null);
+        };
+
+        app.map.createMegadots = function() {
+            if (!nodes || nodes.length === 0) return;
+
+            const maxZoomThreshold = 6.5536;
+    
+            // if zoomed in to the threshold, don't draw any mega dots
+            if (currentZoom >= maxZoomThreshold && !app.map.expandedCluster) {
+                studiesG.selectAll('circle.map-circles')
+                    .style('visibility', 'visible')
+                    .style('display', null)
+                    .style('pointer-events', 'auto')
+                    .style('opacity', 1);
+                    
+                studiesG.selectAll('.megadot-container').remove();
+                
+                const previousExpandedClusterId = app.map.expandedCluster ? app.map.expandedCluster.id : null;
+                app.map.expandedCluster = null;
+                
+                return;
+            }
+
+            const previousExpandedClusterId = app.map.expandedCluster ? app.map.expandedCluster.id : null;
+
+            studiesG.selectAll('circle.map-circles')
+                .style('visibility', 'hidden')
+                .style('display', 'none')
+                .style('pointer-events', 'none')
+                .style('opacity', app.map.expandedCluster ? 0.6 : 1);
+
+            // radius within which a cluster can form
+            const clusterRadius = 18 / currentZoom;
+            if (!app.map.clusters) {
+                const visitedNodes = new Set();
+                let clusters = [];
+
+                // form initial clusters
+                nodes.forEach(node => {
+                    const nodeId = node.properties.pk;
+                    if (visitedNodes.has(nodeId)) return;
+
+                    const cluster = {
+                        x: node.originalX,
+                        y: node.originalY,
+                        nodes: [node],
+                        count: 1,
+                        id: nodeId.toString()
+                    };
+
+                    nodes.forEach(otherNode => {
+                        const otherNodeId = otherNode.properties.pk;
+                        if (nodeId === otherNodeId || visitedNodes.has(otherNodeId)) return;
+
+                        const dx = node.originalX - otherNode.originalX;
+                        const dy = node.originalY - otherNode.originalY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance <= clusterRadius) {
+                            cluster.nodes.push(otherNode);
+                            cluster.count++;
+                            cluster.x = (cluster.x * (cluster.count - 1) + otherNode.originalX) / cluster.count;
+                            cluster.y = (cluster.y * (cluster.count - 1) + otherNode.originalY) / cluster.count;
+                            visitedNodes.add(otherNodeId);
+                        }
+                    });
+
+                    clusters.push(cluster);
+                    visitedNodes.add(nodeId);
+                });
+
+                // merge clusters that are within clusterRadius of each other
+                let merged = true;
+                while (merged) {
+                    merged = false;
+                    const newClusters = [];
+                    const mergedIndices = new Set();
+
+                    for (let i = 0; i < clusters.length; i++) {
+                        if (mergedIndices.has(i)) continue;
+
+                        const clusterA = clusters[i];
+                        let mergedCluster = { ...clusterA };
+
+                        for (let j = i + 1; j < clusters.length; j++) {
+                            if (mergedIndices.has(j)) continue;
+
+                            const clusterB = clusters[j];
+                            const dx = clusterA.x - clusterB.x;
+                            const dy = clusterA.y - clusterB.y;
+                            const distance = Math.sqrt(dx * dx + dy * dy);
+
+                            if (distance <= clusterRadius) {
+                                mergedCluster.nodes = [...mergedCluster.nodes, ...clusterB.nodes];
+                                mergedCluster.count = mergedCluster.nodes.length;
+                                mergedCluster.x = mergedCluster.nodes.reduce((sum, n) => sum + n.originalX, 0) / mergedCluster.count;
+                                mergedCluster.y = mergedCluster.nodes.reduce((sum, n) => sum + n.originalY, 0) / mergedCluster.count;
+                                mergedCluster.id = mergedCluster.nodes.map(n => n.properties.pk).sort((a, b) => a - b).join('-');
+                                mergedIndices.add(j);
+                                merged = true;
+                            }
+                        }
+
+                        mergedIndices.add(i);
+                        newClusters.push(mergedCluster);
+                    }
+
+                    clusters = newClusters;
+                }
+
+                // filter clusters with at least 5 nodes
+                clusters = clusters.filter(cluster => cluster.count >= 5);
+                clusters.forEach(cluster => {
+                    cluster.id = cluster.nodes.map(n => n.properties.pk).sort((a, b) => a - b).join('-');
+                });
+
+                app.map.clusters = clusters;
+
+                if (previousExpandedClusterId) {
+                    const currentExpandedCluster = clusters.find(c => c.id === previousExpandedClusterId);
+                    if (!currentExpandedCluster || currentExpandedCluster.count < 5) {
+                        const previousCluster = app.map.expandedCluster;
+                        const newCluster = clusters.find(c => {
+                            const previousNodeIds = previousCluster.nodes.map(n => n.properties.pk).sort();
+                            const currentNodeIds = c.nodes.map(n => n.properties.pk).sort();
+                            return previousNodeIds.length === currentNodeIds.length && 
+                                   previousNodeIds.every((id, i) => id === currentNodeIds[i]);
+                        });
+                        if (newCluster && newCluster.count >= 5) {
+                            app.map.expandedCluster = newCluster;
+                        } else {
+                            app.map.expandedCluster = null;
+                        }
+                    } else {
+                        app.map.expandedCluster = currentExpandedCluster;
+                    }
+                }
+            }
+
+            app.map.drawMegadots();
 
             if (!app.map.globalClickHandlerAdded) {
                 d3.select('#map-svg').on('click.closeExpanded', null);
@@ -321,13 +489,22 @@ export function ttInitMap() {
 
             // define zooming function for zooming map
             function zoomed() {
-                // store the zoom level in currentZoom
                 currentZoom = d3.event.transform.k;
                 g_zoom.attr('transform', `translate(${d3.event.transform.x}, ${d3.event.transform.y}) scale(${d3.event.transform.k})`);
                 scalePins(d3.event.transform.k);
                 
-                // update megadots when zoom changes
-                app.map.createMegadots();
+                if (!app.map.isAutoZoomTransition) {
+                    app.map.lastZoomAction = 'manual';
+                }
+
+                // recalculate clusters on zoom only if there's no expanded cluster
+                if (!app.map.expandedCluster) {
+                    app.map.clusters = null;
+                    app.map.createMegadots();
+                } else {
+                    // ff there's an expanded cluster, just redraw without reforming clusters
+                    app.map.drawMegadots();
+                }
             }
 
             // create container for timeline
@@ -395,6 +572,7 @@ export function ttInitMap() {
             d3.json('/studies-api/' + app.api_call_param_string).then(function(data) {
                 studies = data;
                 app.meanValue = data.mean;
+                app.map.clusters = null;
                 app.map.updateTimeline();
                 app.fetchAndUpdateMean();
             });
@@ -886,8 +1064,7 @@ export function ttInitMap() {
                 .on('click', function(d) {
                     // if there's an expanded cluster, collapse it
                     if (app.map.expandedCluster && !app.map.expandedCluster.nodes.some(node => node.properties.pk === d.properties.pk)) {
-                        app.map.expandedCluster = null;
-                        app.map.createMegadots();
+                        app.map.collapseCluster();
                     }
 
                     // pin or unpin
@@ -977,8 +1154,7 @@ export function ttInitMap() {
                 .on('click', function(d) {
                     // if there's an expanded cluster, collapse it
                     if (app.map.expandedCluster && !app.map.expandedCluster.nodes.some(node => node.properties.pk === d.properties.pk)) {
-                        app.map.expandedCluster = null;
-                        app.map.createMegadots();
+                        app.map.collapseCluster();
                     }
 
                     // pin or unpin
@@ -1004,6 +1180,7 @@ export function ttInitMap() {
 
             zoom_transition(1);
 
+            app.map.clusters = null;
             app.map.createMegadots();
         }
 

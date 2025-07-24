@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'svg',
     'admin_honeypot',
+    'django_ckeditor_5',
+    'mathfilters',
 ]
 
 MIDDLEWARE = [
@@ -187,3 +189,25 @@ LOGGING = {
         },
     },
 }
+
+CKEDITOR_5_CONFIGS = {
+    'default': {
+        'toolbar': {
+            'items': [
+                'heading', '|',
+                'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                'undo', 'redo', '|',
+                'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+                'alignment', 'outdent', 'indent', '|',
+                'insertTable', 'mediaEmbed', 'codeBlock'
+            ]
+        },
+        'height': 291,
+        'width': 835,
+    },
+}
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

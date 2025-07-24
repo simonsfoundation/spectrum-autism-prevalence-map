@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from datetime import date
@@ -9,9 +8,10 @@ from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.db.models import Avg, FloatField
 from django.db.models.functions import Cast
 from django.contrib.staticfiles.finders import find as find_static_file
-
-#import all apartment models and forms
 from autism_prevalence_map.models import *
+from django.views.decorators.http import require_POST
+import requests
+import json
 
 country_to_continent = {
   'Algeria': 'Africa',
@@ -367,6 +367,8 @@ def about(request):
         except:
             last_updated_on_meta = ''
 
+    about_page = AboutPage.objects.first()
+
     context_dict = {
         'min_yearpublished':min_yearpublished,
         'max_yearpublished':max_yearpublished,
@@ -385,7 +387,9 @@ def about(request):
         'continent': continent,
         'last_updated_on_meta': last_updated_on_meta,
         'style_sheet': style_sheet,
-        'script': script,}
+        'script': script,
+        'about_page': about_page,
+    }
         
     return render(request, 'autism_prevalence_map/about.html', context_dict)
 
@@ -751,3 +755,51 @@ def studiesCsv(request):
         print(request.method)
 
     return response
+
+@require_POST
+def subscribe_newsletter(request):
+    email = request.POST.get('EMAIL', '').strip()
+    if not email or not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+        return JsonResponse({'success': False, 'message': 'Invalid email address'}, status=400)
+
+    # Extract all group[14][X] keys from POST data
+    group_data = {key: 'on' if value and value[0] != '' else '' for key, value in request.POST.items() if key.startswith('group[14][')}
+
+    # Prepare data with email and all group fields
+    data = {'EMAIL': email}
+    data.update(group_data)
+
+    # Send to Mailchimp's hosted endpoint
+    mailchimp_url = "https://spectrumnews.us11.list-manage.com/subscribe/post-json?u=725d9bd9f4c8ea826904b1f95&id=323ad556f4&c=callback"
+    response = requests.post(
+        mailchimp_url,
+        data=data,
+        headers={'Content-Type': 'application/x-www-form-urlencoded'}
+    )
+
+    if response.status_code == 200:
+        try:
+            # Extract msg from JSONP response
+            response_text = response.text
+            start = response_text.find('(') + 1
+            end = response_text.rfind(')')
+            json_str = response_text[start:end]
+            data = json.loads(json_str)
+            if data.get('result') == 'success':
+                return JsonResponse({'success': True, 'message': data.get('msg', 'Thank you for subscribing!')})
+            else:
+                return JsonResponse({'success': False, 'message': data.get('msg', 'Subscription failed. Please try again.')}, status=400)
+        except (ValueError, json.JSONDecodeError):
+            return JsonResponse({'success': False, 'message': 'Subscription failed: Invalid response'}, status=400)
+    else:
+        error_message = 'Subscription failed. Please try again.'
+        try:
+            if 'already subscribed' in response.text.lower():
+                error_message = 'This email is already subscribed.'
+            elif 'invalid' in response.text.lower():
+                error_message = 'Invalid email address.'
+            else:
+                error_message = response.text.strip()[:100]
+        except ValueError:
+            pass
+        return JsonResponse({'success': False, 'message': error_message}, status=400)
