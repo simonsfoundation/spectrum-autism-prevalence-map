@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 from django.conf import settings
 import sys, os, urllib.request, json, time, datetime, re
 from django.contrib import admin
-from .models import studies, options, AboutPage, AboutSection
+from .models import studies, options, AboutPage, AboutSection, Footer, FooterLeftMenuItem, FooterRightMenuItem
 from django import forms
 from django.conf.urls import url
 from django.template.response import TemplateResponse
@@ -311,3 +311,42 @@ class AboutPageAdmin(admin.ModelAdmin):
     inlines = [AboutSectionInline]
     list_display = ('title',)
     fields = ('title', 'meta_title', 'meta_description', 'meta_thumbnail')
+
+class FooterLeftMenuItemInline(admin.TabularInline):
+    model = FooterLeftMenuItem
+    extra = 1
+    fields = ('title', 'url', 'order')
+    ordering = ['order']
+    verbose_name = "Left Menu Item"
+    verbose_name_plural = "Left Menu Items"
+
+class FooterRightMenuItemInline(admin.TabularInline):
+    model = FooterRightMenuItem
+    extra = 1
+    fields = ('title', 'url', 'order')
+    ordering = ['order']
+    verbose_name = "Right Menu Item"
+    verbose_name_plural = "Right Menu Items"
+
+@admin.register(Footer)
+class FooterAdmin(admin.ModelAdmin):
+    inlines = [FooterLeftMenuItemInline, FooterRightMenuItemInline]
+    list_display = ('__str__', 'updated_at')
+    fieldsets = (
+        ('Middle Section', {
+            'fields': ('middle_text', 'middle_button_text', 'middle_button_link'),
+            'description': 'Configure the content for the middle section of the footer'
+        }),
+        ('Bottom Section', {
+            'fields': ('bottom_tagline', 'bottom_support_text'),
+            'description': 'Configure the text that appears below the logo'
+        }),
+    )
+    
+    def has_add_permission(self, request):
+        # Only allow adding if no Footer exists
+        return not Footer.objects.exists()
+    
+    def has_delete_permission(self, request, obj=None):
+        # Prevent deletion of the Footer instance
+        return False

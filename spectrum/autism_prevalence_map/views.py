@@ -9,6 +9,7 @@ from django.db.models import Avg, FloatField
 from django.db.models.functions import Cast
 from django.contrib.staticfiles.finders import find as find_static_file
 from autism_prevalence_map.models import *
+from autism_prevalence_map.models import Footer
 from django.views.decorators.http import require_POST
 import requests
 import json
@@ -257,6 +258,8 @@ def index(request):
             last_updated_on = ''
             last_updated_on_meta = ''
 
+    footer = Footer.objects.prefetch_related('left_menu_items', 'right_menu_items').first()
+    
     context_dict = {'min_yearpublished': min_yearpublished,
                     'max_yearpublished': max_yearpublished,
                     'yearsstudied_number_min': yearsstudied_number_min,
@@ -275,7 +278,8 @@ def index(request):
                     'last_updated_on': last_updated_on,
                     'last_updated_on_meta': last_updated_on_meta,
                     'style_sheet': style_sheet,
-                    'script': script,}
+                    'script': script,
+                    'footer': footer,}
     
     return render(request, 'autism_prevalence_map/map.html', context_dict)
 
@@ -312,6 +316,8 @@ def list_view(request):
         except:
             last_updated_on_meta = ''
 
+    footer = Footer.objects.prefetch_related('left_menu_items', 'right_menu_items').first()
+    
     context_dict = {
         'min_yearpublished':min_yearpublished,
         'max_yearpublished':max_yearpublished,
@@ -330,7 +336,8 @@ def list_view(request):
         'continent': continent,
         'last_updated_on_meta': last_updated_on_meta,
         'style_sheet': style_sheet,
-        'script': script,}
+        'script': script,
+        'footer': footer,}
 
     return render(request, 'autism_prevalence_map/list.html', context_dict)
 
@@ -368,6 +375,7 @@ def about(request):
             last_updated_on_meta = ''
 
     about_page = AboutPage.objects.first()
+    footer = Footer.objects.prefetch_related('left_menu_items', 'right_menu_items').first()
 
     context_dict = {
         'min_yearpublished':min_yearpublished,
@@ -389,6 +397,7 @@ def about(request):
         'style_sheet': style_sheet,
         'script': script,
         'about_page': about_page,
+        'footer': footer,
     }
         
     return render(request, 'autism_prevalence_map/about.html', context_dict)
