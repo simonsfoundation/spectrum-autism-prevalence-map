@@ -154,3 +154,116 @@ class AboutSection(models.Model):
                 link_text, link_url = pair.split('|', 1)
                 links.append((link_text.strip(), link_url.strip()))
         return links
+
+class Footer(models.Model):
+    class Meta:
+        verbose_name = 'Footer'
+        verbose_name_plural = 'Footers'
+    
+    # Middle section fields
+    middle_text = models.TextField(
+        default="Have you recently published new research in neuroscience?",
+        help_text="Text for the middle section of the footer"
+    )
+    middle_subtext = models.CharField(
+        max_length=255,
+        default="We want to hear from you.",
+        help_text="Subtext for the middle section of the footer"
+    )
+    middle_button_text = models.CharField(
+        max_length=255,
+        default="Let us know",
+        help_text="Button text for the middle section"
+    )
+    middle_button_link = models.URLField(
+        max_length=500,
+        default="https://www.thetransmitter.org/contact-us/",
+        help_text="Button link for the middle section"
+    )
+    
+    # Bottom section text
+    bottom_tagline = models.CharField(
+        max_length=255,
+        default="Curating neuroscience, connecting community",
+        help_text="Tagline text below the logo"
+    )
+    bottom_support_text = models.CharField(
+        max_length=255,
+        default="An editorially independent publication supported by the Simons Foundation",
+        help_text="Support text at the very bottom"
+    )
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"Footer Configuration (Updated: {self.updated_at.strftime('%Y-%m-%d')})"
+    
+    def save(self, *args, **kwargs):
+        # Ensure only one Footer instance exists
+        if not self.pk and Footer.objects.exists():
+            # If creating a new instance and one already exists, update the existing one
+            existing = Footer.objects.first()
+            existing.middle_text = self.middle_text
+            existing.middle_subtext = self.middle_subtext
+            existing.middle_button_text = self.middle_button_text
+            existing.middle_button_link = self.middle_button_link
+            existing.bottom_tagline = self.bottom_tagline
+            existing.bottom_support_text = self.bottom_support_text
+            existing.save()
+            return existing
+        return super().save(*args, **kwargs)
+
+class FooterLeftMenuItem(models.Model):
+    class Meta:
+        verbose_name = 'Footer Left Menu Item'
+        verbose_name_plural = 'Footer Left Menu Items'
+        ordering = ['order']
+    
+    footer = models.ForeignKey(
+        Footer,
+        on_delete=models.CASCADE,
+        related_name='left_menu_items'
+    )
+    title = models.CharField(
+        max_length=255,
+        help_text="Menu item title (HTML allowed, e.g., <em>The Transmitter</em> books)"
+    )
+    url = models.URLField(
+        max_length=500,
+        help_text="Menu item URL"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        help_text="Order of this menu item (lower numbers appear first)"
+    )
+    
+    def __str__(self):
+        return self.title
+
+class FooterRightMenuItem(models.Model):
+    class Meta:
+        verbose_name = 'Footer Right Menu Item'
+        verbose_name_plural = 'Footer Right Menu Items'
+        ordering = ['order']
+    
+    footer = models.ForeignKey(
+        Footer,
+        on_delete=models.CASCADE,
+        related_name='right_menu_items'
+    )
+    title = models.CharField(
+        max_length=255,
+        help_text="Menu item title (HTML allowed, e.g., About <em>The Transmitter</em>)"
+    )
+    url = models.URLField(
+        max_length=500,
+        help_text="Menu item URL"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        help_text="Order of this menu item (lower numbers appear first)"
+    )
+    
+    def __str__(self):
+        return self.title

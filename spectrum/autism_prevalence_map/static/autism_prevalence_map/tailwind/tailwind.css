@@ -11,7 +11,8 @@
         @apply font-bold;
     }
 
-    article p {
+    article p,
+    article li {
         @apply mb-3 font-serif font-light text-1sm text-dark-gray2 tracking-normal-lg lg:mb-7 lg:tracking-wide lg:text-3sm lg:leading-8;
     }
 
