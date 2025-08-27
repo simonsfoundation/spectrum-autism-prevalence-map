@@ -27,8 +27,7 @@
                 {% if footer %}
                 <p class="font-serif text-2md md:text-3lg">
                     {{ footer.middle_text }}</p>
-                <span class="font-serif text-1sm md:text-3sm">
-                </span>
+                <span class="font-serif text-1sm md:text-3sm">{{ footer.middle_subtext }}</span>
                 <a class="font-sans text-2xs uppercase underline tracking-extra-wide hover:text-med-red md:text-2sm md:tracking-extra-wide"
                     href="{{ footer.middle_button_link }}">
                     {{ footer.middle_button_text }}</a>
@@ -94,7 +93,7 @@
         </div>
         <div class="col-span-12 h-px w-full bg-white my-10 hidden md:block"></div>
         <div class="col-span-4 font-light font-sans text-sm tracking-wide-xl md:col-span-6 md:col-start-4">
-            <div class="grid justify-items-center text-center gap-4">
+            <div class="grid justify-items-center text-center gap-4 mb-12">
                 <a href="/">
                     {% svg 'transmitter-logo-white' %}
                     <span class="sr-only">Home</span>
@@ -104,6 +103,12 @@
                 <p class="tracking-normal-md">{{ footer.bottom_support_text }}</p>
                 {% endif %}
             </div>
+            <a class="grid justify-items-center" href="https://www.simonsfoundation.org/">
+                <div class="mb-4">
+                    {% svg 'simons-logo-white' %}
+                </div>
+                <span class='tracking-normal'>&copy; 2025 Simons Foundation</span>
+            </a>
         </div>
     </section>
 </footer>

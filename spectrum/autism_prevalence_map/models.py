@@ -165,6 +165,11 @@ class Footer(models.Model):
         default="Have you recently published new research in neuroscience?",
         help_text="Text for the middle section of the footer"
     )
+    middle_subtext = models.CharField(
+        max_length=255,
+        default="We want to hear from you.",
+        help_text="Subtext for the middle section of the footer"
+    )
     middle_button_text = models.CharField(
         max_length=255,
         default="Let us know",
@@ -200,6 +205,7 @@ class Footer(models.Model):
             # If creating a new instance and one already exists, update the existing one
             existing = Footer.objects.first()
             existing.middle_text = self.middle_text
+            existing.middle_subtext = self.middle_subtext
             existing.middle_button_text = self.middle_button_text
             existing.middle_button_link = self.middle_button_link
             existing.bottom_tagline = self.bottom_tagline
