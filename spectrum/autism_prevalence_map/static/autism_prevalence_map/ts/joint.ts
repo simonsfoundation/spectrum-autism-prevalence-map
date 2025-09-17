@@ -446,6 +446,10 @@ export function ttInitJoint() {
             $('#continent').val('all');
             $('#country').val('all');
 
+            if (app.map.expandedCluster) {
+                app.map.collapseCluster();
+            }
+          
             // re-enable all min and max select options
             if (app.comboBox_min_year) {
                 app.comboBox_min_year.selectAll('option').property('disabled', false);
@@ -462,7 +466,7 @@ export function ttInitJoint() {
             }
 
             // remove the search input close X
-             $('[data-id="keyword-filter-x-btn"]').addClass('hidden');
+            $('[data-id="keyword-filter-x-btn"]').addClass('hidden');
           
             // hide the mean box
             app.meanBoxVisible = false;

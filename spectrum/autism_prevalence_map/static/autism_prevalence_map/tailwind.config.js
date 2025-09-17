@@ -136,6 +136,7 @@ module.exports = {
             borderWidth: {
                 '0.125': '0.5px',
                 '0.3125': '1.25px',
+                '0.375': '1.5px',
                 '1': '0.25rem',
                 '1.5': '0.375rem', // 6px
                 '2': '0.5rem', // 8px
@@ -213,6 +214,8 @@ module.exports = {
                 'welcome': '16.5rem', // 264px
                 'logo': '13.55rem', // 216.8px
                 'container': '103rem', // 1648px
+                'newsletter': '35rem', // 560px
+                'newslettersubmit': '9.5rem', // 152px
             },
             spacing: {
                 '0.125': '0.031rem', // 0.5px
@@ -241,6 +244,7 @@ module.exports = {
                 '5.75': '1.438rem', // 23px
                 '6': '1.5rem', // 24px
                 '6.5': '1.625rem', // 26px
+                '7': '1.75rem', // 26px
                 '7.5': '1.875rem', // 30px
                 '8': '2rem', // 32px
                 '8.25': '2.063rem', // 33px
@@ -360,7 +364,7 @@ module.exports = {
         'fill-navy',
         'stroke-dark-tan',
         'stroke-tan',
-        'stroke-[0.5px]',
+        'stroke-0.125',
         'ui-slider',
         'ui-slider-handle',
         'ui-slider-range',
@@ -369,5 +373,6 @@ module.exports = {
         'max-h-info2',
         'max-h-info3',
         'max-h-info4',
+        'megadot-outline',
     ],
 }
