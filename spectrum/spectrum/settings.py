@@ -36,10 +36,15 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
 GMAP_API_KEY = os.environ["GMAP_API_KEY"]
 
+# Cloudflare settings
+CLOUDFLARE_API_TOKEN = os.environ.get('CLOUDFLARE_API_TOKEN')
+CLOUDFLARE_ZONE_ID = os.environ.get('CLOUDFLARE_ZONE_ID')
+CLOUDFLARE_SUBDOMAIN = os.environ.get('CLOUDFLARE_SUBDOMAIN')
+
 # Application definition
 
 INSTALLED_APPS = [
-    'autism_prevalence_map',
+    'autism_prevalence_map.apps.AutismPrevalenceMapConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

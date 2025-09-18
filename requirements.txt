@@ -19,6 +19,7 @@ django-admin-ip-restrictor==2.2.0
 django-ipware==3.0.7
 django-admin-honeypot==1.1.0
 django-inline-svg==0.1.1
+cloudflare==2.19.0
 django-ckeditor-5==0.2.13
 Pillow==10.4.0
 requests
