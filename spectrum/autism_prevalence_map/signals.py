@@ -14,13 +14,6 @@ def purge_cloudflare_cache(subdomain):
         logger.warning("Cloudflare settings not fully configured, skipping cache purge")
         return False
     
-    # Check if we should actually purge (controlled by environment variable)
-    enable_purge = os.environ.get('ENABLE_CLOUDFLARE_PURGE', 'false').lower() == 'true'
-    
-    if not enable_purge:
-        logger.info(f"Cloudflare cache purge disabled (would purge: {subdomain})")
-        return False
-    
     try:
         cf = CloudFlare.CloudFlare(token=settings.CLOUDFLARE_API_TOKEN)
         purge_data = {'hosts': [subdomain]}
