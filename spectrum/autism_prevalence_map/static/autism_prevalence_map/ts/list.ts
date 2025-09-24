@@ -420,6 +420,11 @@ export function ttInitList() {
             const order = $(this).attr('data-sort-order');
             if (!field || !order) return;
 
+            const scrollWrapper = $('[data-id="scroll-wrapper"]')[0];
+            if (scrollWrapper) {
+                sessionStorage.setItem('listScrollLeft', scrollWrapper.scrollLeft.toString());
+            }
+
             const url = new URL(window.location.href);
             url.searchParams.set('sort_field', field);
             url.searchParams.set('sort_order', order);
@@ -435,6 +440,15 @@ export function ttInitList() {
             if (field && order) {
                 const selector = '[data-id="sort-pop"][data-sort-field="' + field + '"] ' + 'button[data-sort-order="' + order + '"]';
                 $(selector).addClass('text-med-red');
+            }
+
+            const savedScrollLeft = sessionStorage.getItem('listScrollLeft');
+            if (savedScrollLeft !== null) {
+                const scrollWrapper = $('[data-id="scroll-wrapper"]')[0];
+                if (scrollWrapper) {
+                    scrollWrapper.scrollLeft = parseInt(savedScrollLeft, 10);
+                }
+                sessionStorage.removeItem('listScrollLeft');
             }
         });
 
