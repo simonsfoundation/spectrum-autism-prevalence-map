@@ -134,6 +134,7 @@ export function ttInitList() {
                 toggletd.append('img')
                     .attr('src', chevron_down)
                     .attr('alt', 'chevron down icon')
+                    .attr('tabindex', '0')
                     .classed('chevron-down cursor-pointer', true);
                 
                 row1.append('td')
@@ -334,6 +335,13 @@ export function ttInitList() {
                     const target = $(targetId);
 
                     target.toggleClass('hidden');
+                });
+
+                $(document).on('keydown', '.chevron-down', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        $(this).closest('tr').trigger('click');
+                    }
                 });
 
                 $('[data-collapse-target]').on('shown.bs.collapse', function() {
