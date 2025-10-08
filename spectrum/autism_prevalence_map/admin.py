@@ -46,7 +46,10 @@ class StudiesForm(forms.ModelForm):
         model = studies
         exclude = ['gsheet_id', 'latitude', 'longitude', 'yearpublished_number',
                    'yearsstudied_number_min', 'yearsstudied_number_max', 'prevalenceper10000_number', 'samplesize_number',
-                   'num_yearsstudied'
+                   'num_yearsstudied',
+                   # Auto-populated by save() method - hide from admin
+                   'individualswithautism_number', 'percentwaverageiq_number', 'sexratiomf_number',
+                   'confidenceinterval_low', 'confidenceinterval_high', 'age_low', 'age_high'
                    ]
 
 class CsvImportForm(forms.Form):

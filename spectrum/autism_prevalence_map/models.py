@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from datetime import date
 from django_ckeditor_5.fields import CKEditor5Field
+import re
 
 # Constants
 NEWSLETTER_SPECTRUM_WEEKLY_LIST_ID = 2
@@ -58,6 +59,55 @@ class studies(models.Model):
     link4url = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Link 4 Url')
     latitude = models.FloatField(default=None, blank=True, null=True)
     longitude = models.FloatField(default=None, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        # Auto-populate numeric fields from text fields
+        try:
+            if self.individualswithautism:
+                value = re.sub(r'[^\d]', '', self.individualswithautism)
+                self.individualswithautism_number = int(value) if value else None
+        except Exception:
+            pass
+
+        try:
+            if self.percentwaverageiq:
+                match = re.search(r'[-+]?\d*\.?\d+', self.percentwaverageiq)
+                self.percentwaverageiq_number = float(match.group()) if match else None
+        except Exception:
+            pass
+
+        try:
+            if self.sexratiomf:
+                match = re.search(r'[-+]?\d*\.?\d+', self.sexratiomf)
+                self.sexratiomf_number = float(match.group()) if match else None
+        except Exception:
+            pass
+
+        try:
+            if self.confidenceinterval:
+                nums = re.findall(r'[-+]?\d*\.?\d+', self.confidenceinterval.replace('–', '-'))
+                if len(nums) >= 2:
+                    self.confidenceinterval_low = float(nums[0])
+                    self.confidenceinterval_high = float(nums[1])
+                elif len(nums) == 1:
+                    self.confidenceinterval_low = float(nums[0])
+                    self.confidenceinterval_high = float(nums[0])
+        except Exception:
+            pass
+
+        try:
+            if self.age:
+                nums = re.findall(r'\d*\.?\d+', self.age.replace("–", "-"))
+                if len(nums) >= 2:
+                    self.age_low = float(nums[0])
+                    self.age_high = float(nums[1])
+                elif len(nums) == 1:
+                    self.age_low = float(nums[0])
+                    self.age_high = float(nums[0])
+        except Exception:
+            pass
+
+        super().save(*args, **kwargs)
 
 class options(models.Model):
     class Meta:
