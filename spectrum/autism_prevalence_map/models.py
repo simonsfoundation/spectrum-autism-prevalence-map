@@ -66,6 +66,8 @@ class studies(models.Model):
             if self.individualswithautism:
                 value = re.sub(r'[^\d]', '', self.individualswithautism)
                 self.individualswithautism_number = int(value) if value else None
+            else:
+                self.individualswithautism_number = None
         except Exception:
             pass
 
@@ -73,6 +75,8 @@ class studies(models.Model):
             if self.percentwaverageiq:
                 match = re.search(r'[-+]?\d*\.?\d+', self.percentwaverageiq)
                 self.percentwaverageiq_number = float(match.group()) if match else None
+            else:
+                self.percentwaverageiq_number = None
         except Exception:
             pass
 
@@ -80,6 +84,8 @@ class studies(models.Model):
             if self.sexratiomf:
                 match = re.search(r'[-+]?\d*\.?\d+', self.sexratiomf)
                 self.sexratiomf_number = float(match.group()) if match else None
+            else:
+                self.sexratiomf_number = None
         except Exception:
             pass
 
@@ -92,6 +98,9 @@ class studies(models.Model):
                 elif len(nums) == 1:
                     self.confidenceinterval_low = float(nums[0])
                     self.confidenceinterval_high = float(nums[0])
+            else:
+                self.confidenceinterval_low = None
+                self.confidenceinterval_high = None
         except Exception:
             pass
 
@@ -104,6 +113,9 @@ class studies(models.Model):
                 elif len(nums) == 1:
                     self.age_low = float(nums[0])
                     self.age_high = float(nums[0])
+            else:
+                self.age_low = None
+                self.age_high = None
         except Exception:
             pass
 
