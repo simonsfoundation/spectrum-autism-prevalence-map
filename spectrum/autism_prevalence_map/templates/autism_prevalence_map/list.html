@@ -17,9 +17,9 @@
     {% include "autism_prevalence_map/action_buttons.html" with template="list" %}
 
     <div class='pt-3.25 pb-4 mx-auto max-w-container'>
-        <div id='list'>
+        <div class='relative' id='list'>
             <div class='pb-3.25 text-2xs uppercase text-med-navy'><span id='results-count'>0</span> results</div>
-            <div class='w-full overflow-x-auto' data-id='scroll-wrapper'>
+            <div class='relative w-full max-h-list-table overflow-auto' data-id='scroll-wrapper'>
                 <table id='studies-table' class='table-fixed'>
                     <!-- <thead class='bg-dark-gray border-b-3 border-tan sticky top-17.7 z-10'> -->
                     <thead class='relative border-b-3 border-tan'>
@@ -112,7 +112,7 @@
                             <th scope='col'>
                                 <div class='relative inline-block' data-id='sort-wrapper'>
                                     <div class='relative flex gap-1 pt-0.75 pr-0.25 pb-0.5 pl-1.5 rounded-sm cursor-pointer hover:bg-dark-gray3 transition-colors duration-150' data-id='sort-trigger' aria-expanded='false'>
-                                        <span>95% CONFIDENCE INTERVAL</span>
+                                        <span>95% CI</span>
                                         <span class='w-chevron transition-transform duration-150' data-id='sort-chevron'>
                                             {% svg 'icon-sort' %}
                                         </span>
