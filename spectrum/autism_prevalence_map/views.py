@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from datetime import date
 import re, csv, os
 from django.contrib.postgres.search import SearchVector, SearchQuery
-from django.db.models import Avg, FloatField
+from django.db.models import Avg, FloatField, F
 from django.db.models.functions import Cast
 from django.contrib.staticfiles.finders import find as find_static_file
 from autism_prevalence_map.models import *
@@ -560,6 +560,15 @@ def studiesApi(request):
             pulled_studies = studies.objects.filter(**kwargs)
 
         # column sorting on list page
+        # Numeric fields where NULL should be treated as lowest value
+        numeric_fields_with_nulls = {
+            'samplesize_number',
+            'prevalenceper10000_number',
+            'individualswithautism_number',
+            'percentwaverageiq_number',
+            'sexratiomf_number',
+        }
+
         sortable_fields = {
             'yearpublished',
             'authors',
@@ -578,15 +587,44 @@ def studiesApi(request):
             'categoryadpddorasd',
             'studytype'
         }
+
+        # Map numeric fields to their text field equivalents for tiebreaking
+        numeric_to_text_field = {
+            'samplesize_number': 'samplesize',
+            'prevalenceper10000_number': 'prevalenceper10000',
+            'individualswithautism_number': 'individualswithautism',
+            'percentwaverageiq_number': 'percentwaverageiq',
+            'sexratiomf_number': 'sexratiomf',
+        }
+
         if sort_field:
             if sort_field == 'confidenceinterval':
-                pulled_studies = (pulled_studies.order_by('confidenceinterval_low' if sort_order == 'asc' else 'confidenceinterval_high'))
-            elif sort_field == 'age':
+                # Treat NULL as lowest value, use text field as tiebreaker so empty comes before "Unavailable"
                 if sort_order == 'asc':
-                    pulled_studies = pulled_studies.order_by('age_low', 'age_high')
+                    pulled_studies = pulled_studies.order_by(F('confidenceinterval_low').asc(nulls_first=True), F('confidenceinterval').asc(nulls_first=True))
                 else:
-                    pulled_studies = pulled_studies.order_by('-age_high', '-age_low')
+                    pulled_studies = pulled_studies.order_by(F('confidenceinterval_high').desc(nulls_last=True), F('confidenceinterval').desc(nulls_last=True))
+            elif sort_field == 'age':
+                # Treat NULL as lowest value, use text field as tiebreaker so empty comes before "Unavailable"
+                if sort_order == 'asc':
+                    pulled_studies = pulled_studies.order_by(F('age_low').asc(nulls_first=True), F('age_high').asc(nulls_first=True), F('age').asc(nulls_first=True))
+                else:
+                    pulled_studies = pulled_studies.order_by(F('age_high').desc(nulls_last=True), F('age_low').desc(nulls_last=True), F('age').desc(nulls_last=True))
+            elif sort_field == 'yearsstudied':
+                # Treat NULL as lowest value, use text field as tiebreaker so empty comes before "Unavailable"
+                if sort_order == 'asc':
+                    pulled_studies = pulled_studies.order_by(F('yearsstudied_number_min').asc(nulls_first=True), F('yearsstudied').asc(nulls_first=True))
+                else:
+                    pulled_studies = pulled_studies.order_by(F('yearsstudied_number_max').desc(nulls_last=True), F('yearsstudied').desc(nulls_last=True))
+            elif sort_field in numeric_fields_with_nulls:
+                # Treat NULL as lowest value, use text field as tiebreaker so empty comes before "Unavailable"
+                text_field = numeric_to_text_field.get(sort_field)
+                if sort_order == 'asc':
+                    pulled_studies = pulled_studies.order_by(F(sort_field).asc(nulls_first=True), F(text_field).asc(nulls_first=True))
+                else:
+                    pulled_studies = pulled_studies.order_by(F(sort_field).desc(nulls_last=True), F(text_field).desc(nulls_last=True))
             elif sort_field in sortable_fields:
+                # For text fields, use standard ordering
                 prefix = '' if sort_order == 'asc' else '-'
                 pulled_studies = pulled_studies.order_by(prefix + sort_field)
 

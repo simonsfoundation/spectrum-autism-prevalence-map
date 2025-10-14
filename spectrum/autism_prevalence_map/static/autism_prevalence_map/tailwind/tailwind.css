@@ -531,21 +531,21 @@
     #studies-table tbody td {
         @apply bg-tan;
     }
-    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) {
+    #studies-table tbody tr:not(.collapsed):not(.bg-tan) {
         @apply border-med-navy;
     }
-    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) td,
-    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) th {
+    #studies-table tbody tr:not(.collapsed):not(.bg-tan) td,
+    #studies-table tbody tr:not(.collapsed):not(.bg-tan) th {
         @apply bg-white2;
     }
-    #studies-table_tbody tr:not(.collapsed):not(.bg-tan) .chevron-down {
+    #studies-table tbody tr:not(.collapsed):not(.bg-tan) .chevron-down {
         @apply rotate-180;
     }
-    #studies-table_tbody tr.show {
+    #studies-table tbody tr.show {
         @apply border-light-gray2 border-b-0.3125;
     }
-    #studies-table_tbody tr.show td,
-    #studies-table_tbody tr.show .min-w-toggle {
+    #studies-table tbody tr.show td,
+    #studies-table tbody tr.show .min-w-toggle {
         @apply pt-6 pb-10.5;
     }
     #studies-table .show {

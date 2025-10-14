@@ -208,6 +208,7 @@ module.exports = {
                 'info2': 'calc(100% - 79px)', // height of the info card minus the sticky button wrapper at the bottom with 2 links
                 'info3': 'calc(100% - 106px)', // height of the info card minus the sticky button wrapper at the bottom with 3 links
                 'info4': 'calc(100% - 133px)', // height of the info card minus the sticky button wrapper at the bottom with 4 links
+                'list-table': 'calc(100vh - 268px)', // height of the page minus the header, filters, and page padding
             },
             maxWidth: {
                 'tooltip': '11.625rem', // 186px
