@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from datetime import date
 from django_ckeditor_5.fields import CKEditor5Field
+import re
 
 # Constants
 NEWSLETTER_SPECTRUM_WEEKLY_LIST_ID = 2
@@ -23,14 +24,21 @@ class studies(models.Model):
     samplesize = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Sample Size')
     samplesize_number = models.IntegerField(default=0, blank=True, null=True)
     age = models.CharField(max_length=255, default='', blank=True, null=True)
+    age_low = models.FloatField(blank=True, null=True)
+    age_high = models.FloatField(blank=True, null=True)
     individualswithautism = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Individuals with Autism')
+    individualswithautism_number = models.IntegerField(blank=True, null=True)
     diagnosticcriteria = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Diagnostic Criteria')
     diagnostictools = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Diagnostic Tools')
     percentwaverageiq = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Percent w/ Average IQ')
+    percentwaverageiq_number = models.FloatField(blank=True, null=True)
     sexratiomf = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Sex ratio (M:F)')
+    sexratiomf_number = models.FloatField(blank=True, null=True)
     prevalenceper10000 = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Prevalence (per 10,000)')
     prevalenceper10000_number = models.FloatField(default=0, blank=True, null=True)
     confidenceinterval = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='95% Confidence interval')
+    confidenceinterval_low = models.FloatField(blank=True, null=True)
+    confidenceinterval_high = models.FloatField(blank=True, null=True)
     categoryadpddorasd = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Category (AD, PDD or ASD)')
     yearsstudied = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Year(s) Studied')
     yearsstudied_number_min = models.DateField(default=date.today, blank=True, null=True)
@@ -51,6 +59,67 @@ class studies(models.Model):
     link4url = models.CharField(max_length=255, default='', blank=True, null=True, verbose_name='Link 4 Url')
     latitude = models.FloatField(default=None, blank=True, null=True)
     longitude = models.FloatField(default=None, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        # Auto-populate numeric fields from text fields
+        try:
+            if self.individualswithautism:
+                value = re.sub(r'[^\d]', '', self.individualswithautism)
+                self.individualswithautism_number = int(value) if value else None
+            else:
+                self.individualswithautism_number = None
+        except Exception:
+            pass
+
+        try:
+            if self.percentwaverageiq:
+                match = re.search(r'[-+]?\d*\.?\d+', self.percentwaverageiq)
+                self.percentwaverageiq_number = float(match.group()) if match else None
+            else:
+                self.percentwaverageiq_number = None
+        except Exception:
+            pass
+
+        try:
+            if self.sexratiomf:
+                match = re.search(r'[-+]?\d*\.?\d+', self.sexratiomf)
+                self.sexratiomf_number = float(match.group()) if match else None
+            else:
+                self.sexratiomf_number = None
+        except Exception:
+            pass
+
+        try:
+            if self.confidenceinterval:
+                nums = re.findall(r'[-+]?\d*\.?\d+', self.confidenceinterval.replace('–', '-'))
+                if len(nums) >= 2:
+                    self.confidenceinterval_low = float(nums[0])
+                    self.confidenceinterval_high = float(nums[1])
+                elif len(nums) == 1:
+                    self.confidenceinterval_low = float(nums[0])
+                    self.confidenceinterval_high = float(nums[0])
+            else:
+                self.confidenceinterval_low = None
+                self.confidenceinterval_high = None
+        except Exception:
+            pass
+
+        try:
+            if self.age:
+                nums = re.findall(r'\d*\.?\d+', self.age.replace("–", "-"))
+                if len(nums) >= 2:
+                    self.age_low = float(nums[0])
+                    self.age_high = float(nums[1])
+                elif len(nums) == 1:
+                    self.age_low = float(nums[0])
+                    self.age_high = float(nums[0])
+            else:
+                self.age_low = None
+                self.age_high = None
+        except Exception:
+            pass
+
+        super().save(*args, **kwargs)
 
 class options(models.Model):
     class Meta:

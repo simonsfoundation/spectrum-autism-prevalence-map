@@ -5,7 +5,7 @@ from django.http import JsonResponse, HttpResponse
 from datetime import date
 import re, csv, os
 from django.contrib.postgres.search import SearchVector, SearchQuery
-from django.db.models import Avg, FloatField
+from django.db.models import Avg, FloatField, F
 from django.db.models.functions import Cast
 from django.contrib.staticfiles.finders import find as find_static_file
 from autism_prevalence_map.models import *
@@ -249,6 +249,8 @@ def index(request):
         education = request.GET.get('education', '')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        sort_field = request.GET.get('sort_field', '')
+        sort_order = request.GET.get('sort_order', 'asc')
         try:
             last_updated_on_obj = options.objects.get(name='last_updated_on')
             last_updated_on = last_updated_on_obj.value
@@ -257,9 +259,9 @@ def index(request):
         except:
             last_updated_on = ''
             last_updated_on_meta = ''
-
+            
     footer = Footer.objects.prefetch_related('left_menu_items', 'right_menu_items').first()
-    
+
     context_dict = {'min_yearpublished': min_yearpublished,
                     'max_yearpublished': max_yearpublished,
                     'yearsstudied_number_min': yearsstudied_number_min,
@@ -277,6 +279,8 @@ def index(request):
                     'continent': continent,
                     'last_updated_on': last_updated_on,
                     'last_updated_on_meta': last_updated_on_meta,
+                    'sort_field': sort_field,
+                    'sort_order': sort_order,
                     'style_sheet': style_sheet,
                     'script': script,
                     'footer': footer,}
@@ -310,6 +314,8 @@ def list_view(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        sort_field = request.GET.get('sort_field','')
+        sort_order = request.GET.get('sort_order','asc')
         try:
             last_updated_on_meta_obj = options.objects.get(name='last_updated_on_meta')
             last_updated_on_meta = last_updated_on_meta_obj.value
@@ -335,6 +341,8 @@ def list_view(request):
         'country': country,
         'continent': continent,
         'last_updated_on_meta': last_updated_on_meta,
+        'sort_field': sort_field,
+        'sort_order': sort_order,
         'style_sheet': style_sheet,
         'script': script,
         'footer': footer,}
@@ -368,6 +376,8 @@ def about(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        sort_field = request.GET.get('sort_field', '')
+        sort_order = request.GET.get('sort_order', 'asc')
         try:
             last_updated_on_meta_obj = options.objects.get(name='last_updated_on_meta')
             last_updated_on_meta = last_updated_on_meta_obj.value
@@ -394,6 +404,8 @@ def about(request):
         'country': country,
         'continent': continent,
         'last_updated_on_meta': last_updated_on_meta,
+        'sort_field': sort_field,
+        'sort_order': sort_order,
         'style_sheet': style_sheet,
         'script': script,
         'about_page': about_page,
@@ -426,6 +438,8 @@ def studiesApi(request):
         education = request.GET.get('education','')
         country = request.GET.get('country', '')
         continent = request.GET.get('continent', '')
+        sort_field = request.GET.get('sort_field', '')
+        sort_order = request.GET.get('sort_order', 'asc')
 
         #apply filters
         if min_yearpublished:
@@ -544,6 +558,75 @@ def studiesApi(request):
             pulled_studies = studies.objects.annotate(search=vector).filter(search=keyword).filter(**kwargs)
         else:
             pulled_studies = studies.objects.filter(**kwargs)
+
+        # column sorting on list page
+        # Numeric fields where NULL should be treated as lowest value
+        numeric_fields_with_nulls = {
+            'samplesize_number',
+            'prevalenceper10000_number',
+            'individualswithautism_number',
+            'percentwaverageiq_number',
+            'sexratiomf_number',
+        }
+
+        sortable_fields = {
+            'yearpublished',
+            'authors',
+            'country',
+            'area',
+            'samplesize_number',
+            'prevalenceper10000_number',
+            'confidenceinterval',
+            'age',
+            'individualswithautism_number',
+            'diagnosticcriteria',
+            'diagnostictools',
+            'percentwaverageiq_number',
+            'sexratiomf_number',
+            'yearsstudied',
+            'categoryadpddorasd',
+            'studytype'
+        }
+
+        # Map numeric fields to their text field equivalents for tiebreaking
+        numeric_to_text_field = {
+            'samplesize_number': 'samplesize',
+            'prevalenceper10000_number': 'prevalenceper10000',
+            'individualswithautism_number': 'individualswithautism',
+            'percentwaverageiq_number': 'percentwaverageiq',
+            'sexratiomf_number': 'sexratiomf',
+        }
+
+        if sort_field:
+            if sort_field == 'confidenceinterval':
+                # Treat NULL as lowest value, use text field as tiebreaker so empty comes before "Unavailable"
+                if sort_order == 'asc':
+                    pulled_studies = pulled_studies.order_by(F('confidenceinterval_low').asc(nulls_first=True), F('confidenceinterval').asc(nulls_first=True))
+                else:
+                    pulled_studies = pulled_studies.order_by(F('confidenceinterval_high').desc(nulls_last=True), F('confidenceinterval').desc(nulls_last=True))
+            elif sort_field == 'age':
+                # Treat NULL as lowest value, use text field as tiebreaker so empty comes before "Unavailable"
+                if sort_order == 'asc':
+                    pulled_studies = pulled_studies.order_by(F('age_low').asc(nulls_first=True), F('age_high').asc(nulls_first=True), F('age').asc(nulls_first=True))
+                else:
+                    pulled_studies = pulled_studies.order_by(F('age_high').desc(nulls_last=True), F('age_low').desc(nulls_last=True), F('age').desc(nulls_last=True))
+            elif sort_field == 'yearsstudied':
+                # Treat NULL as lowest value, use text field as tiebreaker so empty comes before "Unavailable"
+                if sort_order == 'asc':
+                    pulled_studies = pulled_studies.order_by(F('yearsstudied_number_min').asc(nulls_first=True), F('yearsstudied').asc(nulls_first=True))
+                else:
+                    pulled_studies = pulled_studies.order_by(F('yearsstudied_number_max').desc(nulls_last=True), F('yearsstudied').desc(nulls_last=True))
+            elif sort_field in numeric_fields_with_nulls:
+                # Treat NULL as lowest value, use text field as tiebreaker so empty comes before "Unavailable"
+                text_field = numeric_to_text_field.get(sort_field)
+                if sort_order == 'asc':
+                    pulled_studies = pulled_studies.order_by(F(sort_field).asc(nulls_first=True), F(text_field).asc(nulls_first=True))
+                else:
+                    pulled_studies = pulled_studies.order_by(F(sort_field).desc(nulls_last=True), F(text_field).desc(nulls_last=True))
+            elif sort_field in sortable_fields:
+                # For text fields, use standard ordering
+                prefix = '' if sort_order == 'asc' else '-'
+                pulled_studies = pulled_studies.order_by(prefix + sort_field)
 
         # calculate the mean on page load, and after filtering, and include that value in the JSON response
         mean_agg = pulled_studies.aggregate(mean=Avg(Cast('prevalenceper10000_number', FloatField())))
