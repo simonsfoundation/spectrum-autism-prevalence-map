@@ -168,6 +168,7 @@ module.exports = {
                 'arrow2': '0.813rem', // 13px
                 'switchin': '0.875rem', // 14px
                 'chevron': '1.25rem', // 20px
+                'gradient': '7.5rem', // 120px
                 'zoomcontrol': '2.25rem', // 36px
                 'switchout': '2.75rem', // 44px
                 'filter': '10.813rem', // 173px
@@ -268,6 +269,7 @@ module.exports = {
                 '23': '5.75rem', // 92px
                 '24' : '6rem', // 96px
                 '25.5' : '6.375rem', // 102px
+                '30' : '7.5rem', // 120px
                 '38.75' : '9.6875rem', // 155px
                 '46.5' : '11.625rem', // 186px
                 '62' : '15.5rem', // 248px
