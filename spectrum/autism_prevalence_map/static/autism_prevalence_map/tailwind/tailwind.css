@@ -518,10 +518,10 @@
         @apply pr-14 pl-1.5;
     }
     #studies-table th:not(.min-w-toggle):last-child {
-        @apply pr-30;
+        @apply pr-75;
     }
     #studies-table td:last-child {
-        @apply pr-30;
+        @apply pr-75;
     }
     #studies-table td,
     #studies-table .min-w-toggle {

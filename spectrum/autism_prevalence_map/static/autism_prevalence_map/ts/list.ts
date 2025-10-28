@@ -493,11 +493,11 @@ export function ttInitList() {
             const gradientBg = `
                 linear-gradient(to right,
                     rgba(45, 45, 45, 0) 0%,
-                    rgba(45, 45, 45, 0.95) 100%
+                    rgba(45, 45, 45, 0.95) 90%
                 ),
                 linear-gradient(to right,
                     rgba(254, 249, 238, 0) 0%,
-                    rgba(254, 249, 238, 0.95) 100%
+                    rgba(254, 249, 238, 0.95) 90%
                 )
             `;
 
