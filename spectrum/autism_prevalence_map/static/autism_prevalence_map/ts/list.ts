@@ -483,7 +483,7 @@ export function ttInitList() {
             const clientWidth = scrollWrapper.clientWidth;
             const distanceFromRight = scrollWidth - scrollLeft - clientWidth;
 
-            // dade out the gradient when within 300px of the right edge
+            // fade out the gradient when within 300px of the right edge
             let gradientOpacity = 1;
             if (distanceFromRight < 300) {
                 gradientOpacity = distanceFromRight / 300;
