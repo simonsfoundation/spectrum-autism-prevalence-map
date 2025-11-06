@@ -477,6 +477,18 @@ export function ttInitList() {
             const tableRect = table.getBoundingClientRect();
             const listRect = $('#list')[0].getBoundingClientRect();
 
+            // how far we are from the right edge of the table
+            const scrollLeft = scrollWrapper.scrollLeft;
+            const scrollWidth = scrollWrapper.scrollWidth;
+            const clientWidth = scrollWrapper.clientWidth;
+            const distanceFromRight = scrollWidth - scrollLeft - clientWidth;
+
+            // fade out the gradient when within 300px of the right edge
+            let gradientOpacity = 1;
+            if (distanceFromRight < 300) {
+                gradientOpacity = distanceFromRight / 300;
+            }
+
             // calculate where the table starts within the visible scroll wrapper viewport
             const tableTopInWrapper = tableRect.top - wrapperRect.top;
 
@@ -489,6 +501,7 @@ export function ttInitList() {
             const gradientTop = wrapperRect.top - listRect.top;
             gradient.style.top = `${gradientTop}px`;
             gradient.style.height = `${wrapperRect.height}px`;
+            gradient.style.opacity = gradientOpacity.toString();
 
             const gradientBg = `
                 linear-gradient(to right,
