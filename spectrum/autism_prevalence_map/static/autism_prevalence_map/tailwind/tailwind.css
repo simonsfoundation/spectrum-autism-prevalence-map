@@ -521,7 +521,7 @@
         @apply pr-6.5;
     }
     #studies-table td:last-child {
-        @apply pr-0;
+        @apply pr-6.5;
     }
     #studies-table td,
     #studies-table .min-w-toggle {

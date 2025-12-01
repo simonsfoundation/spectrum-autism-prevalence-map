@@ -465,7 +465,67 @@ export function ttInitList() {
             $(this).find('.chevron-down').toggleClass('open');
         });
 
-        // initialize
+        // gradient fade effect on table right edge
+        function updateTableGradient() {
+            const scrollWrapper = $('[data-id="scroll-wrapper"]')[0];
+            const gradient = $('#table-fade-gradient')[0];
+            const table = $('#studies-table')[0];
+
+            if (!scrollWrapper || !gradient || !table) return;
+
+            const wrapperRect = scrollWrapper.getBoundingClientRect();
+            const tableRect = table.getBoundingClientRect();
+            const listRect = $('#list')[0].getBoundingClientRect();
+
+            // how far we are from the right edge of the table
+            const scrollLeft = scrollWrapper.scrollLeft;
+            const scrollWidth = scrollWrapper.scrollWidth;
+            const clientWidth = scrollWrapper.clientWidth;
+            const distanceFromRight = scrollWidth - scrollLeft - clientWidth;
+
+            // fade out the gradient when within 300px of the right edge
+            let gradientOpacity = 1;
+            if (distanceFromRight < 300) {
+                gradientOpacity = distanceFromRight / 300;
+            }
+
+            // calculate where the table starts within the visible scroll wrapper viewport
+            const tableTopInWrapper = tableRect.top - wrapperRect.top;
+
+            // 71px matches the table header
+            const darkGradientHeight = 71;
+            const darkGradientBottom = tableTopInWrapper + darkGradientHeight;
+            const clampedDarkBottom = Math.max(0, darkGradientBottom);
+
+            // position gradient to match the scroll wrapper's visible area (relative to #list container)
+            const gradientTop = wrapperRect.top - listRect.top;
+            gradient.style.top = `${gradientTop}px`;
+            gradient.style.height = `${wrapperRect.height}px`;
+            gradient.style.opacity = gradientOpacity.toString();
+
+            const gradientBg = `
+                linear-gradient(to right,
+                    rgba(45, 45, 45, 0) 0%,
+                    rgba(45, 45, 45, 0.95) 90%
+                ),
+                linear-gradient(to right,
+                    rgba(254, 249, 238, 0) 0%,
+                    rgba(254, 249, 238, 0.95) 90%
+                )
+            `;
+
+            gradient.style.background = gradientBg;
+            gradient.style.backgroundSize = `100% ${clampedDarkBottom}px, 100% 100%`;
+            gradient.style.backgroundPosition = `0 0, 0 ${clampedDarkBottom}px`;
+            gradient.style.backgroundRepeat = 'no-repeat';
+        }
+
+        $('[data-id="scroll-wrapper"]').on('scroll', updateTableGradient);
+
+        $(window).on('resize', updateTableGradient);
+
+        setTimeout(updateTableGradient, 100);
+
         app.list.loadWorldMap();
     });
 }
