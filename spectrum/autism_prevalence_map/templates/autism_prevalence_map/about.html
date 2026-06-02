@@ -75,7 +75,7 @@
                     </article>
                 {% elif section.section_type == 'section_title' %}
                     <article data-module='section_title' class="mx-auto mb-4 mt-6 md:mt-12 md:max-w-159">
-                        <h2 id="{{ section.section_title_id }}" class="font-sans font-medium text-1md uppercase text-red lg:text-lg">{{ section.section_title_text|safe }}</h2>
+                        <h2 id="{{ section.section_title_id }}" class="font-sans font-medium text-1md leading-130 uppercase text-red lg:text-lg">{{ section.section_title_text|safe }}</h2>
                     </article>
                 {% elif section.section_type == 'text' %}
                     <article class="mx-auto md:max-w-159">
