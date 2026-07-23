@@ -3,8 +3,12 @@ import logging
 import os
 from django.conf import settings
 from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.contrib.admin.models import LogEntry
+
+from .models import (
+    studies, options, AboutPage, AboutSection,
+    Footer, FooterLeftMenuItem, FooterRightMenuItem,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -27,10 +31,25 @@ def purge_cloudflare_cache(subdomain):
         logger.error(f"Unexpected error during Cloudflare cache purge: {e}")
         return False
 
-@receiver(post_save)
+# Public-facing content models whose edits should invalidate the CDN cache. Scoping the
+# receiver to these (rather than a global post_save) keeps it from firing on auth/session/
+# admin-log rows, so `migrate` never queries LogEntry on an empty database.
+CACHED_CONTENT_MODELS = (
+    studies, options, AboutPage, AboutSection,
+    Footer, FooterLeftMenuItem, FooterRightMenuItem,
+)
+
+
 def clear_cache_on_save(sender, instance, **kwargs):
+    # Skip the LogEntry query when Cloudflare isn't configured (e.g. local/dev).
+    if not all([settings.CLOUDFLARE_API_TOKEN, settings.CLOUDFLARE_ZONE_ID, settings.CLOUDFLARE_SUBDOMAIN]):
+        return
     if LogEntry.objects.filter(
         object_id=str(instance.pk),
         content_type_id__model=sender.__name__.lower()
     ).exists():
         purge_cloudflare_cache(settings.CLOUDFLARE_SUBDOMAIN)
+
+
+for _model in CACHED_CONTENT_MODELS:
+    post_save.connect(clear_cache_on_save, sender=_model)

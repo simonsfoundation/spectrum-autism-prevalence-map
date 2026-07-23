@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/python:3.12-bookworm AS base
+FROM public.ecr.aws/docker/library/python:3.9-bookworm AS base
 
 
 RUN apt update \
@@ -11,7 +11,7 @@ RUN pip3 install -r /opt/requirements.txt
 FROM base AS dev
 
 ENV NVM_DIR=/usr/local/nvm
-ENV NODE_VERSION=20.20.2
+ENV NODE_VERSION=20.11.1
 RUN mkdir -p $NVM_DIR
 # Install nvm with node and npm
 RUN curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash \
