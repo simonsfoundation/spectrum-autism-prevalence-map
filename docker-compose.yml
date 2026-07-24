@@ -8,7 +8,7 @@ services:
     ports:
       - 3317:5432
     volumes:
-      - db:/var/lib/postgresql
+      - pgdata:/var/lib/postgresql/data
   app: &app
     stdin_open: true
     tty: true
@@ -34,4 +34,4 @@ services:
     ports:
       - 8017:8000
 volumes:
-  db:
+  pgdata:
