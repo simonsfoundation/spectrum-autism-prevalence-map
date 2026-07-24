@@ -24,7 +24,7 @@ docker compose up -d --build
 # 3. First run only: install front-end deps, then create the database schema
 docker compose exec -w /opt/app/autism_prevalence_map/static/autism_prevalence_map app npm install
 docker compose exec app python manage.py migrate
-docker compose exec app python manage.py createsuperuser   # optional, for /submarine/
+docker compose exec app python manage.py createsuperuser   # optional
 
 # 4. Compile the front-end (leave running in its own terminal for live reload)
 docker compose exec -w /opt/app/autism_prevalence_map/static/autism_prevalence_map app npm run dev
@@ -41,7 +41,7 @@ Then open the app: **http://localhost:8017**
 ## Configuration notes (`.env`)
 
 - **`DJANGO_ALLOWED_HOSTS` must include the host you visit.** The sample's `127.0.0.1,localhost`
-  covers both `localhost:8017` and `127.0.0.1:8017`; a missing host gives `DisallowedHost`.
+  covers both `localhost:8017` and `127.0.0.1:8017`.
 - **`FRONTEND_UNMINIFIED`** (default `False`) picks which front-end assets are served: unset or
   `False` → the built, versioned `*.min.*` bundles from `npm run build` (staging/production);
   `True` → the unminified source assets from `npm run dev` (local). The sample sets it to `True`,
