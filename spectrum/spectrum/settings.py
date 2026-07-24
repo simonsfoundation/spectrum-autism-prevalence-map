@@ -34,6 +34,11 @@ DEBUG = (os.getenv('DJANGO_DEBUG', 'False') == 'True')
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
+# Serve the minified, versioned front-end bundles (`*.min.*` from `npm run build`) by default
+# (staging/production). Set FRONTEND_UNMINIFIED=True (as the local `.env` does) to serve the
+# unminified source assets produced by `npm run dev`.
+FRONTEND_UNMINIFIED = (os.getenv('FRONTEND_UNMINIFIED', 'False') == 'True')
+
 GMAP_API_KEY = os.environ["GMAP_API_KEY"]
 
 # Cloudflare settings

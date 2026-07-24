@@ -1,0 +1,24 @@
+version: 0.2
+env:
+  shell: bash
+  parameter-store:
+    BUILD_ENV: "/prevalencemap/staging/BUILD_ENV"
+    TASKREV: "/prevalencemap/staging/TASKREV"
+
+phases:
+  build:
+    on-failure: ABORT
+    commands:
+      - "codepipeline/build_env.sh"
+      - "codepipeline/build_css.sh"
+      - "rc=${?}"
+      - "codepipeline/build_docker.sh"
+      - "exit ${rc}"
+  post_build:
+    commands:
+       - bash -c "if [[ ${CODEBUILD_BUILD_SUCCEEDING} -eq 0 ]]; then exit 1; fi"
+       - "codepipeline/push_docker.sh staging"
+       - "codepipeline/build_appspec.sh staging ${TASKREV}"
+artifacts:
+  files:
+    - "appspec.yaml"

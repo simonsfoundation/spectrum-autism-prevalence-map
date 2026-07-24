@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
+from django.conf import settings
 from datetime import date
 import re, csv, os
 from django.contrib.postgres.search import SearchVector, SearchQuery
@@ -226,7 +227,7 @@ def index(request):
     """
       Index page/Main Map
     """
-    if os.environ['DJANGO_ALLOWED_HOSTS'] == '127.0.0.1' :
+    if settings.FRONTEND_UNMINIFIED :
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
@@ -291,7 +292,7 @@ def list_view(request):
     """
       List of studies page
     """
-    if os.environ['DJANGO_ALLOWED_HOSTS'] == '127.0.0.1' :
+    if settings.FRONTEND_UNMINIFIED :
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
@@ -353,7 +354,7 @@ def about(request):
     """
       About page
     """
-    if os.environ['DJANGO_ALLOWED_HOSTS'] == '127.0.0.1' :
+    if settings.FRONTEND_UNMINIFIED :
         style_sheet = 'autism_prevalence_map/dist/main.css'
         script = 'autism_prevalence_map/dist/main.js'
     else :
