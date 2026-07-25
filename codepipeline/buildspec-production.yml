@@ -2,33 +2,23 @@ version: 0.2
 env:
   shell: bash
   parameter-store:
-    BUILD_ENV: "/thetransmitter/www/production/BUILD_ENV"
-    TASKREV: "/thetransmitter/www/production/TASKREV"
-
-  secrets-manager:
-    AUTH_JSON: "/thetransmitter/www/production/AUTH_JSON"
-    AUTH_USER: "/thetransmitter/www/production/AUTH_USER"
-    AUTH_PASSWORD: "/thetransmitter/www/production/AUTH_PASSWORD"
+    BUILD_ENV: "/prevalencemap/production/BUILD_ENV"
+    TASKREV: "/prevalencemap/production/TASKREV"
 
 phases:
-  install:
-    commands:
-      - "rm -rf /etc/apt/sources.list.d/{google,yarn}*.list{,.save}"
-      - "apt-get update"
-      - "apt-get install -y apache2 git"
   build:
     on-failure: ABORT
     commands:
-      - "codedeploy/build_env.sh"
-      - "codedeploy/build_css.sh"
+      - "codepipeline/build_env.sh"
+      - "codepipeline/build_css.sh"
       - "rc=${?}"
-      - "codedeploy/build_docker.sh"
+      - "codepipeline/build_docker.sh"
       - "exit ${rc}"
   post_build:
     commands:
        - bash -c "if [[ ${CODEBUILD_BUILD_SUCCEEDING} -eq 0 ]]; then exit 1; fi"
-       - "codedeploy/push_docker.sh production"
-       - "codedeploy/build_appspec.sh production ${TASKREV}"
+       - "codepipeline/push_docker.sh production"
+       - "codepipeline/build_appspec.sh production ${TASKREV}"
 artifacts:
   files:
     - "appspec.yaml"
