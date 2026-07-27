@@ -149,9 +149,10 @@ STATIC_URL = os.environ["DJANGO_STATIC_URL"]
 
 STATIC_ROOT = f"{BASE_DIR}" + "/static/"
 
-STATICFILES_DIRS = [
-    (f"{BASE_DIR}" + "/autism_prevalence_map/")
-]
+# Each app's own `static/` dir is collected automatically (AppDirectoriesFinder), so no
+# project-level dirs are needed. The previous entry pointed at the app *package* root, which
+# made collectstatic copy source .py files into the web-served STATIC_ROOT.
+STATICFILES_DIRS = []
 
 # Access Restrictions
 RESTRICT_ADMIN=True
