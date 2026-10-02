@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
+import json
 import os
 import environ
 
@@ -157,23 +158,13 @@ STATICFILES_DIRS = []
 # Access Restrictions
 RESTRICT_ADMIN=True
 ALLOWED_ADMIN_IPS=['127.0.0.1', '::1']
-ALLOWED_ADMIN_IP_RANGES = ["34.231.5.44/32",
-                           "34.226.50.120/32",
-                           "34.198.66.69/32",
-                           "34.192.31.106/32",
-                           "34.231.5.44/32",
-                           "158.106.193.214/32",
-                           "158.106.193.218/32",
-                           "158.106.193.198/32",
-                           "65.51.12.214/32",
-                           "65.51.12.218/32",
-                           "65.51.12.198/32",
-                           "142.154.220.200/29",
-                           "71.183.30.72/29",
-                           "199.34.244.8/29",
-                           "3.215.156.73/32",
-                           "71.183.30.136/29"
-                           ]
+# Admin IP allowlist, supplied as a JSON array of CIDR strings in the
+# ALLOWED_ADMIN_IP_RANGES environment variable, e.g.
+#   ALLOWED_ADMIN_IP_RANGES=["158.106.193.214/32", "71.183.30.72/29"]
+# The middleware only accepts a real list (it comma-splits anything else), so the JSON is
+# parsed here. Unset yields an empty list, which blocks all admin access rather than
+# silently falling back to something permissive; malformed JSON raises on startup.
+ALLOWED_ADMIN_IP_RANGES = json.loads(os.getenv('ALLOWED_ADMIN_IP_RANGES', '[]'))
 RESTRICTED_APP_NAMES=['admin']
 TRUST_PRIVATE_IP=True
 
