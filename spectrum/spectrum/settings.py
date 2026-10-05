@@ -34,6 +34,11 @@ DEBUG = (os.getenv('DJANGO_DEBUG', 'False') == 'True')
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost").split(",")
 
+# Serve the minified, versioned front-end bundles (`*.min.*` from `npm run build`) by default
+# (staging/production). Set FRONTEND_UNMINIFIED=True (as the local `.env` does) to serve the
+# unminified source assets produced by `npm run dev`.
+FRONTEND_UNMINIFIED = (os.getenv('FRONTEND_UNMINIFIED', 'False') == 'True')
+
 GMAP_API_KEY = os.environ["GMAP_API_KEY"]
 
 # Cloudflare settings
@@ -144,9 +149,10 @@ STATIC_URL = os.environ["DJANGO_STATIC_URL"]
 
 STATIC_ROOT = f"{BASE_DIR}" + "/static/"
 
-STATICFILES_DIRS = [
-    (f"{BASE_DIR}" + "/autism_prevalence_map/")
-]
+# Each app's own `static/` dir is collected automatically (AppDirectoriesFinder), so no
+# project-level dirs are needed. The previous entry pointed at the app *package* root, which
+# made collectstatic copy source .py files into the web-served STATIC_ROOT.
+STATICFILES_DIRS = []
 
 # Access Restrictions
 RESTRICT_ADMIN=True
@@ -165,6 +171,7 @@ ALLOWED_ADMIN_IP_RANGES = ["34.231.5.44/32",
                            "142.154.220.200/29",
                            "71.183.30.72/29",
                            "199.34.244.8/29",
+                           "3.215.156.73/32",
                            "71.183.30.136/29"
                            ]
 RESTRICTED_APP_NAMES=['admin']

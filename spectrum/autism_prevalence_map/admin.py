@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from django.conf import settings
-import sys, os, urllib.request, json, time, datetime, re
+import sys, urllib.request, json, time, datetime, re
 from django.contrib import admin
 from .models import studies, options, AboutPage, AboutSection, Footer, FooterLeftMenuItem, FooterRightMenuItem
 from django import forms
@@ -305,7 +305,7 @@ class AboutSectionInline(admin.StackedInline):
     fields = ('section_type', 'title', 'content', 'newsletter_title', 'newsletter_support_line', 'newsletter_id', 'section_title_text', 'section_title_id', 'links', 'order')
 
     class Media:
-        js = ('autism_prevalence_map/dist/admin.min.js' if os.environ['DJANGO_ALLOWED_HOSTS'] != '127.0.0.1' else 'autism_prevalence_map/dist/admin.js',)
+        js = ('autism_prevalence_map/dist/admin.js' if settings.FRONTEND_UNMINIFIED else 'autism_prevalence_map/dist/admin.min.js',)
 
 admin.site.register(options)
 

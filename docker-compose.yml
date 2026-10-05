@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - 3317:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  app: &app
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: dev
+    volumes:
+      - ./spectrum:/opt/app
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - .env
+    environment:
+      ENV_TYPE: DEV
+      PIP_DISABLE_PIP_VERSION_CHECK: 1
+      PYTHONUNBUFFERED: 1
+      DJANGO_SETTINGS_MODULE: spectrum.settings
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_USER: ${DB_USER}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: db
+      DB_PORT: 5432
+    ports:
+      - 8017:8000
+volumes:
+  pgdata:

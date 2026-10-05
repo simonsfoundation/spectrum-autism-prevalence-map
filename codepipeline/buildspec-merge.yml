@@ -1,0 +1,9 @@
+version: 0.2
+env:
+  shell: bash
+  git-credential-helper: yes
+
+phases:
+  build:
+    commands:
+       - "codepipeline/merge_main.sh"
