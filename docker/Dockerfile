@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/python:3.9-bookworm AS base
+FROM public.ecr.aws/docker/library/python:3.15-bookworm AS base
 
 
 RUN apt update \
